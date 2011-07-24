@@ -1,0 +1,22 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    <ul class="tabs">
+        {% include "UserBundle:Profile:navbar.html.twig" with {"selected": "edit"} only %}
+    </ul>
+    
+    <form action="{{ path("profile_edit") }}" method="post" {{ form_enctype(form) }}>
+        <fieldset>
+            <legend>{{ "header.edit_profile"|trans }}</legend>
+            {{ form_widget(form) }}
+            
+            {{ "text.archive"|trans|desc("Archive")|meaning("The verb") }}
+            
+            <div class="actions">
+                <input type="submit" value="{{ "button.edit_profile"|trans }}" name="submit_btn" class="btn primary" />
+                <a href="{{ path("profile") }}" class="btn">{{ "link.cancel_profile"|trans|desc("Back to Profile") }}</a>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}
+

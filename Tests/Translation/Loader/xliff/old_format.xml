@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="" datatype="plaintext" original="not.available" tool="JMSTranslationBundle">
+    <header>
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit id="1">
+        <source>foo1</source>
+        <target>bar</target>
+      </trans-unit>
+      <trans-unit id="2">
+        <source>foo2</source>
+        <target>bar</target>
+      </trans-unit>
+      <trans-unit id="3">
+        <source>foo3</source>
+        <target>bar</target>
+      </trans-unit>
+      <trans-unit id="4">
+        <source>foo4</source>
+        <target>bar</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

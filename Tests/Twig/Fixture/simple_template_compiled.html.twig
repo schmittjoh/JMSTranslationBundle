@@ -1,0 +1,21 @@
+{{ "text.foo"|trans }}
+
+{{ "text.bar"|trans }}
+
+{{ "text.baz"|trans }}
+
+{{ "text.foo_bar"|trans({}, "foo") }}
+
+{% trans with {'%name%': 'Johannes'} from "app" %}text.name{% endtrans %}
+
+{% transchoice count with {'%name%': 'Johannes'} from "app" %}text.apple_choice{% endtranschoice %}
+
+{{ "foo.bar" | trans }}
+
+{{ "foo.bar2" | transchoice(5) }}
+
+{{ "foo.bar3" | trans({'%name%': 'Johannes'}, "app") }}
+
+{{ "foo.bar4" | transchoice(5, {'%name%': 'Johannes'}, 'app') }}
+
+{% trans %}text.default_domain{% endtrans %}

@@ -1,0 +1,115 @@
+<?php
+
+/*
+ * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+namespace JMS\TranslationBundle\Translation\Extractor\File;
+
+use JMS\TranslationBundle\Model\Message;
+use Symfony\Component\Validator\Mapping\ClassMetadataFactoryInterface;
+use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+
+/**
+ * Extracts translations validation constraints.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
+class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitorInterface
+{
+    private $messageProperties = array('message', 'minMessage', 'maxMessage', 'multipleMessage',
+                                       'extractFieldsMessage', 'missingFieldsMessage', 'notFoundMessage',
+                                       'notReadableMessage', 'maxSizeMessage', 'mimeTypesMessage',
+                                       'uplaodIniSizeErrorMessage', 'uploadFormSizeErrorMessage',
+                                       'uploadErrorMessage', 'mimeTypesMessage', 'sizeNotDetectedMessage',
+                                       'maxWidthMessage', 'maxWidthMessage', 'minWidthMessage', 'maxHeightMessage',
+                                       'minHeightMessage', 'invalidMessage',);
+
+    private $metadataFactory;
+    private $traverser;
+    private $file;
+    private $catalogue;
+    private $namespace = '';
+
+    public function __construct(ClassMetadataFactoryInterface $metadataFactory)
+    {
+        $this->metadataFactory = $metadataFactory;
+
+        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser->addVisitor($this);
+    }
+
+    public function enterNode(\PHPParser_Node &$node)
+    {
+        if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
+            $this->namespace = implode('\\', $node->name->parts);
+
+            return;
+        }
+
+        if (!$node instanceof \PHPParser_Node_Stmt_Class) {
+            return;
+        }
+
+        $name = '' === $this->namespace ? $node->name : $this->namespace.'\\'.$node->name;
+
+        if (!class_exists($name)) {
+            return;
+        }
+
+        $metadata = $this->metadataFactory->getClassMetadata($name);
+
+        if (empty($metadata->constraints) && empty($metadata->members)) {
+            return;
+        }
+
+        $this->extractFromConstraints($metadata->constraints);
+        foreach ($metadata->members as $members) {
+            foreach ($members as $member) {
+                $this->extractFromConstraints($member->constraints);
+            }
+        }
+    }
+
+    public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
+    {
+        $this->file = $file;
+        $this->namespace = '';
+        $this->catalogue = $catalogue;
+        $this->traverser->traverse($ast);
+    }
+
+    public function beforeTraverse(&$node) { }
+    public function leaveNode(\PHPParser_Node &$node) { }
+    public function afterTraverse(&$node) { }
+    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
+
+    private function extractFromConstraints(array $constraints)
+    {
+        foreach ($constraints as $constraint) {
+            $ref = new \ReflectionClass($constraint);
+            $defaultValues = $ref->getDefaultProperties();
+
+            foreach ($this->messageProperties as $prop) {
+                if ($ref->hasProperty($prop) && $defaultValues[$prop] !== $constraint->$prop) {
+                    $message = new Message($constraint->$prop);
+                    $this->catalogue->add($message);
+                }
+            }
+        }
+    }
+}
