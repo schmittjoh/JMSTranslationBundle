@@ -71,9 +71,8 @@ what s/he is supposed to translate. Let's take a look at the following example
 where we use the source message as key::
 
     {# index.html.twig #}
-    {{ "{0} There is no apples"
-      ~"|{1} There is one apple"
-      ~"|]1,Inf] There are %count% apples"|transchoice(count) }}
+    {{ "{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples"
+           |transchoice(count) }}
 
 If we translate this to use an abstract key instead, we would get something like the following::
 
@@ -161,3 +160,11 @@ also set-up some pre-defined settings via the configuration::
 You can then run the extraction process with this configuration with the following command::
 
     php app/console translation:extract de --config=app
+    
+The ``--config`` option also supports overriding via command-line options. Let's assume that
+you would like to change the output format that has been defined in the config, but leave all
+other settings the same, you would run::
+
+    php app/console translation:extract de --config=app --output-format=xliff
+
+
