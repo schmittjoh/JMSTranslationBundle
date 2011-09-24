@@ -29,7 +29,7 @@ use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_NodeVisitorInterface
+class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
     private $traverser;
     private $file;
@@ -43,7 +43,7 @@ class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_
         $this->traverser->addVisitor($this);
     }
 
-    public function enterNode(\PHPParser_Node &$node)
+    public function enterNode(\PHPParser_Node $node)
     {
         if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
             $this->namespace = implode('\\', $node->name->parts);
@@ -91,9 +91,9 @@ class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_
         $this->traverser->traverse($ast);
     }
 
-    public function beforeTraverse(&$node) { }
-    public function leaveNode(\PHPParser_Node &$node) { }
-    public function afterTraverse(&$node) { }
+    public function beforeTraverse(array $nodes) { }
+    public function leaveNode(\PHPParser_Node $node) { }
+    public function afterTraverse(array $nodes) { }
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
 }

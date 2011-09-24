@@ -28,7 +28,7 @@ use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 
-class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitorInterface
+class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
     private $docParser;
     private $traverser;
@@ -47,7 +47,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitorInter
         $this->traverser->addVisitor($this);
     }
 
-    public function enterNode(\PHPParser_Node &$node)
+    public function enterNode(\PHPParser_Node $node)
     {
         if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
             $this->namespace = implode('\\', $node->name->parts);
@@ -186,7 +186,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitorInter
         $this->traverser->traverse($ast);
     }
 
-    public function leaveNode(\PHPParser_Node &$node)
+    public function leaveNode(\PHPParser_Node $node)
     {
         if ($node instanceof \PHPParser_Node_ClassMethod) {
             $this->inMethod = false;
@@ -195,8 +195,8 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitorInter
         }
     }
 
-    public function beforeTraverse(&$node) { }
-    public function afterTraverse(&$node) { }
+    public function beforeTraverse(array $nodes) { }
+    public function afterTraverse(array $nodes) { }
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
 

@@ -35,7 +35,7 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class DefaultPhpFileExtractor implements FileVisitorInterface, \PHPParser_NodeVisitorInterface
+class DefaultPhpFileExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
     private $traverser;
     private $catalogue;
@@ -49,7 +49,7 @@ class DefaultPhpFileExtractor implements FileVisitorInterface, \PHPParser_NodeVi
         $this->traverser->addVisitor($this);
     }
 
-    public function enterNode(\PHPParser_Node &$node)
+    public function enterNode(\PHPParser_Node $node)
     {
         if (!$node instanceof \PHPParser_Node_Expr_MethodCall
             || !is_string($node->name)
@@ -110,9 +110,9 @@ class DefaultPhpFileExtractor implements FileVisitorInterface, \PHPParser_NodeVi
         $this->traverser->traverse($ast);
     }
 
-    public function beforeTraverse(&$node) { }
-    public function leaveNode(\PHPParser_Node &$node) { }
-    public function afterTraverse(&$node) { }
+    public function beforeTraverse(array $nodes) { }
+    public function leaveNode(\PHPParser_Node $node) { }
+    public function afterTraverse(array $nodes) { }
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
 
