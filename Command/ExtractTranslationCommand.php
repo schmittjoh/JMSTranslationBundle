@@ -40,7 +40,8 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->setName('translation:extract')
             ->setDescription('Extracts translation messages from your code.')
             ->addArgument('locale', InputArgument::REQUIRED, 'The locale for which to extract messages.')
-            ->addOption('config', null, InputOption::VALUE_REQUIRED, 'The config to use')
+            ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The config to use')
+            ->addOption('bundle', 'b', InputOption::VALUE_REQUIRED, 'The bundle that you want to extract translations for.')
             ->addOption('exclude-name', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A pattern which should be ignored, e.g. *Test.php')
             ->addOption('exclude-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A directory name which should be ignored, e.g. Tests')
             ->addOption('ignore-domain', 'i', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A domain to ignore.')
@@ -88,6 +89,16 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
     private function updateRequestWithInput(InputInterface $input, UpdateRequest $request)
     {
+        if ($bundle = $input->getOption('bundle')) {
+            if ('@' === $bundle[0]) {
+                $bundle = substr($bundle, 1);
+            }
+
+            $bundle = $this->getApplication()->getKernel()->getBundle($bundle);
+            $request->setTranslationsDir($bundle->getPath().'/Resources/translations');
+            $request->setScanDirs(array($bundle->getPath()));
+        }
+
         if (!$dirs = $input->getOption('dir')) {
             if (!$request->getScanDirs()) {
                 throw new RuntimeException('You must pass at least one directory which should be scanned via "--dir" or "--config".');
