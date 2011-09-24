@@ -123,8 +123,8 @@ you can take a look at the JMSGoogleClosureBundle which extracts translations fr
 
 Dumping Translation Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-For this, the bundle provides you with a console command which you can use to update
-your translation files, or also just preview all changes that have been made.
+For dumping, the bundle provides you with a console command which you can use to update
+your translation files, or also just to preview all changes that have been made.
 
 Updating Files::
 
@@ -136,6 +136,11 @@ The command provides several command line options which you can use to adapt the
 process to your specific needs, just run::
 
     php app/console translation:extract --help
+
+One notable option is "--bundle" which lets you easily dump the translation files for one
+bundle::
+
+    php app/console translation:extract de --bundle=MyFooBundle
 
 Saving Common Extraction Settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
