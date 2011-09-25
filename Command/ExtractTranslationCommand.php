@@ -40,6 +40,8 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->setName('translation:extract')
             ->setDescription('Extracts translation messages from your code.')
             ->addArgument('locale', InputArgument::REQUIRED, 'The locale for which to extract messages.')
+            ->addOption('enable-extractor', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The alias of an extractor which should be enabled.')
+            ->addOption('disable-extractor', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The alias of an extractor which should be disabled (only required for overriding config values).')
             ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The config to use')
             ->addOption('bundle', 'b', InputOption::VALUE_REQUIRED, 'The bundle that you want to extract translations for.')
             ->addOption('exclude-name', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A pattern which should be ignored, e.g. *Test.php')
@@ -66,6 +68,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
         $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $request->getExcludedDirs() ? implode(', ', $request->getExcludedDirs()) : '# none #'));
         $output->writeln(sprintf('Excluded Names: <info>%s</info>', $request->getExcludedNames() ? implode(', ', $request->getExcludedNames()) : '# none #'));
         $output->writeln(sprintf('Output-Format: <info>%s</info>', $request->getOutputFormat() ? $request->getOutputFormat() : '# whatever is present, if nothing then '.$request->getDefaultOutputFormat().' #'));
+        $output->writeln(sprintf('Custom Extractors: <info>%s</info>', $request->getEnabledExtractors() ? implode(', ', array_keys($request->getEnabledExtractors())) : '# none #'));
         $output->writeln('============================================================');
 
         $updater = $this->getContainer()->get('jms_translation.updater');
@@ -137,6 +140,24 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
         if ($format = $input->getOption('default-output-format')) {
             $request->setDefaultOutputFormat($format);
+        }
+
+        if ($enabledExtractors = $input->getOption('enable-extractor')) {
+            $enabled = $request->getEnabledExtractors();
+            foreach ($enabledExtractors as $alias) {
+                $enabled[$alias] = true;
+            }
+
+            $request->setEnabledExtractors($enabled);
+        }
+
+        if ($disabledExtractors = $input->getOption('disable-extractor')) {
+            $enabled = $request->getEnabledExtractors();
+            foreach ($disabledExtractors as $alias) {
+                unset($enabled[$alias]);
+            }
+
+            $request->setEnabledExtractors($enabled);
         }
 
         $request->setLocale($input->getArgument('locale'));

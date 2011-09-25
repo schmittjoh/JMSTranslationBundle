@@ -119,7 +119,20 @@ If you need to customize this process even further, you can implement your own
 ``FileVisitorInterface`` service, and tag it with ``jms_translation.file_visitor``. As an example,
 you can take a look at the JMSGoogleClosureBundle_ which extracts translations from Javascript
 
-.. _JMSGoogleClosureBundle : https://github.com/schmittjoh/JMSGoogleClosureBundle/blob/master/Translation/GoogleClosureTranslationExtractor.php
+While all of the aformentioned methods extract translation messages from the file system,
+in some cases, you cannot attribute translation messages to specific files. In these cases,
+you can implement an ``ExtractorInterface`` service, and tag it with ``jms_translation.extractor``.
+
+As an example, you can take a look at the JMSI18nRoutingBundle_ which implements an `extractor service`_
+for routes, and the corresponding `service definition`_.
+Due to the global nature of these extractors, they are not enabled by default, but you need to 
+enabled each of them explicitly. You can do that by passing the ``--enable-extractor=fooAlias``
+command line option, or enable it in the configuration (see below).
+
+.. _JMSGoogleClosureBundle: https://github.com/schmittjoh/JMSGoogleClosureBundle/blob/master/Translation/GoogleClosureTranslationExtractor.php
+.. _JMSI18nRoutingBundle: https://github.com/schmittjoh/JMSI18nRoutingBundle/blob/master/Translation/RouteTranslationExtractor.php
+.. _extractor service: https://github.com/schmittjoh/JMSI18nRoutingBundle/blob/master/Translation/RouteTranslationExtractor.php
+.. _service definition: https://github.com/schmittjoh/JMSI18nRoutingBundle/blob/master/Resources/config/services.xml#L43
 
 Dumping Translation Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

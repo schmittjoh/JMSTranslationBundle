@@ -49,6 +49,15 @@ class JMSTranslationExtension extends Extension
                 $def->addMethodCall('setIgnoredDomains', array($ignored));
             }
 
+            if (isset($extractConfig['extractors'])) {
+                $extractors = array();
+                foreach ($extractConfig['extractors'] as $alias) {
+                    $extractors[$alias] = true;
+                }
+
+                $def->addMethodCall('setEnabledExtractors', array($extractors));
+            }
+
             if (isset($extractConfig['excluded_dirs'])) {
                 $def->addMethodCall('setExcludedDirs', array($extractConfig['excluded_dirs']));
             }

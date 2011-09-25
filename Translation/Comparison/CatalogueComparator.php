@@ -48,12 +48,15 @@ class CatalogueComparator
         $newMessages = array();
         $modifiedMessages = array();
 
+        // flatten input catalogue
+        $currentFlattend = call_user_func_array('array_merge', $current->all());
+
         foreach ($new->all() as $id => $message) {
             if (isset($this->ignoredDomains[$message->getDomain()])) {
                 continue;
             }
 
-            if ($current->has($id)) {
+            if (isset($currentFlattend[$id])) {
                 // FIXME: Compare what has changed
 
                 continue;

@@ -20,7 +20,6 @@ namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
@@ -187,6 +186,7 @@ class Updater
         $this->extractor->setDirectories($this->updateRequest->getScanDirs());
         $this->extractor->setExcludedDirs($this->updateRequest->getExcludedDirs());
         $this->extractor->setExcludedNames($this->updateRequest->getExcludedNames());
+        $this->extractor->setEnabledExtractors($this->updateRequest->getEnabledExtractors());
 
         $this->scannedCatalogue = $this->extractor->extract();
         $this->scannedCatalogue->setLocale($this->updateRequest->getLocale());

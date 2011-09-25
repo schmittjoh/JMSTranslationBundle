@@ -29,6 +29,7 @@ class ExtractorManager implements ExtractorInterface
     private $fileExtractor;
     private $customExtractors;
     private $directories = array();
+    private $enabledExtractors = array();
     private $logger;
 
     public function __construct(FileExtractor $extractor, LoggerInterface $logger, array $customExtractors = array())
@@ -70,6 +71,17 @@ class ExtractorManager implements ExtractorInterface
         $this->fileExtractor->setExcludedNames($names);
     }
 
+    public function setEnabledExtractors(array $aliases)
+    {
+        foreach ($aliases as $alias => $true) {
+            if (!isset($this->customExtractors[$alias])) {
+                throw new \InvalidArgumentException(sprintf('There is no extractor with alias "%s". Available extractors: %s', $alias, $this->customExtractors ? implode(', ', array_keys($this->customExtractors)) : '# none #'));
+            }
+        }
+
+        $this->enabledExtractors = $aliases;
+    }
+
     public function extract()
     {
         $catalogue = new MessageCatalogue();
@@ -79,7 +91,12 @@ class ExtractorManager implements ExtractorInterface
             $catalogue->merge($this->fileExtractor->extract());
         }
 
-        foreach ($this->customExtractors as $extractor) {
+        foreach ($this->customExtractors as $alias => $extractor) {
+            if (!isset($this->enabledExtractors[$alias])) {
+                $this->logger->debug(sprintf('Skipping custom extractor "%s" as it is not enabled.', $alias));
+                continue;
+            }
+
             $catalogue->merge($extractor->extract());
         }
 

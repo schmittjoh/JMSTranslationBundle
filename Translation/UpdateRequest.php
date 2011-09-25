@@ -37,6 +37,7 @@ final class UpdateRequest
     private $scanDirs;
     private $excludedDirs = array('Tests');
     private $excludedNames = array('*Test.php', '*TestCase.php');
+    private $enabledExtractors = array();
 
     /**
     * Sets the default output format.
@@ -119,6 +120,11 @@ final class UpdateRequest
         $this->excludedNames = $names;
     }
 
+    public function setEnabledExtractors(array $aliases)
+    {
+        $this->enabledExtractors = $aliases;
+    }
+
     public function getTranslationsDir()
     {
         return $this->translationsDir;
@@ -162,5 +168,10 @@ final class UpdateRequest
     public function getExcludedNames()
     {
         return $this->excludedNames;
+    }
+
+    public function getEnabledExtractors()
+    {
+        return $this->enabledExtractors;
     }
 }

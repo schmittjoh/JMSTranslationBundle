@@ -18,6 +18,7 @@
 
 namespace JMS\TranslationBundle;
 
+use JMS\TranslationBundle\DependencyInjection\Compiler\MountExtractorsPass;
 use JMS\TranslationBundle\DependencyInjection\Compiler\MountFileVisitorsPass;
 use JMS\TranslationBundle\DependencyInjection\Compiler\IntegrationPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -31,5 +32,6 @@ class JMSTranslationBundle extends Bundle
     {
         $container->addCompilerPass(new IntegrationPass());
         $container->addCompilerPass(new MountFileVisitorsPass());
+        $container->addCompilerPass(new MountExtractorsPass());
     }
 }
