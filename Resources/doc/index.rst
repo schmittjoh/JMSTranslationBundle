@@ -120,7 +120,7 @@ If you need to customize this process even further, you can implement your own
 you can take a look at the JMSGoogleClosureBundle_ which extracts translations from Javascript
 
 While all of the aforementioned methods extract translation messages from the file system,
-in some cases, you cannot attribute translation messages to specific files. In these cases,
+in some cases, you cannot attribute translation messages to specific files. For these cases,
 you can implement an ``ExtractorInterface`` service, and tag it with ``jms_translation.extractor``.
 
 As an example, you can take a look at the JMSI18nRoutingBundle_ which implements an `extractor service`_
