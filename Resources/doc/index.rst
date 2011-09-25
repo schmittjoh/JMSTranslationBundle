@@ -170,6 +170,7 @@ also set-up some pre-defined settings via the configuration::
                 ignored_domains: [routes]
                 excluded_names: [*TestCase.php, *Test.php]
                 excluded_dirs: [cache, data, logs]
+                extractors: [alias_of_the_extractor]
 
 You can then run the extraction process with this configuration with the following command::
 
