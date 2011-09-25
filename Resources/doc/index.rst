@@ -109,6 +109,7 @@ This bundle automatically supports extracting messages from the following source
 
 - Twig: ``trans``, and ``transchoice`` filters as well as ``trans`` and ``transchoice`` blocks
 - PHP: 
+
   - all calls to the ``trans``, or ``transChoice`` method
   - all classes implementing the ``TranslationContainerInterface``
   - all form labels that are defined as options to the ->add() method of the FormBuilder
