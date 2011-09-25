@@ -101,6 +101,18 @@ class FileSourceTest extends \PHPUnit_Framework_TestCase
             false,
         );
 
+        $source = $this->getMock('JMS\TranslationBundle\Model\SourceInterface');
+        $source
+            ->expects($this->once())
+            ->method('equals')
+            ->will($this->returnValue(false))
+        ;
+        $tests[] = array(
+            new FileSource('foo'),
+            $source,
+            false,
+        );
+
         return $tests;
     }
 

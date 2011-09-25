@@ -48,6 +48,10 @@ class FileSource implements SourceInterface
 
     public function equals(SourceInterface $source)
     {
+        if (!$source instanceof FileSource) {
+            return false;
+        }
+
         if ($this->path !== $source->getPath()) {
             return false;
         }
