@@ -10,14 +10,14 @@ performance optimizations that are currently in place.
 
 Key Features include:
 
-  - allows developers to add additional context to translation ids to aid
-    translators in finding the best possible translation
-  - optimized dumping commands (nicer formatting, more information for
-    translators, marks new messages)
-  - optimized search algorithm (messages are found faster, and more reliably)
-  - can extract messages for bundles, and your application (bundles)
-  - extraction configs can be set-up through configuration to avoid having 
-    to re-type many command line arguments/options
+- allows developers to add additional context to translation ids to aid
+  translators in finding the best possible translation
+- optimized dumping commands (nicer formatting, more information for
+  translators, marks new messages)
+- optimized search algorithm (messages are found faster, and more reliably)
+- can extract messages for bundles, and your application (bundles)
+- extraction configs can be set-up through configuration to avoid having 
+  to re-type many command line arguments/options
 
 
 Installation
@@ -71,8 +71,7 @@ what s/he is supposed to translate. Let's take a look at the following example
 where we use the source message as key::
 
     {# index.html.twig #}
-    {{ "{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples"
-           |transchoice(count) }}
+    {{ "{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples"|transchoice(count) }}
 
 If we translate this to use an abstract key instead, we would get something like the following::
 
@@ -85,7 +84,7 @@ allow the developer to convey more context to the translator via the ``desc`` fi
 
     {# index.html.twig #}
     {{ "text.apples_remaining"|transchoice(count)
-       |desc("{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples") }}
+           |desc("{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples") }}
 
 As you can see we have basically moved the source translation to the ``desc`` filter.
 This filter can contain any information that aids a translator in producing a better
@@ -117,8 +116,9 @@ This bundle automatically supports extracting messages from the following source
 
 If you need to customize this process even further, you can implement your own
 ``FileVisitorInterface`` service, and tag it with ``jms_translation.file_visitor``. As an example,
-you can take a look at the JMSGoogleClosureBundle which extracts translations from Javascript
-(https://github.com/schmittjoh/JMSGoogleClosureBundle/blob/master/Translation/GoogleClosureTranslationExtractor.php).
+you can take a look at the JMSGoogleClosureBundle_ which extracts translations from Javascript
+
+.. _JMSGoogleClosureBundle : https://github.com/schmittjoh/JMSGoogleClosureBundle/blob/master/Translation/GoogleClosureTranslationExtractor.php
 
 Dumping Translation Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
