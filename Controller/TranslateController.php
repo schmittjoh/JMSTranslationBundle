@@ -100,6 +100,8 @@ class TranslateController
             'format' => $files[$domain][$locale][0],
             'messages' => $messages,
             'alternativeMessages' => $alternativeMessages,
+            'isWriteable' => is_writeable($files[$domain][$locale][1]),
+            'file' => (string) $files[$domain][$locale][1],
         );
     }
 

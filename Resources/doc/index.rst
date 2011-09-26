@@ -18,6 +18,7 @@ Key Features include:
 - can extract messages for bundles, and your application (bundles)
 - extraction configs can be set-up through configuration to avoid having 
   to re-type many command line arguments/options
+- Web-based UI for easier translation of messages
 
 
 Installation
@@ -154,6 +155,12 @@ One notable option is "--bundle" which lets you easily dump the translation file
 bundle::
 
     php app/console translation:extract de --bundle=MyFooBundle
+
+Using the Web-based UI to translate messages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This bundle includes a small web-based UI which can simplify the translation
+process. It is disabled by default, please see the dedicated document
+for further information.
 
 Saving Common Extraction Settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

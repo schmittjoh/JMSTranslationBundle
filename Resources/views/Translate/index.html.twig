@@ -11,7 +11,7 @@
                 $(this).parent().submit();
             });
             
-            {% if "xliff" == format %}
+            {% if "xliff" == format or isWriteable is sameas(false) %}
             $('textarea')
                 .blur(function() {
                     var self = this;
@@ -22,7 +22,7 @@
                             $(self).parent().prepend('<div class="alert-message error">Translation could not be saved</div>');
                         },
                         success: function() {
-                            $(self).parent().prepend('<div class="alert-message">Translation was saved.</div>');
+                            $(self).parent().prepend('<div class="alert-message success">Translation was saved.</div>');
                         },
                         complete: function() {
                             var parent = $(self).parent();
@@ -72,6 +72,12 @@
         </select>
     </form>
     
+    {% if isWriteable is sameas(false) %}
+    <div class="alert-message error">
+        The translation file "<strong>{{ file }}</strong>" is not writable.
+    </div>
+    {% endif %}
+    
     {% if "xliff" != format %}
     <div class="alert-message warning">
         Due to limitations of the different loaders, updating messages unfortunately is limited to the XLIFF format. 
@@ -83,7 +89,7 @@
     </div>
     {% endif %}
 
-    <h3>Available Messages</h3>
+    <h2>Available Messages</h2>
     
     <table>
         <thead>
@@ -98,7 +104,7 @@
             <tr>
                 <td><abbr title="{{ id }}">{{ id|truncate(20) }}</abbr></td>
                 <td>
-                    <textarea data-id="{{ id }}" class="span6"{% if "xliff" != format %} readonly="readonly"{% endif %}>{{ trans }}</textarea></td>
+                    <textarea data-id="{{ id }}" class="span6"{% if "xliff" != format or isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{{ trans }}</textarea></td>
                 <td>
                     {% if alternativeMessages[id] is defined %}
                         <h6>Alternative Translations</h6>
