@@ -1,0 +1,123 @@
+{% extends "JMSTranslationBundle::base.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function() {
+            var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
+        
+            $('#config select').change(function() {
+                $(this).parent().submit();
+            });
+            
+            {% if "xliff" == format %}
+            $('textarea')
+                .blur(function() {
+                    var self = this;
+                    $.ajax(updateMessagePath + '/' + encodeURIComponent($(this).data('id')), {
+                        type: 'POST',
+                        data: {'_method': 'PUT', 'message': $(this).val()},
+                        error: function() {
+                            $(self).parent().prepend('<div class="alert-message error">Translation could not be saved</div>');
+                        },
+                        success: function() {
+                            $(self).parent().prepend('<div class="alert-message">Translation was saved.</div>');
+                        },
+                        complete: function() {
+                            var parent = $(self).parent();
+                            $(self).data('timeoutId', setTimeout(function() {
+                                $(self).data('timeoutId', undefined);
+                                parent.children('.alert-message').fadeOut(300, function() { $(this).remove(); });
+                            }, 10000));
+                        }
+                    });
+                })
+                .focus(function() {
+                    this.select();
+                    
+                    var timeoutId = $(this).data('timeoutId');
+                    if (timeoutId) {
+                        clearTimeout(timeoutId);
+                        $(this).data('timeoutId', undefined);
+                    }
+                    
+                    $(this).parent().children('.alert-message').remove();
+                })
+            ;
+            {% endif %}
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <form id="config" action="{{ path("jms_translation_index") }}" method="get">
+        <select name="config" class="span3">
+            {% for config in configs %}
+            <option value="{{ config }}"{% if config == selectedConfig %} selected="selected"{% endif %}>{{ config }}</option>
+            {% endfor %}
+        </select>
+    
+        <select name="domain" class="span3">
+            {% for domain in domains %}
+            <option value="{{ domain }}"{% if domain == selectedDomain %} selected="selected"{% endif %}>{{ domain }}</option>
+            {% endfor %}
+        </select>
+        
+        <select name="locale" class="span2">
+            {% for locale in locales %}
+            <option value="{{ locale }}"{% if locale == selectedLocale %} selected="selected"{% endif %}>{{ locale }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    
+    {% if "xliff" != format %}
+    <div class="alert-message warning">
+        Due to limitations of the different loaders, updating messages unfortunately is limited to the XLIFF format. 
+        
+        <br /><br />
+        
+        You can easily convert your existing translation files to the XLIFF format by running:<br />
+        <code>php app/console translation:extract {{ selectedLocale }} --config={{ selectedConfig }} --output-format=xliff</code>
+    </div>
+    {% endif %}
+
+    <h3>Available Messages</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th width="20%">ID</th>
+                <th width="40%">Translation</th>
+                <th width="40%">Additional Information</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id, trans in messages %}
+            <tr>
+                <td><abbr title="{{ id }}">{{ id|truncate(20) }}</abbr></td>
+                <td>
+                    <textarea data-id="{{ id }}" class="span6"{% if "xliff" != format %} readonly="readonly"{% endif %}>{{ trans }}</textarea></td>
+                <td>
+                    {% if alternativeMessages[id] is defined %}
+                        <h6>Alternative Translations</h6>
+                        {% for locale, message in alternativeMessages[id] %}
+                        <p>
+                            <strong>{{ locale }}:</strong> {{ message }}
+                        </p>
+                        {% endfor %}
+                    {% else %}
+                        &nbsp;
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">No messages found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

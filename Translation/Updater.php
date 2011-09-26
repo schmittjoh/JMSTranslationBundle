@@ -18,6 +18,8 @@
 
 namespace JMS\TranslationBundle\Translation;
 
+use JMS\TranslationBundle\Util\FileUtils;
+
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
@@ -41,7 +43,7 @@ class Updater
 {
     private $loader;
     private $extractor;
-    private $updateRequest;
+    private $config;
     private $existingCatalogue;
     private $scannedCatalogue;
     private $logger;
@@ -61,12 +63,12 @@ class Updater
         $this->extractor->setLogger($logger);
     }
 
-    public function getChangeSet(UpdateRequest $request)
+    public function getChangeSet(Config $config)
     {
-        $this->setUpdateRequest($request);
+        $this->setConfig($config);
 
         $comparator = new CatalogueComparator();
-        $comparator->setIgnoredDomains($this->updateRequest->getIgnoredDomains());
+        $comparator->setIgnoredDomains($this->config->getIgnoredDomains());
 
         return $comparator->compare($this->existingCatalogue, $this->scannedCatalogue);
     }
@@ -79,13 +81,13 @@ class Updater
      *
      * @return void
      */
-    public function process(UpdateRequest $request)
+    public function process(Config $config)
     {
-        $this->setUpdateRequest($request);
+        $this->setConfig($config);
 
         $cataloguePerDomain = array();
         foreach ($this->scannedCatalogue->all() as $id => $message) {
-            if ($this->updateRequest->isIgnoredDomain($domain = $message->getDomain())) {
+            if ($this->config->isIgnoredDomain($domain = $message->getDomain())) {
                 continue;
             }
 
@@ -101,7 +103,7 @@ class Updater
             $format = $this->detectOutputFormat($domain);
 
             // delete translation files of other formats
-            foreach (Finder::create()->name('/^'.$domain.'\.'.$this->updateRequest->getLocale().'\.[^\.]+$/')->in($this->updateRequest->getTranslationsDir())->depth('< 1')->files() as $file) {
+            foreach (Finder::create()->name('/^'.$domain.'\.'.$this->config->getLocale().'\.[^\.]+$/')->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
                 if ('.'.$format === substr($file, -1 * strlen('.'.$format))) {
                     continue;
                 }
@@ -113,7 +115,7 @@ class Updater
                 }
             }
 
-            $outputFile = $this->updateRequest->getTranslationsDir().'/'.$domain.'.'.$this->updateRequest->getLocale().'.'.$format;
+            $outputFile = $this->config->getTranslationsDir().'/'.$domain.'.'.$this->config->getLocale().'.'.$format;
             $this->logger->info(sprintf('Writing translation file "%s".', $outputFile));
             $this->writer->write($catalogue, $outputFile, $format);
         }
@@ -126,30 +128,30 @@ class Updater
      * @throws \RuntimeException
      * @return string the output format
      */
-    private function detectOutputFormat($domain)
+    private function detectOutputFormat($currentDomain)
     {
-        if (null !== $this->updateRequest->getOutputFormat()) {
-            return $this->updateRequest->getOutputFormat();
+        if (null !== $this->config->getOutputFormat()) {
+            return $this->config->getOutputFormat();
         }
 
         // check if which translation files in which format exist
         $otherDomainFormat = $localeFormat = $otherLocaleFormat = null;
-        foreach (Finder::create()->in($this->updateRequest->getTranslationsDir())->depth('< 1')->files() as $file) {
-            if (!preg_match('/^([^\.]+)\.([^\.]+)\.([^\.]+)$/', basename($file), $match)) {
-                continue;
-            }
+        foreach (FileUtils::findTranslationFiles($this->config->getTranslationsDir()) as $domain => $locales) {
+            foreach ($locales as $locale => $fileData) {
+                list($format, ) = $fileData;
 
-            if ($domain !== $match[1]) {
-                $otherDomainFormat = $match[3];
-                continue;
-            }
+                if ($currentDomain !== $domain) {
+                    $otherDomainFormat = $format;
+                    continue 2;
+                }
 
-            if ($this->updateRequest->getLocale() === $match[2]) {
-                $localeFormat = $match[3];
-                continue;
-            }
+                if ($this->config->getLocale() === $locale) {
+                    $localeFormat = $format;
+                    continue;
+                }
 
-            $otherLocaleFormat = $match[3];
+                $otherLocaleFormat = $format;
+            }
         }
 
         if (null !== $localeFormat) {
@@ -164,32 +166,25 @@ class Updater
             return $otherDomainFormat;
         }
 
-        return $this->updateRequest->getDefaultOutputFormat();
+        return $this->config->getDefaultOutputFormat();
     }
 
-    private function setUpdateRequest(UpdateRequest $request)
+    private function setConfig(Config $config)
     {
-        if (null === $request->getTranslationsDir()) {
-            throw new RuntimeException('The translations directory must be set.');
-        }
-        if (null === $request->getLocale()) {
-            throw new RuntimeException('The locale must be set.');
-        }
-
-        $this->updateRequest = $request;
+        $this->config = $config;
         $this->updateExistingCatalogue();
         $this->updateScannedCatalogue();
     }
 
     private function updateScannedCatalogue()
     {
-        $this->extractor->setDirectories($this->updateRequest->getScanDirs());
-        $this->extractor->setExcludedDirs($this->updateRequest->getExcludedDirs());
-        $this->extractor->setExcludedNames($this->updateRequest->getExcludedNames());
-        $this->extractor->setEnabledExtractors($this->updateRequest->getEnabledExtractors());
+        $this->extractor->setDirectories($this->config->getScanDirs());
+        $this->extractor->setExcludedDirs($this->config->getExcludedDirs());
+        $this->extractor->setExcludedNames($this->config->getExcludedNames());
+        $this->extractor->setEnabledExtractors($this->config->getEnabledExtractors());
 
         $this->scannedCatalogue = $this->extractor->extract();
-        $this->scannedCatalogue->setLocale($this->updateRequest->getLocale());
+        $this->scannedCatalogue->setLocale($this->config->getLocale());
 
         // set translations where already available
         foreach ($this->scannedCatalogue->all() as $id => $message) {
@@ -204,7 +199,7 @@ class Updater
 
     private function updateExistingCatalogue()
     {
-        $this->existingCatalogue = new SymfonyMessageCatalogue($this->updateRequest->getLocale());
-        $this->loader->loadMessages($this->updateRequest->getTranslationsDir(), $this->existingCatalogue);
+        $this->existingCatalogue = new SymfonyMessageCatalogue($this->config->getLocale());
+        $this->loader->loadMessages($this->config->getTranslationsDir(), $this->existingCatalogue);
     }
 }

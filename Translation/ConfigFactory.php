@@ -20,21 +20,31 @@ namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 
-class UpdateRequestFactory
+class ConfigFactory
 {
-    private $requests;
+    private $builders;
 
-    public function __construct(array $requests = array())
+    public function __construct(array $builders = array())
     {
-        $this->requests = $requests;
+        $this->builders = $builders;
     }
 
-    public function getRequest($name)
+    public function getNames()
     {
-        if (!isset($this->requests[$name])) {
-            throw new InvalidArgumentException(sprintf('There has no extraction config with name "%s" been configured. Available configs: %s', $name, implode(', ', array_keys($this->requests))));
+        return array_keys($this->builders);
+    }
+
+    public function getBuilder($name)
+    {
+        if (!isset($this->builders[$name])) {
+            throw new InvalidArgumentException(sprintf('There has no extraction config with name "%s" been configured. Available configs: %s', $name, implode(', ', array_keys($this->builders))));
         }
 
-        return $this->requests[$name];
+        return $this->builders[$name];
+    }
+
+    public function getConfig($name, $locale)
+    {
+        return $this->getBuilder($name)->setLocale($locale)->getConfig();
     }
 }

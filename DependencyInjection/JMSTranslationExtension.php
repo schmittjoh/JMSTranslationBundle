@@ -19,7 +19,6 @@
 namespace JMS\TranslationBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Definition;
-
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -36,7 +35,7 @@ class JMSTranslationExtension extends Extension
 
         $requests = array();
         foreach ($config['configs'] as $name => $extractConfig) {
-            $def = new Definition('JMS\TranslationBundle\Translation\UpdateRequest');
+            $def = new Definition('JMS\TranslationBundle\Translation\ConfigBuilder');
             $def->addMethodCall('setTranslationsDir', array($extractConfig['output_dir']));
             $def->addMethodCall('setScanDirs', array($extractConfig['dirs']));
 
@@ -78,7 +77,7 @@ class JMSTranslationExtension extends Extension
         }
 
         $container
-            ->getDefinition('jms_translation.update_request_factory')
+            ->getDefinition('jms_translation.config_factory')
             ->addArgument($requests)
         ;
     }

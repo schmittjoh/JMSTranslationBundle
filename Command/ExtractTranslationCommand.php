@@ -18,9 +18,11 @@
 
 namespace JMS\TranslationBundle\Command;
 
+use JMS\TranslationBundle\Translation\ConfigBuilder;
+
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
-use JMS\TranslationBundle\Translation\UpdateRequest;
+use JMS\TranslationBundle\Translation\Config;
 use JMS\TranslationBundle\Logger\OutputLogger;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,18 +59,18 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $request = $input->getOption('config') ?
-                       $this->getContainer()->get('jms_translation.update_request_factory')->getRequest($input->getOption('config'))
-                       : new UpdateRequest();
+        $builder = $input->getOption('config') ?
+                       $this->getContainer()->get('jms_translation.config_factory')->getBuilder($input->getOption('config'))
+                       : new ConfigBuilder();
 
-        $this->updateRequestWithInput($input, $request);
+        $config = $this->getConfigFromInput($input, $builder);
 
-        $output->writeln(sprintf('Output-Path: <info>%s</info>', $request->getTranslationsDir()));
-        $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $request->getScanDirs())));
-        $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $request->getExcludedDirs() ? implode(', ', $request->getExcludedDirs()) : '# none #'));
-        $output->writeln(sprintf('Excluded Names: <info>%s</info>', $request->getExcludedNames() ? implode(', ', $request->getExcludedNames()) : '# none #'));
-        $output->writeln(sprintf('Output-Format: <info>%s</info>', $request->getOutputFormat() ? $request->getOutputFormat() : '# whatever is present, if nothing then '.$request->getDefaultOutputFormat().' #'));
-        $output->writeln(sprintf('Custom Extractors: <info>%s</info>', $request->getEnabledExtractors() ? implode(', ', array_keys($request->getEnabledExtractors())) : '# none #'));
+        $output->writeln(sprintf('Output-Path: <info>%s</info>', $config->getTranslationsDir()));
+        $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $config->getScanDirs())));
+        $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $config->getExcludedDirs() ? implode(', ', $config->getExcludedDirs()) : '# none #'));
+        $output->writeln(sprintf('Excluded Names: <info>%s</info>', $config->getExcludedNames() ? implode(', ', $config->getExcludedNames()) : '# none #'));
+        $output->writeln(sprintf('Output-Format: <info>%s</info>', $config->getOutputFormat() ? $config->getOutputFormat() : '# whatever is present, if nothing then '.$config->getDefaultOutputFormat().' #'));
+        $output->writeln(sprintf('Custom Extractors: <info>%s</info>', $config->getEnabledExtractors() ? implode(', ', array_keys($config->getEnabledExtractors())) : '# none #'));
         $output->writeln('============================================================');
 
         $updater = $this->getContainer()->get('jms_translation.updater');
@@ -79,7 +81,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
         }
 
         if ($input->getOption('dry-run')) {
-            $changeSet = $updater->getChangeSet($request);
+            $changeSet = $updater->getChangeSet($config);
 
             $output->writeln('Added Messages: '.implode(', ', array_keys($changeSet->getAddedMessages())));
             $output->writeln('Deleted Messages: '.implode(', ', array_keys($changeSet->getDeletedMessages())));
@@ -87,10 +89,10 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             return;
         }
 
-        $updater->process($request);
+        $updater->process($config);
     }
 
-    private function updateRequestWithInput(InputInterface $input, UpdateRequest $request)
+    private function getConfigFromInput(InputInterface $input, ConfigBuilder $builder)
     {
         if ($bundle = $input->getOption('bundle')) {
             if ('@' === $bundle[0]) {
@@ -98,68 +100,54 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             }
 
             $bundle = $this->getApplication()->getKernel()->getBundle($bundle);
-            $request->setTranslationsDir($bundle->getPath().'/Resources/translations');
-            $request->setScanDirs(array($bundle->getPath()));
+            $builder->setTranslationsDir($bundle->getPath().'/Resources/translations');
+            $builder->setScanDirs(array($bundle->getPath()));
         }
 
-        if (!$dirs = $input->getOption('dir')) {
-            if (!$request->getScanDirs()) {
-                throw new RuntimeException('You must pass at least one directory which should be scanned via "--dir" or "--config".');
-            }
-        } else {
-            $request->setScanDirs($dirs);
+        if ($dirs = $input->getOption('dir')) {
+            $builder->setScanDirs($dirs);
         }
 
-        if (!$outputDir = $input->getOption('output-dir')) {
-            if (!$request->getTranslationsDir()) {
-                throw new RuntimeException('You must pass the output directory via "--output-dir" or "--config".');
-            }
-        } else {
-            $request->setTranslationsDir($outputDir);
+        if ($outputDir = $input->getOption('output-dir')) {
+            $builder->setTranslationsDir($outputDir);
         }
 
         if ($outputFormat = $input->getOption('output-format')) {
-            $request->setOutputFormat($outputFormat);
+            $builder->setOutputFormat($outputFormat);
         }
 
         if ($input->getOption('ignore-domain')) {
-            $ignored = array();
             foreach ($input->getOption('ignore-domain') as $domain) {
-                $ignored[$domain] = true;
+                $builder->addIgnoredDomain($domain);
             }
-            $request->setIgnoredDomains($ignored);
         }
 
         if ($excludeDirs = $input->getOption('exclude-dir')) {
-            $request->setExcludedDirs($excludeDirs);
+            $builder->setExcludedDirs($excludeDirs);
         }
 
         if ($excludeNames = $input->getOption('exclude-name')) {
-            $request->setExcludedNames($excludeNames);
+            $builder->setExcludedNames($excludeNames);
         }
 
         if ($format = $input->getOption('default-output-format')) {
-            $request->setDefaultOutputFormat($format);
+            $builder->setDefaultOutputFormat($format);
         }
 
         if ($enabledExtractors = $input->getOption('enable-extractor')) {
-            $enabled = $request->getEnabledExtractors();
             foreach ($enabledExtractors as $alias) {
-                $enabled[$alias] = true;
+                $builder->enableExtractor($alias);
             }
-
-            $request->setEnabledExtractors($enabled);
         }
 
         if ($disabledExtractors = $input->getOption('disable-extractor')) {
-            $enabled = $request->getEnabledExtractors();
             foreach ($disabledExtractors as $alias) {
-                unset($enabled[$alias]);
+                $builder->disableExtractor($alias);
             }
-
-            $request->setEnabledExtractors($enabled);
         }
 
-        $request->setLocale($input->getArgument('locale'));
+        $builder->setLocale($input->getArgument('locale'));
+
+        return $builder->getConfig();
     }
 }
