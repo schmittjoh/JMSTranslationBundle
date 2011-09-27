@@ -18,10 +18,33 @@
 
 namespace JMS\TranslationBundle\Tests\Model;
 
+use JMS\TranslationBundle\Model\FileSource;
+
 use JMS\TranslationBundle\Model\Message;
 
 class MessageTest extends \PHPUnit_Framework_TestCase
 {
+    public function testCreate()
+    {
+        $message = Message::create('id', 'foo');
+
+        $this->assertInstanceOf('JMS\TranslationBundle\Model\Message', $message);
+        $this->assertEquals('id', $message->getId());
+        $this->assertEquals('foo', $message->getDomain());
+    }
+
+    public function testForThisFile()
+    {
+        $message = Message::forThisFile('foo', 'bar');
+
+        $this->assertInstanceOf('JMS\TranslationBundle\Model\Message', $message);
+        $this->assertEquals('foo', $message->getId());
+        $this->assertEquals('bar', $message->getDomain());
+
+        $source = new FileSource(__FILE__);
+        $this->assertTrue($message->hasSource($source));
+    }
+
     public function testGetId()
     {
         $message = new Message('foo');

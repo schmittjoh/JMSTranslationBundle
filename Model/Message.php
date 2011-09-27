@@ -45,6 +45,23 @@ final class Message
     /** The sources where this message occurs */
     private $sources = array();
 
+    public static function forThisFile($id, $domain = 'messages')
+    {
+        $message = new self($id, $domain);
+
+        $trace = debug_backtrace(false);
+        if (isset($trace[0]['file'])) {
+            $message->addSource(new FileSource($trace[0]['file']));
+        }
+
+        return $message;
+    }
+
+    public static function create($id, $domain = 'messages')
+    {
+        return new self($id, $domain);
+    }
+
     public function __construct($id, $domain = 'messages')
     {
         $this->id = $id;
