@@ -75,6 +75,8 @@ final class Message
         }
 
         $this->sources[] = $source;
+
+        return $this;
     }
 
     public function getId()
@@ -128,21 +130,29 @@ final class Message
     public function setMeaning($meaning)
     {
         $this->meaning = $meaning;
+
+        return $this;
     }
 
     public function setNew($bool)
     {
         $this->new = (Boolean) $bool;
+
+        return $this;
     }
 
     public function setDesc($desc)
     {
         $this->desc = $desc;
+
+        return $this;
     }
 
     public function setLocaleString($str)
     {
         $this->localeString = $str;
+
+        return $this;
     }
 
     public function merge(Message $message)

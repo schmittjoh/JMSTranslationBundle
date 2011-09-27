@@ -62,7 +62,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $message = new Message('foo');
         $this->assertNull($message->getDesc());
 
-        $message->setDesc('foo');
+        $this->assertSame($message, $message->setDesc('foo'));
         $this->assertEquals('foo', $message->getDesc());
     }
 
@@ -71,7 +71,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $message = new Message('foo');
         $this->assertNull($message->getMeaning());
 
-        $message->setMeaning('foo');
+        $this->assertSame($message, $message->setMeaning('foo'));
         $this->assertEquals('foo', $message->getMeaning());
     }
 
@@ -80,7 +80,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $message = new Message('foo');
         $this->assertEquals(array(), $message->getSources());
 
-        $message->addSource($source = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $this->assertSame($message, $message->addSource($source = $this->getMock('JMS\TranslationBundle\Model\SourceInterface')));
         $this->assertSame(array($source), $message->getSources());
     }
 
