@@ -24,7 +24,7 @@ class MyAuthException extends AuthenticationException
 {
     private $foo;
 
-    public function getMessageTemplate()
+    public function getMessageKey()
     {
         if (!empty($this->foo)) {
             /** @Desc("%foo% is invalid.") */

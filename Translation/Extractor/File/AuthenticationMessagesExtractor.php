@@ -43,7 +43,7 @@ class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParse
     private $namespace = '';
     private $docParser;
     private $inAuthException = false;
-    private $inGetMessageTemplate = false;
+    private $inGetMessageKey = false;
 
     public function __construct(DocParser $parser)
     {
@@ -78,7 +78,7 @@ class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParse
                 return;
             }
 
-            if (!$ref->hasMethod('getMessageTemplate')) {
+            if (!$ref->hasMethod('getMessageKey')) {
                 return;
             }
             $this->inAuthException = true;
@@ -91,14 +91,14 @@ class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParse
         }
 
         if ($node instanceof \PHPParser_Node_Stmt_ClassMethod) {
-            if ('getmessagetemplate' === strtolower($node->name)) {
-                $this->inGetMessageTemplate = true;
+            if ('getmessagekey' === strtolower($node->name)) {
+                $this->inGetMessageKey = true;
             }
 
             return;
         }
 
-        if (!$this->inGetMessageTemplate) {
+        if (!$this->inGetMessageKey) {
             return;
         }
 
@@ -154,7 +154,7 @@ class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParse
         }
 
         if ($node instanceof \PHPParser_Node_Stmt_ClassMethod) {
-            $this->inGetMessageTemplate = false;
+            $this->inGetMessageKey = false;
 
             return;
         }
