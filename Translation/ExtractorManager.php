@@ -75,7 +75,7 @@ class ExtractorManager implements ExtractorInterface
     {
         foreach ($aliases as $alias => $true) {
             if (!isset($this->customExtractors[$alias])) {
-                throw new \InvalidArgumentException(sprintf('There is no extractor with alias "%s". Available extractors: %s', $alias, $this->customExtractors ? implode(', ', array_keys($this->customExtractors)) : '# none #'));
+                throw new InvalidArgumentException(sprintf('There is no extractor with alias "%s". Available extractors: %s', $alias, $this->customExtractors ? implode(', ', array_keys($this->customExtractors)) : '# none #'));
             }
         }
 

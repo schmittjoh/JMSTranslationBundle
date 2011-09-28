@@ -18,6 +18,7 @@
 
 namespace JMS\TranslationBundle\Translation;
 
+use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Exception\RuntimeException;
 
 /**
@@ -42,7 +43,7 @@ final class Config
     public function __construct($translationsDir, $locale, array $ignoredDomains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors)
     {
         if (empty($translationsDir)) {
-            throw new \InvalidArgumentException('The directory where translations are must be set.');
+            throw new InvalidArgumentException('The directory where translations are must be set.');
         }
 
         if (!is_dir($translationsDir)) {
@@ -52,7 +53,7 @@ final class Config
         }
 
         if (empty($scanDirs)) {
-            throw new \InvalidArgumentException('You must pass at least one directory which should be scanned.');
+            throw new InvalidArgumentException('You must pass at least one directory which should be scanned.');
         }
 
         foreach ($scanDirs as $k => $dir) {
@@ -64,7 +65,7 @@ final class Config
         }
 
         if (empty($locale)) {
-            throw new \InvalidArgumentException('The locale cannot be empty.');
+            throw new InvalidArgumentException('The locale cannot be empty.');
         }
 
         $this->translationsDir = rtrim($translationsDir, '\\/');

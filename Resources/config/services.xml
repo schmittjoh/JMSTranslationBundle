@@ -14,6 +14,7 @@
         <parameter key="jms_translation.extractor.file.twig_extractor">JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor</parameter>
         <parameter key="jms_translation.extractor.file.form_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\FormExtractor</parameter>
         <parameter key="jms_translation.extractor.file.validation_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor</parameter>
+        <parameter key="jms_translation.extractor.file.authentication_message_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\AuthenticationMessagesExtractor</parameter>
         
         <parameter key="jms_translation.loader.xliff_loader.class">JMS\TranslationBundle\Translation\Loader\XliffLoader</parameter>
         
@@ -82,6 +83,10 @@
         </service>
         <service id="jms_translation.extractor.file.validation_extractor" class="%jms_translation.extractor.file.validation_extractor.class%" public="false">
             <argument type="service" id="validator.mapping.class_metadata_factory" />
+            <tag name="jms_translation.file_visitor" />
+        </service>
+        <service id="jms_translation.extractor.file.authentication_message_extractor" class="%jms_translation.extractor.file.authentication_message_extractor.class%" public="false">
+            <argument type="service" id="jms_translation.doc_parser" />
             <tag name="jms_translation.file_visitor" />
         </service>
         

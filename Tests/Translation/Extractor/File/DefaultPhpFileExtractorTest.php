@@ -19,14 +19,12 @@
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use Doctrine\Common\Annotations\DocParser;
-
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
 
-class DefaultPhpFileExtractorTest extends \PHPUnit_Framework_TestCase
+class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
 {
     public function testExtractController()
     {
@@ -80,32 +78,8 @@ class DefaultPhpFileExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->extract('template.html.php'));
     }
 
-    private function extract($file, DefaultPhpFileExtractor $extractor = null)
+    protected function getDefaultExtractor()
     {
-        if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
-            throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
-        }
-        $file = new \SplFileInfo($file);
-
-        if (null === $extractor) {
-            $docParser = new DocParser();
-            $docParser->setImports(array(
-                'desc' => 'JMS\TranslationBundle\Annotation\Desc',
-                'meaning' => 'JMS\TranslationBundle\Annotation\Meaning',
-                'ignore' => 'JMS\TranslationBundle\Annotation\Ignore',
-            ));
-            $docParser->setIgnoreNotImportedAnnotations(true);
-
-            $extractor = new DefaultPhpFileExtractor($docParser);
-        }
-
-        $lexer = new \PHPParser_Lexer(file_get_contents($file));
-        $parser = new \PHPParser_Parser();
-        $ast = $parser->parse($lexer);
-
-        $catalogue = new MessageCatalogue();
-        $extractor->visitPhpFile($file, $catalogue, $ast);
-
-        return $catalogue;
+        return new DefaultPhpFileExtractor($this->getDocParser());
     }
 }

@@ -18,6 +18,7 @@
 
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
+use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\Message;
 
 use JMS\TranslationBundle\Model\MessageCatalogue;
@@ -83,12 +84,12 @@ class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_
 
         $messages = call_user_func(array($this->namespace.'\\'.$node->name, 'getTranslationMessages'));
         if (!is_array($messages)) {
-            throw new \RuntimeException(sprintf('%s::getTranslationMessages() was expected to return an array of messages, but got %s.', $this->namespace.'\\'.$node->name, gettype($messages)));
+            throw new RuntimeException(sprintf('%s::getTranslationMessages() was expected to return an array of messages, but got %s.', $this->namespace.'\\'.$node->name, gettype($messages)));
         }
 
         foreach ($messages as $message) {
             if (!$message instanceof Message) {
-                throw new \RuntimeException(sprintf('%s::getTranslationMessages() was expected to return an array of messages, but got an array which contains an item of type %s.', $this->namespace.'\\'.$node->name, gettype($message)));
+                throw new RuntimeException(sprintf('%s::getTranslationMessages() was expected to return an array of messages, but got an array which contains an item of type %s.', $this->namespace.'\\'.$node->name, gettype($message)));
             }
 
             $this->catalogue->add($message);
