@@ -43,7 +43,10 @@ class ApiController
     private $request;
 
     /**
-     * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages/{id}", name="jms_translation_update_message", defaults = {"id" = null})
+     * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages/{id}",
+     * 			name="jms_translation_update_message",
+     * 			defaults = {"id" = null},
+     * 			options = {"i18n" = false})
      * @Method("PUT")
      */
     public function updateMessageAction($config, $domain, $locale, $id)
