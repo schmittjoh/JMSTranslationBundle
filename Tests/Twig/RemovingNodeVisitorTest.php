@@ -18,30 +18,13 @@
 
 namespace JMS\TranslationBundle\Tests\Twig;
 
-use Symfony\Component\Translation\MessageSelector;
-use Symfony\Component\Translation\IdentityTranslator;
-use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
-use JMS\TranslationBundle\Twig\TranslationExtension;
-use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
-
-class RemovingNodeVisitorTest extends \PHPUnit_Framework_TestCase
+class RemovingNodeVisitorTest extends BaseTwigTest
 {
     public function testRemovalWithSimpleTemplate()
     {
-        $expected = $this->process('simple_template_compiled.html.twig');
-        $actual = $this->process('simple_template.html.twig');
+        $expected = $this->parse('simple_template_compiled.html.twig');
+        $actual = $this->parse('simple_template.html.twig');
 
         $this->assertEquals($expected, $actual);
-    }
-
-    private function process($file)
-    {
-        $content = file_get_contents(__DIR__.'/Fixture/'.$file);
-
-        $env = new \Twig_Environment();
-        $env->addExtension(new SymfonyTranslationExtension(new IdentityTranslator(new MessageSelector())));
-        $env->addExtension(new TranslationExtension());
-
-        return $env->parse($env->tokenize($content));
     }
 }

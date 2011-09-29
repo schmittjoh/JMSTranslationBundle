@@ -28,6 +28,7 @@ class TranslationExtension extends \Twig_Extension
     public function getNodeVisitors()
     {
         return array(
+            new NormalizingNodeVisitor(),
             new RemovingNodeVisitor(),
         );
     }
