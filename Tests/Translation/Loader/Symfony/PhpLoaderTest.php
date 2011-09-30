@@ -16,11 +16,24 @@
  * limitations under the License.
  */
 
-namespace JMS\TranslationBundle\Translation;
+namespace JMS\TranslationBundle\Tests\Translation\Loader\Symfony;
 
-use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Exception\InvalidArgumentException;
+use Symfony\Component\Translation\Loader\PhpFileLoader;
 
-interface FileWriterInterface
+class PhpLoaderTest extends BaseLoaderTest
 {
-    function write(MessageCatalogue $catalogue, $filePath, $format);
+    protected function getLoader()
+    {
+        return new PhpFileLoader();
+    }
+
+    protected function getInputFile($key)
+    {
+        if (!is_file($file = __DIR__.'/../../Dumper/php/'.$key.'.php')) {
+            throw new InvalidArgumentException(sprintf('The input file for key "%s" does not exist.', $key));
+        }
+
+        return $file;
+    }
 }

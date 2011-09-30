@@ -102,6 +102,31 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array($s1, $s2), $message->getSources());
     }
 
+    public function testMergeExtractedWithExistingMessage()
+    {
+        $message = new Message('foo');
+        $message->setDesc('bar');
+
+        $existingMessage = new Message('foo');
+        $existingMessage->setLocaleString('foobar');
+        $existingMessage->setNew(false);
+
+        $message->merge($existingMessage);
+
+        $this->assertEquals('bar', $message->getDesc());
+        $this->assertEquals('foobar', $message->getLocaleString());
+        $this->assertFalse($message->isNew());
+    }
+
+    public function testGetIsNew()
+    {
+        $message = new Message('foo');
+
+        $this->assertTrue($message->isNew());
+        $this->assertSame($message, $message->setNew(false));
+        $this->assertFalse($message->isNew());
+    }
+
     public function testToString()
     {
         $message = new Message('foo');

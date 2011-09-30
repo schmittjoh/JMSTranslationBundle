@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\TranslationBundle\Tests\Translation\Loader;
+namespace JMS\TranslationBundle\Tests\Translation\Loader\Symfony;
 
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Translation\MessageCatalogue;

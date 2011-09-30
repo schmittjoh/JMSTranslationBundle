@@ -19,7 +19,6 @@
 namespace JMS\TranslationBundle\Translation\Comparison;
 
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use Symfony\Component\Translation\MessageCatalogueInterface;
 
 /**
  * Compares two message catalogues.
@@ -38,25 +37,22 @@ class CatalogueComparator
     /**
      * Compares two message catalogues.
      *
-     * @param MessageCatalogueInterface $a
-     * @param MessageCatalogueInterface $b
+     * @param MessageCatalogue $a
+     * @param MessageCatalogue $b
      * @throws \RuntimeException
      * @return \JMS\CommandBundle\Translation\ComparisonResult
      */
-    public function compare(MessageCatalogueInterface $current, MessageCatalogue $new)
+    public function compare(MessageCatalogue $current, MessageCatalogue $new)
     {
         $newMessages = array();
         $modifiedMessages = array();
-
-        // flatten input catalogue
-        $currentFlattend = call_user_func_array('array_merge', $current->all());
 
         foreach ($new->all() as $id => $message) {
             if (isset($this->ignoredDomains[$message->getDomain()])) {
                 continue;
             }
 
-            if (isset($currentFlattend[$id])) {
+            if ($current->has($id)) {
                 // FIXME: Compare what has changed
 
                 continue;
@@ -66,18 +62,16 @@ class CatalogueComparator
         }
 
         $deletedMessages = array();
-        foreach ($current->all() as $domain => $messages) {
-            if (isset($this->ignoredDomains[$domain])) {
+        foreach ($current->all() as $id => $message) {
+            if (isset($this->ignoredDomains[$message->getDomain()])) {
                 continue;
             }
 
-            foreach ($messages as $id => $message) {
-                if ($new->has($id)) {
-                    continue;
-                }
-
-                $deletedMessages[$id] = array($domain, $message);
+            if ($new->has($id)) {
+                continue;
             }
+
+            $deletedMessages[$id] = $message;
         }
 
         return new ChangeSet($newMessages, $deletedMessages);

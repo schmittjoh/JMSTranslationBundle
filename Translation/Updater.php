@@ -19,7 +19,6 @@
 namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Util\FileUtils;
-
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
@@ -49,7 +48,7 @@ class Updater
     private $logger;
     private $writer;
 
-    public function __construct(TranslationLoader $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriterInterface $writer)
+    public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer)
     {
         $this->loader = $loader;
         $this->extractor = $extractor;
@@ -71,6 +70,14 @@ class Updater
         $comparator->setIgnoredDomains($this->config->getIgnoredDomains());
 
         return $comparator->compare($this->existingCatalogue, $this->scannedCatalogue);
+    }
+
+    public function updateTranslation($file, $format, $domain, $locale, $id, $trans)
+    {
+        $catalogue = $this->loader->loadFile($file, $domain, $locale);
+        $catalogue->get($id)->setLocaleString($trans);
+
+        $this->writer->write($catalogue, $file, $format);
     }
 
     /**
@@ -172,34 +179,25 @@ class Updater
     private function setConfig(Config $config)
     {
         $this->config = $config;
-        $this->updateExistingCatalogue();
-        $this->updateScannedCatalogue();
-    }
 
-    private function updateScannedCatalogue()
-    {
-        $this->extractor->setDirectories($this->config->getScanDirs());
-        $this->extractor->setExcludedDirs($this->config->getExcludedDirs());
-        $this->extractor->setExcludedNames($this->config->getExcludedNames());
-        $this->extractor->setEnabledExtractors($this->config->getEnabledExtractors());
+        $this->existingCatalogue = $this->loader->loadFromDirectory(
+            $config->getTranslationsDir(), $config->getLocale());
+
+        $this->extractor->setDirectories($config->getScanDirs());
+        $this->extractor->setExcludedDirs($config->getExcludedDirs());
+        $this->extractor->setExcludedNames($config->getExcludedNames());
+        $this->extractor->setEnabledExtractors($config->getEnabledExtractors());
 
         $this->scannedCatalogue = $this->extractor->extract();
-        $this->scannedCatalogue->setLocale($this->config->getLocale());
+        $this->scannedCatalogue->setLocale($config->getLocale());
 
-        // set translations where already available
+        // merge existing messages into scanned messages
         foreach ($this->scannedCatalogue->all() as $id => $message) {
-            if (!$this->existingCatalogue->has($id, $message->getDomain())) {
+            if (!$this->existingCatalogue->has($id)) {
                 continue;
             }
 
-            $message->setLocaleString($this->existingCatalogue->get($id, $message->getDomain()));
-            $message->setNew(false);
+            $message->merge($this->existingCatalogue->get($id));
         }
-    }
-
-    private function updateExistingCatalogue()
-    {
-        $this->existingCatalogue = new SymfonyMessageCatalogue($this->config->getLocale());
-        $this->loader->loadMessages($this->config->getTranslationsDir(), $this->existingCatalogue);
     }
 }

@@ -18,6 +18,8 @@
 
 namespace JMS\TranslationBundle\Translation\Dumper;
 
+use JMS\TranslationBundle\Model\FileSource;
+
 use JMS\TranslationBundle\JMSTranslationBundle;
 
 use JMS\TranslationBundle\Model\MessageCatalogue;
@@ -51,8 +53,9 @@ class XliffDumper implements DumperInterface
         $doc->formatOutput = true;
 
         $doc->appendChild($root = $doc->createElement('xliff'));
-        $root->setAttribute('version', '1.2');
         $root->setAttribute('xmlns', 'urn:oasis:names:tc:xliff:document:1.2');
+        $root->setAttribute('xmlns:jms', 'urn:jms:translation');
+        $root->setAttribute('version', '1.2');
 
         $root->appendChild($file = $doc->createElement('file'));
 
@@ -79,21 +82,30 @@ class XliffDumper implements DumperInterface
 
         $file->appendChild($body = $doc->createElement('body'));
 
+        $i = 0;
         foreach ($catalogue->all() as $id => $message) {
             $body->appendChild($unit = $doc->createElement('trans-unit'));
-            $unit->setAttribute('id', $id);
+            $unit->setAttribute('id', $i++);
+            $unit->setAttribute('resname', $id);
 
             if ($sources = $message->getSources()) {
-                $comment = "\n"
-                          ."           This message is used in the following places:\n"
-                ;
                 foreach ($sources as $source) {
-                    $comment .= "             - ".$source."\n";
+                    if ($source instanceof FileSource) {
+                        $unit->appendChild($refFile = $doc->createElement('jms:reference-file', $source->getPath()));
+
+                        if ($source->getLine()) {
+                            $refFile->setAttribute('line', $source->getLine());
+                        }
+
+                        if ($source->getColumn()) {
+                            $refFile->setAttribute('column', $source->getColumn());
+                        }
+
+                        continue;
+                    }
+
+                    $unit->appendChild($doc->createElementNS('jms:reference', (string) $source));
                 }
-
-                $comment .= "        ";
-
-                $unit->appendChild($doc->createComment($comment));
             }
 
             if ($meaning = $message->getMeaning()) {

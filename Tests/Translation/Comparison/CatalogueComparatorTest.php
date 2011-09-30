@@ -22,15 +22,14 @@ use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
 use JMS\TranslationBundle\Translation\Comparison\ChangeSet;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use Symfony\Component\Translation\MessageCatalogue as SymfonyMessageCatalogue;
 
 class CatalogueComparatorTest extends \PHPUnit_Framework_TestCase
 {
     public function testCompareWithMultipleDomains()
     {
-        $current = new SymfonyMessageCatalogue('en');
-        $current->add(array('foo' => 'bar'));
-        $current->add(array('bar' => 'baz'), 'routes');
+        $current = new MessageCatalogue();
+        $current->add(Message::create('foo')->setLocaleString('bar'));
+        $current->add(Message::create('bar', 'routes')->setLocaleString('baz'));
 
         $new = new MessageCatalogue();
         $new->add(new Message('foo'));

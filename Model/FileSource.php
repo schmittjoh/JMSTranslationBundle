@@ -33,6 +33,13 @@ class FileSource implements SourceInterface
 
     public function getPath()
     {
+        $path = str_replace(DIRECTORY_SEPARATOR, '/', $this->path);
+
+        return implode('/', array_splice(explode('/', $path), -3));
+    }
+
+    public function getRealPath()
+    {
         return $this->path;
     }
 
@@ -52,7 +59,7 @@ class FileSource implements SourceInterface
             return false;
         }
 
-        if ($this->path !== $source->getPath()) {
+        if ($this->path !== $source->getRealPath()) {
             return false;
         }
 

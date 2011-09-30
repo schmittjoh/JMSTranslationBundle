@@ -172,6 +172,11 @@ final class Message
         foreach ($message->getSources() as $source) {
             $this->addSource($source);
         }
+
+        $this->new = $message->isNew();
+        if ($localeString = $message->getLocaleString()) {
+            $this->localeString = $localeString;
+        }
     }
 
     public function hasSource(SourceInterface $source)

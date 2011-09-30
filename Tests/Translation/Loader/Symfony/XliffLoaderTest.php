@@ -16,24 +16,42 @@
  * limitations under the License.
  */
 
-namespace JMS\TranslationBundle\Tests\Translation\Loader;
+namespace JMS\TranslationBundle\Tests\Translation\Loader\Symfony;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
-use Symfony\Component\Translation\Loader\YamlFileLoader;
+use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Translation\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader;
 
-class YamlLoaderTest extends BaseLoaderTest
+class XliffLoaderTest extends BaseLoaderTest
 {
-    protected function getLoader()
+    public function testLoadOldFormat()
     {
-        return new YamlFileLoader();
+        $expected = new MessageCatalogue('en');
+        $expected->add(array(
+            'foo1' => 'bar',
+            'foo2' => 'bar',
+            'foo3' => 'bar',
+            'foo4' => 'bar',
+        ));
+
+        $file = __DIR__.'/xliff/old_format.xml';
+        $expected->addResource(new FileResource($file));
+
+        $this->assertEquals($expected, $this->getLoader()->load($file, 'en'));
     }
 
     protected function getInputFile($key)
     {
-        if (!is_file($file = __DIR__.'/../Dumper/yml/'.$key.'.yml')) {
+        if (!is_file($file = __DIR__.'/../../Dumper/xliff/'.$key.'.xml')) {
             throw new InvalidArgumentException(sprintf('The input file for key "%s" does not exist.', $key));
         }
 
         return $file;
+    }
+
+    protected function getLoader()
+    {
+        return new XliffLoader();
     }
 }

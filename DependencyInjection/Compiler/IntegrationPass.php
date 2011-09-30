@@ -35,6 +35,6 @@ class IntegrationPass implements CompilerPassInterface
             return;
         }
 
-        $def->setClass('%jms_translation.loader.xliff_loader.class%');
+        $def->setClass('%jms_translation.loader.symfony.xliff_loader.class%');
     }
 }

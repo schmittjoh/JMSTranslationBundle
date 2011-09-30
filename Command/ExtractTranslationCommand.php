@@ -19,7 +19,6 @@
 namespace JMS\TranslationBundle\Command;
 
 use JMS\TranslationBundle\Translation\ConfigBuilder;
-
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use JMS\TranslationBundle\Translation\Config;

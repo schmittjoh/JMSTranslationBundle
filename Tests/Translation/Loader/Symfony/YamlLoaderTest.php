@@ -16,21 +16,21 @@
  * limitations under the License.
  */
 
-namespace JMS\TranslationBundle\Tests\Translation\Loader;
+namespace JMS\TranslationBundle\Tests\Translation\Loader\Symfony;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
-use Symfony\Component\Translation\Loader\PhpFileLoader;
+use Symfony\Component\Translation\Loader\YamlFileLoader;
 
-class PhpLoaderTest extends BaseLoaderTest
+class YamlLoaderTest extends BaseLoaderTest
 {
     protected function getLoader()
     {
-        return new PhpFileLoader();
+        return new YamlFileLoader();
     }
 
     protected function getInputFile($key)
     {
-        if (!is_file($file = __DIR__.'/../Dumper/php/'.$key.'.php')) {
+        if (!is_file($file = __DIR__.'/../../Dumper/yml/'.$key.'.yml')) {
             throw new InvalidArgumentException(sprintf('The input file for key "%s" does not exist.', $key));
         }
 

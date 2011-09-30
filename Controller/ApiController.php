@@ -42,6 +42,9 @@ class ApiController
     /** @DI\Inject */
     private $request;
 
+    /** @DI\Inject("jms_translation.updater") */
+    private $updater;
+
     /**
      * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages/{id}",
      * 			name="jms_translation_update_message",
@@ -63,13 +66,11 @@ class ApiController
         //       the extra information that is contained in these files
 
         list($format, $file) = $files[$domain][$locale];
-        if ('xliff' !== $format) {
-            throw new RuntimeException(sprintf('This is only available for the XLIFF format, but got "%s".', $format));
-        }
 
-        // TODO: Do not hard-code this
-        $updater = new XliffMessageUpdater();
-        $updater->update($file->getPathName(), $id, $this->request->request->get('message'));
+        $this->updater->updateTranslation(
+            $file, $domain, $locale, $id,
+            $this->request->request->get('message')
+        );
 
         return new Response();
     }

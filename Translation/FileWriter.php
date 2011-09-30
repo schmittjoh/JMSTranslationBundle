@@ -30,7 +30,7 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class FileWriter implements FileWriterInterface
+class FileWriter
 {
     private $dumpers;
 
