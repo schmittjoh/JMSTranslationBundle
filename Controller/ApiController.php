@@ -68,7 +68,7 @@ class ApiController
         list($format, $file) = $files[$domain][$locale];
 
         $this->updater->updateTranslation(
-            $file, $domain, $locale, $id,
+            $file, $format, $domain, $locale, $id,
             $this->request->request->get('message')
         );
 

@@ -26,20 +26,15 @@ class FileSource implements SourceInterface
 
     public function __construct($path, $line = null, $column = null)
     {
-        $this->path = $path;
+        $parts = explode('/', str_replace(DIRECTORY_SEPARATOR, '/', $path));
+        $parts = array_splice($parts, -3);
+
+        $this->path = implode('/', $parts);
         $this->line = $line;
         $this->column = $column;
     }
 
     public function getPath()
-    {
-        $parts = explode('/', str_replace(DIRECTORY_SEPARATOR, '/', $this->path));
-        $parts = array_splice($parts, -3);
-
-        return implode('/', $parts);
-    }
-
-    public function getRealPath()
     {
         return $this->path;
     }
@@ -60,7 +55,7 @@ class FileSource implements SourceInterface
             return false;
         }
 
-        if ($this->path !== $source->getRealPath()) {
+        if ($this->path !== $source->getPath()) {
             return false;
         }
 
@@ -77,7 +72,7 @@ class FileSource implements SourceInterface
 
     public function __toString()
     {
-        $str = basename(dirname($this->path)).'/'.basename($this->path);
+        $str = $this->path;
 
         if (null !== $this->line) {
             $str .= ' on line '.$this->line;

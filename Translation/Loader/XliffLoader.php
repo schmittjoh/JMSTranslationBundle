@@ -25,6 +25,7 @@ class XliffLoader implements LoaderInterface
         $hasReferenceFiles = in_array('urn:jms:translation', $doc->getNamespaces(true));
 
         $catalogue = new MessageCatalogue();
+        $catalogue->setLocale($locale);
         foreach ($doc->xpath('//xliff:trans-unit') as $trans) {
             $id = ($resName = (string) $trans->attributes()->resname)
                        ? $resName : (string) $trans->source;
@@ -55,11 +56,11 @@ class XliffLoader implements LoaderInterface
                 $m->setMeaning($meaning);
             }
 
-            if ($state = (string) $trans->target->attributes()->state) {
-                if ('new' === $state) {
-                    $m->setNew(true);
-                }
+            if (!($state = (string) $trans->target->attributes()->state)
+                    || 'new' !== $state) {
+                $m->setNew(false);
             }
+
         }
 
         return $catalogue;

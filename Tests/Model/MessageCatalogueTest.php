@@ -30,4 +30,22 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(array('foo' => $m), $catalogue->all());
     }
+
+    public function testGet()
+    {
+        $catalogue = new MessageCatalogue();
+        $catalogue->add($message = Message::create('foo'));
+
+        $this->assertTrue($catalogue->has('foo'));
+        $this->assertSame($message, $catalogue->get('foo'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testGetThrowsExceptionWhenMessageDoesNotExist()
+    {
+        $catalogue = new MessageCatalogue();
+        $catalogue->get('foo');
+    }
 }

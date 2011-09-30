@@ -28,6 +28,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
     public function testSimpleDump()
     {
         $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('en');
 
         $message = new Message('foo');
         $catalogue->add($message);
@@ -38,6 +39,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
     public function testDumpWithMetadata()
     {
         $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('en');
 
         $message = new Message('foo');
         $message->setDesc('bar');
@@ -50,6 +52,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
     public function testDumpStructure()
     {
         $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('en');
 
         $message = new Message('foo.bar.baz');
         $message->addSource(new FileSource('/a/b/c/foo/bar', 1, 2));
@@ -62,6 +65,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
     public function testDumpStructureWithMetadata()
     {
         $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('en');
 
         $message = new Message('foo.bar.baz');
         $message->setDesc('Foo');

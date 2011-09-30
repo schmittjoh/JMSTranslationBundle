@@ -51,7 +51,7 @@
         
         <!-- Loaders -->
         <service id="jms_translation.loader.symfony_adapter" class="%jms_translation.loader.symfony_adapter.class%" public="false" abstract="true" />
-        <service id="jms_translation.loader_manager" class="%jms_translation.loader_manager.class%" public="false" />
+        <service id="jms_translation.loader_manager" class="%jms_translation.loader_manager.class%" /><!-- public as needed by the TranslateController -->
         <service id="jms_translation.loader.xliff_loader" class="%jms_translation.loader.xliff_loader.class%" public="false">
             <tag name="jms_translation.loader" format="xliff" />
         </service>

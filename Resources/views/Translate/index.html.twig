@@ -11,7 +11,7 @@
                 $(this).parent().submit();
             });
             
-            {% if "xliff" == format or isWriteable is sameas(false) %}
+            {% if isWriteable is sameas(true) %}
             $('textarea')
                 .blur(function() {
                     var self = this;
@@ -80,50 +80,25 @@
     
     {% if "xliff" != format %}
     <div class="alert-message warning">
-        Due to limitations of the different loaders, updating messages unfortunately is limited to the XLIFF format. 
+        Due to limitations of the different loaders/dumpers, some features are unfortunately limited to the XLIFF format. 
         
         <br /><br />
         
-        You can easily convert your existing translation files to the XLIFF format by running:<br />
+        However, you can easily convert your existing translation files to the XLIFF format by running:<br />
         <code>php app/console translation:extract {{ selectedLocale }} --config={{ selectedConfig }} --output-format=xliff</code>
     </div>
     {% endif %}
 
     <h2>Available Messages</h2>
     
-    <table>
-        <thead>
-            <tr>
-                <th width="20%">ID</th>
-                <th width="40%">Translation</th>
-                <th width="40%">Additional Information</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for id, trans in messages %}
-            <tr>
-                <td><abbr title="{{ id }}">{{ id|truncate(20) }}</abbr></td>
-                <td>
-                    <textarea data-id="{{ id }}" class="span6"{% if "xliff" != format or isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{{ trans }}</textarea></td>
-                <td>
-                    {% if alternativeMessages[id] is defined %}
-                        <h6>Alternative Translations</h6>
-                        {% for locale, message in alternativeMessages[id] %}
-                        <p>
-                            <strong>{{ locale }}:</strong> {{ message }}
-                        </p>
-                        {% endfor %}
-                    {% else %}
-                        &nbsp;
-                    {% endif %}
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="3">No messages found</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% if newMessages is not empty %}
+    <h3>New Messages</h3>
+    {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": newMessages} %}
+    {% endif %}
+    
+    {% if existingMessages is not empty %}
+    <h3>Existing Messages</h3>
+    {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": existingMessages} %}
+    {% endif %}
 
 {% endblock %}

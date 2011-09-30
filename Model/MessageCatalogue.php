@@ -58,6 +58,15 @@ final class MessageCatalogue
         $this->messages[$message->getId()] = $message;
     }
 
+    public function get($id)
+    {
+        if (!isset($this->messages[$id])) {
+            throw new \InvalidArgumentException(sprintf('There is no message with id "%s".', $id));
+        }
+
+        return $this->messages[$id];
+    }
+
     public function has($id)
     {
         return isset($this->messages[$id]);

@@ -74,8 +74,12 @@ class Updater
 
     public function updateTranslation($file, $format, $domain, $locale, $id, $trans)
     {
-        $catalogue = $this->loader->loadFile($file, $domain, $locale);
-        $catalogue->get($id)->setLocaleString($trans);
+        $catalogue = $this->loader->loadFile($file, $format, $locale, $domain);
+        $catalogue
+            ->get($id)
+            ->setLocaleString($trans)
+            ->setNew(false)
+        ;
 
         $this->writer->write($catalogue, $file, $format);
     }

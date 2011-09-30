@@ -41,7 +41,7 @@ class TranslateController
     /** @DI\Inject("jms_translation.config_factory") */
     private $configFactory;
 
-    /** @DI\Inject("translation.loader") */
+    /** @DI\Inject("jms_translation.loader_manager") */
     private $loader;
 
     /** @DI\Inject("service_container") */
@@ -77,35 +77,41 @@ class TranslateController
             $locale = reset($locales);
         }
 
-        $loader = $this->getLoader($files[$domain][$locale][0]);
-        $catalogue = $loader->load($files[$domain][$locale][1]->getPathName(), $locale, $domain);
+        $catalogue = $this->loader->loadFile(
+            $files[$domain][$locale][1]->getPathName(),
+            $files[$domain][$locale][0],
+            $locale,
+            $domain
+        );
 
-        $messages = $catalogue->all($domain);
-        $messagesCopy = $messages; // necessary otherwise we get concurrent modifications
-        uksort($messages, function($a, $b) use ($messagesCopy) {
-            if ($a === $messagesCopy[$a]) {
-                return -1;
-            }
-
-            if ($b === $messagesCopy[$b]) {
-                return 1;
-            }
-
-            return 0;
-        });
-
+        // create alternative messages
+        // TODO: We should probably also add these to the XLIFF file for external translators,
+        //       and the specification already supports it
         $alternativeMessages = array();
         foreach ($locales as $otherLocale) {
             if ($locale === $otherLocale) {
                 continue;
             }
 
-            $loader = $this->getLoader($files[$domain][$otherLocale][0]);
-            $catalogue = $loader->load($files[$domain][$otherLocale][1]->getPathName(), $otherLocale, $domain);
-
-            foreach ($catalogue->all($domain) as $id => $message) {
+            $altCatalogue = $this->loader->loadFile(
+                $files[$domain][$otherLocale][1]->getPathName(),
+                $files[$domain][$otherLocale][0],
+                $otherLocale,
+                $domain
+            );
+            foreach ($altCatalogue->all() as $id => $message) {
                 $alternativeMessages[$id][$otherLocale] = $message;
             }
+        }
+
+        $newMessages = $existingMessages = array();
+        foreach ($catalogue->all() as $id => $message) {
+            if ($message->isNew()) {
+                $newMessages[$id] = $message;
+                continue;
+            }
+
+            $existingMessages[$id] = $message;
         }
 
         return array(
@@ -116,22 +122,11 @@ class TranslateController
             'selectedLocale' => $locale,
             'locales' => $locales,
             'format' => $files[$domain][$locale][0],
-            'messages' => $messages,
+            'newMessages' => $newMessages,
+            'existingMessages' => $existingMessages,
             'alternativeMessages' => $alternativeMessages,
             'isWriteable' => is_writeable($files[$domain][$locale][1]),
             'file' => (string) $files[$domain][$locale][1],
         );
-    }
-
-    protected function getLoader($format)
-    {
-        // This isn't exactly clean, but Symfony does not provide any other way atm
-        $loaderId = sprintf('translation.loader.%s', $format);
-
-        if (!$this->container->has($loaderId)) {
-            throw new InvalidArgumentException(sprintf('There is no loader for format "%s".', $format));
-        }
-
-        return $this->container->get($loaderId);
     }
 }
