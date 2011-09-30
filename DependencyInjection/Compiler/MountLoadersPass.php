@@ -16,6 +16,7 @@ class MountLoadersPass implements CompilerPassInterface
         }
 
         $loaders = array();
+        $i = 0;
         foreach ($container->findTaggedServiceIds('translation.loader') as $id => $attr) {
             if (!isset($attr[0]['alias'])) {
                 throw new \RuntimeException(sprintf('The attribute "alias" must be defined for tag "translation.loader" for service "%s".', $id));
@@ -23,7 +24,9 @@ class MountLoadersPass implements CompilerPassInterface
 
             $def = new DefinitionDecorator('jms_translation.loader.symfony_adapter');
             $def->addArgument(new Reference($id));
-            $loaders[$attr[0]['alias']] = $def;
+            $container->setDefinition($id = 'jms_translation.loader.wrapped_symfony_loader.'.($i++), $def);
+
+            $loaders[$attr[0]['alias']] = new Reference($id);
         }
 
         foreach ($container->findTaggedServiceIds('jms_translation.loader') as $id => $attr) {

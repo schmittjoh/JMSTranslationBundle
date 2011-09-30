@@ -1,0 +1,7 @@
+imports:
+    - { resource: framework.yml }
+    - { resource: twig.yml }
+
+services:
+    logger:
+        class: Symfony\Component\HttpKernel\Log\NullLogger

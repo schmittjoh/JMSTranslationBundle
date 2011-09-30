@@ -40,6 +40,7 @@ abstract class FileUtils
      */
     public static function findTranslationFiles($directory)
     {
+        $files = array();
         foreach (Finder::create()->in($directory)->depth('< 1')->files() as $file) {
             if (!preg_match('/^([^\.]+)\.([^\.]+)\.([^\.]+)$/', basename($file), $match)) {
                 continue;

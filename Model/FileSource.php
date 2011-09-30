@@ -33,9 +33,10 @@ class FileSource implements SourceInterface
 
     public function getPath()
     {
-        $path = str_replace(DIRECTORY_SEPARATOR, '/', $this->path);
+        $parts = explode('/', str_replace(DIRECTORY_SEPARATOR, '/', $this->path));
+        $parts = array_splice($parts, -3);
 
-        return implode('/', array_splice(explode('/', $path), -3));
+        return implode('/', $parts);
     }
 
     public function getRealPath()

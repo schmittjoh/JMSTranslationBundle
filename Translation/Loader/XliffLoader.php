@@ -22,6 +22,8 @@ class XliffLoader implements LoaderInterface
         $doc->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
         $doc->registerXPathNamespace('jms', 'urn:jms:translation');
 
+        $hasReferenceFiles = in_array('urn:jms:translation', $doc->getNamespaces(true));
+
         $catalogue = new MessageCatalogue();
         foreach ($doc->xpath('//xliff:trans-unit') as $trans) {
             $id = ($resName = (string) $trans->attributes()->resname)
@@ -33,14 +35,16 @@ class XliffLoader implements LoaderInterface
             ;
             $catalogue->add($m);
 
-            foreach ($trans->xpath('./jms:reference-file') as $file) {
-                $line = (string) $file->attributes()->line;
-                $column = (string) $file->attributes()->column;
-                $m->addSource(new FileSource(
-                    (string) $file,
-                    $line ? (integer) $line : null,
-                    $column ? (integer) $column : null
-                ));
+            if ($hasReferenceFiles) {
+                foreach ($trans->xpath('./jms:reference-file') as $file) {
+                    $line = (string) $file->attributes()->line;
+                    $column = (string) $file->attributes()->column;
+                    $m->addSource(new FileSource(
+                        (string) $file,
+                        $line ? (integer) $line : null,
+                        $column ? (integer) $column : null
+                    ));
+                }
             }
 
             if ($meaning = (string) $trans->attributes()->extradata) {

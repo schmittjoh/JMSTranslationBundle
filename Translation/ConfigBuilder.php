@@ -24,7 +24,7 @@ final class ConfigBuilder
     private $locale;
     private $ignoredDomains = array();
     private $outputFormat;
-    private $defaultOutputFormat = 'yml';
+    private $defaultOutputFormat = 'xliff';
     private $scanDirs;
     private $excludedDirs = array('Tests');
     private $excludedNames = array('*Test.php', '*TestCase.php');
