@@ -189,4 +189,12 @@ other settings the same, you would run::
 
     php app/console translation:extract de --config=app --output-format=xliff
 
+Translation File Formats
+~~~~~~~~~~~~~~~~~~~~~~~~
+This bundle supports the following formats: csv, ini, php, qt, xliff, and yml
+
+Note however, that the best integration exists with the XLIFF format. This is simply 
+due to the fact that the other formats are not so extensible, and do not allow for 
+some of the more advanced features like tracking where a translation is used, whether 
+it is new, etc.
 
