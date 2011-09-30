@@ -18,6 +18,7 @@
 
 namespace JMS\TranslationBundle;
 
+use JMS\TranslationBundle\DependencyInjection\Compiler\MountDumpersPass;
 use JMS\TranslationBundle\DependencyInjection\Compiler\MountLoadersPass;
 use JMS\TranslationBundle\DependencyInjection\Compiler\MountExtractorsPass;
 use JMS\TranslationBundle\DependencyInjection\Compiler\MountFileVisitorsPass;
@@ -35,5 +36,6 @@ class JMSTranslationBundle extends Bundle
         $container->addCompilerPass(new MountFileVisitorsPass());
         $container->addCompilerPass(new MountExtractorsPass());
         $container->addCompilerPass(new MountLoadersPass());
+        $container->addCompilerPass(new MountDumpersPass());
     }
 }

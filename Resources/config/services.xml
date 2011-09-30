@@ -24,6 +24,7 @@
         <parameter key="jms_translation.dumper.php_dumper.class">JMS\TranslationBundle\Translation\Dumper\PhpDumper</parameter>
         <parameter key="jms_translation.dumper.xliff_dumper.class">JMS\TranslationBundle\Translation\Dumper\XliffDumper</parameter>
         <parameter key="jms_translation.dumper.yaml_dumper.class">JMS\TranslationBundle\Translation\Dumper\YamlDumper</parameter>
+        <parameter key="jms_translation.dumper.symfony_adapter.class">JMS\TranslationBundle\Translation\Dumper\SymfonyDumperAdapter</parameter>
         
         <parameter key="jms_translation.file_writer.class">JMS\TranslationBundle\Translation\FileWriter</parameter>
         
@@ -41,13 +42,7 @@
         
         <service id="jms_translation.config_factory" class="%jms_translation.config_factory.class%" />
         
-        <service id="jms_translation.file_writer" class="%jms_translation.file_writer.class%" public="false">
-            <argument type="collection">
-                <argument key="php" type="service" id="jms_translation.dumper.php_dumper" />
-                <argument key="xliff" type="service" id="jms_translation.dumper.xliff_dumper" />
-                <argument key="yml" type="service" id="jms_translation.dumper.yaml_dumper" />
-            </argument>
-        </service>
+        <service id="jms_translation.file_writer" class="%jms_translation.file_writer.class%" public="false" />
         
         <!-- Loaders -->
         <service id="jms_translation.loader.symfony_adapter" class="%jms_translation.loader.symfony_adapter.class%" public="false" abstract="true" />
@@ -57,9 +52,16 @@
         </service>
         
         <!-- Dumpers -->
-        <service id="jms_translation.dumper.php_dumper" class="%jms_translation.dumper.php_dumper.class%" public="false" />
-        <service id="jms_translation.dumper.xliff_dumper" class="%jms_translation.dumper.xliff_dumper.class%" public="false" />
-        <service id="jms_translation.dumper.yaml_dumper" class="%jms_translation.dumper.yaml_dumper.class%" public="false" />
+        <service id="jms_translation.dumper.php_dumper" class="%jms_translation.dumper.php_dumper.class%" public="false">
+            <tag name="jms_translation.dumper" format="php" />
+        </service>
+        <service id="jms_translation.dumper.xliff_dumper" class="%jms_translation.dumper.xliff_dumper.class%" public="false">
+            <tag name="jms_translation.dumper" format="xliff" />
+        </service>
+        <service id="jms_translation.dumper.yaml_dumper" class="%jms_translation.dumper.yaml_dumper.class%" public="false">
+            <tag name="jms_translation.dumper" format="yml" />
+        </service>
+        <service id="jms_translation.dumper.symfony_adapter" class="%jms_translation.dumper.symfony_adapter.class%" public="false" abstract="true" />
         
         <!-- Extractors -->
         <service id="jms_translation.extractor_manager" class="%jms_translation.extractor_manager.class%" public="false">
