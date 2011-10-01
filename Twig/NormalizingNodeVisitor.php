@@ -30,6 +30,6 @@ class NormalizingNodeVisitor implements \Twig_NodeVisitorInterface
 
     public function getPriority()
     {
-        return -1;
+        return -3;
     }
 }

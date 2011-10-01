@@ -25,12 +25,25 @@ namespace JMS\TranslationBundle\Twig;
  */
 class TranslationExtension extends \Twig_Extension
 {
+    private $debug;
+
+    public function __construct($debug = false)
+    {
+        $this->debug = $debug;
+    }
+
     public function getNodeVisitors()
     {
-        return array(
+        $visitors = array(
             new NormalizingNodeVisitor(),
             new RemovingNodeVisitor(),
         );
+
+        if ($this->debug) {
+            $visitors[] = new DefaultApplyingNodeVisitor();
+        }
+
+        return $visitors;
     }
 
     public function getFilters()

@@ -52,6 +52,6 @@ class RemovingNodeVisitor implements \Twig_NodeVisitorInterface
 
     public function getPriority()
     {
-        return 256;
+        return -1;
     }
 }

@@ -9,13 +9,14 @@ use JMS\TranslationBundle\Twig\TranslationExtension;
 
 class BaseTwigTest extends \PHPUnit_Framework_TestCase
 {
-    protected final function parse($file)
+    protected final function parse($file, $debug = false)
     {
         $content = file_get_contents(__DIR__.'/Fixture/'.$file);
 
         $env = new \Twig_Environment();
         $env->addExtension(new SymfonyTranslationExtension(new IdentityTranslator(new MessageSelector())));
-        $env->addExtension(new TranslationExtension());
+        $env->addExtension(new TranslationExtension($debug));
+        $env->setLoader(new \Twig_Loader_String());
 
         return $env->parse($env->tokenize($content));
     }

@@ -113,6 +113,7 @@
         </service>
 
         <service id="jms_translation.twig_extension" class="%jms_translation.twig_extension.class%">
+            <argument>%kernel.debug%</argument>
             <tag name="twig.extension" />
         </service>
     </services>
