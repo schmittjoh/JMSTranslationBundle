@@ -102,7 +102,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array($s1, $s2), $message->getSources());
     }
 
-    public function testMergeExtractedWithExistingMessage()
+    public function testMergeExisting()
     {
         $message = new Message('foo');
         $message->setDesc('bar');
@@ -110,12 +110,14 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $existingMessage = new Message('foo');
         $existingMessage->setLocaleString('foobar');
         $existingMessage->setNew(false);
+        $existingMessage->addSource(new FileSource('foo/bar'));
 
-        $message->merge($existingMessage);
+        $message->mergeExisting($existingMessage);
 
         $this->assertEquals('bar', $message->getDesc());
         $this->assertEquals('foobar', $message->getLocaleString());
         $this->assertFalse($message->isNew());
+        $this->assertEquals(array(), $message->getSources());
     }
 
     public function testGetIsNew()

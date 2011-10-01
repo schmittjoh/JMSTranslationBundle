@@ -155,6 +155,15 @@ final class Message
         return $this;
     }
 
+    /**
+     * Merges an extracted message.
+     *
+     * Do not use this if you want to merge a message from an existing catalogue.
+     * In these cases, use mergeExisting() instead.
+     *
+     * @param Message $message
+     * @throws RuntimeException
+     */
     public function merge(Message $message)
     {
         if ($this->id !== $message->getId()) {
@@ -171,6 +180,34 @@ final class Message
 
         foreach ($message->getSources() as $source) {
             $this->addSource($source);
+        }
+
+        $this->new = $message->isNew();
+        if ($localeString = $message->getLocaleString()) {
+            $this->localeString = $localeString;
+        }
+    }
+
+    /**
+     * Merges a message from an existing translation catalogue.
+     *
+     * Do not use this if you want to merge a message from an extracted catalogue.
+     * In these cases, use merge() instead.
+     *
+     * @param Message $message
+     */
+    public function mergeExisting(Message $message)
+    {
+        if ($this->id !== $message->getId()) {
+            throw new RuntimeException(sprintf('You can only merge messages with the same id. Expected id "%s", but got "%s".', $this->id, $message->getId()));
+        }
+
+        if (null !== $meaning = $message->getMeaning()) {
+            $this->meaning = $meaning;
+        }
+
+        if (null !== $desc = $message->getDesc()) {
+            $this->desc = $desc;
         }
 
         $this->new = $message->isNew();

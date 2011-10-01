@@ -201,7 +201,7 @@ class Updater
                 continue;
             }
 
-            $message->merge($this->existingCatalogue->get($id));
+            $message->mergeExisting($this->existingCatalogue->get($id));
         }
     }
 }
