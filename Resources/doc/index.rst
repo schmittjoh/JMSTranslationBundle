@@ -62,26 +62,46 @@ Usage
 
 Creating Translation Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Given the fact that most translation messages are created by developers, this
-bundle strongly advocates the usage of abstract keys such as "form.label.firstname"
-as translation messages. Many of the features of this bundle were designed to 
-facilitate this.
+While not strictly necessary, this bundle strongly advocates the usage of
+abstract keys such as "form.label.firstname" as translation messages. Many of 
+the features of this bundle were designed to facilitate this.
 
-If you are using abstract keys, sometimes it is hard for the translator to know
-what s/he is supposed to translate. Let's take a look at the following example
-where we use the source message as key::
+Abstract keys are used for two main reasons:
+
+  1. Translation messages are mostly written by developers, and thus their
+     first draft of the message might not be perfect from a copywriters point
+     of view, or changes might be necessitated later for other reasons. These
+     changes would then result in changes for all supported languages instead 
+     of only for the source language, and some translations might actually be
+     lost in the process.
+
+  2. Some words in English (or whatever your source language is) are spelled 
+     differently in other languages depending on their meaning. Let's take the 
+     English word "Archive" as an example. This can be a noun ("The Archive"), 
+     and also a verb ("to archive"). In German, these are two different words
+     "Archiv" for the noun, and "Archivieren" for the verb. If you were using
+     the source message as id, you could not use the word "Archiv" with different
+     meanings on your site as you could only either translate it to the German
+     "Archiv", or "Archivieren", but not both.
+
+Whereas abstract keys do not suffer from these limitations, they come with some
+of their own. For example, sometimes it is hard for the translator to know what 
+s/he is supposed to translate. Let's take a look at the following example where 
+we use the source message as key::
 
     {# index.html.twig #}
     {{ "{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples"|transchoice(count) }}
 
-If we translate this to use an abstract key instead, we would get something like the following::
+If we translate this to use an abstract key instead, we would get something like 
+the following::
 
     {# index.html.twig #}
     {{ "text.apples_remaining"|transchoice(count) }}
 
 If a translator now sees this abstract key, s/he does not really know what the
-expected translation should look like. But there is a solution for this, we simply
-allow the developer to convey more context to the translator via the ``desc`` filter::
+expected translation should look like. Fortunately, there is a solution for 
+this. We simply allow the developer to convey more context to the translator 
+via the ``desc`` filter::
 
     {# index.html.twig #}
     {{ "text.apples_remaining"|transchoice(count)
@@ -92,23 +112,28 @@ This filter can contain any information that aids a translator in producing a be
 translated message. When extracting messages, this message will also automatically
 be used as the default translation.
 
-Note: The ``desc`` filter is removed when your Twig template is compiled, and does
-      not affect the runtime performance of your template.
+.. note::
 
-Of course, an equivalent to the ``desc`` filter also exists for translations in
-PHP code, the ``@Desc`` annotation::
+    The ``desc`` filter is removed when your Twig template is compiled, and does
+    not affect the runtime performance of your template.
+
+Of course, an equivalent to the ``desc`` filter is also available for 
+translations in PHP code, the ``@Desc`` annotation::
 
     // Controller.php
     /** @Desc("{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples") */
-    $this->translator->trans('text_apples_remaining')
+    $this->translator->transChoice('text_apples_remaining', $count)
 
-You can place the doc comment anywhere in the method call chain or directly before the key.
+You can place the doc comment anywhere in the method call chain or directly 
+before the key.
 
 Extracting Translation Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This bundle automatically supports extracting messages from the following sources:
+This bundle automatically supports extracting messages from the following 
+sources:
 
-- Twig: ``trans``, and ``transchoice`` filters as well as ``trans`` and ``transchoice`` blocks
+- Twig: ``trans``, and ``transchoice`` filters as well as ``trans``,
+  and ``transchoice`` blocks
 - PHP: 
 
   - all calls to the ``trans``, or ``transChoice`` method
