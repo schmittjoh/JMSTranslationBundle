@@ -68,21 +68,21 @@ the features of this bundle were designed to facilitate this.
 
 Abstract keys are used for two main reasons:
 
-  1. Translation messages are mostly written by developers, and thus their
-     first draft of the message might not be perfect from a copywriters point
-     of view, or changes might be necessitated later for other reasons. These
-     changes would then result in changes for all supported languages instead 
-     of only for the source language, and some translations might actually be
-     lost in the process.
+#. Translation messages are mostly written by developers, and thus their
+   first draft of the message might not be perfect from a copywriters point
+   of view, or changes might be necessitated later for other reasons. These
+   changes would then result in changes for all supported languages instead 
+   of only for the source language, and some translations might actually be
+   lost in the process.
 
-  2. Some words in English (or whatever your source language is) are spelled 
-     differently in other languages depending on their meaning. Let's take the 
-     English word "Archive" as an example. This can be a noun ("The Archive"), 
-     and also a verb ("to archive"). In German, these are two different words
-     "Archiv" for the noun, and "Archivieren" for the verb. If you were using
-     the source message as id, you could not use the word "Archiv" with different
-     meanings on your site as you could only either translate it to the German
-     "Archiv", or "Archivieren", but not both.
+#. Some words in English (or whatever your source language is) are spelled 
+   differently in other languages depending on their meaning. Let's take the 
+   English word "Archive" as an example. This can be a noun ("The Archive"), 
+   and also a verb ("to archive"). In German, these are two different words
+   "Archiv" for the noun, and "Archivieren" for the verb. If you were using
+   the source message as id, you could not use the word "Archiv" with different
+   meanings on your site as you could only either translate it to the German
+   "Archiv", or "Archivieren", but not both.
 
 Whereas abstract keys do not suffer from these limitations, they come with some
 of their own. For example, sometimes it is hard for the translator to know what 
@@ -111,8 +111,6 @@ As you can see we have basically moved the source translation to the ``desc`` fi
 This filter can contain any information that aids a translator in producing a better
 translated message. When extracting messages, this message will also automatically
 be used as the default translation.
-
-.. note::
 
     The ``desc`` filter is removed when your Twig template is compiled, and does
     not affect the runtime performance of your template.
