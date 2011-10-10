@@ -38,7 +38,9 @@
 
                     {% if message.desc is not empty 
                             and message.localeString != message.desc
-                            and id != message.desc %}
+                            and id != message.desc
+                            and (alternativeMessages[id][sourceLanguage] is not defined
+                                 or alternativeMessages[id][sourceLanguage].localeString != message.desc) %}
                         <h6>Description</h6>
                         <p>{{ message.desc }}</p>
                     {% endif %}

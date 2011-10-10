@@ -20,13 +20,11 @@ namespace JMS\TranslationBundle\Controller;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
-use Symfony\Component\Translation\MessageCatalogue;
-
 use JMS\TranslationBundle\Util\FileUtils;
-
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Translation\MessageCatalogue;
 
 /**
  * Translate Controller.
@@ -46,6 +44,9 @@ class TranslateController
 
     /** @DI\Inject("service_container") */
     private $container;
+
+    /** @DI\Inject("%jms_translation.source_language%") */
+    private $sourceLanguage;
 
     /**
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
@@ -127,6 +128,7 @@ class TranslateController
             'alternativeMessages' => $alternativeMessages,
             'isWriteable' => is_writeable($files[$domain][$locale][1]),
             'file' => (string) $files[$domain][$locale][1],
+            'sourceLanguage' => $this->sourceLanguage,
         );
     }
 }
