@@ -94,8 +94,11 @@ class FileExtractor implements ExtractorInterface
             $this->removingTwigVisitor->setEnabled(false);
         }
 
-        $finder = Finder::create()->in($this->directory)->exclude($this->excludedDirs);
-        $catalogue = new MessageCatalogue();
+        $finder = Finder::create()->in($this->directory);
+
+        foreach ($this->excludedDirs as $dir) {
+            $finder->exclude($dir);
+        }
 
         foreach ($this->excludedNames as $name) {
             $finder->notName($name);
@@ -105,6 +108,7 @@ class FileExtractor implements ExtractorInterface
             $finder->name($this->pattern);
         }
 
+        $catalogue = new MessageCatalogue();
         foreach ($finder as $file) {
             $visitingMethod = 'visitFile';
             $visitingArgs = array($file, $catalogue);
