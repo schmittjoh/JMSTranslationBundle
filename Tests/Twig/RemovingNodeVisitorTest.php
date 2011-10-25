@@ -18,7 +18,7 @@
 
 namespace JMS\TranslationBundle\Tests\Twig;
 
-class RemovingNodeVisitorTest extends BaseTwigTest
+class RemovingNodeVisitorTest extends BaseTwigTestCase
 {
     public function testRemovalWithSimpleTemplate()
     {

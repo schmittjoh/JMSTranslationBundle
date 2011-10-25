@@ -2,7 +2,7 @@
 
 namespace JMS\TranslationBundle\Tests\Twig;
 
-class DefaultApplyingNodeVisitorTest extends BaseTwigTest
+class DefaultApplyingNodeVisitorTest extends BaseTwigTestCase
 {
     public function testApply()
     {

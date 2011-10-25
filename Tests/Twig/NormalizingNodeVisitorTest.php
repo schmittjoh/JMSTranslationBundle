@@ -2,7 +2,7 @@
 
 namespace JMS\TranslationBundle\Tests\Twig;
 
-class NormalizingNodeVisitorTest extends BaseTwigTest
+class NormalizingNodeVisitorTest extends BaseTwigTestCase
 {
     public function testBinaryConcatOfConstants()
     {

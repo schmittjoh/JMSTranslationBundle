@@ -38,7 +38,7 @@ class RemovingNodeVisitor implements \Twig_NodeVisitorInterface
             $name = $node->getNode('filter')->getAttribute('value');
 
             if ('desc' === $name || 'meaning' === $name) {
-                return $node->getNode('node');
+                return $this->enterNode($node->getNode('node'), $env);
             }
         }
 

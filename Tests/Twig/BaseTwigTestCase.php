@@ -7,7 +7,7 @@ use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
 use JMS\TranslationBundle\Twig\TranslationExtension;
 
-class BaseTwigTest extends \PHPUnit_Framework_TestCase
+abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
 {
     protected final function parse($file, $debug = false)
     {

@@ -4,7 +4,7 @@ namespace JMS\TranslationBundle\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-class BaseCommandTest extends BaseTestCase
+abstract class BaseCommandTestCase extends BaseTestCase
 {
     protected function getApp(array $options = array())
     {

@@ -7,7 +7,7 @@ use JMS\TranslationBundle\Util\FileUtils;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Input\ArgvInput;
 
-class ExtractCommandTest extends BaseCommandTest
+class ExtractCommandTest extends BaseCommandTestCase
 {
     public function testExtract()
     {
