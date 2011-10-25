@@ -108,36 +108,51 @@ class FileExtractor implements ExtractorInterface
             $finder->name($this->pattern);
         }
 
-        $catalogue = new MessageCatalogue();
-        foreach ($finder as $file) {
-            $visitingMethod = 'visitFile';
-            $visitingArgs = array($file, $catalogue);
+        $curTwigLoader = $this->twig->getLoader();
+        $this->twig->setLoader(new \Twig_Loader_String());
 
-            if (false !== $pos = strrpos($file, '.')) {
-                $extension = substr($file, $pos + 1);
+        try {
+            $catalogue = new MessageCatalogue();
+            foreach ($finder as $file) {
+                $visitingMethod = 'visitFile';
+                $visitingArgs = array($file, $catalogue);
 
-                if ('php' === $extension) {
-                    $visitingMethod = 'visitPhpFile';
-                    $lexer = new \PHPParser_Lexer(file_get_contents($file));
-                    $ast = $this->phpParser->parse($lexer);
-                    $visitingArgs[] = $ast;
-                } else if ('twig' === $extension) {
-                    $visitingMethod = 'visitTwigFile';
-                    $visitingArgs[] = $this->twig->parse($this->twig->tokenize(file_get_contents($file), $file));
+                $this->logger->debug(sprintf('Parsing file "%s"', $file));
+
+                if (false !== $pos = strrpos($file, '.')) {
+                    $extension = substr($file, $pos + 1);
+
+                    if ('php' === $extension) {
+                        $visitingMethod = 'visitPhpFile';
+                        $lexer = new \PHPParser_Lexer(file_get_contents($file));
+                        $ast = $this->phpParser->parse($lexer);
+                        $visitingArgs[] = $ast;
+                    } else if ('twig' === $extension) {
+                        $visitingMethod = 'visitTwigFile';
+                        $visitingArgs[] = $this->twig->parse($this->twig->tokenize(file_get_contents($file), (string) $file));
+                    }
+                }
+
+                foreach ($this->visitors as $visitor) {
+                    call_user_func_array(array($visitor, $visitingMethod), $visitingArgs);
                 }
             }
 
-            $this->logger->debug(sprintf('Parsing file "%s"', $file));
-
-            foreach ($this->visitors as $visitor) {
-                call_user_func_array(array($visitor, $visitingMethod), $visitingArgs);
+            if (null !== $curTwigLoader) {
+                $this->twig->setLoader($curTwigLoader);
             }
-        }
 
-        if (!empty($this->removingTwigVisitor)) {
-            $this->removingTwigVisitor->setEnabled(true);
-        }
+            if (!empty($this->removingTwigVisitor)) {
+                $this->removingTwigVisitor->setEnabled(true);
+            }
 
-        return $catalogue;
+            return $catalogue;
+        } catch (\Exception $ex) {
+            if (null !== $curTwigLoader) {
+                $this->twig->setLoader($curTwigLoader);
+            }
+
+            throw $ex;
+        }
     }
 }

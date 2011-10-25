@@ -60,7 +60,7 @@ class DefaultPhpFileExtractor implements FileVisitorInterface, \PHPParser_NodeVi
         $ignore = false;
         $desc = $meaning = null;
         if (null !== $docComment = $this->getDocCommentForNode($node)) {
-            foreach ($this->docParser->parse($docComment) as $annot) {
+            foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$node->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
                 } else if ($annot instanceof Desc) {

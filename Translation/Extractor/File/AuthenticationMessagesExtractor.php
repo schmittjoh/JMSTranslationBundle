@@ -109,7 +109,7 @@ class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParse
         $ignore = false;
         $desc = $meaning = null;
         if ($docComment = $node->getDocComment()) {
-            foreach ($this->docParser->parse($docComment) as $annot) {
+            foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$node->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
                 } else if ($annot instanceof Desc) {
