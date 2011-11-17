@@ -33,7 +33,7 @@ final class Config
     private $translationsDir;
     private $locale;
     private $ignoredDomains;
-    private $onlyDomains;
+    private $domains;
     private $outputFormat;
     private $defaultOutputFormat;
     private $scanDirs;
@@ -41,7 +41,7 @@ final class Config
     private $excludedNames;
     private $enabledExtractors;
 
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $onlyDomains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -71,7 +71,7 @@ final class Config
 
         $this->translationsDir = rtrim($translationsDir, '\\/');
         $this->ignoredDomains = $ignoredDomains;
-        $this->onlyDomains = $onlyDomains;
+        $this->domains = $domains;
         $this->outputFormat = $outputFormat;
         $this->defaultOutputFormat = $defaultOutputFormat;
         $this->locale = $locale;
@@ -96,19 +96,19 @@ final class Config
         return $this->ignoredDomains;
     }
 
-    public function isOnlyDomain($domain)
+    public function isDomain($domain)
     {
-        return isset($this->onlyDomains[$domain]);
+        return isset($this->domains[$domain]);
     }
 
-    public function hasOnlyDomains()
+    public function hasDomains()
     {
-        return count($this->onlyDomains);
+        return count($this->domains);
     }
 
-    public function getOnlyDomains()
+    public function getDomains()
     {
-        return $this->onlyDomains;
+        return $this->domains;
     }
 
     public function getOutputFormat()

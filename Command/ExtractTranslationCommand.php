@@ -48,7 +48,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->addOption('exclude-name', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A pattern which should be ignored, e.g. *Test.php')
             ->addOption('exclude-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A directory name which should be ignored, e.g. Tests')
             ->addOption('ignore-domain', 'i', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A domain to ignore.')
-            ->addOption('only-domain', 'o', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Use only this domain.')
+            ->addOption('domain', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Use only this domain.')
             ->addOption('dir', 'd', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A directory to scan for messages.')
             ->addOption('output-dir', null, InputOption::VALUE_REQUIRED, 'The directory where files should be written to.')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'When specified, changes are _NOT_ persisted to disk.')
@@ -124,9 +124,9 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             }
         }
 
-        if ($input->getOption('only-domain')) {
-            foreach ($input->getOption('only-domain') as $domain) {
-                $builder->addOnlyDomain($domain);
+        if ($input->getOption('domain')) {
+            foreach ($input->getOption('domain') as $domain) {
+                $builder->addDomain($domain);
             }
         }
 

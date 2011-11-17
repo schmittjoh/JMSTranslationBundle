@@ -23,7 +23,7 @@ final class ConfigBuilder
     private $translationsDir;
     private $locale;
     private $ignoredDomains = array();
-    private $onlyDomains = array();
+    private $domains = array();
     private $outputFormat;
     private $defaultOutputFormat = 'xliff';
     private $scanDirs;
@@ -37,7 +37,7 @@ final class ConfigBuilder
         $builder->setTranslationsDir($config->getTranslationsDir());
         $builder->setLocale($config->getLocale());
         $builder->setIgnoredDomains($config->getIgnoredDomains());
-        $builder->setOnlyDomains($config->getOnlyDomains());
+        $builder->setDomains($config->getDomains());
         $builder->setOutputFormat($config->getOutputFormat());
         $builder->setDefaultOutputFormat($config->getDefaultOutputFormat());
         $builder->setScanDirs($config->getScanDirs());
@@ -103,16 +103,16 @@ final class ConfigBuilder
         return $this;
     }
 
-    public function setOnlyDomains(array $domains)
+    public function setDomains(array $domains)
     {
-        $this->onlyDomains = $domains;
+        $this->domains = $domains;
 
         return $this;
     }
 
-    public function addOnlyDomain($domain)
+    public function addDomain($domain)
     {
-        $this->onlyDomains[$domain] = true;
+        $this->domains[$domain] = true;
 
         return $this;
     }
@@ -179,7 +179,7 @@ final class ConfigBuilder
             $this->translationsDir,
             $this->locale,
             $this->ignoredDomains,
-            $this->onlyDomains,
+            $this->domains,
             $this->outputFormat,
             $this->defaultOutputFormat,
             $this->scanDirs,

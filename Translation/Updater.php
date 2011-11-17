@@ -106,7 +106,7 @@ class Updater
             $domain = $message->getDomain();
 
             // skip domain not selected
-            if ($this->config->hasOnlyDomains() && !$this->config->isOnlyDomain($domain)) {
+            if ($this->config->hasDomains() && !$this->config->isDomain($domain)) {
                 continue;
             }
 
@@ -197,7 +197,8 @@ class Updater
         $this->config = $config;
 
         $this->existingCatalogue = $this->loader->loadFromDirectory(
-            $config->getTranslationsDir(), $config->getLocale());
+            $config->getTranslationsDir(), $config->getLocale()
+        );
 
         $this->extractor->setDirectories($config->getScanDirs());
         $this->extractor->setExcludedDirs($config->getExcludedDirs());
