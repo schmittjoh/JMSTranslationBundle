@@ -14,9 +14,9 @@ class ExtractCommandTest extends BaseCommandTestCase
         $input = new ArgvInput(array(
             'app/console',
             'translation:extract',
-        	'en',
-        	'--dir='.($inputDir = __DIR__.'/../Translation/Extractor/Fixture/SimpleTest'),
-        	'--output-dir='.($outputDir = sys_get_temp_dir().'/'.uniqid('extract'))
+            'en',
+            '--dir='.($inputDir = __DIR__.'/../Translation/Extractor/Fixture/SimpleTest'),
+            '--output-dir='.($outputDir = sys_get_temp_dir().'/'.uniqid('extract'))
         ));
 
         $expectedOutput =
@@ -28,6 +28,7 @@ class ExtractCommandTest extends BaseCommandTestCase
            .'Custom Extractors: # none #'."\n"
            .'============================================================'."\n"
            .'Writing translation file "'.$outputDir.'/messages.en.xliff".'."\n"
+           .'done!'."\n"
         ;
 
         $this->getApp()->run($input, $output = new Output());
