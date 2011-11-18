@@ -107,7 +107,7 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
             foreach ($this->messageProperties as $prop) {
                 if ($ref->hasProperty($prop) && $defaultValues[$prop] !== $constraint->$prop) {
                     $message = new Message($constraint->$prop);
-                    $this->catalogue->add($message);
+                    $this->catalogue->addMessage($message);
                 }
             }
         }

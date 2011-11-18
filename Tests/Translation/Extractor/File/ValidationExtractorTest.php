@@ -40,7 +40,7 @@ class ValidationExtractorTest extends \PHPUnit_Framework_TestCase
         $path = __DIR__.'/Fixture/MyFormModel.php';
 
         $message = new Message('form.error.name_required');
-        $expected->add($message);
+        $expected->addMessage($message);
 
         $this->assertEquals($expected, $this->extract('MyFormModel.php'));
     }

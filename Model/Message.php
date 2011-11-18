@@ -27,7 +27,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 final class Message
 {
-    /** Unique ID of this message (same across all translations) */
+    /** Unique ID of this message (same across the same domain) */
     private $id;
 
     private $new = true;

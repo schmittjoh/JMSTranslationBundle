@@ -19,7 +19,7 @@
 namespace JMS\TranslationBundle\Tests\Translation;
 
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\MessageDomain;
 use JMS\TranslationBundle\Translation\FileWriter;
 
 class FileWriterTest extends \PHPUnit_Framework_TestCase
@@ -41,7 +41,7 @@ class FileWriterTest extends \PHPUnit_Framework_TestCase
             'test' => $dumper,
         ));
 
-        $catalogue = new MessageCatalogue();
+        $catalogue = new MessageDomain('messages', 'fr');
         $catalogue->add(new Message('foo.bar.baz'));
         $catalogue->add(new Message('foo.bar'));
 

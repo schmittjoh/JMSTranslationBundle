@@ -174,7 +174,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     $message->setMeaning($meaning);
                 }
 
-                $this->catalogue->add($message);
+                $this->catalogue->addMessage($message);
             }
         }
     }

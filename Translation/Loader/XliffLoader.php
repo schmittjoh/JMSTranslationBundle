@@ -5,7 +5,7 @@ namespace JMS\TranslationBundle\Translation\Loader;
 use JMS\TranslationBundle\Model\FileSource;
 
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\MessageDomain;
 
 class XliffLoader implements LoaderInterface
 {
@@ -24,17 +24,17 @@ class XliffLoader implements LoaderInterface
 
         $hasReferenceFiles = in_array('urn:jms:translation', $doc->getNamespaces(true));
 
-        $catalogue = new MessageCatalogue();
-        $catalogue->setLocale($locale);
+        $domain = new MessageDomain($domain, $locale);
+
         foreach ($doc->xpath('//xliff:trans-unit') as $trans) {
             $id = ($resName = (string) $trans->attributes()->resname)
                        ? $resName : (string) $trans->source;
 
-            $m = Message::create($id, $domain)
+            $m = Message::create($id, $domain->getName())
                     ->setDesc((string) $trans->source)
                     ->setLocaleString((string) $trans->target)
             ;
-            $catalogue->add($m);
+            $domain->add($m);
 
             if ($hasReferenceFiles) {
                 foreach ($trans->xpath('./jms:reference-file') as $file) {
@@ -63,6 +63,6 @@ class XliffLoader implements LoaderInterface
 
         }
 
-        return $catalogue;
+        return $domain;
     }
 }

@@ -28,14 +28,17 @@ class CatalogueComparatorTest extends \PHPUnit_Framework_TestCase
     public function testCompareWithMultipleDomains()
     {
         $current = new MessageCatalogue();
-        $current->add(Message::create('foo')->setLocaleString('bar'));
-        $current->add(Message::create('bar', 'routes')->setLocaleString('baz'));
+        $current->addMessage(Message::create('foo')->setLocaleString('bar'));
+        $current->addMessage(Message::create('bar', 'routes')->setLocaleString('baz'));
 
         $new = new MessageCatalogue();
-        $new->add(new Message('foo'));
-        $new->add(new Message('bar'));
+        $new->addMessage(new Message('foo'));
+        $new->addMessage(new Message('bar'));
 
-        $expected = new ChangeSet(array(), array());
+        $expected = new ChangeSet(
+            array(new Message('bar')),
+            array(Message::create('bar', 'routes')->setLocaleString('baz'))
+        );
         $comparator = new CatalogueComparator();
 
         $this->assertEquals($expected, $comparator->compare($current, $new));

@@ -102,31 +102,29 @@ class Updater
         $this->setConfig($config);
 
         $cataloguePerDomain = array();
-        foreach ($this->scannedCatalogue->all() as $id => $message) {
-            $domain = $message->getDomain();
-
+        foreach ($this->scannedCatalogue->all() as $domain) {
             // skip domain not selected
-            if ($this->config->hasDomains() && !$this->config->hasDomain($domain)) {
+            if ($this->config->hasDomains() && !$this->config->hasDomain($domain->getName())) {
                 continue;
             }
 
-            if ($this->config->isIgnoredDomain($domain)) {
+            if ($this->config->isIgnoredDomain($domain->getName())) {
                 continue;
             }
 
-            if (isset($cataloguePerDomain[$domain])) {
+            if (isset($cataloguePerDomain[$domain->getName()])) {
                 continue;
             }
 
-            $cataloguePerDomain[$domain] = clone $this->scannedCatalogue;
-            $cataloguePerDomain[$domain]->filter(function($v) use ($domain) { return $domain === $v->getDomain(); });
+            $cataloguePerDomain[$domain->getName()] = clone $domain;
+            $cataloguePerDomain[$domain->getName()]->filter(function($message) use ($domain) { return $domain->getName() === $message->getDomain(); });
         }
 
-        foreach ($cataloguePerDomain as $domain => $catalogue) {
-            $format = $this->detectOutputFormat($domain);
+        foreach ($cataloguePerDomain as $domain) {
+            $format = $this->detectOutputFormat($domain->getName());
 
             // delete translation files of other formats
-            foreach (Finder::create()->name('/^'.$domain.'\.'.$this->config->getLocale().'\.[^\.]+$/')->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
+            foreach (Finder::create()->name('/^'.$domain->getName().'\.'.$this->config->getLocale().'\.[^\.]+$/')->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
                 if ('.'.$format === substr($file, -1 * strlen('.'.$format))) {
                     continue;
                 }
@@ -138,9 +136,9 @@ class Updater
                 }
             }
 
-            $outputFile = $this->config->getTranslationsDir().'/'.$domain.'.'.$this->config->getLocale().'.'.$format;
+            $outputFile = $this->config->getTranslationsDir().'/'.$domain->getName().'.'.$this->config->getLocale().'.'.$format;
             $this->logger->info(sprintf('Writing translation file "%s".', $outputFile));
-            $this->writer->write($catalogue, $outputFile, $format);
+            $this->writer->write($domain, $outputFile, $format);
         }
     }
 
@@ -209,12 +207,15 @@ class Updater
         $this->scannedCatalogue->setLocale($config->getLocale());
 
         // merge existing messages into scanned messages
-        foreach ($this->scannedCatalogue->all() as $id => $message) {
-            if (!$this->existingCatalogue->has($id)) {
-                continue;
-            }
+        foreach ($this->scannedCatalogue->all() as $domain) {
 
-            $message->mergeExisting($this->existingCatalogue->get($id));
+            foreach ($domain as $message) {
+                if (!$this->existingCatalogue->hasMessage($message)) {
+                    continue;
+                }
+
+                $message->mergeExisting($this->existingCatalogue->getMessage($message->getId(), $message->getDomain()));
+            }
         }
     }
 }

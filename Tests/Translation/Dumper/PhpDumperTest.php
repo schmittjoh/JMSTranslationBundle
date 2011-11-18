@@ -20,14 +20,14 @@ namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\MessageDomain;
 use JMS\TranslationBundle\Translation\Dumper\PhpDumper;
 
 class PhpDumperTest extends BaseDumperTest
 {
     public function testDumpStructureWithoutPrettyPrint()
     {
-        $catalogue = new MessageCatalogue();
+        $catalogue = new MessageDomain('messages', 'fr');
         $catalogue->add(new Message('foo.bar.baz'));
 
         $dumper = new PhpDumper();

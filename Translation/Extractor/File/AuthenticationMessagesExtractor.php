@@ -134,7 +134,7 @@ class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParse
             ->addSource(new FileSource((string) $this->file, $node->expr->getLine()))
         ;
 
-        $this->catalogue->add($message);
+        $this->catalogue->addMessage($message);
     }
 
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)

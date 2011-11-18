@@ -33,11 +33,11 @@ class TranslationContainerExtractorTest extends \PHPUnit_Framework_TestCase
 
         $message = new Message('form.label.choice.foo');
         $message->addSource(new FileSource($path, 13));
-        $expected->add($message);
+        $expected->addMessage($message);
 
         $message = new Message('form.label.choice.bar');
         $message->addSource(new FileSource($path, 13));
-        $expected->add($message);
+        $expected->addMessage($message);
 
         $this->assertEquals($expected, $this->extract('MyFormModel.php'));
     }

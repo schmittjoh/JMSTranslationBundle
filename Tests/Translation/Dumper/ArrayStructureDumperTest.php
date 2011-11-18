@@ -19,15 +19,15 @@
 namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\MessageDomain;
 
 class ArrayStructureDumperTest extends \PHPUnit_Framework_TestCase
 {
     public function testPathWithSubPath()
     {
-        $catalogue = new MessageCatalogue();
-        $catalogue->add(new Message('foo.bar'));
-        $catalogue->add(new Message('foo.bar.baz'));
+        $domain = new MessageDomain('messages', 'fr');
+        $domain->add(new Message('foo.bar'));
+        $domain->add(new Message('foo.bar.baz'));
 
         $dumper = $this->getDumper();
         $dumper
@@ -42,7 +42,7 @@ class ArrayStructureDumperTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('foo'))
         ;
 
-        $this->assertEquals('foo', $dumper->dump($catalogue));
+        $this->assertEquals('foo', $dumper->dump($domain));
     }
 
     private function getDumper()

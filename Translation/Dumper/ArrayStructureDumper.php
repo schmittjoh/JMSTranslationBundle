@@ -19,7 +19,7 @@
 namespace JMS\TranslationBundle\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\MessageDomain;
 
 abstract class ArrayStructureDumper implements DumperInterface
 {
@@ -30,9 +30,9 @@ abstract class ArrayStructureDumper implements DumperInterface
         $this->prettyPrint = (Boolean) $bool;
     }
 
-    public function dump(MessageCatalogue $catalogue)
+    public function dump(MessageDomain $domain)
     {
-        $structure = $catalogue->all();
+        $structure = $domain->all();
 
         if ($this->prettyPrint) {
             $tmpStructure = array();
