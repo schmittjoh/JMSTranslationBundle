@@ -33,6 +33,7 @@ final class Config
     private $translationsDir;
     private $locale;
     private $ignoredDomains;
+    private $domains;
     private $outputFormat;
     private $defaultOutputFormat;
     private $scanDirs;
@@ -40,7 +41,7 @@ final class Config
     private $excludedNames;
     private $enabledExtractors;
 
-    public function __construct($translationsDir, $locale, array $ignoredDomains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -70,6 +71,7 @@ final class Config
 
         $this->translationsDir = rtrim($translationsDir, '\\/');
         $this->ignoredDomains = $ignoredDomains;
+        $this->domains = $domains;
         $this->outputFormat = $outputFormat;
         $this->defaultOutputFormat = $defaultOutputFormat;
         $this->locale = $locale;
@@ -79,51 +81,107 @@ final class Config
         $this->enabledExtractors = $enabledExtractors;
     }
 
+    /**
+     * @return string
+     */
     public function getTranslationsDir()
     {
         return $this->translationsDir;
     }
 
+    /**
+     * @param $domain
+     * @return bool
+     */
     public function isIgnoredDomain($domain)
     {
         return isset($this->ignoredDomains[$domain]);
     }
 
+    /**
+     * @return array
+     */
     public function getIgnoredDomains()
     {
         return $this->ignoredDomains;
     }
 
+    /**
+     * @param $domain
+     * @return bool
+     */
+    public function hasDomain($domain)
+    {
+        return isset($this->domains[$domain]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDomains()
+    {
+        return count($this->domains) > 0;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDomains()
+    {
+        return $this->domains;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getOutputFormat()
     {
         return $this->outputFormat;
     }
 
+    /**
+     * @return mixed
+     */
     public function getDefaultOutputFormat()
     {
         return $this->defaultOutputFormat;
     }
 
+    /**
+     * @return mixed
+     */
     public function getLocale()
     {
         return $this->locale;
     }
 
+    /**
+     * @return array
+     */
     public function getScanDirs()
     {
         return $this->scanDirs;
     }
 
+    /**
+     * @return array
+     */
     public function getExcludedDirs()
     {
         return $this->excludedDirs;
     }
 
+    /**
+     * @return array
+     */
     public function getExcludedNames()
     {
         return $this->excludedNames;
     }
 
+    /**
+     * @return array
+     */
     public function getEnabledExtractors()
     {
         return $this->enabledExtractors;
