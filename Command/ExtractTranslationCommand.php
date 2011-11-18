@@ -156,7 +156,11 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             }
         }
 
-        $builder->setKeepOldTranslations($input->getOption('keep'));
+        if ($input->hasParameterOption('--keep') || $input->hasParameterOption('--keep=true')) {
+            $builder->setKeepOldTranslations(true);
+        } else if ($input->hasParameterOption('--keep=false')) {
+            $builder->setKeepOldTranslations(false);
+        }
 
         $builder->setLocale($input->getArgument('locale'));
 
