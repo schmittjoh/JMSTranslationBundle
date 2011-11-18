@@ -76,7 +76,7 @@ final class MessageCatalogue
      * @param string $domain
      * @return MessageDomain
      */
-    private function getOrCreateDomain($domain)
+    public function getOrCreateDomain($domain)
     {
         if (!$this->hasDomain($domain)) {
             $this->domains[$domain] = new MessageDomain($domain, $this->getLocale());

@@ -35,10 +35,9 @@ class SymfonyLoaderAdapter implements LoaderInterface
     {
         $domain = new MessageDomain($domain, $locale);
 
-        foreach ($this->loader->load($resource, 'en', $domain)
-                    ->all() as $id => $message) {
+        foreach ($this->loader->load($resource, 'en', $domain)->all() as $id => $message) {
             $domain->add(
-                Message::create($id, $domain)
+                Message::create($id, $domain->getName())
                     ->setLocaleString($message)
                     ->setNew(false)
             );

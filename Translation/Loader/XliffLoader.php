@@ -56,8 +56,7 @@ class XliffLoader implements LoaderInterface
                 $m->setMeaning($meaning);
             }
 
-            if (!($state = (string) $trans->target->attributes()->state)
-                    || 'new' !== $state) {
+            if (!($state = (string) $trans->target->attributes()->state) || 'new' !== $state) {
                 $m->setNew(false);
             }
 

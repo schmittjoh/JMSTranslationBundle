@@ -48,9 +48,12 @@ class LoaderManager
                     continue;
                 }
 
+                $domain = $catalogue->getOrCreateDomain($domain);
+
                 list($format, $file) = $data;
-                $catalogue->merge($this->getLoader($format)
-                    ->load($file, $locale, $domain));
+
+                $domain->merge($this->getLoader($format)->load($file, $locale, $domain->getName()));
+
             }
         }
 

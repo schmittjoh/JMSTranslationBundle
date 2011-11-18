@@ -208,8 +208,7 @@ class Updater
 
         // merge existing messages into scanned messages
         foreach ($this->scannedCatalogue->all() as $domain) {
-
-            foreach ($domain as $message) {
+            foreach ($domain->all() as $message) {
                 if (!$this->existingCatalogue->hasMessage($message)) {
                     continue;
                 }
