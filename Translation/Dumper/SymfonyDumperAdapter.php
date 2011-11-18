@@ -49,7 +49,7 @@ class SymfonyDumperAdapter implements DumperInterface
             'path' => $tmpPath,
         ));
 
-        if (!is_file($tmpFile = $tmpPath.'/'.$domain.'.'.$domain->getLocale().'.'.$this->format)) {
+        if (!is_file($tmpFile = $tmpPath.'/'.$domain->getName().'.'.$domain->getLocale().'.'.$this->format)) {
             throw new \RuntimeException(sprintf('Could not find dumped translation file "%s".', $tmpFile));
         }
 
