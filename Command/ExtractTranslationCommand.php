@@ -54,6 +54,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'When specified, changes are _NOT_ persisted to disk.')
             ->addOption('output-format', null, InputOption::VALUE_REQUIRED, 'The output format that should be used (in most cases, it is better to change only the default-output-format).')
             ->addOption('default-output-format', null, InputOption::VALUE_REQUIRED, 'The default output format (defaults to xliff).')
+            ->addOption('keep-translations', null, InputOption::VALUE_NONE, 'Define if the updater service should keep the old translation (defaults to false).')
         ;
     }
 
@@ -65,6 +66,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
         $config = $this->getConfigFromInput($input, $builder);
 
+        $output->writeln(sprintf('Keep old translations: <info>%s</info>', $config->getKeepOldMessages() ? 'Yes' : 'No'));
         $output->writeln(sprintf('Output-Path: <info>%s</info>', $config->getTranslationsDir()));
         $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $config->getScanDirs())));
         $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $config->getExcludedDirs() ? implode(', ', $config->getExcludedDirs()) : '# none #'));
@@ -153,6 +155,8 @@ class ExtractTranslationCommand extends ContainerAwareCommand
                 $builder->disableExtractor($alias);
             }
         }
+
+        $builder->setKeepOldTranslations($input->getOption('keep-translations'));
 
         $builder->setLocale($input->getArgument('locale'));
 
