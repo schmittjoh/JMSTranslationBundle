@@ -106,7 +106,7 @@ class Updater
             $domain = $message->getDomain();
 
             // skip domain not selected
-            if ($this->config->hasDomains() && !$this->config->isDomain($domain)) {
+            if ($this->config->hasDomains() && !$this->config->hasDomain($domain)) {
                 continue;
             }
 
