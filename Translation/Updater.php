@@ -21,9 +21,10 @@ namespace JMS\TranslationBundle\Translation;
 use JMS\TranslationBundle\Util\FileUtils;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
+
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\Translation\MessageCatalogue as SymfonyMessageCatalogue;
 use Symfony\Component\Finder\Finder;
 use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
@@ -42,6 +43,10 @@ class Updater
 {
     private $loader;
     private $extractor;
+
+    /**
+     * @var Config
+     */
     private $config;
     private $existingCatalogue;
     private $scannedCatalogue;
@@ -98,7 +103,14 @@ class Updater
 
         $cataloguePerDomain = array();
         foreach ($this->scannedCatalogue->all() as $id => $message) {
-            if ($this->config->isIgnoredDomain($domain = $message->getDomain())) {
+            $domain = $message->getDomain();
+
+            // skip domain not selected
+            if ($this->config->hasDomains() && !$this->config->hasDomain($domain)) {
+                continue;
+            }
+
+            if ($this->config->isIgnoredDomain($domain)) {
                 continue;
             }
 
@@ -185,7 +197,8 @@ class Updater
         $this->config = $config;
 
         $this->existingCatalogue = $this->loader->loadFromDirectory(
-            $config->getTranslationsDir(), $config->getLocale());
+            $config->getTranslationsDir(), $config->getLocale()
+        );
 
         $this->extractor->setDirectories($config->getScanDirs());
         $this->extractor->setExcludedDirs($config->getExcludedDirs());
