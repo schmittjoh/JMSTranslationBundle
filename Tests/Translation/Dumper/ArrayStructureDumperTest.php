@@ -19,13 +19,13 @@
 namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageDomain;
+use JMS\TranslationBundle\Model\MessageDomainCatalogue;
 
 class ArrayStructureDumperTest extends \PHPUnit_Framework_TestCase
 {
     public function testPathWithSubPath()
     {
-        $domain = new MessageDomain('messages', 'fr');
+        $domain = new MessageDomainCatalogue('messages', 'fr');
         $domain->add(new Message('foo.bar'));
         $domain->add(new Message('foo.bar.baz'));
 

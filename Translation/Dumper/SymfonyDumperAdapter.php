@@ -6,7 +6,7 @@ use Symfony\Component\HttpKernel\Util\Filesystem;
 use Symfony\Component\Translation\MessageCatalogue as SymfonyCatalogue;
 use Symfony\Component\Translation\Dumper\DumperInterface as SymfonyDumper;
 
-use JMS\TranslationBundle\Model\MessageDomain;
+use JMS\TranslationBundle\Model\MessageDomainCatalogue;
 
 /**
  * Adapter for Symfony's dumpers.
@@ -29,7 +29,7 @@ class SymfonyDumperAdapter implements DumperInterface
         $this->format = $format;
     }
 
-    public function dump(MessageDomain $domain)
+    public function dump(MessageDomainCatalogue $domain)
     {
         $symfonyCatalogue = new SymfonyCatalogue($domain->getLocale());
 

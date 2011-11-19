@@ -20,7 +20,7 @@ namespace JMS\TranslationBundle\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\JMSTranslationBundle;
-use JMS\TranslationBundle\Model\MessageDomain;
+use JMS\TranslationBundle\Model\MessageDomainCatalogue;
 
 /**
  * XLIFF dumper.
@@ -52,10 +52,10 @@ class XliffDumper implements DumperInterface
     }
 
     /**
-     * @param \JMS\TranslationBundle\Model\MessageDomain $domain
+     * @param \JMS\TranslationBundle\Model\MessageDomainCatalogue $domain
      * @return string
      */
-    public function dump(MessageDomain $domain)
+    public function dump(MessageDomainCatalogue $domain)
     {
         $doc = new \DOMDocument('1.0', 'utf-8');
         $doc->formatOutput = true;

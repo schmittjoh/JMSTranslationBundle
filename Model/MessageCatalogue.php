@@ -74,12 +74,12 @@ final class MessageCatalogue
 
     /**
      * @param string $domain
-     * @return MessageDomain
+     * @return MessageDomainCatalogue
      */
     public function getOrCreateDomain($domain)
     {
         if (!$this->hasDomain($domain)) {
-            $this->domains[$domain] = new MessageDomain($domain, $this->getLocale());
+            $this->domains[$domain] = new MessageDomainCatalogue($domain, $this->getLocale());
         }
 
         return $this->domains[$domain];
@@ -96,7 +96,7 @@ final class MessageCatalogue
 
     /**
      * @param $domain
-     * @return MessageDomain
+     * @return MessageDomainCatalogue
      */
     public function getDomain($domain)
     {

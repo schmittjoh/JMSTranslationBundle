@@ -18,9 +18,9 @@
 
 namespace JMS\TranslationBundle\Translation\Dumper;
 
-use JMS\TranslationBundle\Model\MessageDomain;
+use JMS\TranslationBundle\Model\MessageDomainCatalogue;
 
 interface DumperInterface
 {
-    function dump(MessageDomain $domain);
+    function dump(MessageDomainCatalogue $domain);
 }

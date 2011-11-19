@@ -19,13 +19,13 @@
 namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageDomain;
+use JMS\TranslationBundle\Model\MessageDomainCatalogue;
 
-class MessageDomainTest extends \PHPUnit_Framework_TestCase
+class MessageDomainCatalogueTest extends \PHPUnit_Framework_TestCase
 {
     public function testAdd()
     {
-        $domain = new MessageDomain('messages', 'fr');
+        $domain = new MessageDomainCatalogue('messages', 'fr');
         $domain->add($m = new Message('foo'));
 
         $this->assertSame(array('foo' => $m), $domain->all());
@@ -33,7 +33,7 @@ class MessageDomainTest extends \PHPUnit_Framework_TestCase
 
     public function testGet()
     {
-        $domain = new MessageDomain('messages', 'fr');
+        $domain = new MessageDomainCatalogue('messages', 'fr');
         $domain->add($message = Message::create('foo'));
 
         $this->assertTrue($domain->has('foo'));
@@ -45,7 +45,7 @@ class MessageDomainTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetThrowsExceptionWhenMessageDoesNotExist()
     {
-        $catalogue = new MessageDomain('messages', 'fr');
+        $catalogue = new MessageDomainCatalogue('messages', 'fr');
         $catalogue->get('foo');
     }
 }

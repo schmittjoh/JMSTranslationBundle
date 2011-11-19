@@ -27,9 +27,9 @@ use JMS\TranslationBundle\Exception\InvalidArgumentException;
  * we still use the optimized catalogue from the Translation component.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
- * @author Thomas Rabaoix <thomas.rabaix@sonata-project.org>
+ * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-final class MessageDomain
+final class MessageDomainCatalogue
 {
     private $name;
 
@@ -132,9 +132,9 @@ final class MessageDomain
     }
 
     /**
-     * @param MessageDomain $domain
+     * @param MessageDomainCatalogue $domain
      */
-    public function merge(MessageDomain $domain)
+    public function merge(MessageDomainCatalogue $domain)
     {
         foreach ($domain->all() as $id => $message) {
             $this->add($message);

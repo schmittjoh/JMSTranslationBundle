@@ -21,13 +21,13 @@ namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 use JMS\TranslationBundle\Model\FileSource;
 
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageDomain;
+use JMS\TranslationBundle\Model\MessageDomainCatalogue;
 
 abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
 {
     public function testSimpleDump()
     {
-        $domain = new MessageDomain('messages', 'en');
+        $domain = new MessageDomainCatalogue('messages', 'en');
 
         $message = new Message('foo');
         $domain->add($message);
@@ -37,7 +37,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
 
     public function testDumpWithMetadata()
     {
-        $domain = new MessageDomain('messages', 'en');
+        $domain = new MessageDomainCatalogue('messages', 'en');
 
         $message = new Message('foo');
         $message->setDesc('bar');
@@ -49,7 +49,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
 
     public function testDumpStructure()
     {
-        $domain = new MessageDomain('messages', 'en');
+        $domain = new MessageDomainCatalogue('messages', 'en');
 
         $message = new Message('foo.bar.baz');
         $message->addSource(new FileSource('/a/b/c/foo/bar', 1, 2));
@@ -61,7 +61,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
 
     public function testDumpStructureWithMetadata()
     {
-        $domain = new MessageDomain('messages', 'en');
+        $domain = new MessageDomainCatalogue('messages', 'en');
 
         $message = new Message('foo.bar.baz');
         $message->setDesc('Foo');
@@ -80,7 +80,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
     abstract protected function getDumper();
     abstract protected function getOutput($key);
 
-    private function dump(MessageDomain $domain)
+    private function dump(MessageDomainCatalogue $domain)
     {
         return $this->getDumper()->dump($domain);
     }
