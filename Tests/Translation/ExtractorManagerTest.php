@@ -48,7 +48,7 @@ class ExtractorManagerTest extends \PHPUnit_Framework_TestCase
         ;
 
         $catalogue = new MessageCatalogue();
-        $catalogue->addMessage(new Message('foo'));
+        $catalogue->add(new Message('foo'));
         $bar = $this->getMock('JMS\TranslationBundle\Translation\ExtractorInterface');
         $bar
             ->expects($this->once())

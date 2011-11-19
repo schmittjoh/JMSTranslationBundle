@@ -36,11 +36,11 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message = new Message('form.label.lastname');
         $message->setDesc('Lastname');
         $message->addSource(new FileSource($path, 33));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('form.label.firstname');
         $message->addSource(new FileSource($path, 30));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }

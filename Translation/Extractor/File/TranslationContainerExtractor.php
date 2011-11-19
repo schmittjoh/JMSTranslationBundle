@@ -92,7 +92,7 @@ class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_
                 throw new RuntimeException(sprintf('%s::getTranslationMessages() was expected to return an array of messages, but got an array which contains an item of type %s.', $this->namespace.'\\'.$node->name, gettype($message)));
             }
 
-            $this->catalogue->addMessage($message);
+            $this->catalogue->add($message);
         }
     }
 

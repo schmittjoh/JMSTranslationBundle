@@ -26,7 +26,7 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
     public function testAdd()
     {
         $catalogue = new MessageCatalogue();
-        $catalogue->addMessage($m = new Message('foo'));
+        $catalogue->add($m = new Message('foo'));
 
         $this->assertTrue($catalogue->hasDomain('messages'));
     }
@@ -34,10 +34,10 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
     public function testGet()
     {
         $catalogue = new MessageCatalogue();
-        $catalogue->addMessage($message = Message::create('foo'));
+        $catalogue->add($message = Message::create('foo'));
 
         $this->assertTrue($catalogue->hasDomain('messages'));
-        $this->assertSame($message, $catalogue->getMessage('foo'));
+        $this->assertSame($message, $catalogue->get('foo'));
     }
 
     /**

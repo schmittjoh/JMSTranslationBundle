@@ -37,26 +37,26 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
         $message = new Message('text.foo_bar');
         $message->setDesc('Foo bar');
         $message->addSource(new FileSource($path, 45));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('text.sign_up_successful');
         $message->setDesc('Welcome %name%! Thanks for signing up.');
         $message->addSource(new FileSource($path, 52));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('button.archive');
         $message->setDesc('Archive Message');
         $message->setMeaning('The verb (to archive), describes an action');
         $message->addSource(new FileSource($path, 59));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('text.irrelevant_doc_comment', 'baz');
         $message->addSource(new FileSource($path, 71));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('text.array_method_call');
         $message->addSource(new FileSource($path, 76));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $this->assertEquals($expected, $catalogue);
     }
@@ -68,12 +68,12 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
 
         $message = new Message('foo.bar');
         $message->addSource(new FileSource($path, 1));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('baz', 'moo');
         $message->setDesc('Foo Bar');
         $message->addSource(new FileSource($path, 3));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('template.html.php'));
     }

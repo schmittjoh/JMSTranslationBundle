@@ -39,49 +39,49 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $message->setDesc('Foo Bar');
         $message->setMeaning('Some Meaning');
         $message->addSource(new FileSource($path, 1));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('text.bar');
         $message->setDesc('Foo');
         $message->addSource(new FileSource($path, 3));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('text.baz');
         $message->setMeaning('Bar');
         $message->addSource(new FileSource($path, 5));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('text.foo_bar', 'foo');
         $message->addSource(new FileSource($path, 7));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('text.name', 'app');
         $message->addSource(new FileSource($path, 9));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('text.apple_choice', 'app');
         $message->addSource(new FileSource($path, 11));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('foo.bar');
         $message->addSource(new FileSource($path, 13));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('foo.bar2');
         $message->addSource(new FileSource($path, 15));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('foo.bar3', 'app');
         $message->addSource(new FileSource($path, 17));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('foo.bar4', 'app');
         $message->addSource(new FileSource($path, 19));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('text.default_domain');
         $message->addSource(new FileSource($path, 21));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('simple_template.html.twig'));
     }
@@ -93,22 +93,22 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 
         $message = new Message('header.edit_profile');
         $message->addSource(new FileSource($path, 10));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message("text.archive");
         $message->setDesc('Archive');
         $message->setMeaning('The verb');
         $message->addSource(new FileSource($path, 13));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('button.edit_profile');
         $message->addSource(new FileSource($path, 16));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $message = new Message('link.cancel_profile');
         $message->setDesc('Back to Profile');
         $message->addSource(new FileSource($path, 17));
-        $expected->addMessage($message);
+        $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('edit.html.twig'));
     }

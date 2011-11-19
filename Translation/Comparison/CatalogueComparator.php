@@ -55,7 +55,7 @@ class CatalogueComparator
             }
 
             foreach ($domain->all() as $message) {
-                if ($current->hasMessage($message)) {
+                if ($current->has($message)) {
                     // FIXME: Compare what has changed
 
                     continue;
@@ -72,7 +72,7 @@ class CatalogueComparator
             }
 
             foreach ($domain->all() as $message) {
-                if ($new->hasMessage($message)) {
+                if ($new->has($message)) {
                     continue;
                 }
 

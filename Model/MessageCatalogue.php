@@ -53,7 +53,7 @@ final class MessageCatalogue
     /**
      * @param Message $message
      */
-    public function addMessage(Message $message)
+    public function add(Message $message)
     {
         $this
             ->getOrCreateDomain($message->getDomain())
@@ -64,7 +64,7 @@ final class MessageCatalogue
     /**
      * @param Message $message
      */
-    public function setMessage(Message $message)
+    public function set(Message $message)
     {
         $this
             ->getOrCreateDomain($message->getDomain())
@@ -113,7 +113,7 @@ final class MessageCatalogue
      * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
      * @return Message
      */
-    public function getMessage($id, $domain = 'messages')
+    public function get($id, $domain = 'messages')
     {
         return $this->getDomain($domain)->get($id);
     }
@@ -122,7 +122,7 @@ final class MessageCatalogue
      * @param Message $message
      * @return bool
      */
-    public function hasMessage(Message $message)
+    public function has(Message $message)
     {
         if (!$this->hasDomain($message->getDomain())) {
             return false;
