@@ -27,7 +27,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 final class Message
 {
-    /** Unique ID of this message (same across all translations) */
+    /** Unique ID of this message (same across the same domain) */
     private $id;
 
     private $new = true;
@@ -45,6 +45,12 @@ final class Message
     /** The sources where this message occurs */
     private $sources = array();
 
+    /**
+     * @static
+     * @param $id
+     * @param string $domain
+     * @return Message
+     */
     public static function forThisFile($id, $domain = 'messages')
     {
         $message = new self($id, $domain);
@@ -57,21 +63,35 @@ final class Message
         return $message;
     }
 
+    /**
+     * @static
+     * @param $id
+     * @param string $domain
+     * @return Message
+     */
     public static function create($id, $domain = 'messages')
     {
         return new self($id, $domain);
     }
 
+    /**
+     * @param $id
+     * @param string $domain
+     */
     public function __construct($id, $domain = 'messages')
     {
         $this->id = $id;
         $this->domain = $domain;
     }
 
+    /**
+     * @param SourceInterface $source
+     * @return Message
+     */
     public function addSource(SourceInterface $source)
     {
         if ($this->hasSource($source)) {
-            return;
+            return $this;
         }
 
         $this->sources[] = $source;

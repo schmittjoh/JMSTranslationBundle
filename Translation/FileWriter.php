@@ -19,7 +19,7 @@
 namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
-use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\MessageDomainCatalogue;
 
 /**
  * Writes translation files.
@@ -34,22 +34,31 @@ class FileWriter
 {
     private $dumpers;
 
+    /**
+     * @param array $dumpers
+     */
     public function __construct(array $dumpers = array())
     {
         $this->dumpers = $dumpers;
     }
 
-    public function write(MessageCatalogue $catalogue, $filePath, $format)
+    /**
+     * @param \JMS\TranslationBundle\Model\MessageDomainCatalogue $domain
+     * @param $filePath
+     * @param $format
+     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     */
+    public function write(MessageDomainCatalogue $domain, $filePath, $format)
     {
         if (!isset($this->dumpers[$format])) {
             throw new InvalidArgumentException(sprintf('The format "%s" is not supported.', $format));
         }
 
         // sort messages before dumping
-        $catalogue->sort(function($a, $b) {
+        $domain->sort(function($a, $b) {
             return strcasecmp($a->getId(), $b->getId());
         });
 
-        file_put_contents($filePath, $this->dumpers[$format]->dump($catalogue));
+        file_put_contents($filePath, $this->dumpers[$format]->dump($domain));
     }
 }

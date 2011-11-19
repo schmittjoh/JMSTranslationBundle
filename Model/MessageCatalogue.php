@@ -32,78 +32,137 @@ final class MessageCatalogue
 {
     private $locale;
 
-    private $messages = array();
+    private $domains = array();
 
+    /**
+     * @param $locale
+     */
     public function setLocale($locale)
     {
         $this->locale = $locale;
     }
 
+    /**
+     * @return mixed
+     */
     public function getLocale()
     {
         return $this->locale;
     }
 
+    /**
+     * @param Message $message
+     */
     public function add(Message $message)
     {
-        if (isset($this->messages[$id = $message->getId()])) {
-            $this->messages[$id]->merge($message);
-        } else {
-            $this->messages[$id] = $message;
-        }
+        $this
+            ->getOrCreateDomain($message->getDomain())
+            ->add($message)
+        ;
     }
 
+    /**
+     * @param Message $message
+     */
     public function set(Message $message)
     {
-        $this->messages[$message->getId()] = $message;
+        $this
+            ->getOrCreateDomain($message->getDomain())
+            ->set($message)
+        ;
     }
 
-    public function get($id)
+    /**
+     * @param string $domain
+     * @return MessageDomainCatalogue
+     */
+    public function getOrCreateDomain($domain)
     {
-        if (!isset($this->messages[$id])) {
-            throw new \InvalidArgumentException(sprintf('There is no message with id "%s".', $id));
+        if (!$this->hasDomain($domain)) {
+            $this->domains[$domain] = new MessageDomainCatalogue($domain, $this->getLocale());
         }
 
-        return $this->messages[$id];
+        return $this->domains[$domain];
     }
 
-    public function has($id)
+    /**
+     * @param $domain
+     * @return bool
+     */
+    public function hasDomain($domain)
     {
-        return isset($this->messages[$id]);
+        return isset($this->domains[$domain]);
     }
 
-    public function sort($callback)
+    /**
+     * @param $domain
+     * @return MessageDomainCatalogue
+     */
+    public function getDomain($domain)
     {
-        if (!is_callable($callback)) {
-            throw new InvalidArgumentException(sprintf('$callback must be a valid callback.'));
+        if (!$this->hasDomain($domain)) {
+            throw new \InvalidArgumentException(sprintf('There is no domain with name "%s".', $domain));
         }
 
-        uasort($this->messages, $callback);
+        return $this->domains[$domain];
     }
 
-    public function filter($callback)
+    /**
+     * @param $id
+     * @param $domain
+     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     * @return Message
+     */
+    public function get($id, $domain = 'messages')
     {
-        if (!is_callable($callback)) {
-            throw new InvalidArgumentException(sprintf('$callback must be a valid callback.'));
+        return $this->getDomain($domain)->get($id);
+    }
+
+    /**
+     * @param Message $message
+     * @return bool
+     */
+    public function has(Message $message)
+    {
+        if (!$this->hasDomain($message->getDomain())) {
+            return false;
         }
 
-        $this->messages = array_filter($this->messages, $callback);
+        return $this->getDomain($message->getDomain())->has($message->getId());
     }
 
-    public function replace(array $messages)
+    /**
+     * @param array $domains
+     */
+    public function replace(array $domains)
     {
-        $this->messages = $messages;
+        $this->domains = $domains;
     }
 
+    /**
+     * @param $domain
+     * @param $messages
+     */
+    public function replaceMessages($domain, $messages)
+    {
+        $this->getDomain($domain)->replace($messages);
+    }
+
+    /**
+     * @return array
+     */
     public function all()
     {
-        return $this->messages;
+        return $this->domains;
     }
 
+    /**
+     * @param MessageCatalogue $catalogue
+     */
     public function merge(MessageCatalogue $catalogue)
     {
-        foreach ($catalogue->all() as $id => $message) {
-            $this->add($message);
+        foreach ($catalogue->all() as $name => $domain) {
+            $this->getOrCreateDomain($name)->merge($domain);
         }
     }
 }

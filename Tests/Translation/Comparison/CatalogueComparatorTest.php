@@ -35,7 +35,10 @@ class CatalogueComparatorTest extends \PHPUnit_Framework_TestCase
         $new->add(new Message('foo'));
         $new->add(new Message('bar'));
 
-        $expected = new ChangeSet(array(), array());
+        $expected = new ChangeSet(
+            array(new Message('bar')),
+            array(Message::create('bar', 'routes')->setLocaleString('baz'))
+        );
         $comparator = new CatalogueComparator();
 
         $this->assertEquals($expected, $comparator->compare($current, $new));

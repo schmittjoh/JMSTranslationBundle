@@ -29,6 +29,9 @@ class CatalogueComparator
 {
     private $ignoredDomains = array();
 
+    /**
+     * @param array $domains
+     */
     public function setIgnoredDomains(array $domains)
     {
         $this->ignoredDomains = $domains;
@@ -45,33 +48,36 @@ class CatalogueComparator
     public function compare(MessageCatalogue $current, MessageCatalogue $new)
     {
         $newMessages = array();
-        $modifiedMessages = array();
 
-        foreach ($new->all() as $id => $message) {
-            if (isset($this->ignoredDomains[$message->getDomain()])) {
+        foreach ($new->all() as $domain) {
+            if (isset($this->ignoredDomains[$domain->getName()])) {
                 continue;
             }
 
-            if ($current->has($id)) {
-                // FIXME: Compare what has changed
+            foreach ($domain->all() as $message) {
+                if ($current->has($message)) {
+                    // FIXME: Compare what has changed
 
-                continue;
+                    continue;
+                }
+
+                $newMessages[] = $message;
             }
-
-            $newMessages[$id] = $message;
         }
 
         $deletedMessages = array();
-        foreach ($current->all() as $id => $message) {
-            if (isset($this->ignoredDomains[$message->getDomain()])) {
+        foreach ($current->all() as $domain) {
+            if (isset($this->ignoredDomains[$domain->getName()])) {
                 continue;
             }
 
-            if ($new->has($id)) {
-                continue;
-            }
+            foreach ($domain->all() as $message) {
+                if ($new->has($message)) {
+                    continue;
+                }
 
-            $deletedMessages[$id] = $message;
+                $deletedMessages[] = $message;
+            }
         }
 
         return new ChangeSet($newMessages, $deletedMessages);

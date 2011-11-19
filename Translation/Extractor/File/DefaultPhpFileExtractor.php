@@ -100,6 +100,7 @@ class DefaultPhpFileExtractor implements FileVisitorInterface, \PHPParser_NodeVi
         $message->setDesc($desc);
         $message->setMeaning($meaning);
         $message->addSource(new FileSource((string) $this->file, $node->getLine()));
+
         $this->catalogue->add($message);
     }
 

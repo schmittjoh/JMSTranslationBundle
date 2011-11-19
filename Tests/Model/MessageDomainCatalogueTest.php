@@ -19,25 +19,25 @@
 namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\MessageDomainCatalogue;
 
-class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
+class MessageDomainCatalogueTest extends \PHPUnit_Framework_TestCase
 {
     public function testAdd()
     {
-        $catalogue = new MessageCatalogue();
-        $catalogue->add($m = new Message('foo'));
+        $domain = new MessageDomainCatalogue('messages', 'fr');
+        $domain->add($m = new Message('foo'));
 
-        $this->assertTrue($catalogue->hasDomain('messages'));
+        $this->assertSame(array('foo' => $m), $domain->all());
     }
 
     public function testGet()
     {
-        $catalogue = new MessageCatalogue();
-        $catalogue->add($message = Message::create('foo'));
+        $domain = new MessageDomainCatalogue('messages', 'fr');
+        $domain->add($message = Message::create('foo'));
 
-        $this->assertTrue($catalogue->hasDomain('messages'));
-        $this->assertSame($message, $catalogue->get('foo'));
+        $this->assertTrue($domain->has('foo'));
+        $this->assertSame($message, $domain->get('foo'));
     }
 
     /**
@@ -45,7 +45,7 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetThrowsExceptionWhenMessageDoesNotExist()
     {
-        $catalogue = new MessageCatalogue();
-        $catalogue->getDomain('foo');
+        $catalogue = new MessageDomainCatalogue('messages', 'fr');
+        $catalogue->get('foo');
     }
 }
