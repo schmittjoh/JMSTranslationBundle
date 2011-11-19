@@ -25,7 +25,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class Message
+class Message
 {
     /** Unique ID of this message (same across the same domain) */
     private $id;

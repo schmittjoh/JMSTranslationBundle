@@ -21,17 +21,20 @@ namespace JMS\TranslationBundle\Model;
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 
 /**
- * Represents a collection of _extracted_ messages.
+ * Represents a collection of **extracted** messages.
+ *
+ * A catalogue may consist of multiple domains. Each message belongs to
+ * a specific domain, and the ID of the message is uniquely identifying the
+ * message in its domain, but **not** across domains.
  *
  * This catalogue is only used for extraction, for translation at run-time
  * we still use the optimized catalogue from the Translation component.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class MessageCatalogue
+class MessageCatalogue
 {
     private $locale;
-
     private $domains = array();
 
     /**
@@ -73,41 +76,6 @@ final class MessageCatalogue
     }
 
     /**
-     * @param string $domain
-     * @return MessageDomainCatalogue
-     */
-    public function getOrCreateDomain($domain)
-    {
-        if (!$this->hasDomain($domain)) {
-            $this->domains[$domain] = new MessageDomainCatalogue($domain, $this->getLocale());
-        }
-
-        return $this->domains[$domain];
-    }
-
-    /**
-     * @param $domain
-     * @return bool
-     */
-    public function hasDomain($domain)
-    {
-        return isset($this->domains[$domain]);
-    }
-
-    /**
-     * @param $domain
-     * @return MessageDomainCatalogue
-     */
-    public function getDomain($domain)
-    {
-        if (!$this->hasDomain($domain)) {
-            throw new \InvalidArgumentException(sprintf('There is no domain with name "%s".', $domain));
-        }
-
-        return $this->domains[$domain];
-    }
-
-    /**
      * @param $id
      * @param $domain
      * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
@@ -132,37 +100,52 @@ final class MessageCatalogue
     }
 
     /**
-     * @param array $domains
+     * @param MessageCatalogue $catalogue
      */
-    public function replace(array $domains)
+    public function merge(MessageCatalogue $catalogue)
     {
-        $this->domains = $domains;
+        foreach ($catalogue->getDomains() as $name => $domainCatalogue) {
+            $this->getOrCreateDomain($name)->merge($domainCatalogue);
+        }
     }
 
     /**
-     * @param $domain
-     * @param $messages
+     * @param string $domain
+     * @return Boolean
      */
-    public function replaceMessages($domain, $messages)
+    public function hasDomain($domain)
     {
-        $this->getDomain($domain)->replace($messages);
+        return isset($this->domains[$domain]);
     }
 
     /**
-     * @return array
+     * @param string $domain
+     * @return MessageCollection
      */
-    public function all()
+    public function getDomain($domain)
+    {
+        if (!$this->hasDomain($domain)) {
+            throw new \InvalidArgumentException(sprintf('There is no domain with name "%s".', $domain));
+        }
+
+        return $this->domains[$domain];
+    }
+
+    public function getDomains()
     {
         return $this->domains;
     }
 
     /**
-     * @param MessageCatalogue $catalogue
+     * @param string $domain
+     * @return MessageCollection
      */
-    public function merge(MessageCatalogue $catalogue)
+    private function getOrCreateDomain($domain)
     {
-        foreach ($catalogue->all() as $name => $domain) {
-            $this->getOrCreateDomain($name)->merge($domain);
+        if (!$this->hasDomain($domain)) {
+            $this->domains[$domain] = new MessageCollection($this);
         }
+
+        return $this->domains[$domain];
     }
 }

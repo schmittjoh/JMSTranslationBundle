@@ -18,9 +18,24 @@
 
 namespace JMS\TranslationBundle\Translation\Dumper;
 
-use JMS\TranslationBundle\Model\MessageDomainCatalogue;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 
+/**
+ * Dumper Interface.
+ *
+ * The interface assumes that one specific domain of the catalogue is dumped
+ * at a time.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 interface DumperInterface
 {
-    function dump(MessageDomainCatalogue $domain);
+    /**
+     * Dumps the messages of the given domain.
+     *
+     * @param MessageCatalogue $catalogue
+     * @param string $domain
+     * @return string
+     */
+    function dump(MessageCatalogue $catalogue, $domain = 'messages');
 }

@@ -27,7 +27,13 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class CatalogueComparator
 {
+    private $domains = array();
     private $ignoredDomains = array();
+
+    public function setDomains(array $domains)
+    {
+        $this->domains = $domains;
+    }
 
     /**
      * @param array $domains
@@ -49,8 +55,12 @@ class CatalogueComparator
     {
         $newMessages = array();
 
-        foreach ($new->all() as $domain) {
-            if (isset($this->ignoredDomains[$domain->getName()])) {
+        foreach ($new->getDomains() as $name => $domain) {
+            if ($this->domains && !isset($this->domains[$name])) {
+                continue;
+            }
+
+            if (isset($this->ignoredDomains[$name])) {
                 continue;
             }
 
@@ -66,8 +76,12 @@ class CatalogueComparator
         }
 
         $deletedMessages = array();
-        foreach ($current->all() as $domain) {
-            if (isset($this->ignoredDomains[$domain->getName()])) {
+        foreach ($current->getDomains() as $name => $domain) {
+            if ($this->domains && !isset($this->domains[$name])) {
+                continue;
+            }
+
+            if (isset($this->ignoredDomains[$name])) {
                 continue;
             }
 

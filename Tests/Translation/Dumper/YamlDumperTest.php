@@ -20,20 +20,21 @@ namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageDomainCatalogue;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Dumper\YamlDumper;
 
 class YamlDumperTest extends BaseDumperTest
 {
     public function testDumpStructureWithoutPrettyPrint()
     {
-        $domain = new MessageDomainCatalogue('message', 'fr');
-        $domain->add(new Message('foo.bar.baz'));
+        $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('fr');
+        $catalogue->add(new Message('foo.bar.baz'));
 
         $dumper = new YamlDumper();
         $dumper->setPrettyPrint(false);
 
-        $this->assertEquals($this->getOutput('structure_wo_pretty_print'), $dumper->dump($domain));
+        $this->assertEquals($this->getOutput('structure_wo_pretty_print'), $dumper->dump($catalogue, 'messages'));
     }
 
     protected function getDumper()

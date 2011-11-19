@@ -20,7 +20,7 @@ namespace JMS\TranslationBundle\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\JMSTranslationBundle;
-use JMS\TranslationBundle\Model\MessageDomainCatalogue;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 
 /**
  * XLIFF dumper.
@@ -52,10 +52,10 @@ class XliffDumper implements DumperInterface
     }
 
     /**
-     * @param \JMS\TranslationBundle\Model\MessageDomainCatalogue $domain
+     * @param \JMS\TranslationBundle\Model\MessageCatalogue $domain
      * @return string
      */
-    public function dump(MessageDomainCatalogue $domain)
+    public function dump(MessageCatalogue $catalogue, $domain = 'messages')
     {
         $doc = new \DOMDocument('1.0', 'utf-8');
         $doc->formatOutput = true;
@@ -73,7 +73,7 @@ class XliffDumper implements DumperInterface
         }
 
         $file->setAttribute('source-language', $this->sourceLanguage);
-        $file->setAttribute('target-language', $domain->getLocale());
+        $file->setAttribute('target-language', $catalogue->getLocale());
         $file->setAttribute('datatype', 'plaintext');
         $file->setAttribute('original', 'not.available');
 
@@ -91,7 +91,7 @@ class XliffDumper implements DumperInterface
         $file->appendChild($body = $doc->createElement('body'));
 
         $i = 0;
-        foreach ($domain->all() as $id => $message) {
+        foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
             $body->appendChild($unit = $doc->createElement('trans-unit'));
             $unit->setAttribute('id', $i++);
             $unit->setAttribute('resname', $id);

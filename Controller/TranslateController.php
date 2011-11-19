@@ -100,13 +100,13 @@ class TranslateController
                 $otherLocale,
                 $domain
             );
-            foreach ($altCatalogue->all() as $id => $message) {
+            foreach ($altCatalogue->getDomain($domain)->all() as $id => $message) {
                 $alternativeMessages[$id][$otherLocale] = $message;
             }
         }
 
         $newMessages = $existingMessages = array();
-        foreach ($catalogue->all() as $id => $message) {
+        foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
             if ($message->isNew()) {
                 $newMessages[$id] = $message;
                 continue;

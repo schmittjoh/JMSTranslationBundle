@@ -6,7 +6,7 @@ use Symfony\Component\HttpKernel\Util\Filesystem;
 use Symfony\Component\Translation\MessageCatalogue as SymfonyCatalogue;
 use Symfony\Component\Translation\Dumper\DumperInterface as SymfonyDumper;
 
-use JMS\TranslationBundle\Model\MessageDomainCatalogue;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 
 /**
  * Adapter for Symfony's dumpers.
@@ -29,14 +29,14 @@ class SymfonyDumperAdapter implements DumperInterface
         $this->format = $format;
     }
 
-    public function dump(MessageDomainCatalogue $domain)
+    public function dump(MessageCatalogue $catalogue, $domain = 'messages')
     {
-        $symfonyCatalogue = new SymfonyCatalogue($domain->getLocale());
+        $symfonyCatalogue = new SymfonyCatalogue($catalogue->getLocale());
 
-        foreach ($domain->all() as $id => $message) {
+        foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
             $symfonyCatalogue->add(
                 array($id => $message->getLocaleString()),
-                $domain->getName()
+                $domain
             );
         }
 
@@ -49,7 +49,7 @@ class SymfonyDumperAdapter implements DumperInterface
             'path' => $tmpPath,
         ));
 
-        if (!is_file($tmpFile = $tmpPath.'/'.$domain->getName().'.'.$domain->getLocale().'.'.$this->format)) {
+        if (!is_file($tmpFile = $tmpPath.'/'.$domain.'.'.$catalogue->getLocale().'.'.$this->format)) {
             throw new \RuntimeException(sprintf('Could not find dumped translation file "%s".', $tmpFile));
         }
 

@@ -2,13 +2,13 @@
 
 namespace JMS\TranslationBundle\Translation\Loader;
 
+use JMS\TranslationBundle\Model\MessageCollection;
+
 /**
  * Loader Interface for the bundle.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-use JMS\TranslationBundle\Model\MessageDomainCatalogue;
-
 interface LoaderInterface
 {
     /**
@@ -21,7 +21,7 @@ interface LoaderInterface
      * @param mixed  $resource
      * @param string $locale
      * @param string $domain
-     * @return MessageDomainCatalogue
+     * @return MessageCollection
      */
     function load($resource, $locale, $domain = 'messages');
 }

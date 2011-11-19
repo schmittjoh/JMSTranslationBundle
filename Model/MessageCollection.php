@@ -21,29 +21,27 @@ namespace JMS\TranslationBundle\Model;
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 
 /**
- * Represents a collection of _extracted_ messages.
+ * Represents a collection of **extracted** messages for a specific domain.
  *
- * This catalogue is only used for extraction, for translation at run-time
+ * This collection is only used for extraction, for translation at run-time
  * we still use the optimized catalogue from the Translation component.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-final class MessageDomainCatalogue
+class MessageCollection
 {
-    private $name;
-
-    private $locale;
-
+    private $catalogue;
     private $messages = array();
 
-    /**
-     * @param $name
-     */
-    public function __construct($name, $locale)
+    public function setCatalogue(MessageCatalogue $catalogue)
     {
-        $this->name = $name;
-        $this->locale = $locale;
+        $this->catalogue = $catalogue;
+    }
+
+    public function getCatalogue()
+    {
+        return $this->catalogue;
     }
 
     /**
@@ -53,9 +51,11 @@ final class MessageDomainCatalogue
     {
         if (isset($this->messages[$id = $message->getId()])) {
             $this->messages[$id]->merge($message);
-        } else {
-            $this->messages[$id] = $message;
+
+            return;
         }
+
+        $this->messages[$id] = $message;
     }
 
     /**
@@ -132,28 +132,12 @@ final class MessageDomainCatalogue
     }
 
     /**
-     * @param MessageDomainCatalogue $domain
+     * @param MessageCollection $domain
      */
-    public function merge(MessageDomainCatalogue $domain)
+    public function merge(MessageCollection $domain)
     {
         foreach ($domain->all() as $id => $message) {
             $this->add($message);
         }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLocale()
-    {
-        return $this->locale;
     }
 }

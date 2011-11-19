@@ -18,70 +18,73 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
+use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\FileSource;
-
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageDomainCatalogue;
 
 abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
 {
     public function testSimpleDump()
     {
-        $domain = new MessageDomainCatalogue('messages', 'en');
+        $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('en');
 
         $message = new Message('foo');
-        $domain->add($message);
+        $catalogue->add($message);
 
-        $this->assertEquals($this->getOutput('simple'), $this->dump($domain));
+        $this->assertEquals($this->getOutput('simple'), $this->dump($catalogue, 'messages'));
     }
 
     public function testDumpWithMetadata()
     {
-        $domain = new MessageDomainCatalogue('messages', 'en');
+        $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('en');
 
         $message = new Message('foo');
         $message->setDesc('bar');
         $message->setMeaning('baz');
-        $domain->add($message);
+        $catalogue->add($message);
 
-        $this->assertEquals($this->getOutput('with_metadata'), $this->dump($domain));
+        $this->assertEquals($this->getOutput('with_metadata'), $this->dump($catalogue, 'messages'));
     }
 
     public function testDumpStructure()
     {
-        $domain = new MessageDomainCatalogue('messages', 'en');
+        $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('en');
 
         $message = new Message('foo.bar.baz');
         $message->addSource(new FileSource('/a/b/c/foo/bar', 1, 2));
         $message->addSource(new FileSource('bar/baz', 1, 2));
-        $domain->add($message);
+        $catalogue->add($message);
 
-        $this->assertEquals($this->getOutput('structure'), $this->dump($domain));
+        $this->assertEquals($this->getOutput('structure'), $this->dump($catalogue, 'messages'));
     }
 
     public function testDumpStructureWithMetadata()
     {
-        $domain = new MessageDomainCatalogue('messages', 'en');
+        $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('en');
 
         $message = new Message('foo.bar.baz');
         $message->setDesc('Foo');
-        $domain->add($message);
+        $catalogue->add($message);
 
         $message = new Message('foo.bar.moo');
         $message->setMeaning('Bar');
-        $domain->add($message);
+        $catalogue->add($message);
 
         $message = new Message('foo.baz');
-        $domain->add($message);
+        $catalogue->add($message);
 
-        $this->assertEquals($this->getOutput('structure_with_metadata'), $this->dump($domain));
+        $this->assertEquals($this->getOutput('structure_with_metadata'), $this->dump($catalogue, 'messages'));
     }
 
     abstract protected function getDumper();
     abstract protected function getOutput($key);
 
-    private function dump(MessageDomainCatalogue $domain)
+    private function dump(MessageCatalogue $catalogue, $domain)
     {
-        return $this->getDumper()->dump($domain);
+        return $this->getDumper()->dump($catalogue, $domain);
     }
 }

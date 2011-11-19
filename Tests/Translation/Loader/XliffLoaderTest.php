@@ -3,7 +3,7 @@
 namespace JMS\TranslationBundle\Tests\Translation\Loader;
 
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageDomainCatalogue;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 use JMS\TranslationBundle\Translation\Loader\XliffLoader;
@@ -28,7 +28,8 @@ class XliffLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $loader = new XliffLoader();
 
-        $expected = new MessageDomainCatalogue('messages', 'en');
+        $expected = new MessageCatalogue();
+        $expected->setLocale('en');
         $expected->add(Message::create('foo1')
             ->setDesc('foo1')->setLocaleString('bar')->setNew(false));
         $expected->add(Message::create('foo2')
