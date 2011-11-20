@@ -66,7 +66,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
         $config = $this->getConfigFromInput($input, $builder);
 
-        $output->writeln(sprintf('Keep old translations: <info>%s</info>', $config->getKeepOldMessages() ? 'Yes' : 'No'));
+        $output->writeln(sprintf('Keep old translations: <info>%s</info>', $config->isKeepOldMessages() ? 'Yes' : 'No'));
         $output->writeln(sprintf('Output-Path: <info>%s</info>', $config->getTranslationsDir()));
         $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $config->getScanDirs())));
         $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $config->getExcludedDirs() ? implode(', ', $config->getExcludedDirs()) : '# none #'));
@@ -86,7 +86,12 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             $changeSet = $updater->getChangeSet($config);
 
             $output->writeln('Added Messages: '.implode(', ', array_keys($changeSet->getAddedMessages())));
-            $output->writeln('Deleted Messages: '.implode(', ', array_keys($changeSet->getDeletedMessages())));
+
+            if ($config->isKeepOldMessages()) {
+                $output->writeln('Deleted Messages: # none as "Keep Old Translations" is true #');
+            } else {
+                $output->writeln('Deleted Messages: '.implode(', ', array_keys($changeSet->getDeletedMessages())));
+            }
 
             return;
         }

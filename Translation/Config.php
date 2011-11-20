@@ -200,7 +200,7 @@ final class Config
     /**
      * @return bool
      */
-    public function getKeepOldMessages()
+    public function isKeepOldMessages()
     {
         return $this->keepOldMessages;
     }
