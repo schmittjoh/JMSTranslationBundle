@@ -201,14 +201,22 @@ class Updater
         foreach ($this->scannedCatalogue->getDomains() as $domainCatalogue) {
             foreach ($domainCatalogue->all() as $message) {
                 if (!$this->existingCatalogue->has($message)) {
-                    if ($this->config->isKeepOldMessages()) {
-                        $this->scannedCatalogue->add($message);
-                    }
-
                     continue;
                 }
 
                 $message->mergeExisting($this->existingCatalogue->get($message->getId(), $message->getDomain()));
+            }
+        }
+
+        if ($this->config->isKeepOldMessages()) {
+            foreach ($this->existingCatalogue->getDomains() as $domainCatalogue) {
+                foreach ($domainCatalogue->all() as $message) {
+                    if ($this->scannedCatalogue->has($message)) {
+                        continue;
+                    }
+
+                    $this->scannedCatalogue->add($message);
+                }
             }
         }
     }
