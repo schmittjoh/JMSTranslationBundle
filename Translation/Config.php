@@ -40,8 +40,9 @@ final class Config
     private $excludedDirs;
     private $excludedNames;
     private $enabledExtractors;
+    private $keepOldMessages;
 
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -79,6 +80,7 @@ final class Config
         $this->excludedDirs = $excludedDirs;
         $this->excludedNames = $excludedNames;
         $this->enabledExtractors = $enabledExtractors;
+        $this->keepOldMessages = $keepOldMessages;
     }
 
     /**
@@ -185,5 +187,21 @@ final class Config
     public function getEnabledExtractors()
     {
         return $this->enabledExtractors;
+    }
+
+    /**
+     * @param bool $keepOldMessages
+     */
+    public function setKeepOldMessages($keepOldMessages)
+    {
+        $this->keepOldMessages = $keepOldMessages;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getKeepOldMessages()
+    {
+        return $this->keepOldMessages;
     }
 }
