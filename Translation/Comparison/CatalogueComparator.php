@@ -27,8 +27,17 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class CatalogueComparator
 {
+    private $domains = array();
     private $ignoredDomains = array();
 
+    public function setDomains(array $domains)
+    {
+        $this->domains = $domains;
+    }
+
+    /**
+     * @param array $domains
+     */
     public function setIgnoredDomains(array $domains)
     {
         $this->ignoredDomains = $domains;
@@ -45,33 +54,44 @@ class CatalogueComparator
     public function compare(MessageCatalogue $current, MessageCatalogue $new)
     {
         $newMessages = array();
-        $modifiedMessages = array();
 
-        foreach ($new->all() as $id => $message) {
-            if (isset($this->ignoredDomains[$message->getDomain()])) {
+        foreach ($new->getDomains() as $name => $domain) {
+            if ($this->domains && !isset($this->domains[$name])) {
                 continue;
             }
 
-            if ($current->has($id)) {
-                // FIXME: Compare what has changed
-
+            if (isset($this->ignoredDomains[$name])) {
                 continue;
             }
 
-            $newMessages[$id] = $message;
+            foreach ($domain->all() as $message) {
+                if ($current->has($message)) {
+                    // FIXME: Compare what has changed
+
+                    continue;
+                }
+
+                $newMessages[] = $message;
+            }
         }
 
         $deletedMessages = array();
-        foreach ($current->all() as $id => $message) {
-            if (isset($this->ignoredDomains[$message->getDomain()])) {
+        foreach ($current->getDomains() as $name => $domain) {
+            if ($this->domains && !isset($this->domains[$name])) {
                 continue;
             }
 
-            if ($new->has($id)) {
+            if (isset($this->ignoredDomains[$name])) {
                 continue;
             }
 
-            $deletedMessages[$id] = $message;
+            foreach ($domain->all() as $message) {
+                if ($new->has($message)) {
+                    continue;
+                }
+
+                $deletedMessages[] = $message;
+            }
         }
 
         return new ChangeSet($newMessages, $deletedMessages);

@@ -33,7 +33,7 @@ class FileWriterTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('dump')
             ->will($this->returnCallback(function($v) use($self) {
-                $self->assertEquals(array('foo.bar', 'foo.bar.baz'), array_keys($v->all()));
+                $self->assertEquals(array('foo.bar', 'foo.bar.baz'), array_keys($v->getDomain('messages')->all()));
             }))
         ;
 
@@ -42,11 +42,12 @@ class FileWriterTest extends \PHPUnit_Framework_TestCase
         ));
 
         $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('fr');
         $catalogue->add(new Message('foo.bar.baz'));
         $catalogue->add(new Message('foo.bar'));
 
         $path = tempnam(sys_get_temp_dir(), 'filewriter');
-        $writer->write($catalogue, $path, 'test');
+        $writer->write($catalogue, 'messages', $path, 'test');
         @unlink($path);
     }
 }

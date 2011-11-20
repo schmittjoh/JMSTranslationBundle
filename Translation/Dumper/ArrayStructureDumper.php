@@ -30,9 +30,9 @@ abstract class ArrayStructureDumper implements DumperInterface
         $this->prettyPrint = (Boolean) $bool;
     }
 
-    public function dump(MessageCatalogue $catalogue)
+    public function dump(MessageCatalogue $catalogue, $domain = 'messages')
     {
-        $structure = $catalogue->all();
+        $structure = $catalogue->getDomain($domain)->all();
 
         if ($this->prettyPrint) {
             $tmpStructure = array();

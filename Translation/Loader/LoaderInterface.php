@@ -2,13 +2,13 @@
 
 namespace JMS\TranslationBundle\Translation\Loader;
 
+use JMS\TranslationBundle\Model\MessageCatalogue;
+
 /**
  * Loader Interface for the bundle.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-use JMS\TranslationBundle\Model\MessageCatalogue;
-
 interface LoaderInterface
 {
     /**

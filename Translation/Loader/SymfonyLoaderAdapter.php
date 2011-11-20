@@ -2,8 +2,8 @@
 
 namespace JMS\TranslationBundle\Translation\Loader;
 
-use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\Message;
 use Symfony\Component\Translation\Loader\LoaderInterface as SymfonyLoader;
 
 /**
@@ -34,9 +34,9 @@ class SymfonyLoaderAdapter implements LoaderInterface
     public function load($resource, $locale, $domain = 'messages')
     {
         $catalogue = new MessageCatalogue();
+        $catalogue->setLocale($locale);
 
-        foreach ($this->loader->load($resource, 'en', $domain)
-                    ->all() as $id => $message) {
+        foreach ($this->loader->load($resource, $locale, $domain)->all($domain) as $id => $message) {
             $catalogue->add(
                 Message::create($id, $domain)
                     ->setLocaleString($message)

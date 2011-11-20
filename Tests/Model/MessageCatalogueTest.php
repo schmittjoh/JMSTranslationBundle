@@ -28,7 +28,8 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
         $catalogue = new MessageCatalogue();
         $catalogue->add($m = new Message('foo'));
 
-        $this->assertSame(array('foo' => $m), $catalogue->all());
+        $this->assertTrue($catalogue->hasDomain('messages'));
+        $this->assertEquals(array('foo' => $m), $catalogue->getDomain('messages')->all());
     }
 
     public function testGet()
@@ -36,7 +37,7 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
         $catalogue = new MessageCatalogue();
         $catalogue->add($message = Message::create('foo'));
 
-        $this->assertTrue($catalogue->has('foo'));
+        $this->assertTrue($catalogue->hasDomain('messages'));
         $this->assertSame($message, $catalogue->get('foo'));
     }
 
@@ -46,6 +47,70 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
     public function testGetThrowsExceptionWhenMessageDoesNotExist()
     {
         $catalogue = new MessageCatalogue();
-        $catalogue->get('foo');
+        $catalogue->getDomain('foo');
+    }
+
+    public function testGetSetLocale()
+    {
+        $catalogue = new MessageCatalogue();
+        $this->assertNull($catalogue->getLocale());
+
+        $catalogue->setLocale('en');
+        $this->assertEquals('en', $catalogue->getLocale());
+    }
+
+    public function testHasDomain()
+    {
+        $catalogue = new MessageCatalogue();
+        $this->assertFalse($catalogue->hasDomain('messages'));
+
+        $catalogue->add(new Message('foo'));
+        $this->assertTrue($catalogue->hasDomain('messages'));
+    }
+
+    public function testGetDomain()
+    {
+        $catalogue = new MessageCatalogue();
+        $catalogue->add(new Message('foo'));
+
+        $col = $catalogue->getDomain('messages');
+        $this->assertInstanceOf('JMS\TranslationBundle\Model\MessageCollection', $col);
+        $this->assertEquals(array('foo'), array_keys($col->all()));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testGetDomainWhenDomainDoesNotExist()
+    {
+        $catalogue = new MessageCatalogue();
+        $catalogue->getDomain('messages');
+    }
+
+    public function testGetDomains()
+    {
+        $cat = new MessageCatalogue();
+        $cat->add(new Message('foo'));
+        $cat->add(new Message('foo', 'foo'));
+
+        $this->assertEquals(array('messages', 'foo'), array_keys($domains = $cat->getDomains()));
+        $this->assertInstanceOf('JMS\TranslationBundle\Model\MessageCollection', $domains['foo']);
+    }
+
+    public function testMerge()
+    {
+        $cat = new MessageCatalogue();
+        $cat->add(new Message('foo', 'foo'));
+
+        $cat2 = new MessageCatalogue();
+        $cat2->add(new Message('foo', 'bar'));
+
+        $cat->merge($cat2);
+
+        $this->assertEquals(array('foo', 'bar'), array_keys($domains = $cat->getDomains()));
+        $this->assertEquals(array('bar'), array_keys($cat2->getDomains()));
+
+        $this->assertEquals(array('foo'), array_keys($domains['foo']->all()));
+        $this->assertEquals(array('foo'), array_keys($domains['bar']->all()));
     }
 }

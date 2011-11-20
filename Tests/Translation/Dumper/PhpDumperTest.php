@@ -28,12 +28,13 @@ class PhpDumperTest extends BaseDumperTest
     public function testDumpStructureWithoutPrettyPrint()
     {
         $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('fr');
         $catalogue->add(new Message('foo.bar.baz'));
 
         $dumper = new PhpDumper();
         $dumper->setPrettyPrint(false);
 
-        $this->assertEquals($this->getOutput('structure_wo_pretty_print'), $dumper->dump($catalogue));
+        $this->assertEquals($this->getOutput('structure_wo_pretty_print'), $dumper->dump($catalogue, 'messages'));
     }
 
     protected function getDumper()

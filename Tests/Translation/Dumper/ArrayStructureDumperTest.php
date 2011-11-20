@@ -26,6 +26,7 @@ class ArrayStructureDumperTest extends \PHPUnit_Framework_TestCase
     public function testPathWithSubPath()
     {
         $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('fr');
         $catalogue->add(new Message('foo.bar'));
         $catalogue->add(new Message('foo.bar.baz'));
 
@@ -42,7 +43,7 @@ class ArrayStructureDumperTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('foo'))
         ;
 
-        $this->assertEquals('foo', $dumper->dump($catalogue));
+        $this->assertEquals('foo', $dumper->dump($catalogue, 'messages'));
     }
 
     private function getDumper()

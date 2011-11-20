@@ -21,89 +21,131 @@ namespace JMS\TranslationBundle\Model;
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 
 /**
- * Represents a collection of _extracted_ messages.
+ * Represents a collection of **extracted** messages.
+ *
+ * A catalogue may consist of multiple domains. Each message belongs to
+ * a specific domain, and the ID of the message is uniquely identifying the
+ * message in its domain, but **not** across domains.
  *
  * This catalogue is only used for extraction, for translation at run-time
  * we still use the optimized catalogue from the Translation component.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class MessageCatalogue
+class MessageCatalogue
 {
     private $locale;
+    private $domains = array();
 
-    private $messages = array();
-
+    /**
+     * @param $locale
+     */
     public function setLocale($locale)
     {
         $this->locale = $locale;
     }
 
+    /**
+     * @return mixed
+     */
     public function getLocale()
     {
         return $this->locale;
     }
 
+    /**
+     * @param Message $message
+     */
     public function add(Message $message)
     {
-        if (isset($this->messages[$id = $message->getId()])) {
-            $this->messages[$id]->merge($message);
-        } else {
-            $this->messages[$id] = $message;
-        }
+        $this
+            ->getOrCreateDomain($message->getDomain())
+            ->add($message)
+        ;
     }
 
+    /**
+     * @param Message $message
+     */
     public function set(Message $message)
     {
-        $this->messages[$message->getId()] = $message;
+        $this
+            ->getOrCreateDomain($message->getDomain())
+            ->set($message)
+        ;
     }
 
-    public function get($id)
+    /**
+     * @param $id
+     * @param $domain
+     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     * @return Message
+     */
+    public function get($id, $domain = 'messages')
     {
-        if (!isset($this->messages[$id])) {
-            throw new \InvalidArgumentException(sprintf('There is no message with id "%s".', $id));
+        return $this->getDomain($domain)->get($id);
+    }
+
+    /**
+     * @param Message $message
+     * @return bool
+     */
+    public function has(Message $message)
+    {
+        if (!$this->hasDomain($message->getDomain())) {
+            return false;
         }
 
-        return $this->messages[$id];
+        return $this->getDomain($message->getDomain())->has($message->getId());
     }
 
-    public function has($id)
-    {
-        return isset($this->messages[$id]);
-    }
-
-    public function sort($callback)
-    {
-        if (!is_callable($callback)) {
-            throw new InvalidArgumentException(sprintf('$callback must be a valid callback.'));
-        }
-
-        uasort($this->messages, $callback);
-    }
-
-    public function filter($callback)
-    {
-        if (!is_callable($callback)) {
-            throw new InvalidArgumentException(sprintf('$callback must be a valid callback.'));
-        }
-
-        $this->messages = array_filter($this->messages, $callback);
-    }
-
-    public function replace(array $messages)
-    {
-        $this->messages = $messages;
-    }
-
-    public function all()
-    {
-        return $this->messages;
-    }
-
+    /**
+     * @param MessageCatalogue $catalogue
+     */
     public function merge(MessageCatalogue $catalogue)
     {
-        foreach ($catalogue->all() as $id => $message) {
-            $this->add($message);
+        foreach ($catalogue->getDomains() as $name => $domainCatalogue) {
+            $this->getOrCreateDomain($name)->merge($domainCatalogue);
         }
+    }
+
+    /**
+     * @param string $domain
+     * @return Boolean
+     */
+    public function hasDomain($domain)
+    {
+        return isset($this->domains[$domain]);
+    }
+
+    /**
+     * @param string $domain
+     * @return MessageCollection
+     */
+    public function getDomain($domain)
+    {
+        if (!$this->hasDomain($domain)) {
+            throw new \InvalidArgumentException(sprintf('There is no domain with name "%s".', $domain));
+        }
+
+        return $this->domains[$domain];
+    }
+
+    public function getDomains()
+    {
+        return $this->domains;
+    }
+
+    /**
+     * @param string $domain
+     * @return MessageCollection
+     */
+    private function getOrCreateDomain($domain)
+    {
+        if (!$this->hasDomain($domain)) {
+            $this->domains[$domain] = new MessageCollection($this);
+        }
+
+        return $this->domains[$domain];
     }
 }

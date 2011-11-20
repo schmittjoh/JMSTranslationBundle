@@ -3,10 +3,10 @@
 namespace JMS\TranslationBundle\Translation\Dumper;
 
 use Symfony\Component\HttpKernel\Util\Filesystem;
-
 use Symfony\Component\Translation\MessageCatalogue as SymfonyCatalogue;
-use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Translation\Dumper\DumperInterface as SymfonyDumper;
+
+use JMS\TranslationBundle\Model\MessageCatalogue;
 
 /**
  * Adapter for Symfony's dumpers.
@@ -29,15 +29,15 @@ class SymfonyDumperAdapter implements DumperInterface
         $this->format = $format;
     }
 
-    public function dump(MessageCatalogue $catalogue)
+    public function dump(MessageCatalogue $catalogue, $domain = 'messages')
     {
         $symfonyCatalogue = new SymfonyCatalogue($catalogue->getLocale());
 
-        $domain = null;
-        foreach ($catalogue->all() as $id => $message) {
-            $symfonyCatalogue->add(array(
-                $id => $message->getLocaleString(),
-            ), $domain = $message->getDomain());
+        foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
+            $symfonyCatalogue->add(
+                array($id => $message->getLocaleString()),
+                $domain
+            );
         }
 
         $tmpPath = sys_get_temp_dir().'/'.uniqid('translation', false);

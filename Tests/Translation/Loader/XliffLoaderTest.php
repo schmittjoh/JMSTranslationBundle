@@ -3,7 +3,6 @@
 namespace JMS\TranslationBundle\Tests\Translation\Loader;
 
 use JMS\TranslationBundle\Model\Message;
-
 use JMS\TranslationBundle\Model\MessageCatalogue;
 
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;

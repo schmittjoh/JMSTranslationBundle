@@ -2,10 +2,9 @@
 
 namespace JMS\TranslationBundle\Translation\Loader;
 
-use JMS\TranslationBundle\Model\FileSource;
-
-use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\FileSource;
+use JMS\TranslationBundle\Model\Message;
 
 class XliffLoader implements LoaderInterface
 {
@@ -26,6 +25,7 @@ class XliffLoader implements LoaderInterface
 
         $catalogue = new MessageCatalogue();
         $catalogue->setLocale($locale);
+
         foreach ($doc->xpath('//xliff:trans-unit') as $trans) {
             $id = ($resName = (string) $trans->attributes()->resname)
                        ? $resName : (string) $trans->source;
@@ -56,8 +56,7 @@ class XliffLoader implements LoaderInterface
                 $m->setMeaning($meaning);
             }
 
-            if (!($state = (string) $trans->target->attributes()->state)
-                    || 'new' !== $state) {
+            if (!($state = (string) $trans->target->attributes()->state) || 'new' !== $state) {
                 $m->setNew(false);
             }
 

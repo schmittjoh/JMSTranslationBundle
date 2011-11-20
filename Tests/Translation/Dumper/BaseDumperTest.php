@@ -18,10 +18,9 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
-use JMS\TranslationBundle\Model\FileSource;
-
-use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\FileSource;
+use JMS\TranslationBundle\Model\Message;
 
 abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,7 +32,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
         $message = new Message('foo');
         $catalogue->add($message);
 
-        $this->assertEquals($this->getOutput('simple'), $this->dump($catalogue));
+        $this->assertEquals($this->getOutput('simple'), $this->dump($catalogue, 'messages'));
     }
 
     public function testDumpWithMetadata()
@@ -46,7 +45,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
         $message->setMeaning('baz');
         $catalogue->add($message);
 
-        $this->assertEquals($this->getOutput('with_metadata'), $this->dump($catalogue));
+        $this->assertEquals($this->getOutput('with_metadata'), $this->dump($catalogue, 'messages'));
     }
 
     public function testDumpStructure()
@@ -59,7 +58,7 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource('bar/baz', 1, 2));
         $catalogue->add($message);
 
-        $this->assertEquals($this->getOutput('structure'), $this->dump($catalogue));
+        $this->assertEquals($this->getOutput('structure'), $this->dump($catalogue, 'messages'));
     }
 
     public function testDumpStructureWithMetadata()
@@ -78,14 +77,14 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
         $message = new Message('foo.baz');
         $catalogue->add($message);
 
-        $this->assertEquals($this->getOutput('structure_with_metadata'), $this->dump($catalogue));
+        $this->assertEquals($this->getOutput('structure_with_metadata'), $this->dump($catalogue, 'messages'));
     }
 
     abstract protected function getDumper();
     abstract protected function getOutput($key);
 
-    private function dump(MessageCatalogue $catalogue)
+    private function dump(MessageCatalogue $catalogue, $domain)
     {
-        return $this->getDumper()->dump($catalogue);
+        return $this->getDumper()->dump($catalogue, $domain);
     }
 }
