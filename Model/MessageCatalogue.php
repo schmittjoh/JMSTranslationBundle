@@ -88,7 +88,7 @@ class MessageCatalogue
 
     /**
      * @param Message $message
-     * @return bool
+     * @return Boolean
      */
     public function has(Message $message)
     {
@@ -125,7 +125,7 @@ class MessageCatalogue
     public function getDomain($domain)
     {
         if (!$this->hasDomain($domain)) {
-            throw new \InvalidArgumentException(sprintf('There is no domain with name "%s".', $domain));
+            throw new InvalidArgumentException(sprintf('There is no domain with name "%s".', $domain));
         }
 
         return $this->domains[$domain];

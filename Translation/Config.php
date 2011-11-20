@@ -93,7 +93,7 @@ final class Config
 
     /**
      * @param $domain
-     * @return bool
+     * @return Boolean
      */
     public function isIgnoredDomain($domain)
     {
@@ -110,7 +110,7 @@ final class Config
 
     /**
      * @param $domain
-     * @return bool
+     * @return Boolean
      */
     public function hasDomain($domain)
     {
@@ -118,7 +118,7 @@ final class Config
     }
 
     /**
-     * @return bool
+     * @return Boolean
      */
     public function hasDomains()
     {
@@ -190,7 +190,7 @@ final class Config
     }
 
     /**
-     * @param bool $keepOldMessages
+     * @param Boolean $keepOldMessages
      */
     public function setKeepOldMessages($keepOldMessages)
     {
@@ -198,7 +198,7 @@ final class Config
     }
 
     /**
-     * @return bool
+     * @return Boolean
      */
     public function isKeepOldMessages()
     {

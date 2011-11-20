@@ -74,7 +74,7 @@ class MessageCollection
     public function get($id)
     {
         if (!isset($this->messages[$id])) {
-            throw new \InvalidArgumentException(sprintf('There is no message with id "%s".', $id));
+            throw new InvalidArgumentException(sprintf('There is no message with id "%s".', $id));
         }
 
         return $this->messages[$id];
@@ -82,7 +82,7 @@ class MessageCollection
 
     /**
      * @param $id
-     * @return bool
+     * @return Boolean
      */
     public function has($id)
     {
