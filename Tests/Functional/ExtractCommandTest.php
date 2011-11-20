@@ -20,7 +20,8 @@ class ExtractCommandTest extends BaseCommandTestCase
         ));
 
         $expectedOutput =
-            'Output-Path: '.$outputDir."\n"
+            'Keep old translations: No'."\n"
+           .'Output-Path: '.$outputDir."\n"
            .'Directories: '.$inputDir."\n"
            .'Excluded Directories: Tests'."\n"
            .'Excluded Names: *Test.php, *TestCase.php'."\n"

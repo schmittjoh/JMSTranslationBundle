@@ -101,6 +101,7 @@ class Configuration implements ConfigurationInterface
                                     ->prototype('scalar')->end()
                                 ->end()
                                 ->scalarNode('output_dir')->isRequired()->cannotBeEmpty()->end()
+                                ->scalarNode('keep')->defaultValue(false)->end()
                             ->end()
                         ->end()
                     ->end()

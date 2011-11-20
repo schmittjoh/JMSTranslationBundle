@@ -84,6 +84,10 @@ class JMSTranslationExtension extends Extension
                 $def->addMethodCall('setDefaultOutputFormat', array($extractConfig['default_output_format']));
             }
 
+            if (isset($extractConfig['keep'])) {
+                $def->addMethodCall('setKeepOldTranslations', array($extractConfig['keep']));
+            }
+
             $requests[$name] = $def;
         }
 

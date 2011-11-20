@@ -201,6 +201,10 @@ class Updater
         foreach ($this->scannedCatalogue->getDomains() as $domainCatalogue) {
             foreach ($domainCatalogue->all() as $message) {
                 if (!$this->existingCatalogue->has($message)) {
+                    if ($this->config->isKeepOldMessages()) {
+                        $this->scannedCatalogue->add($message);
+                    }
+
                     continue;
                 }
 
