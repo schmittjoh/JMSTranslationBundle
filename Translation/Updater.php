@@ -197,6 +197,13 @@ class Updater
         $this->scannedCatalogue = $this->extractor->extract();
         $this->scannedCatalogue->setLocale($config->getLocale());
 
+        // keep old messages, avoid to delete non extracted messages
+        if ($this->config->getKeepOldMessages()) {
+            foreach ($this->existingCatalogue->all() as $domain) {
+                $this->scannedCatalogue->getOrCreateDomain($domain->getName())->merge($domain);
+            }
+        }
+
         // merge existing messages into scanned messages
         foreach ($this->scannedCatalogue->getDomains() as $domainCatalogue) {
             foreach ($domainCatalogue->all() as $message) {

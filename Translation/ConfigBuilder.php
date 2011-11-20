@@ -30,6 +30,7 @@ final class ConfigBuilder
     private $excludedDirs = array('Tests');
     private $excludedNames = array('*Test.php', '*TestCase.php');
     private $enabledExtractors = array();
+    private $keepOldTranslations = false;
 
     public static function fromConfig(Config $config)
     {
@@ -173,6 +174,11 @@ final class ConfigBuilder
         return $this;
     }
 
+    public function setKeepOldTranslations($value)
+    {
+        $this->keepOldTranslations = $value;
+    }
+
     public function getConfig()
     {
         return new Config(
@@ -185,7 +191,8 @@ final class ConfigBuilder
             $this->scanDirs,
             $this->excludedDirs,
             $this->excludedNames,
-            $this->enabledExtractors
+            $this->enabledExtractors,
+            $this->keepOldTranslations
         );
     }
 }
