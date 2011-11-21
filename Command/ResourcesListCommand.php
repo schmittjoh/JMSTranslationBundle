@@ -29,6 +29,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Finder\Finder;
+use JMS\TranslationBundle\Util\FileUtils;
+
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
@@ -83,6 +85,27 @@ class ResourcesListCommand extends ContainerAwareCommand
     }
 
     /**
+     * @param array $dirs
+     * @return array
+     */
+    private function retrieveFiles(array $dirs)
+    {
+        $files = array();
+        // Register translation resources
+        foreach ($dirs as $dir) {
+            foreach(FileUtils::findTranslationFiles($dir) as $catalogue => $locales) {
+                foreach ($locales as $file) {
+                    $files[] = $file[1];
+                }
+            }
+        }
+
+        return $files;
+    }
+
+    /**
+     * The following methods is derived from code of the FrameworkExtension.php file from the Symfony2 framework
+     *
      * @return array
      */
     private function retrieveDirs()
@@ -101,27 +124,5 @@ class ResourcesListCommand extends ContainerAwareCommand
         }
 
         return $dirs;
-    }
-
-    /**
-     * @param array $dirs
-     * @return array
-     */
-    private function retrieveFiles(array $dirs)
-    {
-        $files = array();
-        // Register translation resources
-        if ($dirs) {
-            $finder = new Finder();
-            $finder->files()->filter(function (\SplFileInfo $file) {
-                return 2 === substr_count($file->getBasename(), '.') && preg_match('/\.\w+$/', $file->getBasename());
-            })->in($dirs);
-            foreach ($finder as $file) {
-                // filename is domain.locale.format
-                $files[] = $file;
-            }
-        }
-
-        return $files;
     }
 }

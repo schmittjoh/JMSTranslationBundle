@@ -184,6 +184,8 @@ final class ConfigBuilder
     public function setKeepOldTranslations($value)
     {
         $this->keepOldTranslations = $value;
+
+        return $this;
     }
 
     public function getConfig()
@@ -207,10 +209,7 @@ final class ConfigBuilder
     public function setLoadResources(array $loadResources)
     {
         $this->loadResources = $loadResources;
-    }
 
-    public function getLoadResources()
-    {
-        return $this->loadResources;
+        return $this;
     }
 }

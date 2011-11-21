@@ -194,27 +194,11 @@ final class Config
     }
 
     /**
-     * @param Boolean $keepOldMessages
-     */
-    public function setKeepOldMessages($keepOldMessages)
-    {
-        $this->keepOldMessages = $keepOldMessages;
-    }
-
-    /**
      * @return Boolean
      */
     public function isKeepOldMessages()
     {
         return $this->keepOldMessages;
-    }
-
-    /**
-     * @param array $loadResources
-     */
-    public function setLoadResources(array $loadResources)
-    {
-        $this->loadResources = $loadResources;
     }
 
     /**
