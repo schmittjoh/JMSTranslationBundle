@@ -185,6 +185,7 @@ class Updater
     {
         $this->config = $config;
 
+        $this->logger->info(sprintf("Loading catalogues from \"%s\"", $config->getTranslationsDir()));
         $this->existingCatalogue = $this->loader->loadFromDirectory(
             $config->getTranslationsDir(), $config->getLocale()
         );
@@ -194,6 +195,7 @@ class Updater
         $this->extractor->setExcludedNames($config->getExcludedNames());
         $this->extractor->setEnabledExtractors($config->getEnabledExtractors());
 
+        $this->logger->info("Extracting translation keys");
         $this->scannedCatalogue = $this->extractor->extract();
         $this->scannedCatalogue->setLocale($config->getLocale());
 
