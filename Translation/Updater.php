@@ -185,7 +185,7 @@ class Updater
     {
         $this->config = $config;
 
-        $this->logger->info(sprintf("Loading scatalogues from `%s`", $config->getTranslationsDir()));
+        $this->logger->info(sprintf("Loading catalogues from \"%s\"", $config->getTranslationsDir()));
         $this->existingCatalogue = $this->loader->loadFromDirectory(
             $config->getTranslationsDir(), $config->getLocale()
         );

@@ -44,6 +44,9 @@ class ExtractCommandTest extends BaseCommandTestCase
            .'Output-Format: # whatever is present, if nothing then xliff #'."\n"
            .'Custom Extractors: # none #'."\n"
            .'============================================================'."\n"
+           .'Loading catalogues from "'.$outputDir.'"'."\n"
+           .'Extracting translation keys'."\n"
+           .'Extracting messages from directory : '.$inputDir."\n"
            .'Writing translation file "'.$outputDir.'/messages.en.xliff".'."\n"
            .'done!'."\n"
         ;
