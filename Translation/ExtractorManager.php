@@ -124,7 +124,7 @@ class ExtractorManager implements ExtractorInterface
         $catalogue = new MessageCatalogue();
 
         foreach ($this->directories as $directory) {
-            $this->logger->info(sprintf('Extract messages from directory : %s', $directory));
+            $this->logger->info(sprintf('Extracting messages from directory : %s', $directory));
             $this->fileExtractor->setDirectory($directory);
             $catalogue->merge($this->fileExtractor->extract());
         }
@@ -135,7 +135,7 @@ class ExtractorManager implements ExtractorInterface
                 continue;
             }
 
-            $this->logger->info(sprintf('Extract messages with custom extractor : %s', $alias));
+            $this->logger->info(sprintf('Extracting messages with custom extractor : %s', $alias));
 
             $catalogue->merge($extractor->extract());
         }
