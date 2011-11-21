@@ -23,6 +23,7 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 
 class ExtractorManager implements ExtractorInterface
 {
@@ -32,6 +33,11 @@ class ExtractorManager implements ExtractorInterface
     private $enabledExtractors = array();
     private $logger;
 
+    /**
+     * @param Extractor\FileExtractor $extractor
+     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param array $customExtractors
+     */
     public function __construct(FileExtractor $extractor, LoggerInterface $logger, array $customExtractors = array())
     {
         $this->fileExtractor = $extractor;
@@ -39,12 +45,26 @@ class ExtractorManager implements ExtractorInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
         $this->fileExtractor->setLogger($logger);
+
+        foreach ($this->customExtractors as $extractor) {
+            if (!$extractor instanceof LoggerAwareInterface) {
+                continue;
+            }
+
+            $extractor->setLogger($logger);
+        }
     }
 
+    /**
+     * @param array $directories
+     */
     public function setDirectories(array $directories)
     {
         foreach ($directories as $dir) {
@@ -52,6 +72,10 @@ class ExtractorManager implements ExtractorInterface
         }
     }
 
+    /**
+     * @param $directory
+     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     */
     public function addDirectory($directory)
     {
         if (!is_dir($directory)) {
@@ -61,16 +85,26 @@ class ExtractorManager implements ExtractorInterface
         $this->directories[] = $directory;
     }
 
+    /**
+     * @param array $dirs
+     */
     public function setExcludedDirs(array $dirs)
     {
         $this->fileExtractor->setExcludedDirs($dirs);
     }
 
+    /**
+     * @param array $names
+     */
     public function setExcludedNames(array $names)
     {
         $this->fileExtractor->setExcludedNames($names);
     }
 
+    /**
+     * @param array $aliases
+     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     */
     public function setEnabledExtractors(array $aliases)
     {
         foreach ($aliases as $alias => $true) {
@@ -82,11 +116,15 @@ class ExtractorManager implements ExtractorInterface
         $this->enabledExtractors = $aliases;
     }
 
+    /**
+     * @return \JMS\TranslationBundle\Model\MessageCatalogue
+     */
     public function extract()
     {
         $catalogue = new MessageCatalogue();
 
         foreach ($this->directories as $directory) {
+            $this->logger->info(sprintf('Extracting messages from directory : %s', $directory));
             $this->fileExtractor->setDirectory($directory);
             $catalogue->merge($this->fileExtractor->extract());
         }
@@ -96,6 +134,8 @@ class ExtractorManager implements ExtractorInterface
                 $this->logger->debug(sprintf('Skipping custom extractor "%s" as it is not enabled.', $alias));
                 continue;
             }
+
+            $this->logger->info(sprintf('Extracting messages with custom extractor : %s', $alias));
 
             $catalogue->merge($extractor->extract());
         }

@@ -20,19 +20,15 @@ namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\FileSource;
-
 use JMS\TranslationBundle\Model\Message;
-
 use JMS\TranslationBundle\Annotation\Meaning;
-
 use JMS\TranslationBundle\Annotation\Desc;
-
 use JMS\TranslationBundle\Annotation\Ignore;
-
 use JMS\TranslationBundle\Model\MessageCatalogue;
-
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use Doctrine\Common\Annotations\DocParser;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
@@ -125,7 +121,14 @@ class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParse
                 return;
             }
 
-            throw new RuntimeException(sprintf('Could not extract id from return value, expected scalar string but got %s (in %s on line %d).', get_class($node->expr), $this->file, $node->expr->getLine()));
+            $message = sprintf('Could not extract id from return value, expected scalar string but got %s (in %s on line %d).', get_class($node->expr), $this->file, $node->expr->getLine());
+            if ($this->logger) {
+                $this->logger->err($message);
+
+                return;
+            }
+
+            throw new RuntimeException($message);
         }
 
         $message = Message::create($node->expr->value, $this->domain)

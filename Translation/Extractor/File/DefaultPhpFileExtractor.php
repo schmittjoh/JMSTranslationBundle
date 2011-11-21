@@ -27,6 +27,8 @@ use JMS\TranslationBundle\Annotation\Desc;
 use JMS\TranslationBundle\Annotation\Ignore;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 /**
  * This parser can extract translation information from PHP files.
@@ -35,18 +37,27 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class DefaultPhpFileExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, \PHPParser_NodeVisitor
 {
     private $traverser;
     private $catalogue;
     private $file;
     private $docParser;
+    private $logger;
 
     public function __construct(DocParser $docParser)
     {
         $this->docParser = $docParser;
         $this->traverser = new \PHPParser_NodeTraverser();
         $this->traverser->addVisitor($this);
+    }
+
+    /**
+     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     public function enterNode(\PHPParser_Node $node)
@@ -76,7 +87,14 @@ class DefaultPhpFileExtractor implements FileVisitorInterface, \PHPParser_NodeVi
                 return;
             }
 
-            throw new RuntimeException(sprintf('Can only extract the translation id from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine()));
+            $message = sprintf('Can only extract the translation id from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
+
+            if ($this->logger) {
+                $this->logger->err($message);
+                return;
+            }
+
+            throw new RuntimeException($message);
         }
 
         $id = $node->args[0]->value->value;
@@ -88,7 +106,14 @@ class DefaultPhpFileExtractor implements FileVisitorInterface, \PHPParser_NodeVi
                     return;
                 }
 
-                throw new RuntimeException(sprintf('Can only extract the translation domain from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine()));
+                $message = sprintf('Can only extract the translation domain from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
+
+                if ($this->logger) {
+                    $this->logger->err($message);
+                    return;
+                }
+
+                throw new RuntimeException($message);
             }
 
             $domain = $node->args[$index]->value->value;
