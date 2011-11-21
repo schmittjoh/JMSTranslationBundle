@@ -27,6 +27,8 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
@@ -38,6 +40,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
     private $useStatements = array();
     private $inMethod = false;
     private $localFormBuilderVars;
+    private $logger;
 
     public function __construct(DocParser $docParser)
     {
@@ -46,6 +49,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         $this->traverser = new \PHPParser_NodeTraverser();
         $this->traverser->addVisitor($this);
     }
+
 
     public function enterNode(\PHPParser_Node $node)
     {
@@ -160,7 +164,14 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                         continue;
                     }
 
-                    throw new RuntimeException(sprintf('Unable to extract translation id for form label from non-string values, but got "%s" in %s on line %d. Please refactor your code to pass a string, or add "/** @Ignore */".', get_class($item->value), $this->file, $item->value->getLine()));
+                    $message = sprintf('Unable to extract translation id for form label from non-string values, but got "%s" in %s on line %d. Please refactor your code to pass a string, or add "/** @Ignore */".', get_class($item->value), $this->file, $item->value->getLine());
+                    if ($this->logger) {
+                        $this->logger->err($message);
+
+                        return;
+                    }
+
+                    throw new RuntimeException($message);
                 }
 
                 $message = new Message($item->value->value);
@@ -213,5 +224,10 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
 
         return $this->namespace.'\\'.implode('\\', $parts);
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 }

@@ -20,6 +20,7 @@ namespace JMS\TranslationBundle\Translation\Extractor;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 
 use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
 
@@ -32,7 +33,7 @@ use Symfony\Component\Finder\Finder;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class FileExtractor implements ExtractorInterface
+class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 {
     private $twig;
     private $visitors;
@@ -62,6 +63,14 @@ class FileExtractor implements ExtractorInterface
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+
+        foreach ($this->visitors as $visitor) {
+            if (!$visitor instanceof LoggerAwareInterface) {
+                continue;
+            }
+
+            $visitor->setLogger($logger);
+        }
     }
 
     public function setDirectory($directory)
