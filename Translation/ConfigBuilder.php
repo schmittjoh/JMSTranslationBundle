@@ -31,7 +31,13 @@ final class ConfigBuilder
     private $excludedNames = array('*Test.php', '*TestCase.php');
     private $enabledExtractors = array();
     private $keepOldTranslations = false;
+    private $loadResources = array();
 
+    /**
+     * @static
+     * @param Config $config
+     * @return ConfigBuilder
+     */
     public static function fromConfig(Config $config)
     {
         $builder = new self();
@@ -45,6 +51,7 @@ final class ConfigBuilder
         $builder->setExcludedDirs($config->getExcludedDirs());
         $builder->setExcludedNames($config->getExcludedNames());
         $builder->setEnabledExtractors($config->getEnabledExtractors());
+        $builder->setLoadResources($config->getLoadResources());
 
         return $builder;
     }
@@ -192,7 +199,18 @@ final class ConfigBuilder
             $this->excludedDirs,
             $this->excludedNames,
             $this->enabledExtractors,
-            $this->keepOldTranslations
+            $this->keepOldTranslations,
+            $this->loadResources
         );
+    }
+
+    public function setLoadResources(array $loadResources)
+    {
+        $this->loadResources = $loadResources;
+    }
+
+    public function getLoadResources()
+    {
+        return $this->loadResources;
     }
 }
