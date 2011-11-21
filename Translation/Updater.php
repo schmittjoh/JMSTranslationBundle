@@ -53,6 +53,12 @@ class Updater
     private $logger;
     private $writer;
 
+    /**
+     * @param LoaderManager $loader
+     * @param ExtractorManager $extractor
+     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param FileWriter $writer
+     */
     public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer)
     {
         $this->loader = $loader;
@@ -61,12 +67,19 @@ class Updater
         $this->writer = $writer;
     }
 
+    /**
+     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
         $this->extractor->setLogger($logger);
     }
 
+    /**
+     * @param Config $config
+     * @return \JMS\CommandBundle\Translation\ComparisonResult
+     */
     public function getChangeSet(Config $config)
     {
         $this->setConfig($config);
@@ -78,6 +91,14 @@ class Updater
         return $comparator->compare($this->existingCatalogue, $this->scannedCatalogue);
     }
 
+    /**
+     * @param $file
+     * @param $format
+     * @param $domain
+     * @param $locale
+     * @param $id
+     * @param $trans
+     */
     public function updateTranslation($file, $format, $domain, $locale, $id, $trans)
     {
         $catalogue = $this->loader->loadFile($file, $format, $locale, $domain);
@@ -181,14 +202,27 @@ class Updater
         return $this->config->getDefaultOutputFormat();
     }
 
+    /**
+     * @param Config $config
+     */
     private function setConfig(Config $config)
     {
         $this->config = $config;
 
         $this->logger->info(sprintf("Loading catalogues from \"%s\"", $config->getTranslationsDir()));
-        $this->existingCatalogue = $this->loader->loadFromDirectory(
+        $this->existingCatalogue = new MessageCatalogue();
+
+        // load external resources, so current translations can be reused in the final translation
+        foreach ($config->getLoadResources() as $resource) {
+            $this->existingCatalogue->merge($this->loader->loadFromDirectory(
+                $resource,
+                $config->getLocale()
+            ));
+        }
+
+        $this->existingCatalogue->merge($this->loader->loadFromDirectory(
             $config->getTranslationsDir(), $config->getLocale()
-        );
+        ));
 
         $this->extractor->setDirectories($config->getScanDirs());
         $this->extractor->setExcludedDirs($config->getExcludedDirs());

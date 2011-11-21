@@ -88,6 +88,10 @@ class JMSTranslationExtension extends Extension
                 $def->addMethodCall('setKeepOldTranslations', array($extractConfig['keep']));
             }
 
+            if (isset($extractConfig['external_translations_dirs'])) {
+                $def->addMethodCall('setLoadResources', array($extractConfig['external_translations_dirs']));
+            }
+
             $requests[$name] = $def;
         }
 
