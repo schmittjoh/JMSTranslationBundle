@@ -55,6 +55,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->addOption('output-format', null, InputOption::VALUE_REQUIRED, 'The output format that should be used (in most cases, it is better to change only the default-output-format).')
             ->addOption('default-output-format', null, InputOption::VALUE_REQUIRED, 'The default output format (defaults to xliff).')
             ->addOption('keep', null, InputOption::VALUE_NONE, 'Define if the updater service should keep the old translation (defaults to false).')
+            ->addOption('external-translations-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED , 'Load external translation ressources (only xliff)')
         ;
     }
 
@@ -165,6 +166,10 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             $builder->setKeepOldTranslations(true);
         } else if ($input->hasParameterOption('--keep=false')) {
             $builder->setKeepOldTranslations(false);
+        }
+
+        if ($loadResource = $input->getOption('external-translations-dir')) {
+            $builder->setLoadResources($loadResource);
         }
 
         $builder->setLocale($input->getArgument('locale'));
