@@ -92,12 +92,12 @@ class Updater
     }
 
     /**
-     * @param $file
-     * @param $format
-     * @param $domain
-     * @param $locale
-     * @param $id
-     * @param $trans
+     * @param string $file
+     * @param string $format
+     * @param string $domain
+     * @param string $locale
+     * @param string $id
+     * @param string $trans
      */
     public function updateTranslation($file, $format, $domain, $locale, $id, $trans)
     {
@@ -108,7 +108,7 @@ class Updater
             ->setNew(false)
         ;
 
-        $this->writer->write($catalogue, $file, $format);
+        $this->writer->write($catalogue, $domain, $file, $format);
     }
 
     /**
