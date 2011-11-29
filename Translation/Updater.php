@@ -103,7 +103,7 @@ class Updater
     {
         $catalogue = $this->loader->loadFile($file, $format, $locale, $domain);
         $catalogue
-            ->get($id)
+            ->get($id, $domain)
             ->setLocaleString($trans)
             ->setNew(false)
         ;
