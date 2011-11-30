@@ -18,6 +18,8 @@
 
 namespace JMS\TranslationBundle\Translation\Extractor;
 
+use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
+
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
@@ -41,6 +43,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     private $pattern;
     private $directory;
     private $removingTwigVisitor;
+    private $defaultApplyingTwigVisitor;
     private $excludedNames = array();
     private $excludedDirs = array();
     private $logger;
@@ -55,7 +58,9 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         foreach ($this->twig->getNodeVisitors() as $visitor) {
             if ($visitor instanceof RemovingNodeVisitor) {
                 $this->removingTwigVisitor = $visitor;
-                break;
+            }
+            if ($visitor instanceof DefaultApplyingNodeVisitor) {
+                $this->defaultApplyingTwigVisitor = $visitor;
             }
         }
     }
@@ -101,6 +106,9 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     {
         if (!empty($this->removingTwigVisitor)) {
             $this->removingTwigVisitor->setEnabled(false);
+        }
+        if (!empty($this->defaultApplyingTwigVisitor)) {
+            $this->defaultApplyingTwigVisitor->setEnabled(false);
         }
 
         $finder = Finder::create()->in($this->directory);
@@ -153,6 +161,9 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 
             if (!empty($this->removingTwigVisitor)) {
                 $this->removingTwigVisitor->setEnabled(true);
+            }
+            if (!empty($this->defaultApplyingTwigVisitor)) {
+                $this->defaultApplyingTwigVisitor->setEnabled(true);
             }
 
             return $catalogue;

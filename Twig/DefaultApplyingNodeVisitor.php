@@ -30,8 +30,19 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
 {
+    private $enabled = true;
+
+    public function setEnabled($bool)
+    {
+        $this->enabled = (Boolean) $bool;
+    }
+
     public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
     {
+        if (!$this->enabled) {
+            return $node;
+        }
+
         if ($node instanceof \Twig_Node_Expression_Filter
                 && 'desc' === $node->getNode('filter')->getAttribute('value')) {
 

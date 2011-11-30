@@ -18,6 +18,10 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
+use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
+
+use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
+
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -121,6 +125,16 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 
         $env = new \Twig_Environment();
         $env->addExtension(new SymfonyTranslationExtension(new IdentityTranslator(new MessageSelector())));
+        $env->addExtension(new TranslationExtension(true));
+
+        foreach ($env->getNodeVisitors() as $visitor) {
+            if ($visitor instanceof DefaultApplyingNodeVisitor) {
+                $visitor->setEnabled(false);
+            }
+            if ($visitor instanceof RemovingNodeVisitor) {
+                $visitor->setEnabled(false);
+            }
+        }
 
         if (null === $extractor) {
             $extractor = new TwigFileExtractor($env);
