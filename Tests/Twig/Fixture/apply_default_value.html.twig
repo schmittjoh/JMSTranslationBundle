@@ -1,1 +1,4 @@
 {{ "form.label.firstname"|trans|desc("Firstname") }}
+
+{{ "foo.%bar%"|trans({"%bar%": "baz"})|desc("Foo %bar%") }}
+
