@@ -76,7 +76,7 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
 
                 $defaultNode = new \Twig_Node_Expression_Filter(
                     clone $node->getNode('arguments')->getNode(0),
-                    new \Twig_Node_Expression_Constant('replace', $lineno),
+                    new \Twig_Node_Expression_Constant('jms_translation_strtr', $lineno),
                     new \Twig_Node(array(
                         clone $wrappingNode->getNode('arguments')->getNode(0)
                     )),

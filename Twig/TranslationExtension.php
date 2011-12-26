@@ -51,6 +51,7 @@ class TranslationExtension extends \Twig_Extension
         return array(
             'desc' => new \Twig_Filter_Method($this, 'desc'),
             'meaning' => new \Twig_Filter_Method($this, 'meaning'),
+            'jms_translation_strtr' => new \Twig_Filter_Function('strtr'),
         );
     }
 
