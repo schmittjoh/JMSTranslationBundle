@@ -1,1 +1,4 @@
 {{ "form.label.firstname"|trans == "form.label.firstname" ? "Firstname" : "form.label.firstname"|trans }}
+
+{{ "foo.%bar%"|trans({}) == "foo.%bar%" ? "Foo %bar%"|replace({"%bar%": "baz"}) : "foo.%bar%"|trans({"%bar%": "baz"}) }}
+

@@ -57,11 +57,36 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
             }
 
             $wrappingNode = $node->getNode('node');
-            $default = $transNode->getNode('node');
+            $testNode = clone $wrappingNode;
+            $defaultNode = $node->getNode('arguments')->getNode(0);
+
+            // if the |trans filter has replacements parameters
+            // (e.g. |trans({'%foo%': 'bar'}))
+
+            if ($wrappingNode->getNode('arguments')->hasNode(0)) {
+
+                $lineno =  $wrappingNode->getLine();
+
+                // remove the replacements from the test node
+
+                $testNode->setNode('arguments', clone $testNode->getNode('arguments'));
+                $testNode->getNode('arguments')->setNode(0, new \Twig_Node_Expression_Array(array(), $lineno));
+
+                // wrap the default node in a |replace filter
+
+                $defaultNode = new \Twig_Node_Expression_Filter(
+                    clone $node->getNode('arguments')->getNode(0),
+                    new \Twig_Node_Expression_Constant('replace', $lineno),
+                    new \Twig_Node(array(
+                        clone $wrappingNode->getNode('arguments')->getNode(0)
+                    )),
+                    $lineno
+                );
+            }
 
             $condition = new \Twig_Node_Expression_Conditional(
-                new \Twig_Node_Expression_Binary_Equal($wrappingNode, $transNode->getNode('node'), $wrappingNode->getLine()),
-                clone $node->getNode('arguments')->getNode(0),
+                new \Twig_Node_Expression_Binary_Equal($testNode, $transNode->getNode('node'), $wrappingNode->getLine()),
+                $defaultNode,
                 clone $wrappingNode,
                 $wrappingNode->getLine()
             );
