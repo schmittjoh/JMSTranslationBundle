@@ -27,11 +27,16 @@ class MyFormType extends AbstractType
     {
         $builder
             ->add('firstname', 'text', array(
-            	'label' => 'form.label.firstname',
+                'label' => 'form.label.firstname',
             ))
             ->add('lastname', 'text', array(
                 'label' => /** @Desc("Lastname") */ 'form.label.lastname',
             ))
+            ->add('states', 'choice', array(
+                'choices' => array('foo' => 'bar'),
+                'empty_value' => /** @Desc("Please select a state") */ 'form.states.empty_value',
+            ))
+            ->add('countries', 'choice', array('empty_value' => false))
         ;
     }
 }
