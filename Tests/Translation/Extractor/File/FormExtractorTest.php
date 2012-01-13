@@ -32,6 +32,16 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
     {
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormType.php';
+        
+        $message = new Message('form.label.password');
+        $message->addSource(new FileSource($path, 46));
+        $message->setDesc('Password');
+        $expected->add($message);
+        
+        $message = new Message('form.label.password_again');
+        $message->addSource(new FileSource($path, 47));
+        $message->setDesc('Password (again)');
+        $expected->add($message);
 
         $message = new Message('form.states.empty_value');
         $message->setDesc('Please select a state');
