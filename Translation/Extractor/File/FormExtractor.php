@@ -145,7 +145,11 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                 	continue;
                 }
 
-                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value) {
+                if (
+                		'label' !== $item->key->value && 
+                		'empty_value' !== $item->key->value &&
+                		'first_name' !== $item->key->value &&
+                		'second_name' !== $item->key->value	) {
                     continue;
                 }
 
