@@ -37,6 +37,16 @@ class MyFormType extends AbstractType
                 'empty_value' => /** @Desc("Please select a state") */ 'form.states.empty_value',
             ))
             ->add('countries', 'choice', array('empty_value' => false))
+            ->add(
+                	'password',
+            		'repeated',
+            		array(
+            				'type' => 'password',
+            				'options' => array('required' => true),
+            				"first_name" => /** @Desc("Password") */ "form.label.password",
+            				"second_name" => /** @Desc("Password (again)") */ "form.label.password_again"
+            		)
+            )
         ;
     }
 }
