@@ -32,6 +32,10 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
     {
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormType.php';
+        
+        $message = new Message('bar');
+        $message->addSource(new FileSource($path, 36));
+        $expected->add($message);
 
         $message = new Message('form.states.empty_value');
         $message->setDesc('Please select a state');
