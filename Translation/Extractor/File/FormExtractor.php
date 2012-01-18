@@ -144,7 +144,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     && $item->value->name instanceof \PHPParser_Node_Name && 'false' === $item->value->name->parts[0]) {
                 	continue;
                 }
-                
+
                 if ('choices' === $item->key->value && !$item->value instanceof \PHPParser_Node_Expr_Array) {
                     continue;
                 }
@@ -153,8 +153,8 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     continue;
                 }
 
-                if('choices' === $item->key->value) {
-                    foreach($item->value->items as $sitem) {
+                if ('choices' === $item->key->value) {
+                    foreach ($item->value->items as $sitem) {
                         $this->parseItem($sitem);
                     }
                 } else {
@@ -180,36 +180,36 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                 }
             }
         }
-         
+
         if (!$item->value instanceof \PHPParser_Node_Scalar_String) {
             if ($ignore) {
                 return;
             }
-             
+
             $message = sprintf('Unable to extract translation id for form label from non-string values, but got "%s" in %s on line %d. Please refactor your code to pass a string, or add "/** @Ignore */".', get_class($item->value), $this->file, $item->value->getLine());
             if ($this->logger) {
                 $this->logger->err($message);
-                 
+
                 return;
             }
-             
+
             throw new RuntimeException($message);
         }
-         
+
         $message = new Message($item->value->value);
         $message->addSource(new FileSource((string) $this->file, $item->value->getLine()));
-         
+
         if ($desc) {
             $message->setDesc($desc);
         }
-         
+
         if ($meaning) {
             $message->setMeaning($meaning);
         }
-        
+
         $this->catalogue->add($message);
     }
-    
+
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
     {
         $this->file = $file;
