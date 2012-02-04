@@ -141,58 +141,73 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                 }
 
                 if ('empty_value' === $item->key->value && $item->value instanceof \PHPParser_Node_Expr_ConstFetch
-                	    && $item->value->name instanceof \PHPParser_Node_Name && 'false' === $item->value->name->parts[0]) {
+                    && $item->value->name instanceof \PHPParser_Node_Name && 'false' === $item->value->name->parts[0]) {
                 	continue;
                 }
 
-                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value) {
+                if ('choices' === $item->key->value && !$item->value instanceof \PHPParser_Node_Expr_Array) {
                     continue;
                 }
 
-                // get doc comment
-                $ignore = false;
-                $desc = $meaning = null;
-                if ($docComment = $item->value->getDocComment()) {
-                    foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
-                        if ($annot instanceof Ignore) {
-                            $ignore = true;
-                        } else if ($annot instanceof Desc) {
-                            $desc = $annot->text;
-                        } else if ($annot instanceof Meaning) {
-                            $meaning = $annot->text;
-                        }
+                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value && 'choices' !== $item->key->value) {
+                    continue;
+                }
+
+                if ('choices' === $item->key->value) {
+                    foreach ($item->value->items as $sitem) {
+                        $this->parseItem($sitem);
                     }
+                } else {
+                    $this->parseItem($item);
                 }
-
-                if (!$item->value instanceof \PHPParser_Node_Scalar_String) {
-                    if ($ignore) {
-                        continue;
-                    }
-
-                    $message = sprintf('Unable to extract translation id for form label from non-string values, but got "%s" in %s on line %d. Please refactor your code to pass a string, or add "/** @Ignore */".', get_class($item->value), $this->file, $item->value->getLine());
-                    if ($this->logger) {
-                        $this->logger->err($message);
-
-                        return;
-                    }
-
-                    throw new RuntimeException($message);
-                }
-
-                $message = new Message($item->value->value);
-                $message->addSource(new FileSource((string) $this->file, $item->value->getLine()));
-
-                if ($desc) {
-                    $message->setDesc($desc);
-                }
-
-                if ($meaning) {
-                    $message->setMeaning($meaning);
-                }
-
-                $this->catalogue->add($message);
             }
         }
+    }
+
+    private function parseItem($item)
+    {
+        // get doc comment
+        $ignore = false;
+        $desc = $meaning = null;
+        if ($docComment = $item->value->getDocComment()) {
+            foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
+                if ($annot instanceof Ignore) {
+                    $ignore = true;
+                } else if ($annot instanceof Desc) {
+                    $desc = $annot->text;
+                } else if ($annot instanceof Meaning) {
+                    $meaning = $annot->text;
+                }
+            }
+        }
+
+        if (!$item->value instanceof \PHPParser_Node_Scalar_String) {
+            if ($ignore) {
+                return;
+            }
+
+            $message = sprintf('Unable to extract translation id for form label from non-string values, but got "%s" in %s on line %d. Please refactor your code to pass a string, or add "/** @Ignore */".', get_class($item->value), $this->file, $item->value->getLine());
+            if ($this->logger) {
+                $this->logger->err($message);
+
+                return;
+            }
+
+            throw new RuntimeException($message);
+        }
+
+        $message = new Message($item->value->value);
+        $message->addSource(new FileSource((string) $this->file, $item->value->getLine()));
+
+        if ($desc) {
+            $message->setDesc($desc);
+        }
+
+        if ($meaning) {
+            $message->setMeaning($meaning);
+        }
+
+        $this->catalogue->add($message);
     }
 
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
