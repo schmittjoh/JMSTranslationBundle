@@ -15,7 +15,7 @@
         "nikic/php-parser" : "*"
     },
     "suggest": {
-    	"twig/extensions":  "*",
+    	"twig/twig":  "1.*",
         "sensio/framework-extra-bundle":  "2.*",
         "jms/di-extra-bundle": "1.*"
     },
