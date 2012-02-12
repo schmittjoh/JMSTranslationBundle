@@ -13,6 +13,7 @@
     "require": {
         "symfony/framework-bundle": "2.*",
         "nikic/php-parser" : "*"
+    },
     "suggest": {
     	"twig/extensions":  "*",
         "sensio/framework-extra-bundle":  "2.*",
