@@ -15,7 +15,7 @@
             $('textarea')
                 .blur(function() {
                     var self = this;
-                    $.ajax(updateMessagePath + '/' + encodeURIComponent($(this).data('id')), {
+                    $.ajax(updateMessagePath + '?id=' + encodeURIComponent($(this).data('id')), {
                         type: 'POST',
                         data: {'_method': 'PUT', 'message': $(this).val()},
                         error: function() {

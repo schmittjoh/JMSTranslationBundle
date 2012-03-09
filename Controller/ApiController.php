@@ -28,6 +28,7 @@ use JMS\TranslationBundle\Util\FileUtils;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/api")
@@ -46,14 +47,16 @@ class ApiController
     private $updater;
 
     /**
-     * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages/{id}",
+     * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages",
      * 			name="jms_translation_update_message",
      * 			defaults = {"id" = null},
      * 			options = {"i18n" = false})
      * @Method("PUT")
      */
-    public function updateMessageAction($config, $domain, $locale, $id)
+    public function updateMessageAction(Request $request, $config, $domain, $locale)
     {
+        $id = $request->query->get('id');
+
         $config = $this->configFactory->getConfig($config, $locale);
 
         $files = FileUtils::findTranslationFiles($config->getTranslationsDir());
