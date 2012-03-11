@@ -48,12 +48,13 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
 
             $transNode = $node->getNode('node');
             while ($transNode instanceof \Twig_Node_Expression_Filter
-                       && 'trans' !== $transNode->getNode('filter')->getAttribute('value')) {
+                       && 'trans' !== $transNode->getNode('filter')->getAttribute('value')
+                       && 'transchoice' !== $transNode->getNode('filter')->getAttribute('value')) {
                 $transNode = $transNode->getNode('node');
             }
 
             if (!$transNode instanceof \Twig_Node_Expression_Filter) {
-                throw new RuntimeException(sprintf('The "desc" filter must be applied after a "trans" filter.'));
+                throw new RuntimeException(sprintf('The "desc" filter must be applied after a "trans" or a "transchoice" filter.'));
             }
 
             $wrappingNode = $node->getNode('node');
