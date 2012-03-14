@@ -45,7 +45,10 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
 
         if ($node instanceof TransNode) {
             $id = $node->getNode('body')->getAttribute('data');
-            $domain = $node->getNode('domain')->getAttribute('value');
+            $domain = 'messages';
+            if (null !== $domainNode = $node->getNode('domain')) {
+                $domain = $domainNode->getAttribute('value');
+            }
 
             $message = new Message($id, $domain);
             $message->addSource(new FileSource((string) $this->file, $node->getLine()));

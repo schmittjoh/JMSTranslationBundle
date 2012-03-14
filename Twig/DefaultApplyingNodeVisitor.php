@@ -48,32 +48,49 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
 
             $transNode = $node->getNode('node');
             while ($transNode instanceof \Twig_Node_Expression_Filter
-                       && 'trans' !== $transNode->getNode('filter')->getAttribute('value')) {
+                       && 'trans' !== $transNode->getNode('filter')->getAttribute('value')
+                       && 'transchoice' !== $transNode->getNode('filter')->getAttribute('value')) {
                 $transNode = $transNode->getNode('node');
             }
 
             if (!$transNode instanceof \Twig_Node_Expression_Filter) {
-                throw new RuntimeException(sprintf('The "desc" filter must be applied after a "trans" filter.'));
+                throw new RuntimeException(sprintf('The "desc" filter must be applied after a "trans", or "transchoice" filter.'));
             }
 
             $wrappingNode = $node->getNode('node');
             $testNode = clone $wrappingNode;
             $defaultNode = $node->getNode('arguments')->getNode(0);
 
+            // if the |transchoice filter is used, delegate the call to the TranslationExtension
+            // so that we can catch a possible exception when the default translation has not yet
+            // been extracted
+            if ('transchoice' === $transNode->getNode('filter')->getAttribute('value')) {
+                $transchoiceArguments = new \Twig_Node_Expression_Array(array(), $transNode->getLine());
+                $transchoiceArguments->addElement($wrappingNode->getNode('node'));
+                $transchoiceArguments->addElement($defaultNode);
+                foreach ($wrappingNode->getNode('arguments') as $arg) {
+                    $transchoiceArguments->addElement($arg);
+                }
+
+                $transchoiceNode = new \Twig_Node_Expression_MethodCall(
+                    new \Twig_Node_Expression_ExtensionReference('jms_translation', $transNode->getLine()),
+                    'transchoiceWithDefault', $transchoiceArguments, $transNode->getLine());
+                $node->setNode('node', $transchoiceNode);
+
+                return $node;
+            }
+
             // if the |trans filter has replacements parameters
             // (e.g. |trans({'%foo%': 'bar'}))
-
             if ($wrappingNode->getNode('arguments')->hasNode(0)) {
 
                 $lineno =  $wrappingNode->getLine();
 
                 // remove the replacements from the test node
-
                 $testNode->setNode('arguments', clone $testNode->getNode('arguments'));
                 $testNode->getNode('arguments')->setNode(0, new \Twig_Node_Expression_Array(array(), $lineno));
 
                 // wrap the default node in a |replace filter
-
                 $defaultNode = new \Twig_Node_Expression_Filter(
                     clone $node->getNode('arguments')->getNode(0),
                     new \Twig_Node_Expression_Constant('replace', $lineno),

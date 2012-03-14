@@ -1,0 +1,3 @@
+TestBundle:
+    type: annotation
+    resource: "@TestBundle/Controller/"

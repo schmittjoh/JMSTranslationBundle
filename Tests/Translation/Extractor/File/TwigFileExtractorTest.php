@@ -124,8 +124,8 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         }
 
         $env = new \Twig_Environment();
-        $env->addExtension(new SymfonyTranslationExtension(new IdentityTranslator(new MessageSelector())));
-        $env->addExtension(new TranslationExtension(true));
+        $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
+        $env->addExtension(new TranslationExtension($translator, true));
 
         foreach ($env->getNodeVisitors() as $visitor) {
             if ($visitor instanceof DefaultApplyingNodeVisitor) {

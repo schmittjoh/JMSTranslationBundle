@@ -1,0 +1,7 @@
+{# This translation does not exist in our messages.en.yml file #}
+{{ "text.apples_remaining_does_not_exist"|transchoice(nbApples)
+    |desc("{0} There is no apple|{1} There is one apple|]1,Inf] There are %count% apples") }}
+
+{# This translation does exist in our messages.en.yml file #}
+{{ "text.apples_remaining"|transchoice(nbApples)
+    |desc("Some default message which should never be applied because it instead is coming from the messages file.") }}

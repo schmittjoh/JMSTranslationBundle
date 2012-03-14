@@ -23,12 +23,16 @@ namespace JMS\TranslationBundle\Twig;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
+use Symfony\Component\Translation\TranslatorInterface;
+
 class TranslationExtension extends \Twig_Extension
 {
+    private $translator;
     private $debug;
 
-    public function __construct($debug = false)
+    public function __construct(TranslatorInterface $translator, $debug = false)
     {
+        $this->translator = $translator;
         $this->debug = $debug;
     }
 
@@ -52,6 +56,19 @@ class TranslationExtension extends \Twig_Extension
             'desc' => new \Twig_Filter_Method($this, 'desc'),
             'meaning' => new \Twig_Filter_Method($this, 'meaning'),
         );
+    }
+
+    public function transchoiceWithDefault($message, $defaultMessage, $count, array $arguments = array(), $domain = null, $locale = null)
+    {
+        if (null === $domain) {
+            $domain = 'messages';
+        }
+
+        try {
+            return $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+        } catch (\InvalidArgumentException $unableToChooseTranslationEx) {
+            return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+        }
     }
 
     public function desc($v)

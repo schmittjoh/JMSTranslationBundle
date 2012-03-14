@@ -19,19 +19,12 @@
 namespace JMS\TranslationBundle\Tests\Translation\Extractor;
 
 use Symfony\Component\HttpKernel\Log\NullLogger;
-
 use Doctrine\Common\Annotations\DocParser;
-
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
-
 use Doctrine\Common\Annotations\AnnotationReader;
-
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
-
 use Symfony\Component\Validator\Mapping\ClassMetadataFactory;
-
 use JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor;
-
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
@@ -95,8 +88,8 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
     private function extract($directory)
     {
         $twig = new \Twig_Environment();
-        $twig->addExtension(new TranslationExtension(new IdentityTranslator(new MessageSelector())));
-        $twig->addExtension(new TranslationExtension());
+        $twig->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
+        $twig->addExtension(new TranslationExtension($translator));
 
         $docParser = new DocParser();
         $docParser->setImports(array(

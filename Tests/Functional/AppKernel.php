@@ -19,7 +19,7 @@
 namespace JMS\TranslationBundle\Tests\Functional;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use Symfony\Component\HttpKernel\Util\Filesystem;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -46,6 +46,7 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         return array(
+            new \JMS\TranslationBundle\Tests\Functional\TestBundle\TestBundle(),
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \JMS\TranslationBundle\JMSTranslationBundle(),

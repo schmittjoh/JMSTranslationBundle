@@ -8,5 +8,7 @@ framework:
     validation:       
         enabled: true
         enable_annotations: true
+    translator:
+        enabled: true
     router:
-        resource: %kernel.root_dir%/config/routing.yml
+        resource: "%kernel.root_dir%/config/routing.yml"

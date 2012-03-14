@@ -19,7 +19,7 @@
 namespace JMS\TranslationBundle\Translation\Dumper;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use Symfony\Component\HttpKernel\Util\Filesystem;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Translation\MessageCatalogue as SymfonyCatalogue;
 use Symfony\Component\Translation\Dumper\DumperInterface as SymfonyDumper;
 
