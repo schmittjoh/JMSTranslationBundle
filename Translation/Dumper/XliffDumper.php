@@ -121,10 +121,10 @@ class XliffDumper implements DumperInterface
             }
 
             $unit->appendChild($source = $doc->createElement('source'));
-            $source->appendChild($doc->createTextNode($message->getSourceString()));
+            $source->appendChild($doc->createCDATASection($message->getSourceString()));
 
             $unit->appendChild($target = $doc->createElement('target'));
-            $target->appendChild($doc->createTextNode($message->getLocaleString()));
+            $target->appendChild($doc->createCDATASection($message->getLocaleString()));
 
             if ($message->isNew()) {
                 $target->setAttribute('state', 'new');
