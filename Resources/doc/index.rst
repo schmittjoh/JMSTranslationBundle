@@ -1,5 +1,5 @@
 JMSTranslationBundle
-===================
+====================
 
 Introduction
 ------------
