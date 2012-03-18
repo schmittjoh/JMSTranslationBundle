@@ -2,7 +2,7 @@ JMSTranslationBundle
 ===================
 
 Documentation: 
-[Resources/doc](https://github.com/schmittjoh/JMSTranslationBundle/blob/master/Resources/doc/index.rst)
+[Resources/doc](http://jmsyst.com/bundles/JMSTranslationBundle)
     
 
 Code License:
