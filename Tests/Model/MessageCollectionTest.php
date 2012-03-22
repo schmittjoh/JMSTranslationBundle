@@ -20,6 +20,7 @@ namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCollection;
+use JMS\TranslationBundle\Model\FileSource;
 
 class MessageCollectionTest extends \PHPUnit_Framework_TestCase
 {
@@ -137,4 +138,133 @@ class MessageCollectionTest extends \PHPUnit_Framework_TestCase
         $col->merge($col2);
         $this->assertEquals(array('a', 'b'), array_keys($col->all()));
     }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage The message 'a' exists with two different descs: 'a' in foo on line 1, and 'b' in bar on line 2
+     */
+    public function testAddChecksConsistency()
+    {
+        $col = new MessageCollection();
+
+        $msg = new Message('a');
+        $msg->setDesc('a');
+        $msg->addSource(new FileSource('foo', 1));
+
+        $msg2 = new Message('a');
+        $msg2->setDesc('b');
+        $msg2->addSource(new FileSource('bar', 2));
+
+        $col->add($msg);
+        $col->add($msg2);
+    }
+
+    public function testAddChecksConsistencyButAllowsEmptyDescs()
+    {
+        $col = new MessageCollection();
+
+        // both message have not desc
+
+        $msg = new Message('a');
+        $msg2 = new Message('a');
+
+        $col->add($msg);
+        $col->add($msg2);
+
+        // first message have a desc
+
+        $msg = new Message('b');
+        $msg->setDesc('b');
+
+        $msg2 = new Message('b');
+
+        $col->add($msg);
+        $col->add($msg2);
+
+        // second message have a desc
+
+        $msg = new Message('c');
+
+        $msg2 = new Message('c');
+        $msg2->setDesc('c');
+
+        $col->add($msg);
+        $col->add($msg2);
+
+        // non-null empty descs
+
+        $msg = new Message('d');
+        $msg->setDesc('d');
+
+        $msg2 = new Message('d');
+        $msg2->setDesc('');
+
+        $col->add($msg);
+        $col->add($msg2);
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage The message 'a' exists with two different descs: 'a' in foo on line 1, and 'b' in bar on line 2
+     */
+    public function testSetChecksConsistency()
+    {
+        $col = new MessageCollection();
+
+        $msg = new Message('a');
+        $msg->setDesc('a');
+        $msg->addSource(new FileSource('foo', 1));
+
+        $msg2 = new Message('a');
+        $msg2->setDesc('b');
+        $msg2->addSource(new FileSource('bar', 2));
+
+        $col->set($msg);
+        $col->set($msg2);
+    }
+
+    public function testSetChecksConsistencyButAllowsEmptyDescs()
+    {
+        $col = new MessageCollection();
+
+        // both message have not desc
+
+        $msg = new Message('a');
+        $msg2 = new Message('a');
+
+        $col->set($msg);
+        $col->set($msg2);
+
+        // first message have a desc
+
+        $msg = new Message('b');
+        $msg->setDesc('b');
+
+        $msg2 = new Message('b');
+
+        $col->set($msg);
+        $col->set($msg2);
+
+        // second message have a desc
+
+        $msg = new Message('c');
+
+        $msg2 = new Message('c');
+        $msg2->setDesc('c');
+
+        $col->set($msg);
+        $col->set($msg2);
+
+        // non-null empty descs
+
+        $msg = new Message('d');
+        $msg->setDesc('d');
+
+        $msg2 = new Message('d');
+        $msg2->setDesc('');
+
+        $col->set($msg);
+        $col->set($msg2);
+    }
+
 }
