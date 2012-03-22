@@ -18,11 +18,42 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
+use JMS\TranslationBundle\Model\Message;
+
+use JMS\TranslationBundle\Model\MessageCatalogue;
+
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 
 class XliffDumperTest extends BaseDumperTest
 {
+    public function testCdataOutput()
+    {
+        $dumper = $this->getDumper();
+
+        $catalogue = new MessageCatalogue();
+        $catalogue->add(Message::create('foo')->setLocaleString('<bar>')->setDesc('<baz>'));
+        $expected = <<<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+  <file source-language="en" target-language="" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.0.0-DEV"/>
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit id="0" resname="foo">
+        <source><![CDATA[<baz>]]></source>
+        <target state="new"><![CDATA[<bar>]]></target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+
+EOF;
+        $this->assertEquals($expected, $dumper->dump($catalogue, 'messages'));
+    }
+
     protected function getDumper()
     {
         $dumper = new XliffDumper();
