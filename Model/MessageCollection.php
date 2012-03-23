@@ -150,7 +150,7 @@ class MessageCollection
         }
     }
 
-    protected function checkConsistency(Message $oldMessage, Message $newMessage)
+    private function checkConsistency(Message $oldMessage, Message $newMessage)
     {
         $oldDesc = $oldMessage->getDesc();
         $newDesc = $newMessage->getDesc();
