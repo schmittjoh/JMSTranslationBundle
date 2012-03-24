@@ -50,11 +50,8 @@ class MessageCollection
     public function add(Message $message)
     {
         if (isset($this->messages[$id = $message->getId()])) {
-
-            $existingMessage = $this->messages[$id];
-            $this->checkConsistency($existingMessage, $message);
-
-            $existingMessage->merge($message);
+            $this->checkConsistency($this->messages[$id], $message);
+            $this->messages[$id]->merge($message);
 
             return;
         }
@@ -68,11 +65,10 @@ class MessageCollection
     public function set(Message $message)
     {
         if (isset($this->messages[$id = $message->getId()])) {
-            $existingMessage = $this->messages[$id];
-            $this->checkConsistency($existingMessage, $message);
+            $this->checkConsistency($this->messages[$id], $message);
         }
 
-        $this->messages[$message->getId()] = $message;
+        $this->messages[$id] = $message;
     }
 
     /**
