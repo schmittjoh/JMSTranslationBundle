@@ -26,7 +26,7 @@ final class ConfigBuilder
     private $domains = array();
     private $outputFormat;
     private $defaultOutputFormat = 'xliff';
-    private $scanDirs;
+    private $scanDirs = array();
     private $excludedDirs = array('Tests');
     private $excludedNames = array('*Test.php', '*TestCase.php');
     private $enabledExtractors = array();
