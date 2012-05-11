@@ -12,7 +12,7 @@
     ],
     "require": {
         "symfony/framework-bundle": "2.*",
-        "nikic/php-parser" : "*"
+        "nikic/php-parser" : "0.9.1"
     },
     "suggest": {
     	"twig/twig":  "1.*",
