@@ -75,7 +75,8 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     continue;
                 }
 
-                if ('Symfony\Component\Form\FormBuilder' !== $this->getFqcn($param->type->parts)) {
+                if ('Symfony\Component\Form\FormBuilder' !== $this->getFqcn($param->type->parts) && 
+                    'Symfony\Component\Form\FormBuilderInterface' !== $this->getFqcn($param->type->parts)) {
                     continue;
                 }
 

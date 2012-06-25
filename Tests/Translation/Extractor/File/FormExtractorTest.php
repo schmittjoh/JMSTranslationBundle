@@ -54,6 +54,36 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
 
+    /**
+     * This test is used to check compatibility with Symfony 2.1
+     * In Symfony 2.1 the AbstractType must use FormBuilderInterface instead of FormBuilder
+     */
+    public function testExtractWithInterface()
+    {
+        $expected = new MessageCatalogue();
+        $path = __DIR__.'/Fixture/MyFormTypeWithInterface.php';
+        
+        $message = new Message('bar');
+        $message->addSource(new FileSource($path, 36));
+        $expected->add($message);
+
+        $message = new Message('form.states.empty_value');
+        $message->setDesc('Please select a state');
+        $message->addSource(new FileSource($path, 37));
+        $expected->add($message);
+
+        $message = new Message('form.label.lastname');
+        $message->setDesc('Lastname');
+        $message->addSource(new FileSource($path, 33));
+        $expected->add($message);
+
+        $message = new Message('form.label.firstname');
+        $message->addSource(new FileSource($path, 30));
+        $expected->add($message);
+
+        $this->assertEquals($expected, $this->extract('MyFormTypeWithInterface.php'));
+    }
+
     private function extract($file, FormExtractor $extractor = null)
     {
         if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
