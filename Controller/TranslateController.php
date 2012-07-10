@@ -34,19 +34,19 @@ use Symfony\Component\Translation\MessageCatalogue;
 class TranslateController
 {
     /** @DI\Inject */
-    private $request;
+    public $request;
 
     /** @DI\Inject("jms_translation.config_factory") */
-    private $configFactory;
+    public $configFactory;
 
     /** @DI\Inject("jms_translation.loader_manager") */
-    private $loader;
+    public $loader;
 
     /** @DI\Inject("service_container") */
-    private $container;
+    public $container;
 
     /** @DI\Inject("%jms_translation.source_language%") */
-    private $sourceLanguage;
+    public $sourceLanguage;
 
     /**
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
