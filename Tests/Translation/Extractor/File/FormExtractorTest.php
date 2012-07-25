@@ -51,6 +51,15 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 30));
         $expected->add($message);
 
+        $message = new Message('form.label.password');
+        $message->addSource(new FileSource($path, 42));
+        $expected->add($message);
+
+        $message = new Message('form.label.password_repeated');
+        $message->setDesc('Repeat password');
+        $message->addSource(new FileSource($path, 45));
+        $expected->add($message);
+
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
 
