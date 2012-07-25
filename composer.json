@@ -1,9 +1,10 @@
 {
     "name":         "jms/translation-bundle",
-    "description":  "Makes translating a site easier while retaining all of the performance optimizations.",
-    "keywords":     ["translation","multilanguage"],
+    "description":  "Puts the Symfony2 Translation Component on steroids",
+    "keywords":     ["translation", "multilanguage", "extract", "webinterface", "ui", "i18n", "extraction", "interface"],
+    "homepage":     "http://jmsyst.com/bundles/JMSTranslationBundle",
     "type":         "symfony-bundle",
-    "license":      "Apache",
+    "license":      "Apache2",
     "authors": [
         {
             "name":   "Johannes M. Schmitt",
