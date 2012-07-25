@@ -99,3 +99,12 @@ into your project:
 .. code-block :: bash
 
     php bin/vendors install
+
+
+Testing
+-------
+To run the bundle test suite run it from a symfony-standard sandbox as the bundle contains some framework dependencies.
+
+.. code-block :: bash
+
+    phpunit -c vendor/path_to_jms_translation_bundle/phpunit.xml.dist
