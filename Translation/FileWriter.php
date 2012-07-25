@@ -56,7 +56,7 @@ class FileWriter
 
         // sort messages before dumping
         $catalogue->getDomain($domain)->sort(function($a, $b) {
-            return strcasecmp($a->getId(), $b->getId());
+            return strcmp($a->getId(), $b->getId());
         });
 
         file_put_contents($filePath, $this->dumpers[$format]->dump($catalogue, $domain));
