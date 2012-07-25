@@ -6,7 +6,7 @@
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
-      <trans-unit id="0" resname="foo.bar.baz">
+      <trans-unit id="fb2d5a853a8edd799b4084a828d7d6746210534b" resname="foo.bar.baz">
         <jms:reference-file line="1" column="2">c/foo/bar</jms:reference-file>
         <jms:reference-file line="1" column="2">bar/baz</jms:reference-file>
         <source>foo.bar.baz</source>
