@@ -45,6 +45,10 @@ class MyFormType extends AbstractType
                   'label' => /** @Desc("Repeat password") */ 'form.label.password_repeated'
                 ),
             ))
+            ->add('street', 'text', array(
+                'label' => /** @Desc("Street") */ 'form.label.street',
+                'translation_domain' => 'address'
+            ))
         ;
     }
 }

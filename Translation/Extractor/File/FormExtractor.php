@@ -136,6 +136,23 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                 return;
             }
 
+            // first check if a translation_domain is set for this field
+            $domain = null;
+            foreach ($node->args[2]->value->items as $item) {
+                if (!$item->key instanceof \PHPParser_Node_Scalar_String) {
+                    continue;
+                }
+
+                if ('translation_domain' === $item->key->value) {
+                    if (!$item->value instanceof \PHPParser_Node_Scalar_String) {
+                        continue;
+                    }
+
+                    $domain = $item->value->value;
+                }
+            }
+
+            // look for options containing a message
             foreach ($node->args[2]->value->items as $item) {
                 if (!$item->key instanceof \PHPParser_Node_Scalar_String) {
                     continue;
@@ -164,22 +181,22 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
                 if ('choices' === $item->key->value) {
                     foreach ($item->value->items as $sitem) {
-                        $this->parseItem($sitem);
+                        $this->parseItem($sitem, $domain);
                     }
                 } elseif ('first_options' === $item->key->value || 'second_options' === $item->key->value) {
                     foreach ($item->value->items as $sitem) {
                         if ('label' == $sitem->key->value) {
-                          $this->parseItem($sitem);
+                          $this->parseItem($sitem, $domain);
                         }
                     }
                 } else {
-                    $this->parseItem($item);
+                    $this->parseItem($item, $domain);
                 }
             }
         }
     }
 
-    private function parseItem($item)
+    private function parseItem($item, $domain = null)
     {
         // get doc comment
         $ignore = false;
@@ -211,7 +228,12 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
             throw new RuntimeException($message);
         }
 
-        $message = new Message($item->value->value);
+        if (null === $domain) {
+            $message = new Message($item->value->value);
+        } else {
+            $message = new Message($item->value->value, $domain);
+        }
+
         $message->addSource(new FileSource((string) $this->file, $item->value->getLine()));
 
         if ($desc) {
