@@ -60,6 +60,12 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 45));
         $expected->add($message);
 
+        $message = new Message('form.label.street', 'address');
+        $message->setDesc('Street');
+        $message->addSource(new FileSource($path, 49));
+        $expected->add($message);
+
+
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
 
