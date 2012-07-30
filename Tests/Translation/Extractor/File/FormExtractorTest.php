@@ -103,6 +103,32 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->extract('MyFormTypeWithInterface.php'));
     }
 
+    /**
+     * This test is used to check if the default 'translation_domain' option
+     * set for the entire form is extracted correctly
+     */
+    public function testExtractWithDefaultDomain()
+    {
+        $expected = new MessageCatalogue();
+        $path = __DIR__.'/Fixture/MyFormTypeWithDefaultDomain.php';
+
+        $message = new Message('form.label.lastname', 'person');
+        $message->setDesc('Lastname');
+        $message->addSource(new FileSource($path, 34));
+        $expected->add($message);
+
+        $message = new Message('form.label.firstname', 'person');
+        $message->addSource(new FileSource($path, 31));
+        $expected->add($message);
+
+        $message = new Message('form.label.street', 'address');
+        $message->setDesc('Street');
+        $message->addSource(new FileSource($path, 37));
+        $expected->add($message);
+
+        $this->assertEquals($expected, $this->extract('MyFormTypeWithDefaultDomain.php'));
+    }
+
     private function extract($file, FormExtractor $extractor = null)
     {
         if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
