@@ -60,6 +60,11 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 45));
         $expected->add($message);
 
+        $message = new Message('form.error.password_mismatch');
+        $message->setDesc('The entered passwords do not match');
+        $message->addSource(new FileSource($path, 47));
+        $expected->add($message);
+
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
 
