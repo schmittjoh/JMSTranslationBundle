@@ -44,6 +44,7 @@ class MyFormType extends AbstractType
                 'second_options' => array(
                   'label' => /** @Desc("Repeat password") */ 'form.label.password_repeated'
                 ),
+                'invalid_message' => /** @Desc("The entered passwords do not match") */ 'form.error.password_mismatch'
             ))
         ;
     }
