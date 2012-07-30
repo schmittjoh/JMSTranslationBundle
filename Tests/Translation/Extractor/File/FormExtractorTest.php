@@ -62,9 +62,13 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
 
         $message = new Message('form.label.street', 'address');
         $message->setDesc('Street');
-        $message->addSource(new FileSource($path, 49));
+        $message->addSource(new FileSource($path, 50));
         $expected->add($message);
 
+        $message = new Message('form.error.password_mismatch');
+        $message->setDesc('The entered passwords do not match');
+        $message->addSource(new FileSource($path, 47));
+        $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
