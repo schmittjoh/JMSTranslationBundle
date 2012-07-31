@@ -189,6 +189,8 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                           $this->parseItem($sitem, $domain);
                         }
                     }
+                } elseif ('invalid_message' === $item->key->value) {
+                    $this->parseItem($item, 'validators');
                 } else {
                     $this->parseItem($item, $domain);
                 }
