@@ -43,7 +43,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
     private $localOptionResolverVars;
     private $logger;
     private $defaultDomain;
-    private $defaultDomainMessages = array();
+    private $defaultDomainMessages;
 
     public function __construct(DocParser $docParser)
     {
@@ -69,9 +69,15 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
             return;
         }
 
+        if ($node instanceof \PHPParser_Node_Stmt_Class) {
+            $this->defaultDomain = null;
+            $this->defaultDomainMessages = array();
+        }
+
         if ($node instanceof \PHPParser_Node_Stmt_ClassMethod) {
             $this->inMethod = true;
             $this->localFormBuilderVars = array();
+            $this->localOptionResolverVars = array();
 
             foreach ($node->params as $param) {
                 if (!$param->type instanceof \PHPParser_Node_Name) {

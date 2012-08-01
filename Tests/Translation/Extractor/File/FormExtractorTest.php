@@ -28,11 +28,11 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 
 class FormExtractorTest extends \PHPUnit_Framework_TestCase
 {
-    public function testExtract()
+    public function testExtract(FormExtractor $extractor = null)
     {
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormType.php';
-        
+
         $message = new Message('bar');
         $message->addSource(new FileSource($path, 36));
         $expected->add($message);
@@ -70,7 +70,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 47));
         $expected->add($message);
 
-        $this->assertEquals($expected, $this->extract('MyFormType.php'));
+        $this->assertEquals($expected, $this->extract('MyFormType.php', $extractor));
     }
 
     /**
@@ -107,7 +107,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
      * This test is used to check if the default 'translation_domain' option
      * set for the entire form is extracted correctly
      */
-    public function testExtractWithDefaultDomain()
+    public function testExtractWithDefaultDomain(FormExtractor $extractor = null)
     {
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormTypeWithDefaultDomain.php';
@@ -126,7 +126,33 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 37));
         $expected->add($message);
 
-        $this->assertEquals($expected, $this->extract('MyFormTypeWithDefaultDomain.php'));
+        $this->assertEquals($expected, $this->extract('MyFormTypeWithDefaultDomain.php', $extractor));
+    }
+
+    /**
+     * Run extractor tests with and without a default domain as a form option
+     * with the same extractor instance to see that the default domain isn't
+     * persisting.
+     */
+    public function testExtractWithNoDefaultDomainAfterDefaultDomainExtraction()
+    {
+        $extractor = $this->createFormExtractor();
+
+        $this->testExtractWithDefaultDomain($extractor);
+        $this->testExtract($extractor);
+    }
+
+    private function createFormExtractor()
+    {
+        $docParser = new DocParser();
+        $docParser->setImports(array(
+            'desc' => 'JMS\TranslationBundle\Annotation\Desc',
+            'meaning' => 'JMS\TranslationBundle\Annotation\Meaning',
+            'ignore' => 'JMS\TranslationBundle\Annotation\Ignore',
+        ));
+        $docParser->setIgnoreNotImportedAnnotations(true);
+
+        return new FormExtractor($docParser);
     }
 
     private function extract($file, FormExtractor $extractor = null)
@@ -137,15 +163,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $file = new \SplFileInfo($file);
 
         if (null === $extractor) {
-            $docParser = new DocParser();
-            $docParser->setImports(array(
-                'desc' => 'JMS\TranslationBundle\Annotation\Desc',
-                'meaning' => 'JMS\TranslationBundle\Annotation\Meaning',
-                'ignore' => 'JMS\TranslationBundle\Annotation\Ignore',
-            ));
-            $docParser->setIgnoreNotImportedAnnotations(true);
-
-            $extractor = new FormExtractor($docParser);
+            $extractor = $this->createFormExtractor();
         }
 
         $lexer = new \PHPParser_Lexer(file_get_contents($file));
