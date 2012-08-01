@@ -147,7 +147,6 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
             }
 
             // ignore everything except an array
-            // FIXME: Maybe we should throw an exception here?
             if (!$node->args[2]->value instanceof \PHPParser_Node_Expr_Array) {
                 return;
             }
@@ -239,13 +238,11 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
 
         // check if options were passed
-        // FIXME: Maybe we should throw an exception here? Options are required
         if (!isset($node->args[0])) {
             return;
         }
 
         // ignore everything except an array
-        // FIXME: Maybe we should throw an exception here? Options should always be an array
         if (!$node->args[0]->value instanceof \PHPParser_Node_Expr_Array) {
             return;
         }
