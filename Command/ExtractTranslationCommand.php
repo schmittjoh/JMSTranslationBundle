@@ -56,6 +56,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->addOption('default-output-format', null, InputOption::VALUE_REQUIRED, 'The default output format (defaults to xliff).')
             ->addOption('keep', null, InputOption::VALUE_NONE, 'Define if the updater service should keep the old translation (defaults to false).')
             ->addOption('external-translations-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED , 'Load external translation ressources')
+            ->addOption('mark-changed', null, InputOption::VALUE_NONE, 'Should files have generation time updated even if they have no changes?')
         ;
     }
 
@@ -83,18 +84,25 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             $logger->setLevel(OutputLogger::ALL ^ OutputLogger::DEBUG);
         }
 
+        $changeSet = $updater->getChangeSet($config);
+        $addedMessages   = $changeSet->getAddedMessages();
+        $deletedMessages = $changeSet->getAddedMessages();
         if ($input->getOption('dry-run')) {
-            $changeSet = $updater->getChangeSet($config);
-
-            $output->writeln('Added Messages: '.implode(', ', array_keys($changeSet->getAddedMessages())));
+            $output->writeln('Added Messages: '.implode(', ', array_keys($addedMessages)));
 
             if ($config->isKeepOldMessages()) {
                 $output->writeln('Deleted Messages: # none as "Keep Old Translations" is true #');
             } else {
-                $output->writeln('Deleted Messages: '.implode(', ', array_keys($changeSet->getDeletedMessages())));
+                $output->writeln('Deleted Messages: '.implode(', ', array_keys($deletedMessages)));
             }
 
             return;
+        }
+
+        if (!$input->getOption('mark-changed')) {
+            if (empty($addedMessages) && empty($deletedMessages)) {
+                return;
+            }
         }
 
         $updater->process($config);
