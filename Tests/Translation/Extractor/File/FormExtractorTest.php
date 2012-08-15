@@ -28,7 +28,12 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 
 class FormExtractorTest extends \PHPUnit_Framework_TestCase
 {
-    public function testExtract(FormExtractor $extractor = null)
+    /**
+     * @var FormExtractor
+     */
+    private $extractor;
+
+    public function testExtract()
     {
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormType.php';
@@ -70,7 +75,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 47));
         $expected->add($message);
 
-        $this->assertEquals($expected, $this->extract('MyFormType.php', $extractor));
+        $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
 
     /**
@@ -107,7 +112,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
      * This test is used to check if the default 'translation_domain' option
      * set for the entire form is extracted correctly
      */
-    public function testExtractWithDefaultDomain(FormExtractor $extractor = null)
+    public function testExtractWithDefaultDomain()
     {
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormTypeWithDefaultDomain.php';
@@ -126,7 +131,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 37));
         $expected->add($message);
 
-        $this->assertEquals($expected, $this->extract('MyFormTypeWithDefaultDomain.php', $extractor));
+        $this->assertEquals($expected, $this->extract('MyFormTypeWithDefaultDomain.php'));
     }
 
     /**
@@ -136,13 +141,11 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
      */
     public function testExtractWithNoDefaultDomainAfterDefaultDomainExtraction()
     {
-        $extractor = $this->createFormExtractor();
-
-        $this->testExtractWithDefaultDomain($extractor);
-        $this->testExtract($extractor);
+        $this->testExtractWithDefaultDomain();
+        $this->testExtract();
     }
 
-    private function createFormExtractor()
+    protected function setUp()
     {
         $docParser = new DocParser();
         $docParser->setImports(array(
@@ -152,26 +155,22 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         ));
         $docParser->setIgnoreNotImportedAnnotations(true);
 
-        return new FormExtractor($docParser);
+        $this->extractor = new FormExtractor($docParser);
     }
 
-    private function extract($file, FormExtractor $extractor = null)
+    private function extract($file)
     {
         if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
             throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
         }
         $file = new \SplFileInfo($file);
 
-        if (null === $extractor) {
-            $extractor = $this->createFormExtractor();
-        }
-
         $lexer = new \PHPParser_Lexer(file_get_contents($file));
         $parser = new \PHPParser_Parser();
         $ast = $parser->parse($lexer);
 
         $catalogue = new MessageCatalogue();
-        $extractor->visitPhpFile($file, $catalogue, $ast);
+        $this->extractor->visitPhpFile($file, $catalogue, $ast);
 
         return $catalogue;
     }
