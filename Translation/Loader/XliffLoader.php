@@ -30,8 +30,9 @@ class XliffLoader implements LoaderInterface
         $previous = libxml_use_internal_errors(true);
         if (false === $doc = simplexml_load_file($resource)) {
             libxml_use_internal_errors($previous);
+            $libxmlError = libxml_get_last_error();
 
-            throw new RuntimeException(sprintf('Could not load XML-file "%s": %s', $resource, libxml_get_last_error()));
+            throw new RuntimeException(sprintf('Could not load XML-file "%s": %s', $resource, $libxmlError->message));
         }
         libxml_use_internal_errors($previous);
 
