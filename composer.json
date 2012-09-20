@@ -13,7 +13,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "symfony/framework-bundle": ">=2.0,<2.2-dev",
+        "symfony/framework-bundle": ">=2.1,<2.2-dev",
         "nikic/php-parser": "0.9.1",
         "symfony/console": "*"
     },
@@ -37,7 +37,7 @@
     "target-dir": "JMS/TranslationBundle",
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "1.1-dev"
         }
     }
 }
