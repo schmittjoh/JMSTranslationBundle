@@ -13,9 +13,9 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "symfony/framework-bundle": "2.*",
+        "symfony/framework-bundle": ">=2.0,<2.2-dev",
         "nikic/php-parser": "0.9.1",
-        "symfony/console": "2.*"
+        "symfony/console": "*"
     },
     "require-dev": {
         "symfony/twig-bundle": "*",
