@@ -28,6 +28,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class JMSTranslationBundle extends Bundle
 {
+    const VERSION = '1.0.1';
+
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new IntegrationPass());
