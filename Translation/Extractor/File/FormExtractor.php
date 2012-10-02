@@ -341,8 +341,10 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         $this->catalogue = $catalogue;
         $this->traverser->traverse($ast);
 
-        foreach ($this->defaultDomainMessages as $message) {
-            $this->addToCatalogue($message['id'], $message['source'], $this->defaultDomain, $message['desc'], $message['meaning']);
+        if ($this->defaultDomainMessages) {
+            foreach ($this->defaultDomainMessages as $message) {
+                $this->addToCatalogue($message['id'], $message['source'], $this->defaultDomain, $message['desc'], $message['meaning']);
+            }
         }
     }
 
