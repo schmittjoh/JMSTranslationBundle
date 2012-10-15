@@ -45,6 +45,13 @@ class ExtractorManager implements ExtractorInterface
         $this->logger = $logger;
     }
 
+    public function reset()
+    {
+        $this->directories       = array();
+        $this->enabledExtractors = array();
+        $this->fileExtractor->reset();
+    }
+
     /**
      * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
      */
