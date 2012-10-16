@@ -17,6 +17,9 @@
         "nikic/php-parser": "0.9.1",
         "symfony/console": "*"
     },
+    "conflict": {
+        "twig/twig": ">=1.10.2"
+    },
     "require-dev": {
         "symfony/twig-bundle": "*",
         "symfony/browser-kit": "*",
