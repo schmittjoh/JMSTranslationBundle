@@ -70,6 +70,11 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 50));
         $expected->add($message);
 
+        $message = new Message('form.label.zip', 'address');
+        $message->setDesc('ZIP');
+        $message->addSource(new FileSource($path, 55));
+        $expected->add($message);
+
         $message = new Message('form.error.password_mismatch', 'validators');
         $message->setDesc('The entered passwords do not match');
         $message->addSource(new FileSource($path, 47));
@@ -86,7 +91,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
     {
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormTypeWithInterface.php';
-        
+
         $message = new Message('bar');
         $message->addSource(new FileSource($path, 36));
         $expected->add($message);
