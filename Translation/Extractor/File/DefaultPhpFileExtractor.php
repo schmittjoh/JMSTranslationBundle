@@ -44,6 +44,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     private $file;
     private $docParser;
     private $logger;
+    private $previousNode;
 
     public function __construct(DocParser $docParser)
     {
@@ -62,9 +63,12 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
 
     public function enterNode(\PHPParser_Node $node)
     {
+
         if (!$node instanceof \PHPParser_Node_Expr_MethodCall
             || !is_string($node->name)
             || ('trans' !== strtolower($node->name) && 'transchoice' !== strtolower($node->name))) {
+
+            $this->previousNode = $node;
             return;
         }
 
@@ -154,6 +158,12 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         // -> /** @Desc("FOO") */ trans('my.id')
         // /** @Desc("FOO") */ ->trans('my.id')
         // /** @Desc("FOO") */ $translator->trans('my.id')
-        return $node->getDocComment();
+        if (null !== $comment = $node->getDocComment()) {
+            return $comment;
+        } elseif (null !== $this->previousNode) {
+            return $this->previousNode->getDocComment();
+        }
+
+        return null;
     }
 }
