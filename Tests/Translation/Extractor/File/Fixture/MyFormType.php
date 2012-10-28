@@ -50,6 +50,11 @@ class MyFormType extends AbstractType
                 'label' => /** @Desc("Street") */ 'form.label.street',
                 'translation_domain' => 'address'
             ))
+            ->add('zip', 'text', array(
+                /** @Desc("ZIP") */
+                'label' => 'form.label.zip',
+                'translation_domain' => 'address'
+            ))
         ;
     }
 }

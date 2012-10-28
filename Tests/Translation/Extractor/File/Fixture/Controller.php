@@ -75,4 +75,10 @@ class Controller
     {
         $arr['foo']->trans('text.array_method_call');
     }
+
+    public function assignToVar()
+    {
+        /** @Desc("The var %foo% should be assigned.") */
+        return $this->translator->trans('text.var.assign', array('%foo%' => 'fooVar'));
+    }
 }
