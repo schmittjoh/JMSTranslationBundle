@@ -140,9 +140,14 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
                     $extension = substr($file, $pos + 1);
 
                     if ('php' === $extension) {
+                        try {
+                            $lexer = new \PHPParser_Lexer(file_get_contents($file));
+                            $ast = $this->phpParser->parse($lexer);
+                        } catch (\PHPParser_Error $ex) {
+                            throw new \RuntimeException(sprintf('Could not parse "%s": %s', $file, $ex->getMessage()), $ex->getCode(), $ex);
+                        }
+
                         $visitingMethod = 'visitPhpFile';
-                        $lexer = new \PHPParser_Lexer(file_get_contents($file));
-                        $ast = $this->phpParser->parse($lexer);
                         $visitingArgs[] = $ast;
                     } else if ('twig' === $extension) {
                         $visitingMethod = 'visitTwigFile';
