@@ -50,6 +50,7 @@ class OutputLogger implements LoggerInterface
     {
         return $this->emerg($message, $context);
     }
+
     public function emerg($message, array $context = array())
     {
         if (0 === ($this->level & self::EMERG)) {
@@ -72,6 +73,7 @@ class OutputLogger implements LoggerInterface
     {
         return $this->crit($message, $context);
     }
+
     public function crit($message, array $context = array())
     {
         if (0 === ($this->level & self::CRIT)) {
@@ -85,6 +87,7 @@ class OutputLogger implements LoggerInterface
     {
         return $this->err($message, $context);
     }
+
     public function err($message, array $context = array())
     {
         if (0 === ($this->level & self::ERR)) {
@@ -98,6 +101,7 @@ class OutputLogger implements LoggerInterface
     {
         return $this->warn($message, $context);
     }
+
     public function warn($message, array $context = array())
     {
         if (0 === ($this->level & self::WARN)) {
