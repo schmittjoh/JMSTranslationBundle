@@ -46,6 +46,10 @@ class OutputLogger implements LoggerInterface
         $this->level = $level;
     }
 
+    public function emergency($message, array $context = array())
+    {
+        return $this->emerg($message, $context);
+    }
     public function emerg($message, array $context = array())
     {
         if (0 === ($this->level & self::EMERG)) {
@@ -64,6 +68,10 @@ class OutputLogger implements LoggerInterface
         $this->output->writeln('<error>'.$message.'</error>');
     }
 
+    public function critical($message, array $context = array())
+    {
+        return $this->crit($message, $context);
+    }
     public function crit($message, array $context = array())
     {
         if (0 === ($this->level & self::CRIT)) {
@@ -73,6 +81,10 @@ class OutputLogger implements LoggerInterface
         $this->output->writeln('<error>'.$message.'</error>');
     }
 
+    public function error($message, array $context = array())
+    {
+        return $this->err($message, $context);
+    }
     public function err($message, array $context = array())
     {
         if (0 === ($this->level & self::ERR)) {
@@ -82,6 +94,10 @@ class OutputLogger implements LoggerInterface
         $this->output->writeln('<error>'.$message.'</error>');
     }
 
+    public function warning($message, array $context = array())
+    {
+        return $this->warn($message, $context);
+    }
     public function warn($message, array $context = array())
     {
         if (0 === ($this->level & self::WARN)) {
@@ -112,6 +128,15 @@ class OutputLogger implements LoggerInterface
     public function debug($message, array $context = array())
     {
         if (0 === ($this->level & self::DEBUG)) {
+            return;
+        }
+
+        $this->output->writeln($message);
+    }
+
+    public function log($level, $message, array $context = array())
+    {
+        if (0 === ($this->level & $level)) {
             return;
         }
 
