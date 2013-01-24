@@ -17,6 +17,7 @@
                     var self = this;
                     $.ajax(updateMessagePath + '?id=' + encodeURIComponent($(this).data('id')), {
                         type: 'POST',
+                        headers: {'X-HTTP-METHOD-OVERRIDE': 'PUT'},
                         data: {'_method': 'PUT', 'message': $(this).val()},
                         error: function() {
                             $(self).parent().prepend('<div class="alert-message error">Translation could not be saved</div>');
