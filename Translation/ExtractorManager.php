@@ -67,6 +67,8 @@ class ExtractorManager implements ExtractorInterface
      */
     public function setDirectories(array $directories)
     {
+        $this->directories = array();
+        
         foreach ($directories as $dir) {
             $this->addDirectory($dir);
         }
