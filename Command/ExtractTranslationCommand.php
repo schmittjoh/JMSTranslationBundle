@@ -99,12 +99,22 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             if ($input->getOption('dry-run')) {
                 $changeSet = $updater->getChangeSet($config);
 
-                $output->writeln('Added Messages: '.implode(', ', array_keys($changeSet->getAddedMessages())));
+                $output->writeln('Added Messages: '.count($changeSet->getAddedMessages()));
+                if($input->hasParameterOption('--verbose')){
+                    foreach($changeSet->getAddedMessages() as $message){
+                        $output->writeln($message->getId(). '-> '.$message->getDesc());
+                    }   
+                }
 
                 if ($config->isKeepOldMessages()) {
                     $output->writeln('Deleted Messages: # none as "Keep Old Translations" is true #');
                 } else {
-                    $output->writeln('Deleted Messages: '.implode(', ', array_keys($changeSet->getDeletedMessages())));
+                    $output->writeln('Deleted Messages: '.count($changeSet->getDeletedMessages()));
+                    if($input->hasParameterOption('--verbose')){
+                        foreach($changeSet->getDeletedMessages() as $message){
+                            $output->writeln($message->getId(). '-> '.$message->getDesc());
+                        }   
+                    }
                 }
 
                 return;
