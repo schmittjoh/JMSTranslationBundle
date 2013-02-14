@@ -163,8 +163,6 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 
         $catalogue = new MessageCatalogue();
         $extractor->visitTwigFile(new \SplFileInfo($file), $catalogue, $ast);
-
-        print_r($catalogue);
         
         return $catalogue;
     }
