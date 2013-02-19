@@ -2,15 +2,15 @@
 
 {% block javascripts %}
     {{ parent() }}
-    
+
     <script language="javascript" type="text/javascript">
         $(document).ready(function() {
             var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
-        
+
             $('#config select').change(function() {
                 $(this).parent().submit();
             });
-            
+
             {% if isWriteable is sameas(true) %}
             $('textarea')
                 .blur(function() {
@@ -36,13 +36,13 @@
                 })
                 .focus(function() {
                     this.select();
-                    
+
                     var timeoutId = $(this).data('timeoutId');
                     if (timeoutId) {
                         clearTimeout(timeoutId);
                         $(this).data('timeoutId', undefined);
                     }
-                    
+
                     $(this).parent().children('.alert-message').remove();
                 })
             ;
@@ -59,44 +59,55 @@
             <option value="{{ config }}"{% if config == selectedConfig %} selected="selected"{% endif %}>{{ config }}</option>
             {% endfor %}
         </select>
-    
+
         <select name="domain" class="span3">
             {% for domain in domains %}
             <option value="{{ domain }}"{% if domain == selectedDomain %} selected="selected"{% endif %}>{{ domain }}</option>
             {% endfor %}
         </select>
-        
+
         <select name="locale" class="span2">
             {% for locale in locales %}
             <option value="{{ locale }}"{% if locale == selectedLocale %} selected="selected"{% endif %}>{{ locale }}</option>
             {% endfor %}
         </select>
     </form>
-    
+
+    <form id="search" action="{{ path('jms_translation_search') }}" method="get">
+        <input type="text" name="search" />
+        <input type="submit" />
+    </form>
+
+    {% if searchNoResult is sameas(true) %}
+    <div class="alert-message error">
+        There is no result to your search.
+    </div>
+    {% endif %}
+
     {% if isWriteable is sameas(false) %}
     <div class="alert-message error">
         The translation file "<strong>{{ file }}</strong>" is not writable.
     </div>
     {% endif %}
-    
+
     {% if "xliff" != format %}
     <div class="alert-message warning">
-        Due to limitations of the different loaders/dumpers, some features are unfortunately limited to the XLIFF format. 
-        
+        Due to limitations of the different loaders/dumpers, some features are unfortunately limited to the XLIFF format.
+
         <br /><br />
-        
+
         However, you can easily convert your existing translation files to the XLIFF format by running:<br />
         <code>php app/console translation:extract {{ selectedLocale }} --config={{ selectedConfig }} --output-format=xliff</code>
     </div>
     {% endif %}
 
     <h2>Available Messages</h2>
-    
+
     {% if newMessages is not empty %}
     <h3>New Messages</h3>
     {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": newMessages} %}
     {% endif %}
-    
+
     {% if existingMessages is not empty %}
     <h3>Existing Messages</h3>
     {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": existingMessages} %}
