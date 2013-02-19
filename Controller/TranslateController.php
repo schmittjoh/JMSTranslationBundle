@@ -115,6 +115,8 @@ class TranslateController
             $existingMessages[$id] = $message;
         }
 
+        $searchNoResult = $this->request->query->has('search_no_result') ? true : false;
+
         return array(
             'selectedConfig' => $config,
             'configs' => $configs,
@@ -129,6 +131,41 @@ class TranslateController
             'isWriteable' => is_writeable($files[$domain][$locale][1]),
             'file' => (string) $files[$domain][$locale][1],
             'sourceLanguage' => $this->sourceLanguage,
+            'searchNoResult' => $searchNoResult,
         );
+    }
+
+    /**
+     * @Route("/search", name="jms_translation_search", options = {"i18n" = false})
+     *
+     * @param string $config
+     */
+    public function searchAction()
+    {
+        $id = $this->request->query->get('search');
+
+        $configs = $this->configFactory->getNames();
+
+        $router = $this->container->get('router');
+
+        foreach ($configs as $configName) {
+            $config = $this->configFactory->getConfig($configName, 'en');
+            $dir = $config->getTranslationsDir();
+
+            $catalogue = $this->loader->loadFromDirectory($dir, 'en');
+
+            foreach ($catalogue->getDomains() as $domainName => $domain) {
+                try {
+                    $catalogue->get($id, $domainName);
+
+                    $redirect = $router->generate('jms_translation_index', array('config' => $configName, 'domain' => $domainName, 'locale' => 'en' )) . '#t-' . $id;
+                    return new \Symfony\Component\HttpFoundation\RedirectResponse($redirect);
+                } catch (\InvalidArgumentException $e) {
+
+                }
+            }
+        }
+
+        return new \Symfony\Component\HttpFoundation\RedirectResponse($router->generate('jms_translation_index', array('search_no_result' => true)));
     }
 }
