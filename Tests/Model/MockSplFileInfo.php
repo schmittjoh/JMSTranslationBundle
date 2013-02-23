@@ -16,9 +16,23 @@
  * limitations under the License.
  */
 
-namespace JMS\TranslationBundle\Model;
+namespace JMS\TranslationBundle\Tests\Model;
 
-interface SourceInterface
+use SplFileInfo;
+
+class MockSplFileInfo extends SplFileInfo
 {
-    function equals(SourceInterface $source);
+    private $path = null;
+
+    public function __construct($path)
+    {
+        parent::__construct($path);
+
+        $this->path = $path;
+    }
+
+    public function getRealPath()
+    {
+        return $this->path;
+    }
 }

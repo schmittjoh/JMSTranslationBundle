@@ -32,7 +32,8 @@
         "symfony/process": "*",
         "symfony/yaml": "*",
         "sensio/framework-extra-bundle": "*",
-        "jms/di-extra-bundle": "*"
+        "jms/di-extra-bundle": "*",
+        "jms/aop-bundle": "1.1.*"
     },
     "autoload": {
         "psr-0": { "JMS\\TranslationBundle": "" }

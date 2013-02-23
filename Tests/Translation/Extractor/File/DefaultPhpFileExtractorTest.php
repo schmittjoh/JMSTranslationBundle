@@ -23,6 +23,7 @@ use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
+use SplFileInfo;
 
 class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
 {
@@ -36,31 +37,31 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
 
         $message = new Message('text.foo_bar');
         $message->setDesc('Foo bar');
-        $message->addSource(new FileSource($path, 45));
+        $message->addSource(new FileSource(new SplFileInfo($path), 45));
         $expected->add($message);
 
         $message = new Message('text.sign_up_successful');
         $message->setDesc('Welcome %name%! Thanks for signing up.');
-        $message->addSource(new FileSource($path, 52));
+        $message->addSource(new FileSource(new SplFileInfo($path), 52));
         $expected->add($message);
 
         $message = new Message('button.archive');
         $message->setDesc('Archive Message');
         $message->setMeaning('The verb (to archive), describes an action');
-        $message->addSource(new FileSource($path, 59));
+        $message->addSource(new FileSource(new SplFileInfo($path), 59));
         $expected->add($message);
 
         $message = new Message('text.irrelevant_doc_comment', 'baz');
-        $message->addSource(new FileSource($path, 71));
+        $message->addSource(new FileSource(new SplFileInfo($path), 71));
         $expected->add($message);
 
         $message = new Message('text.array_method_call');
-        $message->addSource(new FileSource($path, 76));
+        $message->addSource(new FileSource(new SplFileInfo($path), 76));
         $expected->add($message);
 
         $message = new Message('text.var.assign');
         $message->setDesc('The var %foo% should be assigned.');
-        $message->addSource(new FileSource($path, 82));
+        $message->addSource(new FileSource(new SplFileInfo($path), 82));
         $expected->add($message);
 
         $this->assertEquals($expected, $catalogue);
@@ -72,12 +73,12 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
         $path = __DIR__.'/Fixture/template.html.php';
 
         $message = new Message('foo.bar');
-        $message->addSource(new FileSource($path, 1));
+        $message->addSource(new FileSource(new SplFileInfo($path), 1));
         $expected->add($message);
 
         $message = new Message('baz', 'moo');
         $message->setDesc('Foo Bar');
-        $message->addSource(new FileSource($path, 3));
+        $message->addSource(new FileSource(new SplFileInfo($path), 3));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('template.html.php'));

@@ -23,6 +23,7 @@ use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Extractor\File\TranslationContainerExtractor;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use Symfony\Component\Finder\Tests\Iterator\MockSplFileInfo;
 
 class TranslationContainerExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,11 +33,11 @@ class TranslationContainerExtractorTest extends \PHPUnit_Framework_TestCase
         $path = __DIR__.'/Fixture/MyFormModel.php';
 
         $message = new Message('form.label.choice.foo');
-        $message->addSource(new FileSource($path, 13));
+        $message->addSource(new FileSource(new MockSplFileInfo($path), 13));
         $expected->add($message);
 
         $message = new Message('form.label.choice.bar');
-        $message->addSource(new FileSource($path, 13));
+        $message->addSource(new FileSource(new MockSplFileInfo($path), 13));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormModel.php'));

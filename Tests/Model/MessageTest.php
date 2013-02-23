@@ -19,8 +19,8 @@
 namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
-
 use JMS\TranslationBundle\Model\Message;
+use Symfony\Component\Finder\Tests\Iterator\MockSplFileInfo;
 
 class MessageTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,7 +41,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $message->getId());
         $this->assertEquals('bar', $message->getDomain());
 
-        $source = new FileSource(__FILE__);
+        $source = new FileSource(new MockSplFileInfo(__FILE__));
         $this->assertTrue($message->hasSource($source));
     }
 
@@ -110,7 +110,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $existingMessage = new Message('foo');
         $existingMessage->setLocaleString('foobar');
         $existingMessage->setNew(false);
-        $existingMessage->addSource(new FileSource('foo/bar'));
+        $existingMessage->addSource(new FileSource(new MockSplFileInfo('foo/bar')));
 
         $message->mergeExisting($existingMessage);
 

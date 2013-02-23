@@ -22,6 +22,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
+use SplFileInfo;
 
 class XliffLoader implements LoaderInterface
 {
@@ -59,7 +60,7 @@ class XliffLoader implements LoaderInterface
                     $line = (string) $file->attributes()->line;
                     $column = (string) $file->attributes()->column;
                     $m->addSource(new FileSource(
-                        (string) $file,
+                        new SplFileInfo((string) $file),
                         $line ? (integer) $line : null,
                         $column ? (integer) $column : null
                     ));

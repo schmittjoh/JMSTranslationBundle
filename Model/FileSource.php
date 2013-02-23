@@ -18,30 +18,47 @@
 
 namespace JMS\TranslationBundle\Model;
 
+use SplFileInfo;
+
 class FileSource implements SourceInterface
 {
-    private $path;
+    private $file;
     private $line;
     private $column;
 
-    public function __construct($path, $line = null, $column = null)
+    public function __construct(SplFileInfo $file, $line = null, $column = null)
     {
-        $parts = explode('/', str_replace(DIRECTORY_SEPARATOR, '/', $path));
-        $parts = array_splice($parts, -3);
-
-        $this->path = implode('/', $parts);
+        $this->file = $file;
         $this->line = $line;
         $this->column = $column;
     }
 
     public function getPath()
     {
-        return $this->path;
+        $parts = explode('/', str_replace(DIRECTORY_SEPARATOR, '/', $this->getRealPath()));
+        $parts = array_splice($parts, -3);
+
+        return implode('/', $parts);
+    }
+
+    public function getRealPath()
+    {
+        return $this->file->getRealPath();
+    }
+
+    public function hasLine()
+    {
+        return null !== $this->line;
     }
 
     public function getLine()
     {
         return $this->line;
+    }
+
+    public function hasColumn()
+    {
+        return null !== $this->column;
     }
 
     public function getColumn()
@@ -55,7 +72,7 @@ class FileSource implements SourceInterface
             return false;
         }
 
-        if ($this->path !== $source->getPath()) {
+        if ($this->getPath() !== $source->getPath()) {
             return false;
         }
 
@@ -68,20 +85,5 @@ class FileSource implements SourceInterface
         }
 
         return true;
-    }
-
-    public function __toString()
-    {
-        $str = $this->path;
-
-        if (null !== $this->line) {
-            $str .= ' on line '.$this->line;
-
-            if (null !== $this->column) {
-                $str .= ' at column '.$this->column;
-            }
-        }
-
-        return $str;
     }
 }

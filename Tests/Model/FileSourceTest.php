@@ -19,36 +19,37 @@
 namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
+use SplFileInfo;
 
 class FileSourceTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetPath()
     {
-        $r = new FileSource('foo');
-        $this->assertEquals('foo', $r->getPath());
+        $r = new FileSource(new SplFileInfo(__FILE__));
+        $this->assertEquals('Tests/Model/FileSourceTest.php', $r->getPath());
     }
 
     public function testGetLine()
     {
-        $r = new FileSource('foo');
+        $r = new FileSource(new SplFileInfo(__FILE__));
         $this->assertNull($r->getLine());
     }
 
     public function testGetLineWhenSet()
     {
-        $r = new FileSource('foo', 2);
+        $r = new FileSource(new SplFileInfo(__FILE__), 2);
         $this->assertEquals(2, $r->getLine());
     }
 
     public function testGetColumn()
     {
-        $r = new FileSource('foo');
+        $r = new FileSource(new SplFileInfo(__FILE__));
         $this->assertNull($r->getColumn());
     }
 
     public function testGetColumnWhenSet()
     {
-        $r = new FileSource('foo', 1, 2);
+        $r = new FileSource(new SplFileInfo('bar'), 1, 2);
         $this->assertEquals(2, $r->getColumn());
     }
 
@@ -66,38 +67,38 @@ class FileSourceTest extends \PHPUnit_Framework_TestCase
         $tests = array();
 
         $tests[] = array(
-            new FileSource('foo'),
-            new FileSource('foo'),
+            new FileSource(new SplFileInfo(__FILE__)),
+            new FileSource(new SplFileInfo(__FILE__)),
             true,
         );
 
         $tests[] = array(
-            new FileSource('foo'),
-            new FileSource('bar'),
+            new FileSource(new SplFileInfo(__FILE__)),
+            new FileSource(new SplFileInfo('bar')),
             false,
         );
 
         $tests[] = array(
-            new FileSource('foo', 1),
-            new FileSource('foo', 1),
+            new FileSource(new SplFileInfo(__FILE__), 1),
+            new FileSource(new SplFileInfo(__FILE__), 1),
             true,
         );
 
         $tests[] = array(
-            new FileSource('foo', 1),
-            new FileSource('foo', 2),
+            new FileSource(new SplFileInfo(__FILE__), 1),
+            new FileSource(new SplFileInfo(__FILE__), 2),
             false,
         );
 
         $tests[] = array(
-            new FileSource('foo', 1, 2),
-            new FileSource('foo', 1, 2),
+            new FileSource(new SplFileInfo('bar'), 1, 2),
+            new FileSource(new SplFileInfo('bar'), 1, 2),
             true,
         );
 
         $tests[] = array(
-            new FileSource('foo', 1, 2),
-            new FileSource('foo', 1, 3),
+            new FileSource(new SplFileInfo('bar'), 1, 2),
+            new FileSource(new SplFileInfo('bar'), 1, 3),
             false,
         );
 
@@ -108,31 +109,10 @@ class FileSourceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false))
         ;
         $tests[] = array(
-            new FileSource('foo'),
+            new FileSource(new SplFileInfo(__FILE__)),
             $source,
             false,
         );
-
-        return $tests;
-    }
-
-    /**
-     * @dataProvider getToStringTests
-     */
-    public function testToString($r, $expected)
-    {
-        $this->assertEquals($expected, (string) $r);
-    }
-
-    public function getToStringTests()
-    {
-        $tests = array();
-
-        $tests[] = array(new FileSource('foo/bar'), 'foo/bar');
-        $tests[] = array(new FileSource('foo/bar', 1), 'foo/bar on line 1');
-        $tests[] = array(new FileSource('foo/bar', null, 2), 'foo/bar');
-        $tests[] = array(new FileSource('foo/bar', 1, 2), 'foo/bar on line 1 at column 2');
-        $tests[] = array(new FileSource('a/b/c/foo/bar'), 'c/foo/bar');
 
         return $tests;
     }

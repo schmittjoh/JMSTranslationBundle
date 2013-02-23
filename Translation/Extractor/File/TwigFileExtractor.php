@@ -51,7 +51,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
             }
 
             $message = new Message($id, $domain);
-            $message->addSource(new FileSource((string) $this->file, $node->getLine()));
+            $message->addSource(new FileSource($this->file, $node->getLine()));
             $this->catalogue->add($message);
         } else if ($node instanceof \Twig_Node_Expression_Filter) {
             $name = $node->getNode('filter')->getAttribute('value');
@@ -80,7 +80,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
                 }
 
                 $message = new Message($id, $domain);
-                $message->addSource(new FileSource((string) $this->file, $node->getLine()));
+                $message->addSource(new FileSource($this->file, $node->getLine()));
 
                 for ($i=count($this->stack)-2; $i>=0; $i-=1) {
                     if (!$this->stack[$i] instanceof \Twig_Node_Expression_Filter) {

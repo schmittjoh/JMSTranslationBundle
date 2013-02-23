@@ -25,6 +25,7 @@ use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use SplFileInfo;
 
 class FormExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -39,45 +40,45 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $path = __DIR__.'/Fixture/MyFormType.php';
 
         $message = new Message('bar');
-        $message->addSource(new FileSource($path, 36));
+        $message->addSource(new FileSource(new SplFileInfo($path), 36));
         $expected->add($message);
 
         $message = new Message('form.states.empty_value');
         $message->setDesc('Please select a state');
-        $message->addSource(new FileSource($path, 37));
+        $message->addSource(new FileSource(new SplFileInfo($path), 37));
         $expected->add($message);
 
         $message = new Message('form.label.lastname');
         $message->setDesc('Lastname');
-        $message->addSource(new FileSource($path, 33));
+        $message->addSource(new FileSource(new SplFileInfo($path), 33));
         $expected->add($message);
 
         $message = new Message('form.label.firstname');
-        $message->addSource(new FileSource($path, 30));
+        $message->addSource(new FileSource(new SplFileInfo($path), 30));
         $expected->add($message);
 
         $message = new Message('form.label.password');
-        $message->addSource(new FileSource($path, 42));
+        $message->addSource(new FileSource(new SplFileInfo($path), 42));
         $expected->add($message);
 
         $message = new Message('form.label.password_repeated');
         $message->setDesc('Repeat password');
-        $message->addSource(new FileSource($path, 45));
+        $message->addSource(new FileSource(new SplFileInfo($path), 45));
         $expected->add($message);
 
         $message = new Message('form.label.street', 'address');
         $message->setDesc('Street');
-        $message->addSource(new FileSource($path, 50));
+        $message->addSource(new FileSource(new SplFileInfo($path), 50));
         $expected->add($message);
 
         $message = new Message('form.label.zip', 'address');
         $message->setDesc('ZIP');
-        $message->addSource(new FileSource($path, 55));
+        $message->addSource(new FileSource(new SplFileInfo($path), 55));
         $expected->add($message);
 
         $message = new Message('form.error.password_mismatch', 'validators');
         $message->setDesc('The entered passwords do not match');
-        $message->addSource(new FileSource($path, 47));
+        $message->addSource(new FileSource(new SplFileInfo($path), 47));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
@@ -93,21 +94,21 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $path = __DIR__.'/Fixture/MyFormTypeWithInterface.php';
 
         $message = new Message('bar');
-        $message->addSource(new FileSource($path, 36));
+        $message->addSource(new FileSource(new SplFileInfo($path), 36));
         $expected->add($message);
 
         $message = new Message('form.states.empty_value');
         $message->setDesc('Please select a state');
-        $message->addSource(new FileSource($path, 37));
+        $message->addSource(new FileSource(new SplFileInfo($path), 37));
         $expected->add($message);
 
         $message = new Message('form.label.lastname');
         $message->setDesc('Lastname');
-        $message->addSource(new FileSource($path, 33));
+        $message->addSource(new FileSource(new SplFileInfo($path), 33));
         $expected->add($message);
 
         $message = new Message('form.label.firstname');
-        $message->addSource(new FileSource($path, 30));
+        $message->addSource(new FileSource(new SplFileInfo($path), 30));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormTypeWithInterface.php'));
@@ -124,16 +125,16 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
 
         $message = new Message('form.label.lastname', 'person');
         $message->setDesc('Lastname');
-        $message->addSource(new FileSource($path, 34));
+        $message->addSource(new FileSource(new SplFileInfo($path), 34));
         $expected->add($message);
 
         $message = new Message('form.label.firstname', 'person');
-        $message->addSource(new FileSource($path, 31));
+        $message->addSource(new FileSource(new SplFileInfo($path), 31));
         $expected->add($message);
 
         $message = new Message('form.label.street', 'address');
         $message->setDesc('Street');
-        $message->addSource(new FileSource($path, 37));
+        $message->addSource(new FileSource(new SplFileInfo($path), 37));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormTypeWithDefaultDomain.php'));

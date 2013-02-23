@@ -130,10 +130,10 @@ class MessageCollectionTest extends \PHPUnit_Framework_TestCase
     public function testMerge()
     {
         $col = new MessageCollection();
-        $col->add(new Message('a'));
+        $col->add(new Message(new MockSplFileInfo('a')));
 
         $col2 = new MessageCollection();
-        $col2->add(new Message('b'));
+        $col2->add(new Message(new MockSplFileInfo('b')));
 
         $col->merge($col2);
         $this->assertEquals(array('a', 'b'), array_keys($col->all()));
@@ -141,7 +141,7 @@ class MessageCollectionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage The message 'a' exists with two different descs: 'a' in foo on line 1, and 'b' in bar on line 2
+     * @expectedExceptionMessage The message 'a' exists with two different descs: 'a' in 'foo', and 'b' in 'bar'
      */
     public function testAddChecksConsistency()
     {
@@ -149,11 +149,11 @@ class MessageCollectionTest extends \PHPUnit_Framework_TestCase
 
         $msg = new Message('a');
         $msg->setDesc('a');
-        $msg->addSource(new FileSource('foo', 1));
+        $msg->addSource(new FileSource(new MockSplFileInfo('foo'), 1));
 
         $msg2 = new Message('a');
         $msg2->setDesc('b');
-        $msg2->addSource(new FileSource('bar', 2));
+        $msg2->addSource(new FileSource(new MockSplFileInfo('bar'), 2));
 
         $col->add($msg);
         $col->add($msg2);
@@ -205,7 +205,7 @@ class MessageCollectionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage The message 'a' exists with two different descs: 'a' in foo on line 1, and 'b' in bar on line 2
+     * @expectedExceptionMessage The message 'a' exists with two different descs: 'a' in 'foo', and 'b' in 'bar'
      */
     public function testSetChecksConsistency()
     {
@@ -213,11 +213,11 @@ class MessageCollectionTest extends \PHPUnit_Framework_TestCase
 
         $msg = new Message('a');
         $msg->setDesc('a');
-        $msg->addSource(new FileSource('foo', 1));
+        $msg->addSource(new FileSource(new MockSplFileInfo('foo'), 1));
 
         $msg2 = new Message('a');
         $msg2->setDesc('b');
-        $msg2->addSource(new FileSource('bar', 2));
+        $msg2->addSource(new FileSource(new MockSplFileInfo('bar'), 2));
 
         $col->set($msg);
         $col->set($msg2);

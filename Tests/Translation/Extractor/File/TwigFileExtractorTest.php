@@ -31,6 +31,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Twig\TranslationExtension;
 use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
+use SplFileInfo;
 
 class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -42,49 +43,49 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $message = new Message('text.foo');
         $message->setDesc('Foo Bar');
         $message->setMeaning('Some Meaning');
-        $message->addSource(new FileSource($path, 1));
+        $message->addSource(new FileSource(new SplFileInfo($path), 1));
         $expected->add($message);
 
         $message = new Message('text.bar');
         $message->setDesc('Foo');
-        $message->addSource(new FileSource($path, 3));
+        $message->addSource(new FileSource(new SplFileInfo($path), 3));
         $expected->add($message);
 
         $message = new Message('text.baz');
         $message->setMeaning('Bar');
-        $message->addSource(new FileSource($path, 5));
+        $message->addSource(new FileSource(new SplFileInfo($path), 5));
         $expected->add($message);
 
         $message = new Message('text.foo_bar', 'foo');
-        $message->addSource(new FileSource($path, 7));
+        $message->addSource(new FileSource(new SplFileInfo($path), 7));
         $expected->add($message);
 
         $message = new Message('text.name', 'app');
-        $message->addSource(new FileSource($path, 9));
+        $message->addSource(new FileSource(new SplFileInfo($path), 9));
         $expected->add($message);
 
         $message = new Message('text.apple_choice', 'app');
-        $message->addSource(new FileSource($path, 11));
+        $message->addSource(new FileSource(new SplFileInfo($path), 11));
         $expected->add($message);
 
         $message = new Message('foo.bar');
-        $message->addSource(new FileSource($path, 13));
+        $message->addSource(new FileSource(new SplFileInfo($path), 13));
         $expected->add($message);
 
         $message = new Message('foo.bar2');
-        $message->addSource(new FileSource($path, 15));
+        $message->addSource(new FileSource(new SplFileInfo($path), 15));
         $expected->add($message);
 
         $message = new Message('foo.bar3', 'app');
-        $message->addSource(new FileSource($path, 17));
+        $message->addSource(new FileSource(new SplFileInfo($path), 17));
         $expected->add($message);
 
         $message = new Message('foo.bar4', 'app');
-        $message->addSource(new FileSource($path, 19));
+        $message->addSource(new FileSource(new SplFileInfo($path), 19));
         $expected->add($message);
 
         $message = new Message('text.default_domain');
-        $message->addSource(new FileSource($path, 21));
+        $message->addSource(new FileSource(new SplFileInfo($path), 21));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('simple_template.html.twig'));
@@ -96,22 +97,22 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $path = __DIR__.'/Fixture/edit.html.twig';
 
         $message = new Message('header.edit_profile');
-        $message->addSource(new FileSource($path, 10));
+        $message->addSource(new FileSource(new SplFileInfo($path), 10));
         $expected->add($message);
 
         $message = new Message("text.archive");
         $message->setDesc('Archive');
         $message->setMeaning('The verb');
-        $message->addSource(new FileSource($path, 13));
+        $message->addSource(new FileSource(new SplFileInfo($path), 12));
         $expected->add($message);
 
         $message = new Message('button.edit_profile');
-        $message->addSource(new FileSource($path, 16));
+        $message->addSource(new FileSource(new SplFileInfo($path), 15));
         $expected->add($message);
 
         $message = new Message('link.cancel_profile');
         $message->setDesc('Back to Profile');
-        $message->addSource(new FileSource($path, 17));
+        $message->addSource(new FileSource(new SplFileInfo($path), 16));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('edit.html.twig'));
