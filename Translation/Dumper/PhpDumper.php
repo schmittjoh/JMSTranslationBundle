@@ -23,7 +23,7 @@ use JMS\TranslationBundle\Util\Writer;
 
 class PhpDumper extends ArrayStructureDumper
 {
-    private $writer;
+    protected $writer;
 
     public function __construct()
     {
@@ -44,7 +44,7 @@ class PhpDumper extends ArrayStructureDumper
         return $this->writer->outdent()->writeln(');')->getContent();
     }
 
-    private function dumpStructureRecursively(array $structure)
+    protected function dumpStructureRecursively(array $structure)
     {
         $isFirst = true;
         $precededByMessage = false;
