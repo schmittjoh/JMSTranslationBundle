@@ -19,7 +19,7 @@
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Model\Message;
-use Symfony\Component\Validator\Mapping\ClassMetadataFactoryInterface;
+use Symfony\Component\Validator\MetadataFactoryInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 
@@ -44,7 +44,7 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
     private $catalogue;
     private $namespace = '';
 
-    public function __construct(ClassMetadataFactoryInterface $metadataFactory)
+    public function __construct(MetadataFactoryInterface $metadataFactory)
     {
         $this->metadataFactory = $metadataFactory;
 
@@ -70,7 +70,7 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
             return;
         }
 
-        $metadata = $this->metadataFactory->getClassMetadata($name);
+        $metadata = $this->metadataFactory->getMetadataFor($name);
 
         if (empty($metadata->constraints) && empty($metadata->members)) {
             return;
