@@ -194,6 +194,9 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                 }
             }
         }
+        
+        // check if the value is explicitly set to false => e.g. for FormField that should be rendered without label
+        $ignore = $ignore || $item->value->value == false;
 
         if (!$item->value instanceof \PHPParser_Node_Scalar_String) {
             if ($ignore) {
