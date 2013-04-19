@@ -9,7 +9,10 @@
         <tbody>
             {% for id, message in messages %}
             <tr>
-                <td><abbr title="{{ id }}">{{ id|truncate(20) }}</abbr></td>
+                <td>
+					<a class="jms-translation-anchor" id="{{ id }}" />
+					<abbr title="{{ id }}">{{ id|truncate(20) }}</abbr>
+				</td>
                 <td>
                     <textarea data-id="{{ id }}" class="span6"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{{ message.localeString }}</textarea></td>
                 <td>
