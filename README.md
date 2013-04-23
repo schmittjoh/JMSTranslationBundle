@@ -1,4 +1,4 @@
-JMSTranslationBundle [![Build Status](https://secure.travis-ci.org/nonlux/JMSTranslationBundle.png?branch=master)](http://travis-ci.org/schmittjoh/JMSTranslationBundle)
+JMSTranslationBundle [![Build Status](https://secure.travis-ci.org/schmittjoh/JMSTranslationBundle.png?branch=master)](http://travis-ci.org/schmittjoh/JMSTranslationBundle)
 ====================
 
 Documentation: 
