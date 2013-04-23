@@ -31,7 +31,12 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Twig\TranslationExtension;
 use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
-
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Bridge\Twig\Extension\FormExtension;
+use Symfony\Bridge\Twig\Form\TwigRenderer;
+use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 {
     public function testExtractSimpleTemplate()
@@ -126,6 +131,8 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $env = new \Twig_Environment();
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new TranslationExtension($translator, true));
+        $env->addExtension(new RoutingExtension(new Router(new Container(),null)));
+        $env->addExtension(new FormExtension(new TwigRenderer(new TwigRendererEngine())));
 
         foreach ($env->getNodeVisitors() as $visitor) {
             if ($visitor instanceof DefaultApplyingNodeVisitor) {
