@@ -82,7 +82,7 @@ class Configuration implements ConfigurationInterface
                                                 }
 
                                                 if (!is_dir($v)) {
-                                                    throw new \Exception('The directory "%s" does not exist.');
+                                                    throw new \Exception(sprintf('The directory "%s" does not exist.', $v));
                                                 }
 
                                                 return $v;
