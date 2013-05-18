@@ -122,6 +122,26 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
         $this->file = $file;
         $this->catalogue = $catalogue;
         $this->traverser->traverse($ast);
+        $this->traverseEmbeddedTemplates($ast);
+    }
+    
+    /**
+     * If the current Twig Node has embedded templates, we want to travese these templates
+     * in the same manner as we do the main twig template to ensure all translations are 
+     * caught.
+     * 
+     * @param \Twig_Node $node
+     */
+    private function traverseEmbeddedTemplates(\Twig_Node $node)
+    {
+        $templates = $node->getAttribute('embedded_templates');
+        
+        foreach($templates as $template) {
+            $this->traverser->traverse($template);
+            if ($template->hasAttribute('embedded_templates')) {
+                $this->traverseEmbeddedTemplates($template);
+            }
+        }
     }
 
     public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
