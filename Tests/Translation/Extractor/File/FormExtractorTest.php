@@ -144,6 +144,50 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * This test is used to check if translation from subscriber classes and even closures
+     * are correctly extracted
+     */
+    public function testExtractWithWithSubscriberAndListener()
+    {
+        $expected = new MessageCatalogue();
+        $path = __DIR__.'/Fixture/MyFormTypeWithSubscriberAndListener.php';
+        $pathSubscriber = __DIR__.'/Fixture/MyFormSubscriber.php';
+
+        $message = new Message('form.label.lastname');
+        $message->setDesc('Lastname');
+        $message->addSource(new FileSource($path, 36));
+        $expected->add($message);
+
+        $message = new Message('form.label.firstname');
+        $message->addSource(new FileSource($path, 33));
+        $expected->add($message);
+
+        $message = new Message('form.label.password');
+        $message->addSource(new FileSource($pathSubscriber, 37));
+        $expected->add($message);
+
+        $message = new Message('form.label.password_repeated');
+        $message->setDesc('Repeat password');
+        $message->addSource(new FileSource($pathSubscriber, 40));
+        $expected->add($message);
+
+        $message = new Message('form.label.zip', 'address');
+        $message->setDesc('ZIP');
+        $message->addSource(new FileSource($path, 51));
+        $expected->add($message);
+
+        $message = new Message('form.error.password_mismatch', 'validators');
+        $message->setDesc('The entered passwords do not match');
+        $message->addSource(new FileSource($pathSubscriber, 42));
+        $expected->add($message);
+
+        $catalogue = $this->extract('MyFormTypeWithSubscriberAndListener.php');
+        //Merge with the subscriber catalogue
+        $catalogue->merge($this->extract('MyFormSubscriber.php'));
+        $this->assertEquals($expected, $catalogue);
+    }
+
+    /**
      * Run extractor tests with and without a default domain as a form option
      * with the same extractor instance to see that the default domain isn't
      * persisting.
