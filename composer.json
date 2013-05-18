@@ -13,7 +13,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "symfony/framework-bundle": ">=2.1,<2.3-dev",
+        "symfony/framework-bundle": ">=2.1,<2.4-dev",
         "nikic/php-parser": "0.9.1",
         "symfony/console": "*"
     },
