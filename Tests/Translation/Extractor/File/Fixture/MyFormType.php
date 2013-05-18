@@ -56,5 +56,9 @@ class MyFormType extends AbstractType
                 'translation_domain' => 'address'
             ))
         ;
+        $child = $builder->create('created', 'text', array(
+                  'label' => 'form.label.created'
+              ))
+        ;
     }
 }

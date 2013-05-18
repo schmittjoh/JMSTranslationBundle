@@ -111,7 +111,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                 return;
             }
 
-            if ('add' !== $name = strtolower($node->name)) {
+            if ('add' !== $name && 'create' !== $name) {
                 return;
             }
 
