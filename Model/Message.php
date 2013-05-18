@@ -19,6 +19,7 @@
 namespace JMS\TranslationBundle\Model;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
+use SplFileInfo;
 
 /**
  * Represents an _extracted_ message.
@@ -57,7 +58,7 @@ class Message
 
         $trace = debug_backtrace(false);
         if (isset($trace[0]['file'])) {
-            $message->addSource(new FileSource($trace[0]['file']));
+            $message->addSource(new FileSource(new SplFileInfo($trace[0]['file'])));
         }
 
         return $message;

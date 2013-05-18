@@ -18,21 +18,24 @@
 
 namespace JMS\TranslationBundle\Twig;
 
+use Symfony\Component\Translation\TranslatorInterface;
+use JMS\TranslationBundle\Model\FileSource;
+
 /**
  * Provides some extensions for specifying translation metadata.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-use Symfony\Component\Translation\TranslatorInterface;
-
 class TranslationExtension extends \Twig_Extension
 {
     private $translator;
+    private $fileLinkFormat;
     private $debug;
 
-    public function __construct(TranslatorInterface $translator, $debug = false)
+    public function __construct(TranslatorInterface $translator, $fileLinkFormat = null, $debug = false)
     {
         $this->translator = $translator;
+        $this->fileLinkFormat = empty($fileLinkFormat) ? ini_get('xdebug.file_link_format') : $fileLinkFormat;
         $this->debug = $debug;
     }
 
@@ -55,6 +58,7 @@ class TranslationExtension extends \Twig_Extension
         return array(
             'desc' => new \Twig_Filter_Method($this, 'desc'),
             'meaning' => new \Twig_Filter_Method($this, 'meaning'),
+            'source' => new \Twig_Filter_Method($this, 'source'),
         );
     }
 
@@ -79,6 +83,31 @@ class TranslationExtension extends \Twig_Extension
     public function meaning($v)
     {
         return $v;
+    }
+
+    public function source(FileSource $source)
+    {
+        $markup = $source->getPath();
+        if ($this->fileLinkFormat) {
+            $markup = sprintf(
+                '<a href="%s">%s</a>',
+                strtr($this->fileLinkFormat, array(
+                    '%f' => $source->getRealPath(),
+                    '%l' => $source->hasLine() ? $source->getLine() : 1
+                )),
+                $source->getPath()
+            );
+        }
+
+        if ($source->hasLine()) {
+            $markup .= ' on line '.$source->getLine();
+
+            if ($source->hasColumn()) {
+                $markup .= ' at column '.$source->getColumn();
+            }
+        }
+
+        return $markup;
     }
 
     public function getName()

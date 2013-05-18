@@ -140,7 +140,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $message = Message::create($node->expr->value, $this->domain)
             ->setDesc($desc)
             ->setMeaning($meaning)
-            ->addSource(new FileSource((string) $this->file, $node->expr->getLine()))
+            ->addSource(new FileSource($this->file, $node->expr->getLine()))
         ;
 
         $this->catalogue->add($message);

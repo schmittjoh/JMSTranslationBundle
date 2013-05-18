@@ -21,6 +21,7 @@ namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Tests\Model\MockSplFileInfo;
 
 abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
 {
@@ -54,8 +55,8 @@ abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
         $catalogue->setLocale('en');
 
         $message = new Message('foo.bar.baz');
-        $message->addSource(new FileSource('/a/b/c/foo/bar', 1, 2));
-        $message->addSource(new FileSource('bar/baz', 1, 2));
+        $message->addSource(new FileSource(new MockSplFileInfo('/a/b/c/foo/bar'), 1, 2));
+        $message->addSource(new FileSource(new MockSplFileInfo('bar/baz'), 1, 2));
         $catalogue->add($message);
 
         $this->assertEquals($this->getOutput('structure'), $this->dump($catalogue, 'messages'));

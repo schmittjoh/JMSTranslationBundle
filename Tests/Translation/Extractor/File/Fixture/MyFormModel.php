@@ -22,6 +22,7 @@ use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\TranslationContainerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Finder\Tests\Iterator\MockSplFileInfo;
 
 class MyFormModel implements TranslationContainerInterface
 {
@@ -41,7 +42,7 @@ class MyFormModel implements TranslationContainerInterface
 
         foreach (self::$choices as $trans) {
             $message = new Message($trans);
-            $message->addSource(new FileSource(__FILE__, 13));
+            $message->addSource(new FileSource(new MockSplFileInfo(__FILE__), 13));
             $messages[] = $message;
         }
 

@@ -152,7 +152,14 @@ class MessageCollection
         $newDesc = $newMessage->getDesc();
 
         if (0 < strlen($oldDesc) && 0 < strlen($newDesc) && $oldDesc != $newDesc) {
-            throw new \RuntimeException(sprintf("The message '%s' exists with two different descs: '%s' in %s, and '%s' in %s", $oldMessage->getId(), $oldMessage->getDesc(), current($oldMessage->getSources()), $newMessage->getDesc(), current($newMessage->getSources())));
+            throw new \RuntimeException(sprintf(
+                "The message '%s' exists with two different descs: '%s' in '%s', and '%s' in '%s'",
+                $oldMessage->getId(),
+                $oldMessage->getDesc(),
+                current($oldMessage->getSources())->getPath(),
+                $newMessage->getDesc(),
+                current($newMessage->getSources())->getPath()
+            ));
         }
     }
 }

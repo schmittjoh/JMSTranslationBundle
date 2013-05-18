@@ -22,6 +22,7 @@ use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\AuthenticationMessagesExtractor;
+use SplFileInfo;
 
 class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
 {
@@ -31,12 +32,12 @@ class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
 
         $message = new Message('security.authentication_error.foo', 'authentication');
         $message->setDesc('%foo% is invalid.');
-        $message->addSource(new FileSource(__DIR__.'/Fixture/MyAuthException.php', 31));
+        $message->addSource(new FileSource(new SplFileInfo(__DIR__.'/Fixture/MyAuthException.php'), 31));
         $expected->add($message);
 
         $message = new Message('security.authentication_error.bar', 'authentication');
         $message->setDesc('An authentication error occurred.');
-        $message->addSource(new FileSource(__DIR__.'/Fixture/MyAuthException.php', 35));
+        $message->addSource(new FileSource(new SplFileInfo(__DIR__.'/Fixture/MyAuthException.php'), 35));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyAuthException.php'));
