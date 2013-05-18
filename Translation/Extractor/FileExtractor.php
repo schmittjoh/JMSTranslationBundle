@@ -65,6 +65,12 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         }
     }
 
+    public function reset()
+    {
+        $this->excludedNames = array();
+        $this->excludedDirs  = array();
+    }
+
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
