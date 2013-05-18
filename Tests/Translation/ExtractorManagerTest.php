@@ -65,6 +65,49 @@ class ExtractorManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($catalogue, $manager->extract());
     }
 
+    public function testReset()
+    {
+        $foo = $this->getMock('JMS\TranslationBundle\Translation\ExtractorInterface');
+        $logger = new NullLogger();
+
+        $extractor = new FileExtractor(new \Twig_Environment(), $logger, array());
+        $extractor->setExcludedNames(array('foo', 'bar'));
+        $extractor->setExcludedDirs(array('baz'));
+
+        $manager = $this->getManager($extractor, array(
+            'foo' => $foo,
+        ));
+        $manager->setEnabledExtractors(array('foo' => true));
+        $manager->setDirectories(array('/'));
+
+        $managerReflection   = new \ReflectionClass($manager);
+        $extractorReflection = new \ReflectionClass($extractor);
+
+        $enabledExtractorsProperty = $managerReflection->getProperty('enabledExtractors');
+        $enabledExtractorsProperty->setAccessible(true);
+
+        $directoriesProperty = $managerReflection->getProperty('directories');
+        $directoriesProperty->setAccessible(true);
+
+        $excludedNamesProperty = $extractorReflection->getProperty('excludedNames');
+        $excludedNamesProperty->setAccessible(true);
+
+        $excludedDirsProperty = $extractorReflection->getProperty('excludedDirs');
+        $excludedDirsProperty->setAccessible(true);
+
+        $this->assertEquals(array('foo' => true), $enabledExtractorsProperty->getValue($manager));
+        $this->assertEquals(array('/'), $directoriesProperty->getValue($manager));
+        $this->assertEquals(array('foo', 'bar'), $excludedNamesProperty->getValue($extractor));
+        $this->assertEquals(array('baz'), $excludedDirsProperty->getValue($extractor));
+
+        $manager->reset();
+
+        $this->assertEquals(array(), $enabledExtractorsProperty->getValue($manager));
+        $this->assertEquals(array(), $directoriesProperty->getValue($manager));
+        $this->assertEquals(array(), $excludedNamesProperty->getValue($extractor));
+        $this->assertEquals(array(), $excludedDirsProperty->getValue($extractor));
+    }
+
     private function getManager(FileExtractor $extractor = null, array $extractors = array())
     {
         $logger = new NullLogger();

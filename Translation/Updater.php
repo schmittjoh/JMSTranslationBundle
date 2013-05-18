@@ -224,6 +224,7 @@ class Updater
             $config->getTranslationsDir(), $config->getLocale()
         ));
 
+        $this->extractor->reset();
         $this->extractor->setDirectories($config->getScanDirs());
         $this->extractor->setExcludedDirs($config->getExcludedDirs());
         $this->extractor->setExcludedNames($config->getExcludedNames());
