@@ -53,7 +53,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->twig = $twig;
         $this->logger = $logger;
         $this->visitors = $visitors;
-        $this->phpParser = new \PHPParser_Parser();
+        $this->phpParser = new \PHPParser_Parser(new \PHPParser_Lexer());
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
             if ($visitor instanceof RemovingNodeVisitor) {
