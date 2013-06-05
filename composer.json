@@ -1,5 +1,5 @@
 {
-    "name":         "jms/translation-bundle",
+    "name":         "karser/jms-translation-bundle",
     "description":  "Puts the Symfony2 Translation Component on steroids",
     "keywords":     ["translation", "multilanguage", "extract", "webinterface", "ui", "i18n", "extraction", "interface"],
     "homepage":     "http://jmsyst.com/bundles/JMSTranslationBundle",
@@ -13,7 +13,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "symfony/framework-bundle": ">=2.1,<2.3-dev",
+        "symfony/framework-bundle": ">=2.1,<2.4-dev",
         "nikic/php-parser": "0.9.1",
         "symfony/console": "*"
     },
