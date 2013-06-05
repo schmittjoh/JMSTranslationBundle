@@ -1,5 +1,5 @@
 {
-    "name":         "jms/translation-bundle",
+    "name":         "karser/jms-translation-bundle",
     "description":  "Puts the Symfony2 Translation Component on steroids",
     "keywords":     ["translation", "multilanguage", "extract", "webinterface", "ui", "i18n", "extraction", "interface"],
     "homepage":     "http://jmsyst.com/bundles/JMSTranslationBundle",
