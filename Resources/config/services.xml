@@ -61,6 +61,12 @@
             </call>
             <tag name="jms_translation.dumper" format="xliff" />
         </service>
+        <service id="jms_translation.dumper.xlf_dumper" class="%jms_translation.dumper.xliff_dumper.class%" public="false">
+            <call method="setSourceLanguage">
+                <argument>%jms_translation.source_language%</argument>
+            </call>
+            <tag name="jms_translation.dumper" format="xlf" />
+        </service>
         <service id="jms_translation.dumper.yaml_dumper" class="%jms_translation.dumper.yaml_dumper.class%" public="false">
             <tag name="jms_translation.dumper" format="yml" />
         </service>
