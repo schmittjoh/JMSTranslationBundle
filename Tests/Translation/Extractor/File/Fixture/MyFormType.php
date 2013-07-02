@@ -64,5 +64,9 @@ class MyFormType extends AbstractType
 	            'attr' => array('placeholder' => /** @Desc("Field with a placeholder but no label") */ 'form.placeholder.text.but.no.label')
             ))
             ;
+		$child = $builder->create('created', 'text', array(
+                  'label' => 'form.label.created'
+			))
+        	;
     }
 }
