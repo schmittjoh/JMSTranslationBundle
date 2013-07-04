@@ -7,10 +7,10 @@
     </header>
     <body>
       <trans-unit id="fb2d5a853a8edd799b4084a828d7d6746210534b" resname="foo.bar.baz">
-        <jms:reference-file line="1" column="2">c/foo/bar</jms:reference-file>
-        <jms:reference-file line="1" column="2">bar/baz</jms:reference-file>
         <source>foo.bar.baz</source>
         <target state="new">foo.bar.baz</target>
+        <jms:reference-file line="1" column="2">c/foo/bar</jms:reference-file>
+        <jms:reference-file line="1" column="2">bar/baz</jms:reference-file>
       </trans-unit>
     </body>
   </file>
