@@ -1,26 +1,46 @@
 {
     "name":         "jms/translation-bundle",
-    "description":  "Makes translating a site easier while retaining all of the performance optimizations.",
-    "keywords":     ["translation","multilanguage"],
+    "description":  "Puts the Symfony2 Translation Component on steroids",
+    "keywords":     ["translation", "multilanguage", "extract", "webinterface", "ui", "i18n", "extraction", "interface"],
+    "homepage":     "http://jmsyst.com/bundles/JMSTranslationBundle",
     "type":         "symfony-bundle",
-    "license":      "Apache",
+    "license":      "Apache2",
     "authors": [
         {
             "name":   "Johannes M. Schmitt",
             "email":  "schmittjoh@gmail.com"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
-        "symfony/framework-bundle": "2.*",
-        "nikic/php-parser" : "*"
+        "symfony/framework-bundle": "~2.1",
+        "nikic/php-parser": "0.9.1",
+        "symfony/console": "*"
     },
-    "suggest": {
-    	"twig/twig":  "1.*",
-        "sensio/framework-extra-bundle":  "2.*",
-        "jms/di-extra-bundle": "1.*"
+    "conflict": {
+        "twig/twig": "1.10.2"
+    },
+    "require-dev": {
+        "symfony/twig-bundle": "*",
+        "symfony/browser-kit": "*",
+        "symfony/class-loader": "*",
+        "symfony/css-selector": "*",
+        "symfony/finder": "*",
+        "symfony/form": "*",
+        "symfony/validator": "*",
+        "symfony/security": "*",
+        "symfony/process": "*",
+        "symfony/yaml": "*",
+        "sensio/framework-extra-bundle": "*",
+        "jms/di-extra-bundle": ">=1.1"
     },
     "autoload": {
         "psr-0": { "JMS\\TranslationBundle": "" }
     },
-    "target-dir": "JMS/TranslationBundle"
+    "target-dir": "JMS/TranslationBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
+    }
 }

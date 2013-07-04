@@ -2,19 +2,19 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
-      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.0.0-DEV"/>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
-      <trans-unit id="0" resname="foo.bar.baz">
+      <trans-unit id="fb2d5a853a8edd799b4084a828d7d6746210534b" resname="foo.bar.baz">
         <source>Foo</source>
         <target state="new">Foo</target>
       </trans-unit>
-      <trans-unit id="1" resname="foo.bar.moo" extradata="Meaning: Bar">
+      <trans-unit id="5deead3ddeb268e61dbdf8809681afc61eabf8b4" resname="foo.bar.moo" extradata="Meaning: Bar">
         <source>foo.bar.moo</source>
         <target state="new">foo.bar.moo</target>
       </trans-unit>
-      <trans-unit id="2" resname="foo.baz">
+      <trans-unit id="cbcf5a897f5c5d204d78c3c4b2fdd517559cb1b9" resname="foo.baz">
         <source>foo.baz</source>
         <target state="new">foo.baz</target>
       </trans-unit>

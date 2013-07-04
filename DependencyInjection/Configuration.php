@@ -40,6 +40,9 @@ class Configuration implements ConfigurationInterface
             ->root('jms_translation')
                 ->fixXmlConfig('config')
                 ->children()
+                    ->arrayNode('locales')
+                        ->prototype('scalar')->end()
+                    ->end()
                     ->scalarNode('source_language')->defaultValue('en')->end()
                     ->arrayNode('configs')
                         ->useAttributeAsKey('name')
@@ -79,7 +82,7 @@ class Configuration implements ConfigurationInterface
                                                 }
 
                                                 if (!is_dir($v)) {
-                                                    throw new \Exception('The directory "%s" does not exist.');
+                                                    throw new \Exception(sprintf('The directory "%s" does not exist.', $v));
                                                 }
 
                                                 return $v;

@@ -2,7 +2,7 @@ framework:
     secret: test
     test: ~
     session:
-        storage_id: session.storage.filesystem
+        storage_id: session.storage.mock_file
     form:            true
     csrf_protection: true
     validation:       

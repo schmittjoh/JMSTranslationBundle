@@ -34,6 +34,7 @@ class JMSTranslationExtension extends Extension
         $loader->load('services.xml');
 
         $container->setParameter('jms_translation.source_language', $config['source_language']);
+        $container->setParameter('jms_translation.locales', $config['locales']);
 
         $requests = array();
         foreach ($config['configs'] as $name => $extractConfig) {

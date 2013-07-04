@@ -53,6 +53,7 @@ class YamlDumper extends ArrayStructureDumper
                 }
 
                 if ($desc) {
+                    $desc = str_replace(array("\r\n", "\n", "\r", "\t"), array('\r\n', '\n', '\r', '\t'), $desc);
                     $this->writer->writeln('# Desc: '.$desc);
                 }
                 if ($meaning) {

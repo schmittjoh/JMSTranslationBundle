@@ -18,10 +18,14 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
+use Symfony\Bridge\Twig\Form\TwigRendererEngine;
+use Symfony\Bridge\Twig\Form\TwigRenderer;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
-
 use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
-
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -31,6 +35,9 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Twig\TranslationExtension;
 use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Bridge\Twig\Extension\FormExtension;
 
 class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -117,6 +124,18 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->extract('edit.html.twig'));
     }
 
+    public function testEmbeddedTemplate()
+    {
+    	$expected = new MessageCatalogue();
+        $path = __DIR__.'/Fixture/embedded_template.html.twig';
+
+        $message = new Message('foo');
+        $message->addSource(new FileSource($path, 3));
+        $expected->add($message);
+
+    	$this->assertEquals($expected, $this->extract('embedded_template.html.twig'));
+    }
+
     private function extract($file, TwigFileExtractor $extractor = null)
     {
         if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
@@ -126,6 +145,8 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $env = new \Twig_Environment();
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new TranslationExtension($translator, true));
+        $env->addExtension(new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext())));
+        $env->addExtension(new FormExtension(new TwigRenderer(new TwigRendererEngine())));
 
         foreach ($env->getNodeVisitors() as $visitor) {
             if ($visitor instanceof DefaultApplyingNodeVisitor) {

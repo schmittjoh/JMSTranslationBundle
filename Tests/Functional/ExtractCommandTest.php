@@ -36,7 +36,8 @@ class ExtractCommandTest extends BaseCommandTestCase
         ));
 
         $expectedOutput =
-            'Keep old translations: No'."\n"
+            'Extracting Translations for locale en'."\n"
+           .'Keep old translations: No'."\n"
            .'Output-Path: '.$outputDir."\n"
            .'Directories: '.$inputDir."\n"
            .'Excluded Directories: Tests'."\n"
@@ -56,5 +57,39 @@ class ExtractCommandTest extends BaseCommandTestCase
 
         $files = FileUtils::findTranslationFiles($outputDir);
         $this->assertTrue(isset($files['messages']['en']));
+    }
+    
+    public function testExtractDryRun()
+    {
+        $input = new ArgvInput(array(
+            'app/console',
+            'translation:extract',
+            'en',
+            '--dir='.($inputDir = __DIR__.'/../Translation/Extractor/Fixture/SimpleTest'),
+            '--output-dir='.($outputDir = sys_get_temp_dir().'/'.uniqid('extract')),
+            '--dry-run',
+            '--verbose'
+        ));
+
+        $expectedOutput = array(
+            'php.foo->',                                                                                                                                 
+            'php.bar-> Bar',                                                                                                                                 
+            'php.baz->',                                                                                                                                 
+            'php.foo_bar-> Foo',                                                                                                                                
+            'twig.foo->',                                                                                                                                  
+            'twig.bar-> Bar',                                                                                                                                  
+            'twig.baz->',                                                                                                                                  
+            'twig.foo_bar-> Foo',                                                                                                                                  
+            'form.foo->',                                                                                                                                  
+            'form.bar->',                                                                                                                                  
+            'controller.foo-> Foo',
+        );
+
+        $this->getApp()->run($input, $output = new Output());
+        
+        foreach($expectedOutput as $transID){
+            $this->assertContains($transID, $output->getContent());    
+        }
+
     }
 }

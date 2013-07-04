@@ -30,7 +30,7 @@ use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
-class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, \PHPParser_NodeVisitor
 {
     private $domain = 'authentication';
     private $traverser;
@@ -40,12 +40,18 @@ class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParse
     private $docParser;
     private $inAuthException = false;
     private $inGetMessageKey = false;
+    private $logger;
 
     public function __construct(DocParser $parser)
     {
         $this->docParser = $parser;
         $this->traverser = new \PHPParser_NodeTraverser();
         $this->traverser->addVisitor($this);
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     public function setDomain($domain)
@@ -70,7 +76,7 @@ class AuthenticationMessagesExtractor implements FileVisitorInterface, \PHPParse
             $ref = new \ReflectionClass($name);
 
             if (!$ref->isSubclassOf('Symfony\Component\Security\Core\Exception\AuthenticationException')
-                && !$ref->name === 'Symfony\Component\Security\Core\Exception\AuthenticationException') {
+                && $ref->name !== 'Symfony\Component\Security\Core\Exception\AuthenticationException') {
                 return;
             }
 
