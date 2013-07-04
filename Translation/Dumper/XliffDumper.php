@@ -113,6 +113,7 @@ class XliffDumper implements DumperInterface
                 $target->setAttribute('state', 'new');
             }
 
+            // As per the OASIS XLIFF 1.2 non-XLIFF elements must be at the end of the <trans-unit>
             if ($sources = $message->getSources()) {
                 foreach ($sources as $source) {
                     if ($source instanceof FileSource) {
