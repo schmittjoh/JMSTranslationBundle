@@ -163,42 +163,42 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
      */
     public function testExtractWithWithSubscriberAndListener()
     {
-    	$expected = new MessageCatalogue();
-    	$path = __DIR__.'/Fixture/MyFormTypeWithSubscriberAndListener.php';
-    	$pathSubscriber = __DIR__.'/Fixture/MyFormSubscriber.php';
+        $expected = new MessageCatalogue();
+        $path = __DIR__.'/Fixture/MyFormTypeWithSubscriberAndListener.php';
+        $pathSubscriber = __DIR__.'/Fixture/MyFormSubscriber.php';
 
-    	$message = new Message('form.label.lastname');
-    	$message->setDesc('Lastname');
-    	$message->addSource(new FileSource($path, 36));
-    	$expected->add($message);
+        $message = new Message('form.label.lastname');
+        $message->setDesc('Lastname');
+        $message->addSource(new FileSource($path, 36));
+        $expected->add($message);
 
-    	$message = new Message('form.label.firstname');
-    	$message->addSource(new FileSource($path, 33));
-    	$expected->add($message);
+        $message = new Message('form.label.firstname');
+        $message->addSource(new FileSource($path, 33));
+        $expected->add($message);
 
-    	$message = new Message('form.label.password');
-    	$message->addSource(new FileSource($pathSubscriber, 37));
-    	$expected->add($message);
+        $message = new Message('form.label.password');
+        $message->addSource(new FileSource($pathSubscriber, 37));
+        $expected->add($message);
 
-    	$message = new Message('form.label.password_repeated');
-    	$message->setDesc('Repeat password');
-    	$message->addSource(new FileSource($pathSubscriber, 40));
-    	$expected->add($message);
+        $message = new Message('form.label.password_repeated');
+        $message->setDesc('Repeat password');
+        $message->addSource(new FileSource($pathSubscriber, 40));
+        $expected->add($message);
 
-    	$message = new Message('form.label.zip', 'address');
-    	$message->setDesc('ZIP');
-    	$message->addSource(new FileSource($path, 51));
-    	$expected->add($message);
+        $message = new Message('form.label.zip', 'address');
+        $message->setDesc('ZIP');
+        $message->addSource(new FileSource($path, 51));
+        $expected->add($message);
 
-    	$message = new Message('form.error.password_mismatch', 'validators');
-    	$message->setDesc('The entered passwords do not match');
-    	$message->addSource(new FileSource($pathSubscriber, 42));
-    	$expected->add($message);
+        $message = new Message('form.error.password_mismatch', 'validators');
+        $message->setDesc('The entered passwords do not match');
+        $message->addSource(new FileSource($pathSubscriber, 42));
+        $expected->add($message);
 
-    	$catalogue = $this->extract('MyFormTypeWithSubscriberAndListener.php');
-    	//Merge with the subscriber catalogue
-    	$catalogue->merge($this->extract('MyFormSubscriber.php'));
-    	$this->assertEquals($expected, $catalogue);
+        $catalogue = $this->extract('MyFormTypeWithSubscriberAndListener.php');
+        //Merge with the subscriber catalogue
+        $catalogue->merge($this->extract('MyFormSubscriber.php'));
+        $this->assertEquals($expected, $catalogue);
     }
 
     /**

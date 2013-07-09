@@ -104,7 +104,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     continue;
                 }
 
-				if ('choices' === $item->key->value) {
+                if ('choices' === $item->key->value) {
                     foreach ($item->value->items as $sitem) {
                         $this->parseItem($sitem, $domain);
                     }
