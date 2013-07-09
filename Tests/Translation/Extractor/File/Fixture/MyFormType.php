@@ -53,7 +53,7 @@ class MyFormType extends AbstractType
             ->add('zip', 'text', array(
                 /** @Desc("ZIP") */
                 'label' => 'form.label.zip',
-                'translation_domain' => 'address',
+                'translation_domain' => 'address'
             ))
             ->add('field_with_placeholder', 'text', array(
             	'label' => 'field.with.placeholder',
@@ -63,10 +63,10 @@ class MyFormType extends AbstractType
             	'label' => false,
 	            'attr' => array('placeholder' => /** @Desc("Field with a placeholder but no label") */ 'form.placeholder.text.but.no.label')
             ))
-            ;
+        ;
         $child = $builder->create('created', 'text', array(
                   'label' => 'form.label.created'
-            ))
-            ;
+              ))
+        ;
     }
 }
