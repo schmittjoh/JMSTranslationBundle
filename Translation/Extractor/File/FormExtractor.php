@@ -184,9 +184,6 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
     private function parseItem($item, $domain = null)
     {
-        if (!$item->key) {
-            return;
-        }
         // get doc comment
         $ignore = false;
         $desc = $meaning = null;
