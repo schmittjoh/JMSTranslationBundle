@@ -95,6 +95,12 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     && $item->value->name instanceof \PHPParser_Node_Name && 'false' === $item->value->name->parts[0]) {
                 	continue;
                 }
+                if ('empty_value' === $item->key->value && $item->value instanceof \PHPParser_Node_Expr_Array) {
+                    foreach ($item->value->items as $sitem) {
+                        $this->parseItem($sitem, $domain);
+                    }
+                    continue;
+                }
 
                 if ('choices' === $item->key->value && !$item->value instanceof \PHPParser_Node_Expr_Array) {
                     continue;
@@ -178,6 +184,9 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
     private function parseItem($item, $domain = null)
     {
+        if (!$item->key) {
+            return;
+        }
         // get doc comment
         $ignore = false;
         $desc = $meaning = null;
