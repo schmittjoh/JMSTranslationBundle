@@ -116,7 +116,7 @@ class Message
 
     public function getLocaleString()
     {
-        return $this->localeString !== null ? $this->localeString : ($this->new ? ($this->desc !== null ? $this->desc : $this->id) : null);
+        return $this->localeString !== null ? $this->localeString : ($this->new ? ($this->desc !== null ? $this->desc : $this->id) : '');
     }
 
     /**
