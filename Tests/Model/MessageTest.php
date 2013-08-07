@@ -152,4 +152,18 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $message->addSource($s1);
         $this->assertTrue($message->hasSource($s2));
     }
+
+    public function testGetLocaleString()
+    {
+        $message = new Message('foo');
+        $message->setDesc('bar');
+        $message->setNew(true);
+
+        $existingMessage = new Message('foo');
+        $existingMessage->setDesc('bar');
+        $existingMessage->setNew(false);
+
+        $this->assertEquals($message->getDesc(), $message->getLocaleString());
+        $this->assertEquals('', $existingMessage->getLocaleString());
+    }
 }
