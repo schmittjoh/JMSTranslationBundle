@@ -74,7 +74,7 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
             return;
         }
 
-        $metadata = ($this->metadataFactory instanceOf ClassMetadataFactoryInterface)? $this->metadataFactory->getClassMetadata($name) : $this->metadataFactory->getMetadataFor($name);
+        $metadata = $this->metadataFactory->getMetadataFor($name);
         if (!$metadata->hasConstraints() && !count($metadata->getConstrainedProperties())) {
             return;
         }

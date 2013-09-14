@@ -224,6 +224,26 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $this->testExtract();
     }
 
+    /**
+     * This test is used to verify the check on array nodes before iterating on them, otherwise an exception
+     * "Invalid argument supplied for foreach()" could be thrown in presence of null values.
+     */
+    public function testArrayCheckOnSomeNodes()
+    {
+        $path = __DIR__.'/Fixture/MyFormType.php';
+        $code = file_get_contents($path);
+
+        $parser = new \PHPParser_Parser;
+
+        $nodes = $parser->parse(new \PHPParser_Lexer($code));
+
+        $formExtractor = new FormExtractor(new DocParser);
+
+        foreach($nodes as $node) {
+            $formExtractor->enterNode($node);
+        }
+    }
+
     protected function setUp()
     {
         $docParser = new DocParser();

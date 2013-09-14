@@ -110,11 +110,11 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     continue;
                 }
 
-                if ('choices' === $item->key->value) {
+                if ('choices' === $item->key->value && $item->value instanceof \PHPParser_Node_Expr_Array) {
                     foreach ($item->value->items as $sitem) {
                         $this->parseItem($sitem, $domain);
                     }
-                } elseif ('attr' === $item->key->value ) {
+                } elseif ('attr' === $item->key->value && $item->value instanceof \PHPParser_Node_Expr_Array) {
                     foreach ($item->value->items as $sitem) {
                         if ('placeholder' == $sitem->key->value){
                             $this->parseItem($sitem, $domain);
