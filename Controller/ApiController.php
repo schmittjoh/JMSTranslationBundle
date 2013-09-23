@@ -29,13 +29,15 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
  * @Route("/api")
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class ApiController
+class ApiController extends ContainerAware
 {
     /** @DI\Inject("jms_translation.config_factory") */
     private $configFactory;
@@ -67,13 +69,16 @@ class ApiController
         // TODO: This needs more refactoring, the only sane way I see right now is to replace
         //       the loaders of the translation component as these currently simply discard
         //       the extra information that is contained in these files
-
         list($format, $file) = $files[$domain][$locale];
 
         $this->updater->updateTranslation(
             $file, $format, $domain, $locale, $id,
             $this->request->request->get('message')
         );
+
+        // allow users to listen in on this action and apply custom behaviours
+        $eventDispatcher = $this->container->get('event_dispatcher');
+        $eventDispatcher->dispatch('jms.translations.update');
 
         return new Response();
     }
