@@ -51,7 +51,9 @@ abstract class FileUtils
                 $file
             );
         }
-
+        
+        uksort($files, 'strcasecmp');
+        
         return $files;
     }
 
