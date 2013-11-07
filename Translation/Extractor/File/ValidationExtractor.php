@@ -31,14 +31,6 @@ use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
  */
 class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
-    private $messageProperties = array('message', 'minMessage', 'maxMessage', 'multipleMessage',
-                                       'extractFieldsMessage', 'missingFieldsMessage', 'notFoundMessage',
-                                       'notReadableMessage', 'maxSizeMessage', 'mimeTypesMessage',
-                                       'uplaodIniSizeErrorMessage', 'uploadFormSizeErrorMessage',
-                                       'uploadErrorMessage', 'mimeTypesMessage', 'sizeNotDetectedMessage',
-                                       'maxWidthMessage', 'maxWidthMessage', 'minWidthMessage', 'maxHeightMessage',
-                                       'minHeightMessage', 'invalidMessage',);
-
     private $metadataFactory;
     private $traverser;
     private $file;
@@ -107,10 +99,18 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
             $ref = new \ReflectionClass($constraint);
             $defaultValues = $ref->getDefaultProperties();
 
-            foreach ($this->messageProperties as $prop) {
-                if ($ref->hasProperty($prop) && $defaultValues[$prop] !== $constraint->$prop) {
-                    $message = new Message($constraint->$prop, 'validators');
-                    $this->catalogue->add($message);
+            $properties = $ref->getProperties();
+
+            foreach ($properties as $property) {
+                $propName = $property->getName();
+
+                // If the property ends with 'Message'
+                if (strtolower(substr($propName, - strlen('Message'))) === 'message') {
+                    // If it is different from the default value
+                    if ($defaultValues[$propName] !== $constraint->{$propName}) {
+                        $message = new Message($constraint->{$propName}, 'validators');
+                        $this->catalogue->add($message);
+                    }
                 }
             }
         }
