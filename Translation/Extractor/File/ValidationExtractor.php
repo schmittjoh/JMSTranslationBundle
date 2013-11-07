@@ -105,7 +105,7 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
                 $propName = $property->getName();
 
                 // If the property ends with 'Message'
-                if (strtolower(substr($propName, - strlen('Message'))) === 'message') {
+                if (strtolower(substr($propName, -1 * strlen('Message'))) === 'message') {
                     // If it is different from the default value
                     if ($defaultValues[$propName] !== $constraint->{$propName}) {
                         $message = new Message($constraint->{$propName}, 'validators');
