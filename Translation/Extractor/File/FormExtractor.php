@@ -187,7 +187,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         // get doc comment
         $ignore = false;
         $desc = $meaning = $docComment = null;
-	
+
         if ($item->key) {
             $docComment = $item->key->getDocComment();
         }
@@ -207,10 +207,11 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         // check if the value is explicitly set to false => e.g. for FormField that should be rendered without label
         $ignore = $ignore || $item->value->value == false;
 
+        if ($ignore) {
+            return;
+        }
+
         if (!$item->value instanceof \PHPParser_Node_Scalar_String) {
-            if ($ignore) {
-                return;
-            }
 
             $message = sprintf('Unable to extract translation id for form label/title/placeholder from non-string values, but got "%s" in %s on line %d. Please refactor your code to pass a string, or add "/** @Ignore */".', get_class($item->value), $this->file, $item->value->getLine());
             if ($this->logger) {
