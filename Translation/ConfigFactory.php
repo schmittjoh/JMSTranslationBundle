@@ -47,4 +47,9 @@ class ConfigFactory
     {
         return $this->getBuilder($name)->setLocale($locale)->getConfig();
     }
+
+    public function addBuilder($name, $builder)
+    {
+        $this->builders[$name] = $builder;
+    }
 }
