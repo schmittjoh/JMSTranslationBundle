@@ -53,7 +53,8 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->twig = $twig;
         $this->logger = $logger;
         $this->visitors = $visitors;
-        $this->phpParser = new \PHPParser_Parser();
+        $lexer = new \PHPParser_Lexer();
+        $this->phpParser = new \PHPParser_Parser($lexer);
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
             if ($visitor instanceof RemovingNodeVisitor) {
@@ -147,8 +148,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 
                     if ('php' === $extension) {
                         try {
-                            $lexer = new \PHPParser_Lexer(file_get_contents($file));
-                            $ast = $this->phpParser->parse($lexer);
+                            $ast = $this->phpParser->parse(file_get_contents($file));
                         } catch (\PHPParser_Error $ex) {
                             throw new \RuntimeException(sprintf('Could not parse "%s": %s', $file, $ex->getMessage()), $ex->getCode(), $ex);
                         }

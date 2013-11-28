@@ -244,9 +244,9 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         }
         $file = new \SplFileInfo($file);
 
-        $lexer = new \PHPParser_Lexer(file_get_contents($file));
-        $parser = new \PHPParser_Parser();
-        $ast = $parser->parse($lexer);
+        $lexer = new \PHPParser_Lexer();
+        $parser = new \PHPParser_Parser($lexer);
+        $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();
         $this->extractor->visitPhpFile($file, $catalogue, $ast);
