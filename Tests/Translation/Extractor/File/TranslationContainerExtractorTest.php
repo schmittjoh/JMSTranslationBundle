@@ -53,9 +53,9 @@ class TranslationContainerExtractorTest extends \PHPUnit_Framework_TestCase
             $extractor = new TranslationContainerExtractor();
         }
 
-        $lexer = new \PHPParser_Lexer(file_get_contents($file));
-        $parser = new \PHPParser_Parser();
-        $ast = $parser->parse($lexer);
+        $lexer = new \PHPParser_Lexer();
+        $parser = new \PHPParser_Parser($lexer);
+        $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();
         $extractor->visitPhpFile($file, $catalogue, $ast);
