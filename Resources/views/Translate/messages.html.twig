@@ -11,7 +11,7 @@
             <tr>
                 <td>
                     <a class="jms-translation-anchor" id="{{ id }}" />
-                    <abbr title="{{ id }}">{{ id|truncate(20) }}</abbr>
+                    <p><abbr title="{{ id }}">{{ id|truncate(20) }}</abbr></p>
                 </td>
                 <td>
                     <textarea data-id="{{ id }}" class="span6"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{{ message.localeString }}</textarea></td>

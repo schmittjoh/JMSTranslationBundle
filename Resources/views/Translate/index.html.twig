@@ -23,10 +23,10 @@
                             $(self).parent().closest('td').prev('td').children('.alert-message').remove();
                         },
                         error: function() {
-                            $(self).parent().closest('td').prev('td').append('<br><span class="alert-message label error">Could not be saved.</span>');
+                            $(self).parent().closest('td').prev('td').append('<span class="alert-message label error">Could not be saved.</span>');
                         },
                         success: function() {
-                            $(self).parent().closest('td').prev('td').append('<br><span class="alert-message label success">Translation was saved.</span>');
+                            $(self).parent().closest('td').prev('td').append('<span class="alert-message label success">Translation was saved.</span>');
                         },
                         complete: function() {
                             var parent = $(self).parent();
