@@ -74,6 +74,9 @@ class TranslateController
         }
 
         $locales = array_keys($files[$domain]);
+        
+        natsort($locales);
+        
         if ((!$locale = $this->request->query->get('locale')) || !isset($files[$domain][$locale])) {
             $locale = reset($locales);
         }
