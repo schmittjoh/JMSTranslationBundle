@@ -102,6 +102,25 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array($s1, $s2), $message->getSources());
     }
 
+    public function testMergeRememberDesc()
+    {
+        $message = new Message('foo_id');
+        $message->setDesc('foo_desc');
+        $message->setMeaning('foo_meaning');
+        $message->addSource($s1 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'));
+
+        $message2 = new Message('foo_id');
+        $message2->setMeaning('bar_meaning');
+        $message2->addSource($s2 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'));
+
+        $message->merge($message2);
+
+        $this->assertEquals('foo_desc', $message->getDesc());
+        $this->assertEquals('foo_desc', $message->getLocaleString());
+        $this->assertEquals('bar_meaning', $message->getMeaning());
+        $this->assertSame(array($s1, $s2), $message->getSources());
+    }
+
     public function testMergeExisting()
     {
         $message = new Message('foo');
