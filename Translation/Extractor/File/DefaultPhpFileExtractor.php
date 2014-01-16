@@ -25,6 +25,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Annotation\Desc;
 use JMS\TranslationBundle\Annotation\Ignore;
+use JMS\TranslationBundle\Translation\Extractor\DomainAwareInterface;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
@@ -37,7 +38,7 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, \PHPParser_NodeVisitor
+class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, \PHPParser_NodeVisitor, DomainAwareInterface
 {
     private $traverser;
     private $catalogue;
@@ -45,6 +46,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     private $docParser;
     private $logger;
     private $previousNode;
+    private $defaultDomain = 'messages';
 
     public function __construct(DocParser $docParser)
     {
@@ -59,6 +61,11 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    public function setDomain($domain)
+    {
+        $this->defaultDomain = $domain;
     }
 
     public function enterNode(\PHPParser_Node $node)
@@ -122,7 +129,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
 
             $domain = $node->args[$index]->value->value;
         } else {
-            $domain = 'messages';
+            $domain = $this->defaultDomain;
         }
 
         $message = new Message($id, $domain);

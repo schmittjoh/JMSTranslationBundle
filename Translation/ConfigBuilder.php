@@ -32,6 +32,7 @@ final class ConfigBuilder
     private $enabledExtractors = array();
     private $keepOldTranslations = false;
     private $loadResources = array();
+    private $defaultDomain = 'messages';
 
     /**
      * @static
@@ -52,6 +53,7 @@ final class ConfigBuilder
         $builder->setExcludedNames($config->getExcludedNames());
         $builder->setEnabledExtractors($config->getEnabledExtractors());
         $builder->setLoadResources($config->getLoadResources());
+        $builder->setDefaultDomain($config->getDefaultDomain());
 
         return $builder;
     }
@@ -188,6 +190,13 @@ final class ConfigBuilder
         return $this;
     }
 
+    public function setDefaultDomain($domain)
+    {
+        $this->defaultDomain = $domain;
+
+        return $this;
+    }
+
     public function getConfig()
     {
         return new Config(
@@ -202,7 +211,8 @@ final class ConfigBuilder
             $this->excludedNames,
             $this->enabledExtractors,
             $this->keepOldTranslations,
-            $this->loadResources
+            $this->loadResources,
+            $this->defaultDomain
         );
     }
 

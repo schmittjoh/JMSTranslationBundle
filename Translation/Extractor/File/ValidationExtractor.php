@@ -19,6 +19,7 @@
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Translation\Extractor\DomainAwareInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadataFactoryInterface;
 use Symfony\Component\Validator\MetadataFactoryInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
@@ -29,13 +30,14 @@ use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor, DomainAwareInterface
 {
     private $metadataFactory;
     private $traverser;
     private $file;
     private $catalogue;
     private $namespace = '';
+    private $defaultDomain = 'validators';
 
     public function __construct($metadataFactory)
     {
@@ -46,6 +48,11 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
 
         $this->traverser = new \PHPParser_NodeTraverser();
         $this->traverser->addVisitor($this);
+    }
+
+    public function setDomain($domain)
+    {
+        $this->defaultDomain = $domain;
     }
 
     public function enterNode(\PHPParser_Node $node)
@@ -108,7 +115,7 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
                 if (strtolower(substr($propName, -1 * strlen('Message'))) === 'message') {
                     // If it is different from the default value
                     if ($defaultValues[$propName] !== $constraint->{$propName}) {
-                        $message = new Message($constraint->{$propName}, 'validators');
+                        $message = new Message($constraint->{$propName}, $this->defaultDomain);
                         $this->catalogue->add($message);
                     }
                 }
