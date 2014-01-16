@@ -25,12 +25,13 @@ use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Annotation\Desc;
 use JMS\TranslationBundle\Annotation\Ignore;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Extractor\DomainAwareInterface;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
-class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, \PHPParser_NodeVisitor
+class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, \PHPParser_NodeVisitor, DomainAwareInterface
 {
     private $domain = 'authentication';
     private $traverser;

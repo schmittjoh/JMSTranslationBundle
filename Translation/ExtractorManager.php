@@ -19,19 +19,21 @@
 namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
+use JMS\TranslationBundle\Translation\Extractor\DomainAwareInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 
-class ExtractorManager implements ExtractorInterface
+class ExtractorManager implements ExtractorInterface, DomainAwareInterface
 {
     private $fileExtractor;
     private $customExtractors;
     private $directories = array();
     private $enabledExtractors = array();
     private $logger;
+    private $defaultDomain = 'messages';
 
     /**
      * @param Extractor\FileExtractor $extractor
@@ -126,12 +128,23 @@ class ExtractorManager implements ExtractorInterface
     }
 
     /**
+     * @param string $domain
+     */
+    public function setDomain($domain)
+    {
+        $this->defaultDomain = $domain;
+    }
+
+    /**
      * @return \JMS\TranslationBundle\Model\MessageCatalogue
      */
     public function extract()
     {
         $catalogue = new MessageCatalogue();
 
+        if ($this->fileExtractor instanceof DomainAwareInterface) {
+            $this->fileExtractor->setDomain($this->defaultDomain);
+        }
         foreach ($this->directories as $directory) {
             $this->logger->info(sprintf('Extracting messages from directory : %s', $directory));
             $this->fileExtractor->setDirectory($directory);
@@ -142,6 +155,9 @@ class ExtractorManager implements ExtractorInterface
             if (!isset($this->enabledExtractors[$alias])) {
                 $this->logger->debug(sprintf('Skipping custom extractor "%s" as it is not enabled.', $alias));
                 continue;
+            }
+            if ($extractor instanceof DomainAwareInterface) {
+                $extractor->setDomain($this->defaultDomain);
             }
 
             $this->logger->info(sprintf('Extracting messages with custom extractor : %s', $alias));

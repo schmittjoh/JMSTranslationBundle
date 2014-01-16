@@ -35,7 +35,7 @@ use Symfony\Component\Finder\Finder;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class FileExtractor implements ExtractorInterface, LoggerAwareInterface
+class FileExtractor implements ExtractorInterface, LoggerAwareInterface, DomainAwareInterface
 {
     private $twig;
     private $visitors;
@@ -47,6 +47,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     private $excludedNames = array();
     private $excludedDirs = array();
     private $logger;
+    private $defaultDomain = 'messages';
 
     public function __construct(\Twig_Environment $twig, LoggerInterface $logger, array $visitors)
     {
@@ -108,6 +109,18 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     {
         $this->pattern = $pattern;
     }
+
+    public function setDomain($domain)
+    {
+        $this->defaultDomain = $domain;
+
+        foreach ($this->visitors as $visitor) {
+            if ($visitor instanceof DomainAwareInterface) {
+                $visitor->setDomain($this->defaultDomain);
+            }
+        }
+    }
+
 
     public function extract()
     {

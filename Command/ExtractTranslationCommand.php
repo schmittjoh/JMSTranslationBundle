@@ -56,6 +56,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->addOption('default-output-format', null, InputOption::VALUE_REQUIRED, 'The default output format (defaults to xliff).')
             ->addOption('keep', null, InputOption::VALUE_NONE, 'Define if the updater service should keep the old translation (defaults to false).')
             ->addOption('external-translations-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED , 'Load external translation ressources')
+            ->addOption('default-domain', null, InputOption::VALUE_REQUIRED , 'Domain that is going to be used when no domain is detected in translation - Default: messages')
         ;
     }
 
@@ -194,6 +195,10 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
         if ($loadResource = $input->getOption('external-translations-dir')) {
             $builder->setLoadResources($loadResource);
+        }
+
+        if ($defaultDomain = $input->getOption('default-domain')) {
+            $builder->setDefaultDomain($defaultDomain);
         }
     }
 }

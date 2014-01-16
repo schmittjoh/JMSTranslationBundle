@@ -26,18 +26,20 @@ use JMS\TranslationBundle\Annotation\Desc;
 use JMS\TranslationBundle\Annotation\Ignore;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Extractor\DomainAwareInterface;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
-class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor, DomainAwareInterface
 {
     private $docParser;
     private $traverser;
     private $file;
     private $catalogue;
     private $logger;
-    private $defaultDomain;
+    private $formDomain;
+    private $defaultDomain = 'messages';
     private $defaultDomainMessages;
 
     public function __construct(DocParser $docParser)
@@ -48,11 +50,15 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         $this->traverser->addVisitor($this);
     }
 
+    public function setDomain($domain)
+    {
+        $this->defaultDomain = $domain;
+    }
 
     public function enterNode(\PHPParser_Node $node)
     {
         if ($node instanceof \PHPParser_Node_Stmt_Class) {
-            $this->defaultDomain = null;
+            $this->formDomain = null;
             $this->defaultDomainMessages = array();
         }
 
@@ -176,7 +182,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     continue;
                 }
 
-                $this->defaultDomain = $item->value->value;
+                $this->formDomain = $item->value->value;
             }
         }
 
@@ -240,7 +246,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
     private function addToCatalogue($id, $source, $domain = null, $desc = null, $meaning = null)
     {
         if (null === $domain) {
-            $message = new Message($id);
+            $message = new Message($id, $this->defaultDomain);
         } else {
             $message = new Message($id, $domain);
         }
@@ -266,7 +272,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
         if ($this->defaultDomainMessages) {
             foreach ($this->defaultDomainMessages as $message) {
-                $this->addToCatalogue($message['id'], $message['source'], $this->defaultDomain, $message['desc'], $message['meaning']);
+                $this->addToCatalogue($message['id'], $message['source'], $this->formDomain, $message['desc'], $message['meaning']);
             }
         }
     }
