@@ -93,6 +93,12 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $message = new Message('text.default_domain');
         $message->addSource(new FileSource($path, 21));
         $expected->add($message);
+        
+        $message = new Message('foo.bar5');
+        $message->addSource(new FileSource($path, 23));
+        $message->addExtra('foo1', 'bar1');
+        $message->addExtra('foo2', 'bar2');
+        $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('simple_template.html.twig'));
     }

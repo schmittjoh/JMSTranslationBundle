@@ -96,18 +96,10 @@ class XliffDumper implements DumperInterface
             $unit->setAttribute('resname', $id);
 
             $unit->appendChild($source = $doc->createElement('source'));
-            if (preg_match('/[<>&]/', $message->getSourceString())) {
-                $source->appendChild($doc->createCDATASection($message->getSourceString()));
-            } else {
-                $source->appendChild($doc->createTextNode($message->getSourceString()));
-            }
+            $this->appendValue($doc, $source, $message->getSourceString());
 
             $unit->appendChild($target = $doc->createElement('target'));
-            if (preg_match('/[<>&]/', $message->getLocaleString())) {
-                $target->appendChild($doc->createCDATASection($message->getLocaleString()));
-            } else {
-                $target->appendChild($doc->createTextNode($message->getLocaleString()));
-            }
+            $this->appendValue($doc, $target, $message->getLocaleString());
 
             if ($message->isNew()) {
                 $target->setAttribute('state', 'new');
@@ -133,13 +125,30 @@ class XliffDumper implements DumperInterface
                     $unit->appendChild($doc->createElementNS('jms:reference', (string) $source));
                 }
             }
-
-            if ($meaning = $message->getMeaning()) {
-                $unit->setAttribute('extradata', 'Meaning: '.$meaning);
+            
+            foreach ($message->getExtras() as $name => $value) {
+                
+                if($name === 'desc') continue;
+                
+                $unit->appendChild($extra = $doc->createElement('jms:extras'));                
+                $this->appendValue($doc, $extra, $value);
+                
+                $extra->setAttribute('name', $name);
             }
-
         }
 
         return $doc->saveXML();
+    }
+    
+    private function appendValue(\DOMDocument $doc, \DOMNode $node, $value) {
+        if ($this->useCDATASection($value)) {
+            $node->appendChild($doc->createCDATASection($value));
+        } else {
+            $node->appendChild($doc->createTextNode($value));
+        }
+    }
+    
+    private function useCDATASection($value) {
+        return preg_match('/[<>&]/', $value);
     }
 }

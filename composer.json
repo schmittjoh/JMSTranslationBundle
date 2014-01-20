@@ -31,6 +31,7 @@
         "symfony/security": "*",
         "symfony/process": "*",
         "symfony/yaml": "*",
+        "symfony/expression-language": "*",
         "sensio/framework-extra-bundle": "*",
         "jms/di-extra-bundle": ">=1.1"
     },

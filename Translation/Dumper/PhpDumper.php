@@ -50,18 +50,14 @@ class PhpDumper extends ArrayStructureDumper
         $precededByMessage = false;
         foreach ($structure as $k => $v) {
             if ($isMessage = $v instanceof Message) {
-                $desc = $v->getDesc();
-                $meaning = $v->getMeaning();
+                $extras = $v->getExtras();
 
-                if (!$isFirst && (!$precededByMessage || $desc || $meaning)) {
+                if (!$isFirst && (!$precededByMessage || count($extras) > 0)) {
                     $this->writer->write("\n");
                 }
 
-                if ($desc) {
-                    $this->writer->writeln('// Desc: '.$desc);
-                }
-                if ($meaning) {
-                    $this->writer->writeln('// Meaning: '.$meaning);
+                foreach($extras as $extraName => $extraValue) {
+                    $this->writer->writeln('// '.ucfirst($extraName).': '.$extraValue);
                 }
             } else if (!$isFirst) {
                 $this->writer->write("\n");

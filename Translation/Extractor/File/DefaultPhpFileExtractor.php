@@ -25,6 +25,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Annotation\Desc;
 use JMS\TranslationBundle\Annotation\Ignore;
+use JMS\TranslationBundle\Annotation\Extra;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
@@ -73,15 +74,17 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         }
 
         $ignore = false;
-        $desc = $meaning = null;
+        $extras = array();
         if (null !== $docComment = $this->getDocCommentForNode($node)) {
             foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$node->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
                 } else if ($annot instanceof Desc) {
-                    $desc = $annot->text;
+                    $extras['desc'] = $annot->text;
                 } else if ($annot instanceof Meaning) {
-                    $meaning = $annot->text;
+                    $extras['meaning'] = $annot->text;
+                } else if($annot instanceof Extra) {
+                    $extras[$annot->name] = $annot->value;
                 }
             }
         }
@@ -126,8 +129,9 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         }
 
         $message = new Message($id, $domain);
-        $message->setDesc($desc);
-        $message->setMeaning($meaning);
+        foreach ($extras as $extraName => $extraValue) {
+            $message->addExtra($extraName, $extraValue);
+        }
         $message->addSource(new FileSource((string) $this->file, $node->getLine()));
 
         $this->catalogue->add($message);

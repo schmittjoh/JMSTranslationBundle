@@ -45,19 +45,15 @@ class YamlDumper extends ArrayStructureDumper
         $precededByMessage = false;
         foreach ($structure as $k => $v) {
             if ($isMessage = $v instanceof Message) {
-                $desc = $v->getDesc();
-                $meaning = $v->getMeaning();
+                $extras = $v->getExtras();
 
-                if (!$isFirst && (!$precededByMessage || $desc || $meaning)) {
+                if (!$isFirst && (!$precededByMessage || count($extras) > 0)) {
                     $this->writer->write("\n");
                 }
 
-                if ($desc) {
-                    $desc = str_replace(array("\r\n", "\n", "\r", "\t"), array('\r\n', '\n', '\r', '\t'), $desc);
-                    $this->writer->writeln('# Desc: '.$desc);
-                }
-                if ($meaning) {
-                    $this->writer->writeln('# Meaning: '.$meaning);
+                foreach ($extras as $extraName => $extraValue) {
+                    $extraValue = $this->escapeUnsafeWhitecharacters($extraValue);
+                    $this->writer->writeln('# '.ucfirst($extraName).': '.$extraValue);
                 }
             } else if (!$isFirst) {
                 $this->writer->write("\n");
@@ -85,5 +81,9 @@ class YamlDumper extends ArrayStructureDumper
             $this->dumpStructureRecursively($v);
             $this->writer->outdent();
         }
+    }
+    
+    private function escapeUnsafeWhitecharacters($value) {
+        return str_replace(array("\r\n", "\n", "\r", "\t"), array('\r\n', '\n', '\r', '\t'), $value);
     }
 }

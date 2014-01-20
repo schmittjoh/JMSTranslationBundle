@@ -67,9 +67,9 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
 
                 $index = 'trans' === $name ? 1 : 2;
                 $domain = 'messages';
-                $arguments = $node->getNode('arguments');
-                if ($arguments->hasNode($index)) {
-                    $argument = $arguments->getNode($index);
+                $argumentNodes = $node->getNode('arguments');
+                if ($argumentNodes->hasNode($index)) {
+                    $argument = $argumentNodes->getNode($index);
                     if (!$argument instanceof \Twig_Node_Expression_Constant) {
                         return $node;
                         // FIXME: Throw exception if there is some way for the user to turn this off
@@ -89,17 +89,16 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
 
                     $name = $this->stack[$i]->getNode('filter')->getAttribute('value');
                     if ('desc' === $name || 'meaning' === $name) {
-                        $arguments = $this->stack[$i]->getNode('arguments');
-                        if (!$arguments->hasNode(0)) {
-                            throw new RuntimeException(sprintf('The "%s" filter requires exactly one argument, the description text.', $name));
-                        }
-
-                        $text = $arguments->getNode(0);
-                        if (!$text instanceof \Twig_Node_Expression_Constant) {
-                            throw new RuntimeException(sprintf('The first argument of the "%s" filter must be a constant expression, such as a string.', $name));
-                        }
-
-                        $message->{'set'.$name}($text->getAttribute('value'));
+                        $argumentNodes = $this->stack[$i]->getNode('arguments');
+                        $args = $this->getArgumentsForFilter($argumentNodes, 1, $name);
+                        
+                        $setter = 'set'.$name;
+                        call_user_method_array($setter, $message, $args);
+                    } else if ('extra' === $name) {
+                        $argumentNodes = $this->stack[$i]->getNode('arguments');
+                        $args = $this->getArgumentsForFilter($argumentNodes, 2, $name);
+                        
+                        $message->addExtra($args[0], $args[1]);
                     } else if ('trans' === $name) {
                         break;
                     }
@@ -110,6 +109,26 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
         }
 
         return $node;
+    }
+    
+    private function getArgumentsForFilter($argNodes, $howMany, $filterName) {
+        if (!$argNodes->hasNode($howMany - 1)) {
+            throw new RuntimeException(sprintf('The "%s" filter requires exactly %s argument(s), the description text.', $filterName, $howMany));
+        }
+        
+        $args = array();
+        
+        for ($i=0; $i<$howMany; $i++) {
+            $argNode = $argNodes->getNode($i);
+            
+            if (!$argNode instanceof \Twig_Node_Expression_Constant) {
+                throw new RuntimeException(sprintf('The %d. argument of the "%s" filter must be a constant expression, such as a string.', $i+1, $name));
+            }
+            
+            $args[] = (string) $argNode->getAttribute('value');
+        }
+        
+        return $args;
     }
 
     public function getPriority()

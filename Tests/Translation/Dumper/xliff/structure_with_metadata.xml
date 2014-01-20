@@ -10,9 +10,10 @@
         <source>Foo</source>
         <target state="new">Foo</target>
       </trans-unit>
-      <trans-unit id="5deead3ddeb268e61dbdf8809681afc61eabf8b4" resname="foo.bar.moo" extradata="Meaning: Bar">
+      <trans-unit id="5deead3ddeb268e61dbdf8809681afc61eabf8b4" resname="foo.bar.moo">
         <source>foo.bar.moo</source>
         <target state="new">foo.bar.moo</target>
+        <jms:extras name="meaning">Bar</jms:extras>
       </trans-unit>
       <trans-unit id="cbcf5a897f5c5d204d78c3c4b2fdd517559cb1b9" resname="foo.baz">
         <source>foo.baz</source>

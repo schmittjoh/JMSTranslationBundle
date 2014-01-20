@@ -81,4 +81,10 @@ class Controller
         /** @Desc("The var %foo% should be assigned.") */
         return $this->translator->trans('text.var.assign', array('%foo%' => 'fooVar'));
     }
+    
+    public function assignExtras()
+    {
+        /** @Extra(name="extra1", value="value1") @Extra(name="extra2", value="value2") */
+        $this->translator->trans('text.assign_extras');
+    }
 }

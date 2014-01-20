@@ -64,14 +64,11 @@ class XliffLoader implements LoaderInterface
                         $column ? (integer) $column : null
                     ));
                 }
-            }
-
-            if ($meaning = (string) $trans->attributes()->extradata) {
-                if (0 === strpos($meaning, 'Meaning: ')) {
-                    $meaning = substr($meaning, 9);
+                
+                foreach ($trans->xpath('./jms:extras') as $extra) {
+                    $name = (string) $extra->attributes()->name;
+                    $m->addExtra($name, (string) $extra);
                 }
-
-                $m->setMeaning($meaning);
             }
 
             if (!($state = (string) $trans->target->attributes()->state) || 'new' !== $state) {

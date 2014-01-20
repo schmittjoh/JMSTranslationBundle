@@ -29,6 +29,9 @@ class MyAuthException extends AuthenticationException
         if (!empty($this->foo)) {
             /** @Desc("%foo% is invalid.") */
             return 'security.authentication_error.foo';
+        } else if (false) {
+            /** @Extra(name="foo", value="bar") */
+            return 'security.authentication_error.baz';
         }
 
         /** @Desc("An authentication error occurred.") */
