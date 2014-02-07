@@ -96,6 +96,9 @@ class JMSTranslationExtension extends Extension
             $requests[$name] = $def;
         }
 
+        if(isset($config['template']))
+            $container->setParameter('jms_translation.template',$config['template']);
+
         $container
             ->getDefinition('jms_translation.config_factory')
             ->addArgument($requests)

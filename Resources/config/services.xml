@@ -30,6 +30,7 @@
         
         <parameter key="jms_translation.updater.class">JMS\TranslationBundle\Translation\Updater</parameter>
         <parameter key="jms_translation.config_factory.class">JMS\TranslationBundle\Translation\ConfigFactory</parameter>
+        <parameter key="jms_translation.template">JMSTranslationBundle:Translate:index.html.twig</parameter>
     </parameters>
 
     <services>
