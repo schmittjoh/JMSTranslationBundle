@@ -40,6 +40,7 @@ class Configuration implements ConfigurationInterface
             ->root('jms_translation')
                 ->fixXmlConfig('config')
                 ->children()
+                    ->scalarNode('template')->end()
                     ->arrayNode('locales')
                         ->prototype('scalar')->end()
                     ->end()

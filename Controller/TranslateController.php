@@ -48,6 +48,9 @@ class TranslateController
     /** @DI\Inject("%jms_translation.source_language%") */
     private $sourceLanguage;
 
+    /** @DI\Inject("%jms_translation.template%") */
+    private $template;
+
     /**
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
      * @Template
@@ -118,7 +121,7 @@ class TranslateController
             $existingMessages[$id] = $message;
         }
 
-        return array(
+        return $this->container->get('templating')->renderResponse($this->template,array(
             'selectedConfig' => $config,
             'configs' => $configs,
             'selectedDomain' => $domain,
@@ -132,6 +135,6 @@ class TranslateController
             'isWriteable' => is_writeable($files[$domain][$locale][1]),
             'file' => (string) $files[$domain][$locale][1],
             'sourceLanguage' => $this->sourceLanguage,
-        );
+        ));
     }
 }
