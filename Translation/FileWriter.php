@@ -46,9 +46,10 @@ class FileWriter
      * @param \JMS\TranslationBundle\Model\MessageCatalogue $domain
      * @param $filePath
      * @param $format
+     * @param $template
      * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
      */
-    public function write(MessageCatalogue $catalogue, $domain, $filePath, $format)
+    public function write(MessageCatalogue $catalogue, $domain, $filePath, $format, $template)
     {
         if (!isset($this->dumpers[$format])) {
             throw new InvalidArgumentException(sprintf('The format "%s" is not supported.', $format));
@@ -59,6 +60,6 @@ class FileWriter
             return strcmp($a->getId(), $b->getId());
         });
 
-        file_put_contents($filePath, $this->dumpers[$format]->dump($catalogue, $domain));
+        file_put_contents($filePath, $this->dumpers[$format]->dump($catalogue, $domain, $template));
     }
 }

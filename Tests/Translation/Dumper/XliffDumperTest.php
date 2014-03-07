@@ -84,6 +84,17 @@ EOF;
         $this->assertEquals($expected, $dumper->dump($catalogue, 'messages'));
     }
 
+    public function testTemplateDump()
+    {
+        $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('template');
+
+        $message = new Message('template');
+        $catalogue->add($message);
+
+        $this->assertEquals($this->getOutput('template'), $this->getDumper()->dump($catalogue, 'messages', true));
+    }
+
     protected function getDumper()
     {
         $dumper = new XliffDumper();

@@ -55,7 +55,7 @@ class XliffDumper implements DumperInterface
      * @param \JMS\TranslationBundle\Model\MessageCatalogue $domain
      * @return string
      */
-    public function dump(MessageCatalogue $catalogue, $domain = 'messages')
+    public function dump(MessageCatalogue $catalogue, $domain = 'messages', $template = false)
     {
         $doc = new \DOMDocument('1.0', 'utf-8');
         $doc->formatOutput = true;
@@ -107,18 +107,24 @@ class XliffDumper implements DumperInterface
             }
 
             $unit->appendChild($target = $doc->createElement('target'));
-            if (preg_match('/[<>&]/', $message->getLocaleString())) {
-                $target->appendChild($doc->createCDATASection($message->getLocaleString()));
-            } else {
-                $target->appendChild($doc->createTextNode($message->getLocaleString()));
+            if (!$template) {
+                if (preg_match('/[<>&]/', $message->getLocaleString())) {
+                    $target->appendChild($doc->createCDATASection($message->getLocaleString()));
+                } else {
+                    $target->appendChild($doc->createTextNode($message->getLocaleString()));
 
-                if (preg_match("/\r\n|\n|\r|\t/", $message->getLocaleString())) {
+                    if (preg_match("/\r\n|\n|\r|\t/", $message->getLocaleString())) {
+                        $target->setAttribute('xml:space', 'preserve');
+                    }
+                }
+
+                if ($message->isNew()) {
+                    $target->setAttribute('state', 'new');
+                }
+            } else {
+                if (preg_match("/\r\n|\n|\r|\t/", $message->getSourceString())) {
                     $target->setAttribute('xml:space', 'preserve');
                 }
-            }
-
-            if ($message->isNew()) {
-                $target->setAttribute('state', 'new');
             }
 
             // As per the OASIS XLIFF 1.2 non-XLIFF elements must be at the end of the <trans-unit>

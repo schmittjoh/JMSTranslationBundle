@@ -4,7 +4,7 @@ Usage
 Creating Translation Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 While not strictly necessary, this bundle strongly advocates the usage of
-abstract keys such as "form.label.firstname" as translation messages. Many of 
+abstract keys such as "form.label.firstname" as translation messages. Many of
 the features of this bundle were designed to facilitate this.
 
 Abstract keys are used for two main reasons:
@@ -12,13 +12,13 @@ Abstract keys are used for two main reasons:
 #. Translation messages are mostly written by developers, and thus their
    first draft of the message might not be perfect from a copywriters point
    of view, or changes might be necessitated later for other reasons. These
-   changes would then result in changes for all supported languages instead 
+   changes would then result in changes for all supported languages instead
    of only for the source language, and some translations might actually be
    lost in the process.
 
-#. Some words in English (or whatever your source language is) are spelled 
-   differently in other languages depending on their meaning. Let's take the 
-   English word "Archive" as an example. This can be a noun ("The Archive"), 
+#. Some words in English (or whatever your source language is) are spelled
+   differently in other languages depending on their meaning. Let's take the
+   English word "Archive" as an example. This can be a noun ("The Archive"),
    and also a verb ("to archive"). In German, these are two different words
    "Archiv" for the noun, and "Archivieren" for the verb. If you were using
    the source message as id, you could not use the word "Archiv" with different
@@ -26,8 +26,8 @@ Abstract keys are used for two main reasons:
    "Archiv", or "Archivieren", but not both.
 
 Whereas abstract keys do not suffer from these limitations, they come with some
-of their own. For example, sometimes it is hard for the translator to know what 
-s/he is supposed to translate. Let's take a look at the following example where 
+of their own. For example, sometimes it is hard for the translator to know what
+s/he is supposed to translate. Let's take a look at the following example where
 we use the source message as key:
 
 .. code-block :: jinja
@@ -35,7 +35,7 @@ we use the source message as key:
     {# index.html.twig #}
     {{ "{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples"|transchoice(count) }}
 
-If we translate this to use an abstract key instead, we would get something like 
+If we translate this to use an abstract key instead, we would get something like
 the following:
 
 .. code-block :: jinja
@@ -44,8 +44,8 @@ the following:
     {{ "text.apples_remaining"|transchoice(count) }}
 
 If a translator now sees this abstract key, s/he does not really know what the
-expected translation should look like. Fortunately, there is a solution for 
-this. We simply allow the developer to convey more context to the translator 
+expected translation should look like. Fortunately, there is a solution for
+this. We simply allow the developer to convey more context to the translator
 via the ``desc`` filter:
 
 .. code-block :: jinja
@@ -64,7 +64,7 @@ be used as the default translation.
     The ``desc`` filter is removed when your Twig template is compiled, and does
     not affect the runtime performance of your template.
 
-Of course, an equivalent to the ``desc`` filter is also available for 
+Of course, an equivalent to the ``desc`` filter is also available for
 translations in PHP code, the ``@Desc`` annotation:
 
 .. code-block :: php
@@ -75,17 +75,17 @@ translations in PHP code, the ``@Desc`` annotation:
     /** @Desc("{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples") */
     $this->translator->transChoice('text_apples_remaining', $count)
 
-You can place the doc comment anywhere in the method call chain or directly 
+You can place the doc comment anywhere in the method call chain or directly
 before the key.
 
 Extracting Translation Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This bundle automatically supports extracting messages from the following 
+This bundle automatically supports extracting messages from the following
 sources:
 
 - Twig: ``trans``, and ``transchoice`` filters as well as ``trans``,
   and ``transchoice`` blocks
-- PHP: 
+- PHP:
 
   - all calls to the ``trans``, or ``transChoice`` method
   - all classes implementing the ``TranslationContainerInterface``
@@ -102,7 +102,7 @@ you can implement an ``ExtractorInterface`` service, and tag it with ``jms_trans
 
 As an example, you can take a look at the JMSI18nRoutingBundle_ which implements an `extractor service`_
 for routes, and the corresponding `service definition`_.
-Due to the global nature of these extractors, they are not enabled by default, but you need to 
+Due to the global nature of these extractors, they are not enabled by default, but you need to
 enabled each of them explicitly. You can do that by passing the ``--enable-extractor=fooAlias``
 command line option, or enable it in the configuration (see below).
 
@@ -137,15 +137,18 @@ bundle:
 .. code-block :: bash
 
     php app/console translation:extract de --bundle=MyFooBundle
-    
+
 .. tip ::
 
     This bundle supports the following formats: csv, ini, php, qt, xliff, and yml
-    
-    Note however, that the best integration exists with the XLIFF format. This is simply 
-    due to the fact that the other formats are not so extensible, and do not allow for 
-    some of the more advanced features like tracking where a translation is used, whether 
+
+    Note however, that the best integration exists with the XLIFF format. This is simply
+    due to the fact that the other formats are not so extensible, and do not allow for
+    some of the more advanced features like tracking where a translation is used, whether
     it is new, etc.
 
-    
-    
+
+Template locale
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+There is a special locale named template. When such locale is used for dumping into an xliff format, suggested translation is not saved.
+You can use such xliff file as Template in online translation tools like Pootle.
