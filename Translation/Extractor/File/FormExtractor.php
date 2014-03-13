@@ -32,13 +32,13 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
-    private $docParser;
-    private $traverser;
-    private $file;
-    private $catalogue;
-    private $logger;
-    private $defaultDomain;
-    private $defaultDomainMessages;
+    protected $docParser;
+    protected $traverser;
+    protected $file;
+    protected $catalogue;
+    protected $logger;
+    protected $defaultDomain;
+    protected $defaultDomainMessages;
 
     public function __construct(DocParser $docParser)
     {
@@ -132,7 +132,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
     }
 
-    private function parseDefaultsCall($name, \PHPParser_Node $node)
+    protected function parseDefaultsCall($name, \PHPParser_Node $node)
     {
         static $returningMethods = array(
             'setdefaults' => true, 'replacedefaults' => true, 'setoptional' => true, 'setrequired' => true,
@@ -182,7 +182,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
     }
 
-    private function parseItem($item, $domain = null)
+    protected function parseItem($item, $domain = null)
     {
         // get doc comment
         $ignore = false;
@@ -237,7 +237,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
     }
 
-    private function addToCatalogue($id, $source, $domain = null, $desc = null, $meaning = null)
+    protected function addToCatalogue($id, $source, $domain = null, $desc = null, $meaning = null)
     {
         if (null === $domain) {
             $message = new Message($id);
