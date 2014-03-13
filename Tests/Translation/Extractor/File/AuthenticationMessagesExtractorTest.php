@@ -31,15 +31,19 @@ class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
 
         $message = new Message('security.authentication_error.foo', 'authentication');
         $message->setDesc('%foo% is invalid.');
-        $message->addSource(new FileSource(__DIR__.'/Fixture/MyAuthException.php', 31));
+        $message->addSource(new FileSource(__DIR__.'/Fixture/MyAuthException.php', 35));
         $expected->add($message);
 
         $message = new Message('security.authentication_error.bar', 'authentication');
         $message->setDesc('An authentication error occurred.');
-        $message->addSource(new FileSource(__DIR__.'/Fixture/MyAuthException.php', 35));
+        $message->addSource(new FileSource(__DIR__.'/Fixture/MyAuthException.php', 39));
         $expected->add($message);
 
-        $this->assertEquals($expected, $this->extract('MyAuthException.php'));
+        $extracted = $this->extract('MyAuthException.php');
+
+        $this->assertFalse($extracted->getDomains()['authentication']->has('security.authentication_error.ignored'));
+
+        $this->assertEquals($expected, $extracted);
     }
 
     protected function getDefaultExtractor()
