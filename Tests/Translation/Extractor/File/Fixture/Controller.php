@@ -81,4 +81,9 @@ class Controller
         /** @Desc("The var %foo% should be assigned.") */
         return $this->translator->trans('text.var.assign', array('%foo%' => 'fooVar'));
     }
+
+    public function ignoredAction()
+    {
+        $this->translator->trans(/** @Ignore */ 'text.ignored');
+    }
 }

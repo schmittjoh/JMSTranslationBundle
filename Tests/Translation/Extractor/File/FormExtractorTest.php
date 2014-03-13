@@ -38,13 +38,8 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormType.php';
 
-        $message = new Message('bar');
-        $message->addSource(new FileSource($path, 36));
-        $expected->add($message);
-
-        $message = new Message('form.states.empty_value');
-        $message->setDesc('Please select a state');
-        $message->addSource(new FileSource($path, 37));
+        $message = new Message('form.label.firstname');
+        $message->addSource(new FileSource($path, 30));
         $expected->add($message);
 
         $message = new Message('form.label.lastname');
@@ -52,8 +47,13 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 33));
         $expected->add($message);
 
-        $message = new Message('form.label.firstname');
-        $message->addSource(new FileSource($path, 30));
+        $message = new Message('bar');
+        $message->addSource(new FileSource($path, 36));
+        $expected->add($message);
+
+        $message = new Message('form.states.empty_value');
+        $message->setDesc('Please select a state');
+        $message->addSource(new FileSource($path, 37));
         $expected->add($message);
 
         $message = new Message('form.label.password');
@@ -65,6 +65,11 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 45));
         $expected->add($message);
 
+        $message = new Message('form.error.password_mismatch', 'validators');
+        $message->setDesc('The entered passwords do not match');
+        $message->addSource(new FileSource($path, 47));
+        $expected->add($message);
+
         $message = new Message('form.label.street', 'address');
         $message->setDesc('Street');
         $message->addSource(new FileSource($path, 50));
@@ -73,15 +78,6 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message = new Message('form.label.zip', 'address');
         $message->setDesc('ZIP');
         $message->addSource(new FileSource($path, 55));
-        $expected->add($message);
-
-        $message = new Message('form.error.password_mismatch', 'validators');
-        $message->setDesc('The entered passwords do not match');
-        $message->addSource(new FileSource($path, 47));
-        $expected->add($message);
-
-        $message = new Message('form.label.created');
-        $message->addSource(new FileSource($path, 68));
         $expected->add($message);
 
         $message = new Message('field.with.placeholder');
@@ -98,6 +94,10 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 64));
         $expected->add($message);
 
+        $message = new Message('form.label.created');
+        $message->addSource(new FileSource($path, 68));
+        $expected->add($message);
+
         $message = new Message('form.dueDate.empty.year');
         $message->addSource(new FileSource($path, 72));
         $expected->add($message);
@@ -110,7 +110,13 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 72));
         $expected->add($message);
 
-        $this->assertEquals($expected, $this->extract('MyFormType.php'));
+        $extracted = $this->extract('MyFormType.php');
+
+        //test ignore
+        $this->assertFalse($extracted->getDomains()['messages']->has('form.ignored'));
+
+        $this->assertEquals($expected, $extracted);
+
     }
 
     /**
