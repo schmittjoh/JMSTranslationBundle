@@ -75,6 +75,16 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     private $previousNode;
 
     /**
+     * Methods and "domain" parameter offset to extract from PHP code
+     *
+     * @var array method => position of the "domain" parameter
+     */
+    protected $methodsToExtractFrom = array(
+        'trans' => 2,
+        'transchoice' => 3,
+    );
+
+    /**
      * DefaultPhpFileExtractor constructor.
      * @param DocParser $docParser
      */
@@ -101,7 +111,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     {
         if (!$node instanceof Node\Expr\MethodCall
             || !is_string($node->name)
-            || ('trans' !== strtolower($node->name) && 'transchoice' !== strtolower($node->name))) {
+            || !in_array(strtolower($node->name), array_map('strtolower', array_keys($this->methodsToExtractFrom)))) {
             $this->previousNode = $node;
             return;
         }
@@ -140,7 +150,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
 
         $id = $node->args[0]->value->value;
 
-        $index = 'trans' === strtolower($node->name) ? 2 : 3;
+        $index = $this->methodsToExtractFrom[strtolower($node->name)];
         if (isset($node->args[$index])) {
             if (!$node->args[$index]->value instanceof String_) {
                 if ($ignore) {
