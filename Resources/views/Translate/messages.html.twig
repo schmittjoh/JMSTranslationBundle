@@ -1,53 +1,21 @@
     <table>
         <thead>
             <tr>
-                <th width="20%">ID</th>
-                <th width="40%">Translation</th>
-                <th width="40%">Additional Information</th>
+                {% include 'JMSTranslationBundle:Translate:_headers.html.twig' %}
             </tr>
         </thead>
         <tbody>
             {% for id, message in messages %}
             <tr>
                 <td>
-                    <a class="jms-translation-anchor" id="{{ id }}" />
-                    <p><abbr title="{{ id }}">{{ id|truncate(20) }}</abbr></p>
+                    {% include 'JMSTranslationBundle:Translate:_message_id.html.twig' with {'id':id} %}
                 </td>
                 <td>
-                    <textarea data-id="{{ id }}" class="span6"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{{ message.localeString }}</textarea></td>
+                    {% include 'JMSTranslationBundle:Translate:_message_form.html.twig' with {'id':id, 'isWriteable':isWriteable, 'message':message} %}
                 <td>
-                    {% if message.meaning is not empty %}
-                        <h6>Meaning</h6>
-                        <p>{{ message.meaning }}</p>
-                    {% endif %}
-                
-                    {% if alternativeMessages[id] is defined %}
-                        <h6>Alternative Translations</h6>
-                        {% for locale, altMessage in alternativeMessages[id] %}
-                        <p>
-                            <strong>{{ locale }}:</strong> <pre>{{ altMessage.localeString }}</pre>
-                        </p>
-                        {% endfor %}
-                    {% endif %}
-                    
-                    {% if message.sources|length > 0 %}
-                        <h6>Sources</h6>
-                        <ul>
-                        {% for source in message.sources %}
-                            <li>{{ source }}</li>
-                        {% endfor %}
-                        </ul>
-                    {% endif %}
-
-                    {% if message.desc is not empty 
-                            and message.localeString != message.desc
-                            and id != message.desc
-                            and (alternativeMessages[id][sourceLanguage] is not defined
-                                 or alternativeMessages[id][sourceLanguage].localeString != message.desc) %}
-                        <h6>Description</h6>
-                        <p>{{ message.desc }}</p>
-                    {% endif %}
+                    {% include 'JMSTranslationBundle:Translate:_message_info.html.twig' with {'message':message, 'alternativeMessages':alternativeMessages} %}
                 </td>
+                {% include 'JMSTranslationBundle:Translate:_extras.html.twig' with {'message':message} %}
             </tr>
             {% else %}
             <tr>
