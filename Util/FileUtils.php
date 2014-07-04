@@ -41,7 +41,7 @@ abstract class FileUtils
     public static function findTranslationFiles($directory)
     {
         $files = array();
-        foreach (Finder::create()->in($directory)->depth('< 1')->files() as $file) {
+        foreach (Finder::create()->in($directory)->files() as $file) {
             if (!preg_match('/^([^\.]+)\.([^\.]+)\.([^\.]+)$/', basename($file), $match)) {
                 continue;
             }
@@ -55,6 +55,24 @@ abstract class FileUtils
         uksort($files, 'strcasecmp');
         
         return $files;
+    }
+
+    /**
+     * Search for the file with the same name, in all subdirectories, and return its full file name. If not found, we assume it will be put directly in the directory
+     *
+     * @param $directory
+     * @param $domainName
+     * @param $locale
+     * @param $fileFormat
+     * @return string
+     */
+    public static function computeTranslationFile($directory, $domainName, $locale, $fileFormat) {
+        $fileName = "$domainName.$locale.$fileFormat";
+
+        foreach (Finder::create()->in($directory)->files()->name($fileName) as $file) {
+            return $file;
+        }
+        return "$directory/$fileName";
     }
 
     private final function __construct() { }
