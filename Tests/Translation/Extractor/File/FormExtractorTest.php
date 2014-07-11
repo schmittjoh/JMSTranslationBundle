@@ -112,7 +112,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
 
         $extracted = $this->extract('MyFormType.php');
 
-        //test ignore
+        // Test ignore
         $this->assertFalse($extracted->getDomains()['messages']->has('form.ignored'));
 
         $this->assertEquals($expected, $extracted);
