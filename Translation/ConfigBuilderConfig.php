@@ -28,7 +28,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class Config
+final class ConfigBuilderConfig
 {
     private $translationsDir;
     private $locale;

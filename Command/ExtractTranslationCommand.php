@@ -43,7 +43,8 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->addArgument('locales', InputArgument::IS_ARRAY, 'The locales for which to extract messages.')
             ->addOption('enable-extractor', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The alias of an extractor which should be enabled.')
             ->addOption('disable-extractor', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The alias of an extractor which should be disabled (only required for overriding config values).')
-            ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The config to use')
+            ->addOption('config', 'c', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The config to use', null)
+            ->addOption('all-configs', null, InputOption::VALUE_NONE, 'This will run all configs (overwrites --config complety)')
             ->addOption('bundle', 'b', InputOption::VALUE_REQUIRED, 'The bundle that you want to extract translations for.')
             ->addOption('exclude-name', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A pattern which should be ignored, e.g. *Test.php')
             ->addOption('exclude-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A directory name which should be ignored, e.g. Tests')
@@ -61,11 +62,8 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $builder = $input->getOption('config') ?
-                       $this->getContainer()->get('jms_translation.config_factory')->getBuilder($input->getOption('config'))
-                       : new ConfigBuilder();
-
-        $this->updateWithInput($input, $builder);
+        $builders = $this->getBuilders($input);
+        $this->updateWithInput($input, $builders);
 
         $locales = $input->getArgument('locales');
         if (empty($locales)) {
@@ -76,124 +74,156 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             throw new \LogicException('No locales were given, and no locales are configured.');
         }
 
-        foreach ($locales as $locale) {
-            $config = $builder->setLocale($locale)->getConfig();
+        foreach($builders as $builder) {
+            /** @var ConfigBuilder $builder */
+            foreach ($locales as $locale) {
+                $config = $builder->setLocale($locale)->getConfig();
 
-            $output->writeln(sprintf('Extracting Translations for locale <info>%s</info>', $locale));
-            $output->writeln(sprintf('Keep old translations: <info>%s</info>', $config->isKeepOldMessages() ? 'Yes' : 'No'));
-            $output->writeln(sprintf('Output-Path: <info>%s</info>', $config->getTranslationsDir()));
-            $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $config->getScanDirs())));
-            $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $config->getExcludedDirs() ? implode(', ', $config->getExcludedDirs()) : '# none #'));
-            $output->writeln(sprintf('Excluded Names: <info>%s</info>', $config->getExcludedNames() ? implode(', ', $config->getExcludedNames()) : '# none #'));
-            $output->writeln(sprintf('Output-Format: <info>%s</info>', $config->getOutputFormat() ? $config->getOutputFormat() : '# whatever is present, if nothing then '.$config->getDefaultOutputFormat().' #'));
-            $output->writeln(sprintf('Custom Extractors: <info>%s</info>', $config->getEnabledExtractors() ? implode(', ', array_keys($config->getEnabledExtractors())) : '# none #'));
-            $output->writeln('============================================================');
+                $output->writeln(sprintf('Extracting Translations for locale <info>%s</info>', $locale));
+                $output->writeln(sprintf('Keep old translations: <info>%s</info>', $config->isKeepOldMessages() ? 'Yes' : 'No'));
+                $output->writeln(sprintf('Output-Path: <info>%s</info>', $config->getTranslationsDir()));
+                $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $config->getScanDirs())));
+                $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $config->getExcludedDirs() ? implode(', ', $config->getExcludedDirs()) : '# none #'));
+                $output->writeln(sprintf('Excluded Names: <info>%s</info>', $config->getExcludedNames() ? implode(', ', $config->getExcludedNames()) : '# none #'));
+                $output->writeln(sprintf('Output-Format: <info>%s</info>', $config->getOutputFormat() ? $config->getOutputFormat() : '# whatever is present, if nothing then ' . $config->getDefaultOutputFormat() . ' #'));
+                $output->writeln(sprintf('Custom Extractors: <info>%s</info>', $config->getEnabledExtractors() ? implode(', ', array_keys($config->getEnabledExtractors())) : '# none #'));
+                $output->writeln('============================================================');
 
-            $updater = $this->getContainer()->get('jms_translation.updater');
-            $updater->setLogger($logger = new OutputLogger($output));
+                $updater = $this->getContainer()->get('jms_translation.updater');
+                $updater->setLogger($logger = new OutputLogger($output));
 
-            if (!$input->getOption('verbose')) {
-                $logger->setLevel(OutputLogger::ALL ^ OutputLogger::DEBUG);
-            }
-
-            if ($input->getOption('dry-run')) {
-                $changeSet = $updater->getChangeSet($config);
-
-                $output->writeln('Added Messages: '.count($changeSet->getAddedMessages()));
-                if($input->hasParameterOption('--verbose')){
-                    foreach($changeSet->getAddedMessages() as $message){
-                        $output->writeln($message->getId(). '-> '.$message->getDesc());
-                    }   
+                if (!$input->getOption('verbose')) {
+                    $logger->setLevel(OutputLogger::ALL ^ OutputLogger::DEBUG);
                 }
 
-                if ($config->isKeepOldMessages()) {
-                    $output->writeln('Deleted Messages: # none as "Keep Old Translations" is true #');
-                } else {
-                    $output->writeln('Deleted Messages: '.count($changeSet->getDeletedMessages()));
-                    if($input->hasParameterOption('--verbose')){
-                        foreach($changeSet->getDeletedMessages() as $message){
-                            $output->writeln($message->getId(). '-> '.$message->getDesc());
-                        }   
+                if ($input->getOption('dry-run')) {
+                    $changeSet = $updater->getChangeSet($config);
+
+                    $output->writeln('Added Messages: ' . count($changeSet->getAddedMessages()));
+                    if ($input->hasParameterOption('--verbose')) {
+                        foreach ($changeSet->getAddedMessages() as $message) {
+                            $output->writeln($message->getId() . '-> ' . $message->getDesc());
+                        }
                     }
+
+                    if ($config->isKeepOldMessages()) {
+                        $output->writeln('Deleted Messages: # none as "Keep Old Translations" is true #');
+                    } else {
+                        $output->writeln('Deleted Messages: ' . count($changeSet->getDeletedMessages()));
+                        if ($input->hasParameterOption('--verbose')) {
+                            foreach ($changeSet->getDeletedMessages() as $message) {
+                                $output->writeln($message->getId() . '-> ' . $message->getDesc());
+                            }
+                        }
+                    }
+
+                    return;
                 }
 
-                return;
+                $updater->process($config);
             }
-
-            $updater->process($config);
         }
 
         $output->writeln('done!');
     }
 
-    private function updateWithInput(InputInterface $input, ConfigBuilder $builder)
+    /**
+     * @param InputInterface $input
+     * @return array
+     */
+    private function getBuilders(InputInterface $input)
     {
-        if ($bundle = $input->getOption('bundle')) {
-            if ('@' === $bundle[0]) {
-                $bundle = substr($bundle, 1);
+        $builders = array();
+        if ($input->getOption('all-configs')) {
+            $names = $this->getContainer()->get('jms_translation.config_factory')->getNames();
+            foreach($names as $name) {
+                $builders[] = $this->getContainer()->get('jms_translation.config_factory')->getBuilder($name);
             }
-
-            $bundle = $this->getApplication()->getKernel()->getBundle($bundle);
-            $builder->setTranslationsDir($bundle->getPath().'/Resources/translations');
-            $builder->setScanDirs(array($bundle->getPath()));
-        }
-
-        if ($dirs = $input->getOption('dir')) {
-            $builder->setScanDirs($dirs);
-        }
-
-        if ($outputDir = $input->getOption('output-dir')) {
-            $builder->setTranslationsDir($outputDir);
-        }
-
-        if ($outputFormat = $input->getOption('output-format')) {
-            $builder->setOutputFormat($outputFormat);
-        }
-
-        if ($input->getOption('ignore-domain')) {
-            foreach ($input->getOption('ignore-domain') as $domain) {
-                $builder->addIgnoredDomain($domain);
+        } else {
+            if (! $input->getOption('config')) {
+                $builders = array(new ConfigBuilder());
+            } else {
+                $configs = (is_array($input->getOption('config')) ? $input->getOption('config') : array($input->getOption('config')));
+                foreach($configs as $config) {
+                    $builders[] = $this->getContainer()->get('jms_translation.config_factory')->getBuilder($config);
+                }
             }
         }
 
-        if ($input->getOption('domain')) {
-            foreach ($input->getOption('domain') as $domain) {
-                $builder->addDomain($domain);
+        return $builders;
+    }
+
+    private function updateWithInput(InputInterface $input, array $builders)
+    {
+        foreach($builders as &$builder) {
+            /** @var ConfigBuilder $builder */
+            if ($bundle = $input->getOption('bundle')) {
+                if ('@' === $bundle[0]) {
+                    $bundle = substr($bundle, 1);
+                }
+
+                $bundle = $this->getApplication()->getKernel()->getBundle($bundle);
+                $builder->setTranslationsDir($bundle->getPath().'/Resources/translations');
+                $builder->setScanDirs(array($bundle->getPath()));
             }
-        }
 
-        if ($excludeDirs = $input->getOption('exclude-dir')) {
-            $builder->setExcludedDirs($excludeDirs);
-        }
-
-        if ($excludeNames = $input->getOption('exclude-name')) {
-            $builder->setExcludedNames($excludeNames);
-        }
-
-        if ($format = $input->getOption('default-output-format')) {
-            $builder->setDefaultOutputFormat($format);
-        }
-
-        if ($enabledExtractors = $input->getOption('enable-extractor')) {
-            foreach ($enabledExtractors as $alias) {
-                $builder->enableExtractor($alias);
+            if ($dirs = $input->getOption('dir')) {
+                $builder->setScanDirs($dirs);
             }
-        }
 
-        if ($disabledExtractors = $input->getOption('disable-extractor')) {
-            foreach ($disabledExtractors as $alias) {
-                $builder->disableExtractor($alias);
+            if ($outputDir = $input->getOption('output-dir')) {
+                $builder->setTranslationsDir($outputDir);
             }
-        }
 
-        if ($input->hasParameterOption('--keep') || $input->hasParameterOption('--keep=true')) {
-            $builder->setKeepOldTranslations(true);
-        } else if ($input->hasParameterOption('--keep=false')) {
-            $builder->setKeepOldTranslations(false);
-        }
+            if ($outputFormat = $input->getOption('output-format')) {
+                $builder->setOutputFormat($outputFormat);
+            }
 
-        if ($loadResource = $input->getOption('external-translations-dir')) {
-            $builder->setLoadResources($loadResource);
+            if ($input->getOption('ignore-domain')) {
+                foreach ($input->getOption('ignore-domain') as $domain) {
+                    $builder->addIgnoredDomain($domain);
+                }
+            }
+
+            if ($input->getOption('domain')) {
+                foreach ($input->getOption('domain') as $domain) {
+                    $builder->addDomain($domain);
+                }
+            }
+
+            if ($excludeDirs = $input->getOption('exclude-dir')) {
+                $builder->setExcludedDirs($excludeDirs);
+            }
+
+            if ($excludeNames = $input->getOption('exclude-name')) {
+                $builder->setExcludedNames($excludeNames);
+            }
+
+            if ($format = $input->getOption('default-output-format')) {
+                $builder->setDefaultOutputFormat($format);
+            }
+
+            if ($enabledExtractors = $input->getOption('enable-extractor')) {
+                foreach ($enabledExtractors as $alias) {
+                    $builder->enableExtractor($alias);
+                }
+            }
+
+            if ($disabledExtractors = $input->getOption('disable-extractor')) {
+                foreach ($disabledExtractors as $alias) {
+                    $builder->disableExtractor($alias);
+                }
+            }
+
+            if ($input->hasParameterOption('--keep') || $input->hasParameterOption('--keep=true')) {
+                $builder->setKeepOldTranslations(true);
+            } else if ($input->hasParameterOption('--keep=false')) {
+                $builder->setKeepOldTranslations(false);
+            }
+
+            if ($loadResource = $input->getOption('external-translations-dir')) {
+                $builder->setLoadResources($loadResource);
+            }
         }
     }
 }

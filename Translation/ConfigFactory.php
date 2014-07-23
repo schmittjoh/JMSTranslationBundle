@@ -34,6 +34,11 @@ class ConfigFactory
         return array_keys($this->builders);
     }
 
+    /**
+     * @param string $name
+     * @throws InvalidArgumentException
+     * @return ConfigBuilder
+     */
     public function getBuilder($name)
     {
         if (!isset($this->builders[$name])) {
