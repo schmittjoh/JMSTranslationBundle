@@ -10,8 +10,6 @@ class TranslationTest extends BaseTestCase
         $client->request('GET', '/apples/view');
         $response = $client->getResponse();
 
-        var_dump($response->getContent());
-        die();
         $this->assertEquals(200, $response->getStatusCode(), substr($response, 0, 2000));
         $this->assertEquals("There are 5 apples\n\nThere are 5 apples", $response->getContent());
     }
