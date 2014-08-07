@@ -161,7 +161,8 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         if (null !== $comment = $node->getDocComment()) {
             return $comment->getText();
         } elseif (null !== $this->previousNode && $this->previousNode->getDocComment() !== null) {
-            return $this->previousNode->getDocComment()->getText();
+            $comment = $this->previousNode->getDocComment();
+            return is_object($comment) ? $comment->getText() : $comment;
         }
 
         return null;
