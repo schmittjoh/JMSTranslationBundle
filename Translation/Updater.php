@@ -234,6 +234,16 @@ class Updater
         $this->scannedCatalogue = $this->extractor->extract();
         $this->scannedCatalogue->setLocale($config->getLocale());
 
+        // mark all translations as translated when the current locale matches the source language
+        if ($this->config->getLocale() === $this->config->getSourceLanguage()) {
+            foreach ($this->scannedCatalogue->getDomains() as $domainCatalogue) {
+                foreach ($domainCatalogue->all() as $message) {
+                    $message->setNew(false);
+                    $message->setLocaleString($message->getId());
+                }
+            }
+        }
+
         // merge existing messages into scanned messages
         foreach ($this->scannedCatalogue->getDomains() as $domainCatalogue) {
             foreach ($domainCatalogue->all() as $message) {

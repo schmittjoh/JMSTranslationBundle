@@ -42,6 +42,10 @@ class JMSTranslationExtension extends Extension
             $def->addMethodCall('setTranslationsDir', array($extractConfig['output_dir']));
             $def->addMethodCall('setScanDirs', array($extractConfig['dirs']));
 
+            if ($config['source_language']) {
+                $def->addMethodCall('setSourceLanguage', array($config['source_language']));
+            }
+
             if (isset($extractConfig['ignored_domains'])) {
                 $ignored = array();
                 foreach ($extractConfig['ignored_domains'] as $domain) {
