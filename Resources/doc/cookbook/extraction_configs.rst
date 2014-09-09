@@ -13,11 +13,15 @@ also set-up some pre-defined settings via the configuration:
                 dirs: [%kernel.root_dir%, %kernel.root_dir%/../src]
                 output_dir: %kernel.root_dir%/Resources/translations
                 ignored_domains: [routes]
-                excluded_names: [*TestCase.php, *Test.php]
+                excluded_names: ["*TestCase.php", "*Test.php"]
                 excluded_dirs: [cache, data, logs]
                 extractors: [alias_of_the_extractor]
 
 You can then run the extraction process with this configuration with the following command:
+
+.. note ::
+    Since Symfony 2.5.4, quotes around *TestCase.php and *Test.php are
+    necessary. Without them it the Yaml cannot be parsed.
 
 .. code-block :: bash
 
