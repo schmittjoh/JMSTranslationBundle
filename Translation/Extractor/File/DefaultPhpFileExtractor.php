@@ -151,7 +151,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         // check if there is a doc comment for the ID argument
         // ->trans(/** @Desc("FOO") */ 'my.id')
         if (null !== $comment = $node->args[0]->getDocComment()) {
-            return $comment;
+            return $comment->getText();
         }
 
         // this may be placed somewhere up in the hierarchy,
@@ -159,9 +159,10 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         // /** @Desc("FOO") */ ->trans('my.id')
         // /** @Desc("FOO") */ $translator->trans('my.id')
         if (null !== $comment = $node->getDocComment()) {
-            return $comment;
-        } elseif (null !== $this->previousNode) {
-            return $this->previousNode->getDocComment();
+            return $comment->getText();
+        } elseif (null !== $this->previousNode && $this->previousNode->getDocComment() !== null) {
+            $comment = $this->previousNode->getDocComment();
+            return is_object($comment) ? $comment->getText() : $comment;
         }
 
         return null;

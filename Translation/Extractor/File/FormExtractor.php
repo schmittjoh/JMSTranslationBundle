@@ -191,7 +191,13 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         if ($item->key) {
             $docComment = $item->key->getDocComment();
         }
-        $docComment = $docComment ? $docComment : $item->value->getDocComment();
+
+        if (!$docComment) {
+            $docComment = $item->value->getDocComment();
+        }
+
+        $docComment = is_object($docComment) ? $docComment->getText() : null;
+
         if ($docComment) {
             foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
