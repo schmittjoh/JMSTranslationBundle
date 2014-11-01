@@ -62,6 +62,12 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
         $message->setDesc('The var %foo% should be assigned.');
         $message->addSource(new FileSource($path, 82));
         $expected->add($message);
+        
+        $message = new Message('text.assign_extras');
+        $message->addExtra('extra1', 'value1');
+        $message->addExtra('extra2', 'value2');
+        $message->addSource(new FileSource($path, 88));
+        $expected->add($message);
 
         $this->assertEquals($expected, $catalogue);
     }

@@ -109,6 +109,12 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message = new Message('form.dueDate.empty.day');
         $message->addSource(new FileSource($path, 72));
         $expected->add($message);
+        
+        $message = new Message('form.label.text.with.extras');
+        $message->addSource(new FileSource($path, 77));
+        $message->addExtra('foo1', 'bar1');
+        $message->addExtra('foo2', 'bar2');
+        $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
@@ -231,6 +237,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
             'desc' => 'JMS\TranslationBundle\Annotation\Desc',
             'meaning' => 'JMS\TranslationBundle\Annotation\Meaning',
             'ignore' => 'JMS\TranslationBundle\Annotation\Ignore',
+            'extra' => 'JMS\TranslationBundle\Annotation\Extra',
         ));
         $docParser->setIgnoreNotImportedAnnotations(true);
 

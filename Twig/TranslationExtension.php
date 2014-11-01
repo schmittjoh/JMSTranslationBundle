@@ -55,6 +55,7 @@ class TranslationExtension extends \Twig_Extension
         return array(
             'desc' => new \Twig_Filter_Method($this, 'desc'),
             'meaning' => new \Twig_Filter_Method($this, 'meaning'),
+            'extra' => new \Twig_Filter_Method($this, 'extra'),
         );
     }
 
@@ -77,6 +78,11 @@ class TranslationExtension extends \Twig_Extension
     }
 
     public function meaning($v)
+    {
+        return $v;
+    }
+    
+    public function extra($v)
     {
         return $v;
     }

@@ -36,14 +36,11 @@ class Message
 
     private $localeString;
 
-    /** Additional information about the intended meaning */
-    private $meaning;
-
-    /** The description/sample for translators */
-    private $desc;
-
     /** The sources where this message occurs */
     private $sources = array();
+    
+    /** The extra data, eg. desc, meaning etc. */
+    private $extras = array();
 
     /**
      * @static
@@ -116,7 +113,7 @@ class Message
 
     public function getLocaleString()
     {
-        return $this->localeString !== null ? $this->localeString : ($this->new ? ($this->desc !== null ? $this->desc : $this->id) : '');
+        return $this->localeString !== null ? $this->localeString : ($this->new ? ($this->getDesc() !== null ? $this->getDesc() : $this->id) : '');
     }
 
     /**
@@ -129,17 +126,17 @@ class Message
      */
     public function getSourceString()
     {
-        return $this->desc ?: $this->id;
+        return $this->getDesc() ?: $this->id;
     }
 
     public function getMeaning()
     {
-        return $this->meaning;
+        return $this->getExtra('meaning');
     }
 
     public function getDesc()
     {
-        return $this->desc;
+        return $this->getExtra('desc');
     }
 
     public function getSources()
@@ -149,7 +146,7 @@ class Message
 
     public function setMeaning($meaning)
     {
-        $this->meaning = $meaning;
+        $this->addExtra('meaning', $meaning);
 
         return $this;
     }
@@ -163,11 +160,34 @@ class Message
 
     public function setDesc($desc)
     {
-        $this->desc = $desc;
+        $this->addExtra('desc', $desc);
 
         return $this;
     }
+    
+    public function getExtras()
+    {
+        return $this->extras;
+    }
 
+    private function getExtra($name)
+    {
+        return isset($this->extras[$name]) ? $this->extras[$name] : null;
+    }
+    
+    public function addExtra($name, $value)
+    {
+        $name = (string) $name;
+        
+        if ($value === null) {
+            unset($this->extras[$name]);
+        } else {
+            $this->extras[$name] = (string) $value;
+        }
+        
+        return $this;
+    }
+    
     public function setLocaleString($str)
     {
         $this->localeString = $str;
@@ -190,12 +210,11 @@ class Message
             throw new RuntimeException(sprintf('You can only merge messages with the same id. Expected id "%s", but got "%s".', $this->id, $message->getId()));
         }
 
-        if (null !== $meaning = $message->getMeaning()) {
-            $this->meaning = $meaning;
+        foreach ($message->getExtras() as $name => $value) {
+            $this->addExtra($name, $value);
         }
 
         if (null !== $desc = $message->getDesc()) {
-            $this->desc = $desc;
             $this->localeString = null;
             if ($localeString = $message->getLocaleString()) {
                 $this->localeString = $localeString;
@@ -224,11 +243,20 @@ class Message
         }
 
         if (null !== $meaning = $message->getMeaning()) {
-            $this->meaning = $meaning;
+            $this->setMeaning($meaning);
         }
 
         if (null !== $desc = $message->getDesc()) {
-            $this->desc = $desc;
+            $this->setDesc($desc);
+        }
+        
+        //do not overwrite extras because $message is existing message, so if there
+        //had not been if statement, the extras would have been overwrited by old values and
+        //updating extras wouldn't have been possible.
+        foreach ($message->getExtras() as $name => $value) {
+            if (null === $this->getExtra($name)) {
+                $this->addExtra($name, $value);
+            }
         }
 
         $this->new = $message->isNew();

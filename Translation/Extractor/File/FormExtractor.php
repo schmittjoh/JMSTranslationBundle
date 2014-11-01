@@ -23,6 +23,7 @@ use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Annotation\Desc;
+use JMS\TranslationBundle\Annotation\Extra;
 use JMS\TranslationBundle\Annotation\Ignore;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
@@ -186,7 +187,8 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
     {
         // get doc comment
         $ignore = false;
-        $desc = $meaning = $docComment = null;
+        $docComment = null;
+        $extras = array();
 	
         if ($item->key) {
             $docComment = $item->key->getDocComment();
@@ -203,9 +205,11 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                 if ($annot instanceof Ignore) {
                     $ignore = true;
                 } else if ($annot instanceof Desc) {
-                    $desc = $annot->text;
+                    $extras['desc'] = $annot->text;
                 } else if ($annot instanceof Meaning) {
-                    $meaning = $annot->text;
+                    $extras['meaning'] = $annot->text;
+                } else if ($annot instanceof Extra) {
+                    $extras[$annot->name] = $annot->value;
                 }
             }
         }
@@ -235,15 +239,14 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
             $this->defaultDomainMessages[] = array(
                 'id' => $id,
                 'source' => $source,
-                'desc' => $desc,
-                'meaning' => $meaning
+                'extras' => $extras,
             );
         } else {
-            $this->addToCatalogue($id, $source, $domain, $desc, $meaning);
+            $this->addToCatalogue($id, $source, $domain, $extras);
         }
     }
 
-    private function addToCatalogue($id, $source, $domain = null, $desc = null, $meaning = null)
+    private function addToCatalogue($id, $source, $domain = null, array $extras = array())
     {
         if (null === $domain) {
             $message = new Message($id);
@@ -253,12 +256,8 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
         $message->addSource($source);
 
-        if ($desc) {
-            $message->setDesc($desc);
-        }
-
-        if ($meaning) {
-            $message->setMeaning($meaning);
+        foreach ($extras as $name => $value) {
+            $message->addExtra($name, $value);
         }
 
         $this->catalogue->add($message);
@@ -272,7 +271,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
         if ($this->defaultDomainMessages) {
             foreach ($this->defaultDomainMessages as $message) {
-                $this->addToCatalogue($message['id'], $message['source'], $this->defaultDomain, $message['desc'], $message['meaning']);
+                $this->addToCatalogue($message['id'], $message['source'], $this->defaultDomain, $message['extras']);
             }
         }
     }
