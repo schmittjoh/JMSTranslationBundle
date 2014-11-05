@@ -92,4 +92,7 @@ class ExtractCommandTest extends BaseCommandTestCase
         }
 
     }
+
+    /** @todo create config test with single --config and multiple --config */
+    /** @todo create config test with --all-configs */
 }

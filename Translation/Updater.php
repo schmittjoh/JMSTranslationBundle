@@ -21,14 +21,10 @@ namespace JMS\TranslationBundle\Translation;
 use JMS\TranslationBundle\Util\FileUtils;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
 
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
-use Symfony\Component\Translation\MessageCatalogue as SymfonyMessageCatalogue;
 use Symfony\Component\Finder\Finder;
-use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
-use Symfony\Component\Translation\Loader\LoaderInterface;
 
 /**
  * Wrapper around the different components.
@@ -45,7 +41,7 @@ class Updater
     private $extractor;
 
     /**
-     * @var Config
+     * @var ConfigBuilderConfig
      */
     private $config;
     private $existingCatalogue;
@@ -77,10 +73,10 @@ class Updater
     }
 
     /**
-     * @param Config $config
-     * @return \JMS\CommandBundle\Translation\ComparisonResult
+     * @param ConfigBuilderConfig $config
+     * @return \JMS\TranslationBundle\Translation\Comparison\ChangeSet
      */
-    public function getChangeSet(Config $config)
+    public function getChangeSet(ConfigBuilderConfig $config)
     {
         $this->setConfig($config);
 
@@ -119,7 +115,7 @@ class Updater
      *
      * @return void
      */
-    public function process(Config $config)
+    public function process(ConfigBuilderConfig $config)
     {
         $this->setConfig($config);
 
@@ -205,7 +201,7 @@ class Updater
     /**
      * @param Config $config
      */
-    private function setConfig(Config $config)
+    private function setConfig(ConfigBuilderConfig $config)
     {
         $this->config = $config;
 

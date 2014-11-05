@@ -18,6 +18,8 @@
 
 namespace JMS\TranslationBundle\Translation;
 
+use JMS\TranslationBundle\Translation\ConfigBuilderConfig as Config;
+
 final class ConfigBuilder
 {
     private $translationsDir;
@@ -57,14 +59,15 @@ final class ConfigBuilder
     }
 
     /**
-    * Sets the default output format.
-    *
-    * The default output format is used when the following conditions are met:
-    *   - there is no existing file for the given domain
-    *   - you haven't forced a format
-    *
-    * @param string $format
-    */
+     * Sets the default output format.
+     *
+     * The default output format is used when the following conditions are met:
+     *   - there is no existing file for the given domain
+     *   - you haven't forced a format
+     *
+     * @param string $format
+     * @return ConfigBuilder
+     */
     public function setDefaultOutputFormat($format)
     {
         $this->defaultOutputFormat = $format;
@@ -80,6 +83,7 @@ final class ConfigBuilder
      * another format to be deleted.
      *
      * @param string $format
+     * @return ConfigBuilder
      */
     public function setOutputFormat($format)
     {
@@ -95,7 +99,7 @@ final class ConfigBuilder
      * appear in the change set calculated by getChangeSet().
      *
      * @param array $domains an array of the form array('domain' => true, 'another_domain' => true)
-     * @return void
+     * @return ConfigBuilder
      */
     public function setIgnoredDomains(array $domains)
     {
