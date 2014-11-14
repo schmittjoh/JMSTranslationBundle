@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2014 Pol-Valentin Cami <polvalentin@gmail.com>
+ * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
