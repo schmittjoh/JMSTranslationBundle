@@ -63,6 +63,12 @@ class MyFormType extends AbstractType
             	'label' => false,
 	            'attr' => array('placeholder' => /** @Desc("Field with a placeholder but no label") */ 'form.placeholder.text.but.no.label')
             ))
+            ->add('field_with_domain_label', 'text', array(
+                'label' => /** @Domain("messages_domain") */ 'form.label.field_with_domain_label'
+            ))
+            ->add('field_with_domains_label', 'text', array(
+                'label' => /** @Domains({"messages_domains_one", "messages_domains_two"}) */ 'form.label.field_with_domains_label'
+            ))
         ;
         $child = $builder->create('created', 'text', array(
                   'label' => 'form.label.created'

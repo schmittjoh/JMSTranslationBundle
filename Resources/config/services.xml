@@ -114,6 +114,8 @@
                     <argument key="desc">JMS\TranslationBundle\Annotation\Desc</argument>
                     <argument key="meaning">JMS\TranslationBundle\Annotation\Meaning</argument>
                     <argument key="ignore">JMS\TranslationBundle\Annotation\Ignore</argument>
+                    <argument key="domain">JMS\TranslationBundle\Annotation\Domain</argument>
+                    <argument key="domains">JMS\TranslationBundle\Annotation\Domains</argument>
                 </argument>
             </call>
             <call method="setIgnoreNotImportedAnnotations">
