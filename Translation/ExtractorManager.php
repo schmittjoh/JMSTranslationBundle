@@ -111,6 +111,14 @@ class ExtractorManager implements ExtractorInterface
     }
 
     /**
+     * @param array $names
+     */
+    public function setIncludedNames(array $names)
+    {
+        $this->fileExtractor->setIncludedNames($names);
+    }
+
+    /**
      * @param array $aliases
      * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
      */

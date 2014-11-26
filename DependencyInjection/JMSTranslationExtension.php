@@ -77,6 +77,10 @@ class JMSTranslationExtension extends Extension
                 $def->addMethodCall('setExcludedNames', array($extractConfig['excluded_names']));
             }
 
+            if (isset($extractConfig['included_names'])) {
+                $def->addMethodCall('setIncludedNames', array($extractConfig['included_names']));
+            }
+
             if (isset($extractConfig['output_format'])) {
                 $def->addMethodCall('setOutputFormat', array($extractConfig['output_format']));
             }

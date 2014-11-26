@@ -44,6 +44,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     private $directory;
     private $removingTwigVisitor;
     private $defaultApplyingTwigVisitor;
+    private $includedNames = array();
     private $excludedNames = array();
     private $excludedDirs = array();
     private $logger;
@@ -104,6 +105,11 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->excludedNames = $names;
     }
 
+    public function setIncludedNames(array $names)
+    {
+        $this->includedNames = $names;
+    }
+
     public function setPattern(array $pattern)
     {
         $this->pattern = $pattern;
@@ -122,6 +128,10 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 
         foreach ($this->excludedDirs as $dir) {
             $finder->exclude($dir);
+        }
+
+        foreach ($this->includedNames as $name) {
+            $finder->name($name);
         }
 
         foreach ($this->excludedNames as $name) {
