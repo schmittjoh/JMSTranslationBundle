@@ -44,7 +44,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     private $file;
     private $docParser;
     private $logger;
-    private $previousNode;
+    private $previousDoc;
 
     public function __construct(DocParser $docParser)
     {
@@ -68,7 +68,10 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
             || !is_string($node->name)
             || ('trans' !== strtolower($node->name) && 'transchoice' !== strtolower($node->name))) {
 
-            $this->previousNode = $node;
+            if (null !== $node->getDocComment())
+            {
+                $this->previousDoc = $node->getDocComment();
+            }
             return;
         }
 
@@ -138,6 +141,9 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->file = $file;
         $this->catalogue = $catalogue;
         $this->traverser->traverse($ast);
+        
+        // At the end of the file, clear the doc comment
+        $this->previousDoc = null;
     }
 
     public function beforeTraverse(array $nodes) { }
@@ -160,8 +166,10 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         // /** @Desc("FOO") */ $translator->trans('my.id')
         if (null !== $comment = $node->getDocComment()) {
             return $comment;
-        } elseif (null !== $this->previousNode) {
-            return $this->previousNode->getDocComment();
+        } elseif (null !== $this->previousDoc) {
+            $comment = $this->previousDoc;
+            $this->previousDoc = null;
+            return $comment;
         }
 
         return null;

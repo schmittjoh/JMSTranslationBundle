@@ -39,28 +39,37 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
         $message->addSource(new FileSource($path, 45));
         $expected->add($message);
 
+        $message = new Message('text.baz_qux');
+        $message->setDesc('Baz Qux');
+        $message->addSource(new FileSource($path, 51));
+        $expected->add($message);
+
+        $message = new Message('text.qux_baz');
+        $message->addSource(new FileSource($path, 52));
+        $expected->add($message);
+
         $message = new Message('text.sign_up_successful');
         $message->setDesc('Welcome %name%! Thanks for signing up.');
-        $message->addSource(new FileSource($path, 52));
+        $message->addSource(new FileSource($path, 59));
         $expected->add($message);
 
         $message = new Message('button.archive');
         $message->setDesc('Archive Message');
         $message->setMeaning('The verb (to archive), describes an action');
-        $message->addSource(new FileSource($path, 59));
+        $message->addSource(new FileSource($path, 66));
         $expected->add($message);
 
         $message = new Message('text.irrelevant_doc_comment', 'baz');
-        $message->addSource(new FileSource($path, 71));
+        $message->addSource(new FileSource($path, 78));
         $expected->add($message);
 
         $message = new Message('text.array_method_call');
-        $message->addSource(new FileSource($path, 76));
+        $message->addSource(new FileSource($path, 83));
         $expected->add($message);
 
         $message = new Message('text.var.assign');
         $message->setDesc('The var %foo% should be assigned.');
-        $message->addSource(new FileSource($path, 82));
+        $message->addSource(new FileSource($path, 89));
         $expected->add($message);
 
         $this->assertEquals($expected, $catalogue);
