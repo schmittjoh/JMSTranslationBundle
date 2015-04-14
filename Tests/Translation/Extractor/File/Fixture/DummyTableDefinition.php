@@ -42,11 +42,22 @@ class DummyTableDefinition implements TableDefinitionInterface
                 /** @Desc("This is a test") */
                 'dummy.def', 'def', array(
                     'formatter' => array(
-                        'formatter' => 'link',
-                        'component' => 'dummy',
-                        'page' => 'detail',
-                        'route_params' => array(
-                            'dummy' => '%id%',
+                        'formatter' => 'dropdown',
+                        'links' => array(
+                            /** @Desc("This is a drop-down link name") */
+                            'dummy.linka' => array(
+                                'link' => function (TableRowInterface $row)
+                                {
+                                    return $row->getField('dummyextlink');
+                                }
+                            ),
+                            'dummy.linkb' => array(
+                                'component' => 'dummy',
+                                'page' => 'delete',
+                                'route_params' => array(
+                                    'dummy' => '%id%',
+                                )
+                            ),
                         )
                     ),
                     'sortable' => true,

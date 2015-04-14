@@ -54,9 +54,18 @@ class TableExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 43));
         $expected->add($message);
 
+        $message = new Message('dummy.linka');
+        $message->setDesc('This is a drop-down link name');
+        $message->addSource(new FileSource($path, 48));
+        $expected->add($message);
+
+        $message = new Message('dummy.linkb');
+        $message->addSource(new FileSource($path, 54));
+        $expected->add($message);
+
         $message = new Message('dummy.ghi');
         $message->setDesc('Ghi');
-        $message->addSource(new FileSource($path, 57));
+        $message->addSource(new FileSource($path, 68));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('DummyTableDefinition.php'));

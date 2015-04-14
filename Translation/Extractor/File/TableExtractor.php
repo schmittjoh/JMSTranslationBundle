@@ -66,29 +66,16 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
     private function parseNode(\PHPParser_Node_Expr_MethodCall $node)
     {
+        // Add translation for column name
         if (count($node->args) >= 1) {
             $first_argument = $node->args[0];
 
-            $ignore = false;
-            $desc = $meaning = null;
-            $docComment = $first_argument->getDocComment();
-
-            if ($docComment) {
-                foreach ($this->docParser->parse($docComment, 'file ' . $this->file . ' near line ' . $first_argument->value->getLine()) as $annot) {
-                    if ($annot instanceof Ignore) {
-                        $ignore = true;
-                    } else if ($annot instanceof Desc) {
-                        $desc = $annot->text;
-                    } else if ($annot instanceof Meaning) {
-                        $meaning = $annot->text;
-                    }
-                }
+            list($ignore, $desc, $meaning) = $this->getDocCommentData($first_argument->value);
+            if ($ignore) {
+                return;
             }
 
             if (!$first_argument->value instanceof \PHPParser_Node_Scalar_String) {
-                if ($ignore) {
-                    return;
-                }
 
                 $message = sprintf('Unable to extract translation id for table column name from non-string values, but got "%s" in %s on line %d. Please refactor your code to pass a string, or add "/** @Ignore */".', get_class($first_argument->value), $this->file, $first_argument->value->getLine());
                 if ($this->logger) {
@@ -110,6 +97,75 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
             $this->addToCatalogue($value, $source, $desc, $meaning);
         }
+
+        // Add translation for dropdown link names
+        if (count($node->args) >= 3) {
+            $third_argument = $node->args[2];
+            if ($third_argument->value instanceof \PHPParser_Node_Expr_Array) {
+                $array_argument = $third_argument->value;
+                $formatter = $this->findArrayItemWithName($array_argument, 'formatter');
+                if ($formatter instanceof \PHPParser_Node_Expr_Array) {
+                    $this->parseFormatterNode($formatter);
+                }
+            }
+        }
+    }
+    
+    private function getDocCommentData(\PHPParser_Node $node)
+    {
+        $ignore = false;
+        $desc = $meaning = null;
+        $docComment = $node->getDocComment();
+
+        if ($docComment) {
+            foreach ($this->docParser->parse($docComment, 'file ' . $this->file . ' near line ' . $node->getLine()) as $annot) {
+                if ($annot instanceof Ignore) {
+                    $ignore = true;
+                } else if ($annot instanceof Desc) {
+                    $desc = $annot->text;
+                } else if ($annot instanceof Meaning) {
+                    $meaning = $annot->text;
+                }
+            }
+        }
+
+        return [$ignore, $desc, $meaning];
+    }
+    
+    private function parseFormatterNode(\PHPParser_Node_Expr_Array $formatter)
+    {
+        $formatter_name = $this->findArrayItemWithName($formatter, 'formatter');
+        if ($formatter_name instanceof \PHPParser_Node_Scalar_String && $formatter_name->value == 'dropdown') {
+            $links = $this->findArrayItemWithName($formatter, 'links');
+            if ($links instanceof \PHPParser_Node_Expr_Array) {
+                foreach ($links->items as $item) {
+                    if ($item->key instanceof \PHPParser_Node_Scalar_String) {
+                        list($ignore, $desc, $meaning) = $this->getDocCommentData($item->key);
+                        if ($ignore) {
+                            return;
+                        }
+
+                        $source = new FileSource((string)$this->file, $item->key->getLine());
+                        $value = $item->key->value;
+
+                        $this->addToCatalogue($value, $source, $desc, $meaning);
+                    }
+                }
+            }
+        }
+    }
+    
+    private function findArrayItemWithName(\PHPParser_Node_Expr_Array $array, $name)
+    {
+        foreach ($array->items as $item)
+        {
+            if ($item->key instanceof \PHPParser_Node_Scalar_String && $item->key->value == $name)
+            {
+                return $item->value;
+            }
+        }
+        
+        return null;
     }
 
     private function addToCatalogue($id, $source, $desc = null, $meaning = null)
