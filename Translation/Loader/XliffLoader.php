@@ -66,11 +66,7 @@ class XliffLoader implements LoaderInterface
                 }
             }
 
-            if ($meaning = (string) $trans->attributes()->extradata) {
-                if (0 === strpos($meaning, 'Meaning: ')) {
-                    $meaning = substr($meaning, 9);
-                }
-
+            if ($meaning = (string) $trans->note) {
                 $m->setMeaning($meaning);
             }
 
