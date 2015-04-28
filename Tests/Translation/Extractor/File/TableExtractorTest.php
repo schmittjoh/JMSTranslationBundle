@@ -63,9 +63,18 @@ class TableExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 54));
         $expected->add($message);
 
+        $message = new Message('dummy.icon.a');
+        $message->setDesc('Dummy icon desc');
+        $message->addSource(new FileSource($path, 80));
+        $expected->add($message);
+
+        $message = new Message('dummy.icon.bcd');
+        $message->addSource(new FileSource($path, 86));
+        $expected->add($message);
+
         $message = new Message('dummy.ghi');
         $message->setDesc('Ghi');
-        $message->addSource(new FileSource($path, 68));
+        $message->addSource(new FileSource($path, 103));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('DummyTableDefinition.php'));

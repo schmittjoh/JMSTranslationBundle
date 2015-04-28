@@ -40,6 +40,12 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
     private $catalogue;
     private $logger;
 
+    /**
+     * @var \PHPParser_Node
+     *   The last node that contained a comment
+     */
+    private $last_node_with_comment;
+
     public function __construct(DocParser $docParser)
     {
         $this->docParser = $docParser;
@@ -51,6 +57,11 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
     public function enterNode(\PHPParser_Node $node)
     {
+        if ($node->getDocComment() !== null)
+        {
+            $this->last_node_with_comment = $node;
+        }
+        
         if ($node instanceof \PHPParser_Node_Expr_MethodCall) {
 
             if (!is_string($node->name)) {
@@ -60,6 +71,36 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
             $name = strtolower($node->name);
             if ('addcolumn' === $name) {
                 $this->parseNode($node);
+            }
+        }
+        
+        // Find iocn definitions
+        if ($node instanceof \PHPParser_Node_Expr_Array) {
+            // Icon definitions contain an 'icon' and 'title' array-key
+            $icon_element = $this->findArrayItemWithName($node, 'icon');
+            $title_element = $this->findArrayItemWithName($node, 'title');
+            
+            if ($icon_element !== null && $title_element !== null) {
+                // Title should be translated
+
+                $desc = $meaning = null;
+                
+                if ($this->last_node_with_comment !== null) {
+                    // Parse doc-comment
+                    list($ignore, $desc, $meaning) = $this->getDocCommentData($this->last_node_with_comment);
+
+                    // Unset used doccomment node
+                    $this->last_node_with_comment = null;
+
+                    if ($ignore) {
+                        return;
+                    }
+                }
+
+                $source = new FileSource((string)$this->file, $title_element->getLine());
+                $value = $title_element->value;
+
+                $this->addToCatalogue($value, $source, $desc, $meaning);
             }
         }
     }

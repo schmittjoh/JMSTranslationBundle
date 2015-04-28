@@ -39,7 +39,7 @@ class DummyTableDefinition implements TableDefinitionInterface
                 )
             )
             ->addColumn(
-                /** @Desc("This is a test") */
+            /** @Desc("This is a test") */
                 'dummy.def', 'def', array(
                     'formatter' => array(
                         'formatter' => 'dropdown',
@@ -61,6 +61,41 @@ class DummyTableDefinition implements TableDefinitionInterface
                         )
                     ),
                     'sortable' => true,
+                )
+            )
+            ->addColumn(
+                '', 'def', array(
+                    'formatter' => array(
+                        'formatter' => 'icon',
+                        'icons' => function ($value, TableRowInterface $row)
+                        {
+                            $icons = array();
+
+                            switch ($row->getField('type'))
+                            {
+                                case 'a':
+                                    /** @Desc("Dummy icon desc") */
+                                    $icons[] = array(
+                                        'icon' => 'a',
+                                        'title' => 'dummy.icon.a'
+                                    );
+                                    break;
+                                case 'bcd':
+                                    $icons[] = array(
+                                        'icon' => 'bcd',
+                                        'title' => 'dummy.icon.bcd'
+                                    );
+                                    break;
+                            }
+
+                            if ($row->getField('archived'))
+                            {
+                                $icons[] = 'archive';
+                            }
+
+                            return $icons;
+                        }
+                    ),
                 )
             )
             ->addColumn(
