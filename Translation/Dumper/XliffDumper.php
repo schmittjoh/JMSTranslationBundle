@@ -33,7 +33,7 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 class XliffDumper implements DumperInterface
 {
     private $sourceLanguage = 'en';
-    private $addDate = true;
+    private $addDate = false;
 
     /**
      * @param $bool
