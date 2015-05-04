@@ -82,6 +82,8 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($message, $message->addSource($source = $this->getMock('JMS\TranslationBundle\Model\SourceInterface')));
         $this->assertSame(array($source), $message->getSources());
+        $this->assertSame($message, $message->setSources(array($source2 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'))));
+        $this->assertSame(array($source2), $message->getSources());
     }
 
     public function testMerge()
@@ -137,6 +139,24 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foobar', $message->getLocaleString());
         $this->assertFalse($message->isNew());
         $this->assertEquals(array(), $message->getSources());
+    }
+
+    public function testMergeScanned()
+    {
+        $message = new Message('foo');
+        $message->setLocaleString('foobar');
+        $message->setNew(false);
+        $message->addSource(new FileSource('foo/bar'));
+
+        $scannedMessage = new Message('foo');
+        $scannedMessage->setDesc('foobar');
+
+        $message->mergeScanned($scannedMessage);
+
+        $this->assertEquals('bar', $message->getDesc());
+        $this->assertEquals('foobar', $message->getLocaleString());
+        $this->assertFalse($message->isNew());
+        $this->assertEquals(array(), current($message->getSources()));
     }
 
     public function testGetIsNew()

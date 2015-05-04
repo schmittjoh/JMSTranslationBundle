@@ -53,7 +53,7 @@ class Message
      */
     public static function forThisFile($id, $domain = 'messages')
     {
-        $message = new self($id, $domain);
+        $message = new static($id, $domain);
 
         $trace = debug_backtrace(false);
         if (isset($trace[0]['file'])) {
@@ -71,7 +71,7 @@ class Message
      */
     public static function create($id, $domain = 'messages')
     {
-        return new self($id, $domain);
+        return new static($id, $domain);
     }
 
     /**
@@ -175,6 +175,12 @@ class Message
         return $this;
     }
 
+    public function setSources(array $sources = array()) {
+        $this->sources = $sources;
+
+        return $this;
+    }
+
     /**
      * Merges an extracted message.
      *
@@ -206,7 +212,10 @@ class Message
             $this->addSource($source);
         }
 
-        $this->new = $message->isNew();
+        $this->setNew($message->isNew());
+        if ($localeString = $message->getLocaleString()) {
+            $this->localeString = $localeString;
+        }
     }
 
     /**
@@ -216,6 +225,7 @@ class Message
      * In these cases, use merge() instead.
      *
      * @param Message $message
+     * @deprecated not in use atm
      */
     public function mergeExisting(Message $message)
     {
@@ -231,9 +241,44 @@ class Message
             $this->desc = $desc;
         }
 
-        $this->new = $message->isNew();
+        $this->setNew($message->isNew());
         if ($localeString = $message->getLocaleString()) {
             $this->localeString = $localeString;
+        }
+    }
+
+    /**
+     * Merge a scanned message into an extising message.
+     *
+     * This method does essentially the same as {@link mergeExisting()} but with reversed operands.
+     * Whereas {@link mergeExisting()} is used to merge an existing message into a scanned message (this),
+     * {@link mergeScanned()} is used to merge a scanned message into an existing message (this).
+     * The result of both methods is the same, except that the result will end up in the existing message,
+     * instead of the scanned message, so extra information read from the existing message is not discarded.
+     *
+     * @param Message $message
+     * @author Dieter Peeters <peetersdiet@gmail.com>
+     */
+    public function mergeScanned(Message $message) {
+        if ($this->id !== $message->getId()) {
+            throw new RuntimeException(sprintf('You can only merge messages with the same id. Expected id "%s", but got "%s".', $this->id, $message->getId()));
+        }
+
+        if (null === $this->getMeaning()) {
+            $this->meaning = $message->getMeaning();
+        }
+
+        if (null === $this->getDesc()) {
+            $this->desc = $message->getDesc();
+        }
+
+        $this->sources = array();
+        foreach ($message->getSources() as $source) {
+            $this->addSource($source);
+        }
+
+        if (!$this->getLocaleString()) {
+            $this->localeString = $message->getLocaleString();
         }
     }
 

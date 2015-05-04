@@ -50,6 +50,9 @@
         <service id="jms_translation.loader.xliff_loader" class="%jms_translation.loader.xliff_loader.class%" public="false">
             <tag name="jms_translation.loader" format="xliff" />
         </service>
+        <service id="jms_translation.loader.xliff_loader" class="%jms_translation.loader.xliff_loader.class%" public="false">
+            <tag name="jms_translation.loader" format="xlf" />
+        </service>
         
         <!-- Dumpers -->
         <service id="jms_translation.dumper.php_dumper" class="%jms_translation.dumper.php_dumper.class%" public="false">
