@@ -5,13 +5,28 @@
     
     <script language="javascript" type="text/javascript">
         $(document).ready(function() {
+            var locales = {{ locales|json_encode|raw }};
             var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
-        
+            var createMessagePath = {{ path("jms_translation_create_message", {"config": selectedConfig, "domain": selectedDomain})|json_encode|raw }};
+
             $('#config select').change(function() {
                 $(this).parent().submit();
             });
             
             {% if isWriteable is sameas(true) %}
+            $('#create').submit(function (e) {
+                var $form = $(this);
+                var id = $form.find("#create_message_id").val();
+
+                $.post(createMessagePath + '?id=' + encodeURIComponent(id),
+                        {locales: locales},
+                        function () {
+                            location.reload();
+                        }
+                );
+                e.preventDefault();
+                return false;
+            })
             $('textarea')
                 .blur(function() {
                     var self = this;
@@ -75,7 +90,7 @@
             {% endfor %}
         </select>
     </form>
-    
+
     {% if isWriteable is sameas(false) %}
     <div class="alert-message error">
         The translation file "<strong>{{ file }}</strong>" is not writable.
@@ -91,6 +106,14 @@
         However, you can easily convert your existing translation files to the XLIFF format by running:<br />
         <code>php app/console translation:extract {{ selectedLocale }} --config={{ selectedConfig }} --output-format=xliff</code>
     </div>
+    {% endif %}
+
+    {% if isWriteable is sameas(true) %}
+        <h2>Add message</h2>
+        <form id="create">
+            <input id="create_message_id" type="text"/>
+            <input type="submit"/>
+        </form>
     {% endif %}
 
     <h2>Available Messages</h2>

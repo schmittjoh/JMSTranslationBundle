@@ -47,6 +47,12 @@ class ApiController
     private $updater;
 
     /**
+     * @var Creator
+     * @DI\Inject("adsum_back_office_translation.creator")
+     */
+    protected $creator;
+
+    /**
      * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages",
      * 			name="jms_translation_update_message",
      * 			defaults = {"id" = null},
@@ -74,6 +80,47 @@ class ApiController
             $file, $format, $domain, $locale, $id,
             $this->request->request->get('message')
         );
+
+        return new Response();
+    }
+
+
+    /**
+     * @Route("/configs/{config}/domains/{domain}/messages",
+     *            name="jms_translation_create_message",
+     *            defaults = {"id" = null},
+     *            options = {"i18n" = false})
+     * @Method("POST")
+     */
+    public function createMessageAction(Request $request, $config, $domain)
+    {
+        $id = $request->query->get('id');
+        $locales = $request->request->get('locales');
+
+        foreach ($locales as $locale) {
+            $configuration = $this->configFactory->getConfig($config, $locale);
+
+            $files = FileUtils::findTranslationFiles($configuration->getTranslationsDir());
+            if (!isset($files[$domain][$locale])) {
+                throw new RuntimeException(
+                    sprintf('There is no translation file for domain "%s" and locale %s.', $domain, $locale)
+                );
+            }
+
+            // TODO: This needs more refactoring, the only sane way I see right now is to replace
+            //       the loaders of the translation component as these currently simply discard
+            //       the extra information that is contained in these files
+
+            list($format, $file) = $files[$domain][$locale];
+            $this->creator->createTranslation(
+                $file,
+                $format,
+                $domain,
+                $locale,
+                $id
+            );
+        }
+
 
         return new Response();
     }

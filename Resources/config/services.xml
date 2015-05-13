@@ -29,6 +29,7 @@
         <parameter key="jms_translation.file_writer.class">JMS\TranslationBundle\Translation\FileWriter</parameter>
         
         <parameter key="jms_translation.updater.class">JMS\TranslationBundle\Translation\Updater</parameter>
+        <parameter key="jms_translation.creator.class">JMS\TranslationBundle\Translation\Creator</parameter>
         <parameter key="jms_translation.config_factory.class">JMS\TranslationBundle\Translation\ConfigFactory</parameter>
     </parameters>
 
@@ -38,6 +39,12 @@
             <argument type="service" id="jms_translation.extractor_manager" />
             <argument type="service" id="logger" />
             <argument type="service" id="jms_translation.file_writer" />
+        </service>
+        <service id="jms_translation.creator" class="%jms_translation.creator.class%">
+            <argument type="service" id="jms_translation.loader_manager"/>
+            <argument type="service" id="jms_translation.extractor_manager"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="jms_translation.file_writer"/>
         </service>
         
         <service id="jms_translation.config_factory" class="%jms_translation.config_factory.class%" />
