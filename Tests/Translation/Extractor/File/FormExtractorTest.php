@@ -47,6 +47,11 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 37));
         $expected->add($message);
 
+        $message = new Message('form.states.help');
+        $message->setDesc('This is a help text');
+        $message->addSource(new FileSource($path, 38));
+        $expected->add($message);
+
         $message = new Message('form.label.lastname');
         $message->setDesc('Lastname');
         $message->addSource(new FileSource($path, 33));
@@ -57,31 +62,31 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected->add($message);
 
         $message = new Message('form.label.password');
-        $message->addSource(new FileSource($path, 42));
+        $message->addSource(new FileSource($path, 43));
         $expected->add($message);
 
         $message = new Message('form.label.password_repeated');
         $message->setDesc('Repeat password');
-        $message->addSource(new FileSource($path, 45));
+        $message->addSource(new FileSource($path, 46));
         $expected->add($message);
 
         $message = new Message('form.label.street', 'address');
         $message->setDesc('Street');
-        $message->addSource(new FileSource($path, 50));
+        $message->addSource(new FileSource($path, 51));
         $expected->add($message);
 
         $message = new Message('form.label.zip', 'address');
         $message->setDesc('ZIP');
-        $message->addSource(new FileSource($path, 55));
+        $message->addSource(new FileSource($path, 56));
         $expected->add($message);
 
         $message = new Message('form.error.password_mismatch', 'validators');
         $message->setDesc('The entered passwords do not match');
-        $message->addSource(new FileSource($path, 47));
+        $message->addSource(new FileSource($path, 48));
         $expected->add($message);
 
         $message = new Message('form.label.created');
-        $message->addSource(new FileSource($path, 60));
+        $message->addSource(new FileSource($path, 61));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
