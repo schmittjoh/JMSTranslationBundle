@@ -11,16 +11,17 @@
             "email":  "schmittjoh@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "symfony/framework-bundle": "~2.1",
-        "nikic/php-parser": "0.9.4",
+        "nikic/php-parser": "1.3.0",
         "symfony/console": "*"
     },
     "conflict": {
         "twig/twig": "1.10.2"
     },
     "require-dev": {
+		"symfony/expression-language": "~2.6",
         "symfony/twig-bundle": "*",
         "symfony/browser-kit": "*",
         "symfony/class-loader": "*",
@@ -37,10 +38,5 @@
     "autoload": {
         "psr-0": { "JMS\\TranslationBundle": "" }
     },
-    "target-dir": "JMS/TranslationBundle",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.1-dev"
-        }
-    }
+    "target-dir": "JMS/TranslationBundle"
 }
