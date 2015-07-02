@@ -19,6 +19,7 @@
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
+use JMS\TranslationBundle\Translation\Extractor\DomainAwareInterface;
 use Symfony\Bridge\Twig\Node\TransNode;
 
 use JMS\TranslationBundle\Model\FileSource;
@@ -26,17 +27,23 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 
-class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterface
+class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterface, DomainAwareInterface
 {
     private $file;
     private $catalogue;
     private $traverser;
     private $stack = array();
     private $stackCount = 0;
+    private $defaultDomain = 'messages';
 
     public function __construct(\Twig_Environment $env)
     {
         $this->traverser = new \Twig_NodeTraverser($env, array($this));
+    }
+
+    public function setDomain($domain)
+    {
+        $this->defaultDomain = $domain;
     }
 
     public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
@@ -45,7 +52,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
 
         if ($node instanceof TransNode) {
             $id = $node->getNode('body')->getAttribute('data');
-            $domain = 'messages';
+            $domain = $this->defaultDomain;
             if (null !== $domainNode = $node->getNode('domain')) {
                 $domain = $domainNode->getAttribute('value');
             }
@@ -66,7 +73,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
                 $id = $idNode->getAttribute('value');
 
                 $index = 'trans' === $name ? 1 : 2;
-                $domain = 'messages';
+                $domain = $this->defaultDomain;
                 $arguments = $node->getNode('arguments');
                 if ($arguments->hasNode($index)) {
                     $argument = $arguments->getNode($index);
