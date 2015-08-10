@@ -46,7 +46,7 @@ class SymfonyDumperAdapter implements DumperInterface
         $this->format = $format;
     }
 
-    public function dump(MessageCatalogue $catalogue, $domain = 'messages')
+    public function dump(MessageCatalogue $catalogue, $domain = 'messages', $filePath = null)
     {
         $symfonyCatalogue = new SymfonyCatalogue($catalogue->getLocale());
 

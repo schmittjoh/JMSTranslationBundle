@@ -58,7 +58,7 @@ class FileWriter
         $catalogue->getDomain($domain)->sort(function($a, $b) {
             return strcmp($a->getId(), $b->getId());
         });
-
-        file_put_contents($filePath, $this->dumpers[$format]->dump($catalogue, $domain));
+        
+        file_put_contents($filePath, $this->dumpers[$format]->dump($catalogue, $domain, $filePath));
     }
 }
