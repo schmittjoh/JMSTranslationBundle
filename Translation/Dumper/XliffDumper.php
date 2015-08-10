@@ -34,6 +34,9 @@ class XliffDumper implements DumperInterface
 {
     private $sourceLanguage = 'en';
     private $addDate = true;
+    
+    /** @var array $privateAttributes */
+    private $privateAttributes = ['id', 'resname'];
 
     /**
      * @param $bool
@@ -55,11 +58,11 @@ class XliffDumper implements DumperInterface
      * @param \JMS\TranslationBundle\Model\MessageCatalogue $domain
      * @return string
      */
-    public function dump(MessageCatalogue $catalogue, $domain = 'messages')
+    public function dump(MessageCatalogue $catalogue, $domain = 'messages', $filePath = null)
     {
         $doc = new \DOMDocument('1.0', 'utf-8');
         $doc->formatOutput = true;
-
+        
         $doc->appendChild($root = $doc->createElement('xliff'));
         $root->setAttribute('xmlns', 'urn:oasis:names:tc:xliff:document:1.2');
         $root->setAttribute('xmlns:jms', 'urn:jms:translation');
@@ -89,11 +92,20 @@ class XliffDumper implements DumperInterface
         $note->appendChild($doc->createTextNode('The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.'));
 
         $file->appendChild($body = $doc->createElement('body'));
+        
+        $customAttributes = $this->extractCustomAttributes($filePath);
 
         foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
             $body->appendChild($unit = $doc->createElement('trans-unit'));
-            $unit->setAttribute('id', hash('sha1', $id));
+            $idKey = hash('sha1', $id);
+            $unit->setAttribute('id', $idKey);
             $unit->setAttribute('resname', $id);
+            
+            if (isset($customAttributes[$idKey])) {
+                foreach ($customAttributes[$idKey] as $attribKey => $attribValue) {
+                    $unit->setAttribute($attribKey, $attribValue);
+                }
+            }
 
             $unit->appendChild($source = $doc->createElement('source'));
             if (preg_match('/[<>&]/', $message->getSourceString())) {
@@ -141,5 +153,40 @@ class XliffDumper implements DumperInterface
         }
 
         return $doc->saveXML();
+    }
+    
+    /**
+     * Extracts custom attributes from an existing xlf file
+     *
+     * @param string $filePath
+     * @return array
+     */
+    public function extractCustomAttributes($filePath)
+    {
+        $result = [];
+        
+        if ($filePath && file_exists($filePath)) {
+            $contents = file_get_contents($filePath);
+            $data = new \SimpleXMLElement($contents);
+            foreach ($data->file->body as $node) {
+                foreach ($node as $transUnit) {
+                    $transUnitAttribs = $transUnit->attributes();
+                    if (isset($transUnitAttribs['id'])) {
+                        $id = (string) $transUnitAttribs['id'];
+                        $attribs = [];
+                        foreach ($transUnitAttribs as $attribKey => $attribValue) {
+                            if (!in_array($attribKey, $this->privateAttributes)) {
+                                $attribs[$attribKey] = (string) $attribValue;
+                            }
+                        }
+                        if (count($attribs) > 0) {
+                            $result[$id] = $attribs;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $result;
     }
 }
