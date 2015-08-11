@@ -36,7 +36,7 @@ class XliffDumper implements DumperInterface
     private $addDate = true;
     
     /** @var array $privateAttributes */
-    private $privateAttributes = ['id', 'resname'];
+    private $privateAttributes = ['id', 'resname', 'extradata'];
 
     /**
      * @param $bool
