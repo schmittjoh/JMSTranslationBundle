@@ -35,6 +35,9 @@ class XliffDumper implements DumperInterface
     private $sourceLanguage = 'en';
     private $addDate = true;
     
+    /** @var boolean $addFileRefs */
+    private $addFileRefs = true;
+    
     /** @var array $privateAttributes */
     private $privateAttributes = ['id', 'resname', 'extradata'];
 
@@ -45,6 +48,14 @@ class XliffDumper implements DumperInterface
     {
         $this->addDate = (Boolean) $bool;
     }
+    
+    /**
+     * @return boolean
+     */
+    public function getAddDate()
+    {
+        return $this->addDate;
+    }
 
     /**
      * @param $lang
@@ -52,6 +63,34 @@ class XliffDumper implements DumperInterface
     public function setSourceLanguage($lang)
     {
         $this->sourceLanguage = $lang;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getSourceLanguage($lang)
+    {
+        return $this->sourceLanguage;
+    }
+    
+    /**
+     * Set addFileRefs
+     *
+     * @param boolean $bool
+     */
+    public function setAddFileRefs($bool)
+    {
+        $this->addFileRefs = $bool;
+    }
+    
+    /**
+     * Get addFileRefs
+     *
+     * @return boolean
+     */
+    public function getAddFileRefs($bool)
+    {
+        $this->addFileRefs = $bool;
     }
 
     /**
@@ -67,7 +106,7 @@ class XliffDumper implements DumperInterface
         $root->setAttribute('xmlns', 'urn:oasis:names:tc:xliff:document:1.2');
         $root->setAttribute('xmlns:jms', 'urn:jms:translation');
         $root->setAttribute('version', '1.2');
-
+        
         $root->appendChild($file = $doc->createElement('file'));
 
         if ($this->addDate) {
@@ -125,24 +164,26 @@ class XliffDumper implements DumperInterface
                 $target->setAttribute('state', 'new');
             }
 
-            // As per the OASIS XLIFF 1.2 non-XLIFF elements must be at the end of the <trans-unit>
-            if ($sources = $message->getSources()) {
-                foreach ($sources as $source) {
-                    if ($source instanceof FileSource) {
-                        $unit->appendChild($refFile = $doc->createElement('jms:reference-file', $source->getPath()));
+            if ($this->addFileRefs) {
+                // As per the OASIS XLIFF 1.2 non-XLIFF elements must be at the end of the <trans-unit>
+                if ($sources = $message->getSources()) {
+                    foreach ($sources as $source) {
+                        if ($source instanceof FileSource) {
+                            $unit->appendChild($refFile = $doc->createElement('jms:reference-file', $source->getPath()));
 
-                        if ($source->getLine()) {
-                            $refFile->setAttribute('line', $source->getLine());
+                            if ($source->getLine()) {
+                                $refFile->setAttribute('line', $source->getLine());
+                            }
+
+                            if ($source->getColumn()) {
+                                $refFile->setAttribute('column', $source->getColumn());
+                            }
+
+                            continue;
                         }
 
-                        if ($source->getColumn()) {
-                            $refFile->setAttribute('column', $source->getColumn());
-                        }
-
-                        continue;
+                        $unit->appendChild($doc->createElementNS('jms:reference', (string) $source));
                     }
-
-                    $unit->appendChild($doc->createElementNS('jms:reference', (string) $source));
                 }
             }
 

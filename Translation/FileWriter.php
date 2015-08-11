@@ -46,9 +46,10 @@ class FileWriter
      * @param \JMS\TranslationBundle\Model\MessageCatalogue $domain
      * @param $filePath
      * @param $format
+     * @param array $outputOptions
      * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
      */
-    public function write(MessageCatalogue $catalogue, $domain, $filePath, $format)
+    public function write(MessageCatalogue $catalogue, $domain, $filePath, $format, $outputOptions)
     {
         if (!isset($this->dumpers[$format])) {
             throw new InvalidArgumentException(sprintf('The format "%s" is not supported.', $format));
@@ -59,6 +60,17 @@ class FileWriter
             return strcmp($a->getId(), $b->getId());
         });
         
-        file_put_contents($filePath, $this->dumpers[$format]->dump($catalogue, $domain, $filePath));
+        $dumper = $this->dumpers[$format];
+        
+        if ($dumper instanceof \JMS\TranslationBundle\Translation\Dumper\XliffDumper) {
+            if (isset($outputOptions['add_date'])) {
+                $dumper->setAddDate($outputOptions['add_date']);
+            }
+            if (isset($outputOptions['add_filerefs'])) {
+                $dumper->setAddFileRefs($outputOptions['add_filerefs']);
+            }
+        }
+        
+        file_put_contents($filePath, $dumper->dump($catalogue, $domain, $filePath));
     }
 }

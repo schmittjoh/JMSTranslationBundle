@@ -32,6 +32,12 @@ final class ConfigBuilder
     private $enabledExtractors = array();
     private $keepOldTranslations = false;
     private $loadResources = array();
+    private $outputOptions = [
+        'xlf' => [
+            'add_date' => true,
+            'add_filerefs' => true
+        ]
+    ];
 
     /**
      * @static
@@ -202,7 +208,8 @@ final class ConfigBuilder
             $this->excludedNames,
             $this->enabledExtractors,
             $this->keepOldTranslations,
-            $this->loadResources
+            $this->loadResources,
+            $this->outputOptions
         );
     }
 
@@ -210,6 +217,13 @@ final class ConfigBuilder
     {
         $this->loadResources = $loadResources;
 
+        return $this;
+    }
+    
+    public function setOutputOptions($format, array $options)
+    {
+        $this->outputOptions[$format] = $options;
+        
         return $this;
     }
 }

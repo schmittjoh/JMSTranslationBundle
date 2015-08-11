@@ -78,7 +78,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
         foreach ($locales as $locale) {
             $config = $builder->setLocale($locale)->getConfig();
-
+            
             $output->writeln(sprintf('Extracting Translations for locale <info>%s</info>', $locale));
             $output->writeln(sprintf('Keep old translations: <info>%s</info>', $config->isKeepOldMessages() ? 'Yes' : 'No'));
             $output->writeln(sprintf('Output-Path: <info>%s</info>', $config->getTranslationsDir()));
