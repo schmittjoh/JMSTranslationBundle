@@ -32,7 +32,7 @@ final class ConfigBuilder
     private $enabledExtractors = array();
     private $keepOldTranslations = false;
     private $loadResources = array();
-    private $outputOptions = [
+    public $outputOptions = [
         'xlf' => [
             'add_date' => true,
             'add_filerefs' => true
@@ -223,6 +223,13 @@ final class ConfigBuilder
     public function setOutputOptions($format, array $options)
     {
         $this->outputOptions[$format] = $options;
+        
+        return $this;
+    }
+    
+    public function setOutputOption($format, $key, $value)
+    {
+        $this->outputOptions[$format][$key] = $value;
         
         return $this;
     }
