@@ -116,6 +116,9 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     }
                 } elseif ('attr' === $item->key->value && is_array($item->value->items) ) {
                     foreach ($item->value->items as $sitem) {
+                        if (!$sitem->key instanceof \PHPParser_Node_Scalar_String) {
+                            continue;
+                        }
                         if ('placeholder' == $sitem->key->value){
                             $this->parseItem($sitem, $domain);
                         }
