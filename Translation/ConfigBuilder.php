@@ -226,4 +226,11 @@ final class ConfigBuilder
         
         return $this;
     }
+    
+    public function setOutputOption($format, $key, $value)
+    {
+        $this->outputOptions[$format][$key] = $value;
+        
+        return $this;
+    }
 }
