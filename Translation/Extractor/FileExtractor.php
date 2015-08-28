@@ -29,8 +29,7 @@ use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
 use JMS\TranslationBundle\Translation\ExtractorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Finder\Finder;
-use PhpParser\Lexer;
-use PhpParser\Parser;
+use PhpParser\ParserFactory;
 use PhpParser\Error;
 
 /**
@@ -56,8 +55,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->twig = $twig;
         $this->logger = $logger;
         $this->visitors = $visitors;
-        $lexer = new Lexer();
-        $this->phpParser = new Parser($lexer);
+        $this->phpParser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
             if ($visitor instanceof RemovingNodeVisitor) {

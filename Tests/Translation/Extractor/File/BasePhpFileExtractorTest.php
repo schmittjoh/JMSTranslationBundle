@@ -21,8 +21,7 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
-use PhpParser\Lexer;
-use PhpParser\Parser;
+use PhpParser\ParserFactory;
 
 abstract class BasePhpFileExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,8 +36,7 @@ abstract class BasePhpFileExtractorTest extends \PHPUnit_Framework_TestCase
             $extractor = $this->getDefaultExtractor();
         }
 
-        $lexer = new Lexer();
-        $parser = new Parser($lexer);
+        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();

@@ -26,13 +26,9 @@ use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Validator\Mapping\ClassMetadataFactory;
 
 use JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor;
-use Doctrine\Common\Annotations\DocParser;
-use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
-use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use PhpParser\Lexer;
-use PhpParser\Parser;
+use PhpParser\ParserFactory;
 
 class ValidationExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -59,8 +55,7 @@ class ValidationExtractorTest extends \PHPUnit_Framework_TestCase
             $extractor = new ValidationExtractor($factory);
         }
 
-        $lexer = new Lexer();
-        $parser = new Parser($lexer);
+        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();
