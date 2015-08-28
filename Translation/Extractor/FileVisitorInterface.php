@@ -44,7 +44,7 @@ interface FileVisitorInterface
      *
      * @param \SplFileInfo $file
      * @param MessageCatalogue $catalogue
-     * @param \PHPParser_Node $ast
+     * @param array $ast
      */
     function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast);
 

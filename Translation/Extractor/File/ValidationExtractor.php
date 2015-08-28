@@ -19,17 +19,22 @@
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Model\Message;
-use Symfony\Component\Validator\Mapping\ClassMetadataFactoryInterface;
 use Symfony\Component\Validator\MetadataFactoryInterface;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactoryInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use PhpParser\NodeVisitor;
+use PhpParser\NodeTraverser;
+use PhpParser\Node;
+use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Class_;
 
 /**
  * Extracts translations validation constraints.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class ValidationExtractor implements FileVisitorInterface, NodeVisitor
 {
     private $metadataFactory;
     private $traverser;
@@ -44,19 +49,19 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
         }
         $this->metadataFactory = $metadataFactory;
 
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
-        if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
+        if ($node instanceof Namespace_) {
             $this->namespace = implode('\\', $node->name->parts);
 
             return;
         }
 
-        if (!$node instanceof \PHPParser_Node_Stmt_Class) {
+        if (!$node instanceof Class_) {
             return;
         }
 
@@ -88,7 +93,7 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
     }
 
     public function beforeTraverse(array $nodes) { }
-    public function leaveNode(\PHPParser_Node $node) { }
+    public function leaveNode(Node $node) { }
     public function afterTraverse(array $nodes) { }
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }

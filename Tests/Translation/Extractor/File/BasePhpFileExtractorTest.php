@@ -19,17 +19,17 @@
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Model\MessageCatalogue;
-
 use Doctrine\Common\Annotations\DocParser;
-
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use PhpParser\Lexer;
+use PhpParser\Parser;
 
 abstract class BasePhpFileExtractorTest extends \PHPUnit_Framework_TestCase
 {
     protected final function extract($file, FileVisitorInterface $extractor = null)
     {
         if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
-            throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
+            throw new \RuntimeException(sprintf('The file "%s" does not exist.', $file));
         }
         $file = new \SplFileInfo($file);
 
@@ -37,8 +37,8 @@ abstract class BasePhpFileExtractorTest extends \PHPUnit_Framework_TestCase
             $extractor = $this->getDefaultExtractor();
         }
 
-        $lexer = new \PHPParser_Lexer();
-        $parser = new \PHPParser_Parser($lexer);
+        $lexer = new Lexer();
+        $parser = new Parser($lexer);
         $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();

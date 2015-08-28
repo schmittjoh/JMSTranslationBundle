@@ -31,6 +31,8 @@ use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use PhpParser\Lexer;
+use PhpParser\Parser;
 
 class ValidationExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -57,8 +59,8 @@ class ValidationExtractorTest extends \PHPUnit_Framework_TestCase
             $extractor = new ValidationExtractor($factory);
         }
 
-        $lexer = new \PHPParser_Lexer();
-        $parser = new \PHPParser_Parser($lexer);
+        $lexer = new Lexer();
+        $parser = new Parser($lexer);
         $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();

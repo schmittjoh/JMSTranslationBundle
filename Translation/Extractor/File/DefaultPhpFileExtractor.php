@@ -29,6 +29,11 @@ use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use PhpParser\NodeVisitor;
+use PhpParser\NodeTraverser;
+use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Scalar\String_;
 
 /**
  * This parser can extract translation information from PHP files.
@@ -37,7 +42,7 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, \PHPParser_NodeVisitor
+class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
     private $traverser;
     private $catalogue;
@@ -49,7 +54,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     public function __construct(DocParser $docParser)
     {
         $this->docParser = $docParser;
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
@@ -61,10 +66,10 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->logger = $logger;
     }
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
 
-        if (!$node instanceof \PHPParser_Node_Expr_MethodCall
+        if (!$node instanceof MethodCall
             || !is_string($node->name)
             || ('trans' !== strtolower($node->name) && 'transchoice' !== strtolower($node->name))) {
 
@@ -86,7 +91,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
             }
         }
 
-        if (!$node->args[0]->value instanceof \PHPParser_Node_Scalar_String) {
+        if (!$node->args[0]->value instanceof String_) {
             if ($ignore) {
                 return;
             }
@@ -105,7 +110,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
 
         $index = 'trans' === strtolower($node->name) ? 2 : 3;
         if (isset($node->args[$index])) {
-            if (!$node->args[$index]->value instanceof \PHPParser_Node_Scalar_String) {
+            if (!$node->args[$index]->value instanceof String_) {
                 if ($ignore) {
                     return;
                 }
@@ -141,12 +146,12 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     }
 
     public function beforeTraverse(array $nodes) { }
-    public function leaveNode(\PHPParser_Node $node) { }
+    public function leaveNode(Node $node) { }
     public function afterTraverse(array $nodes) { }
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
 
-    private function getDocCommentForNode(\PHPParser_Node $node)
+    private function getDocCommentForNode(Node $node)
     {
         // check if there is a doc comment for the ID argument
         // ->trans(/** @Desc("FOO") */ 'my.id')
