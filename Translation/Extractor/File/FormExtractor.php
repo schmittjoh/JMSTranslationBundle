@@ -195,6 +195,10 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
 
     private function parseItem($item, $domain = null)
     {
+        if (!property_exists($item, 'value') || !property_exists($item->value, 'value')) {
+            return;
+        }
+
         // get doc comment
         $ignore = false;
         $desc = $meaning = $docComment = null;
