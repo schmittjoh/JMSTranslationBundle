@@ -105,7 +105,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     continue;
                 }
 
-                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value && 'help' !== $item->key->value && 'choices' !== $item->key->value && 'invalid_message' !== $item->key->value) {
+                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value && 'help' !== $item->key->value && 'choices' !== $item->key->value && 'invalid_message' !== $item->key->value && 'message' !== $item->key->value) {
                     continue;
                 }
 
@@ -113,7 +113,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                     foreach ($item->value->items as $sitem) {
                         $this->parseItem($sitem, $domain);
                     }
-                } elseif ('invalid_message' === $item->key->value) {
+                } elseif ('invalid_message' === $item->key->value || 'message' === $item->key->value) {
                     $this->parseItem($item, 'validators');
                 } else {
                     $this->parseItem($item, $domain);
