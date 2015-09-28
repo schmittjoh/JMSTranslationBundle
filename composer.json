@@ -14,7 +14,7 @@
     "minimum-stability": "stable",
     "require": {
         "symfony/framework-bundle": "~2.1",
-        "nikic/php-parser": "1.4.1",
+        "nikic/php-parser": "~1.4.1",
         "symfony/console": "*"
     },
     "conflict": {
