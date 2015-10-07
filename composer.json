@@ -1,6 +1,6 @@
 {
     "name":         "jms/translation-bundle",
-    "description":  "Puts the Symfony2 Translation Component on steroids",
+    "description":  "Puts the Symfony Translation Component on steroids",
     "keywords":     ["translation", "multilanguage", "extract", "webinterface", "ui", "i18n", "extraction", "interface"],
     "homepage":     "http://jmsyst.com/bundles/JMSTranslationBundle",
     "type":         "symfony-bundle",
