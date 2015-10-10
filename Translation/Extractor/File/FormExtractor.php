@@ -187,7 +187,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         // get doc comment
         $ignore = false;
         $desc = $meaning = $docComment = null;
-	
+
         if ($item->key) {
             $docComment = $item->key->getDocComment();
         }
@@ -199,6 +199,9 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         $docComment = is_object($docComment) ? $docComment->getText() : null;
 
         if ($docComment) {
+            if ($docComment instanceof \PhpParser\Comment\Doc) {
+                $docComment = $docComment->getText();
+            }
             foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
@@ -211,7 +214,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
 
         // check if the value is explicitly set to false => e.g. for FormField that should be rendered without label
-        $ignore = $ignore || $item->value->value == false;
+        $ignore = $ignore || !$item->value instanceof PhpParser\Node\Scalar\String_ || $item->value->value == false;
 
         if (!$item->value instanceof \PHPParser_Node_Scalar_String && !$item->value instanceof \PHPParser_Node_Scalar_LNumber) {
             if ($ignore) {
