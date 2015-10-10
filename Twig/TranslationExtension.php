@@ -53,8 +53,8 @@ class TranslationExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'desc' => new \Twig_Filter_Method($this, 'desc'),
-            'meaning' => new \Twig_Filter_Method($this, 'meaning'),
+            new \Twig_SimpleFilter('desc', array($this, 'desc')),
+            new \Twig_SimpleFilter('meaning', array($this, 'meaning')),
         );
     }
 
