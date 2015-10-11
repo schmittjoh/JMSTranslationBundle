@@ -69,19 +69,22 @@ class Message
      * @param string $domain
      * @return Message
      */
-    public static function create($id, $domain = 'messages')
+    public static function create($id, $domain = 'messages', $desc = null)
     {
-        return new self($id, $domain);
+        return new self($id, $domain, $desc);
     }
 
     /**
      * @param $id
      * @param string $domain
      */
-    public function __construct($id, $domain = 'messages')
+    public function __construct($id, $domain = 'messages', $desc = null)
     {
         $this->id = $id;
         $this->domain = $domain;
+        if (null !== $desc) {
+            $this->desc = $desc;
+        }
     }
 
     /**
