@@ -229,6 +229,7 @@ class Updater
         $this->extractor->setExcludedDirs($config->getExcludedDirs());
         $this->extractor->setExcludedNames($config->getExcludedNames());
         $this->extractor->setEnabledExtractors($config->getEnabledExtractors());
+        $this->extractor->setDomain($config->getDefaultDomain());
 
         $this->logger->info("Extracting translation keys");
         $this->scannedCatalogue = $this->extractor->extract();
