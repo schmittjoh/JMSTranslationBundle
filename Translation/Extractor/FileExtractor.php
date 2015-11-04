@@ -97,8 +97,8 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     public function __construct(\Twig_Environment $twig, LoggerInterface $logger, array $visitors)
     {
         $this->twig = $twig;
-        $this->logger = $logger;
         $this->visitors = $visitors;
+        $this->setLogger($logger);
         $lexer = new Lexer();
         if (class_exists('PhpParser\ParserFactory')) {
             $factory = new ParserFactory();
