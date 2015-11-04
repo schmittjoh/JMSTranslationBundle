@@ -19,13 +19,15 @@
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use Symfony\Bridge\Twig\Node\TransNode;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Twig\Node\TransNode;
 
-class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterface
+class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterface, LoggerAwareInterface
 {
     /**
      * @var \SplFileInfo
@@ -43,14 +45,15 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
     private $traverser;
 
     /**
-     * @var array
+     * @var array|\Twig_Node
      */
     private $stack = array();
 
     /**
-     * TwigFileExtractor constructor.
-     * @param \Twig_Environment $env
+     * @var LoggerInterface
      */
+    private $logger;
+
     public function __construct(\Twig_Environment $env)
     {
         $this->traverser = new \Twig_NodeTraverser($env, array($this));
@@ -69,6 +72,9 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
             $id = $node->getNode('body')->getAttribute('data');
             $domain = 'messages';
             if (null !== $domainNode = $node->getNode('domain')) {
+                if (!$this->checkNodeIsConstant($domainNode)) {
+                    return $node;
+                }
                 $domain = $domainNode->getAttribute('value');
             }
 
@@ -80,10 +86,9 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
 
             if ('trans' === $name || 'transchoice' === $name) {
                 $idNode = $node->getNode('node');
-                if (!$idNode instanceof \Twig_Node_Expression_Constant) {
+                if (!$this->checkNodeIsConstant($idNode)) {
                     return $node;
                     // FIXME: see below
-//                     throw new \RuntimeException(sprintf('Cannot infer translation id from node "%s". Please refactor to only translate constants.', get_class($idNode)));
                 }
                 $id = $idNode->getAttribute('value');
 
@@ -92,7 +97,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
                 $arguments = $node->getNode('arguments');
                 if ($arguments->hasNode($index)) {
                     $argument = $arguments->getNode($index);
-                    if (!$argument instanceof \Twig_Node_Expression_Constant) {
+                    if (!$this->checkNodeIsConstant($argument)) {
                         return $node;
                         // FIXME: Throw exception if there is some way for the user to turn this off
                         //        on a case-by-case basis, similar to @Ignore in PHP
@@ -201,5 +206,36 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
      */
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
     {
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param \Twig_Node $node
+     * @return bool
+     */
+    private function checkNodeIsConstant(\Twig_Node $node)
+    {
+        if ($node instanceof \Twig_Node_Expression_Constant) {
+            return true;
+        }
+
+        $message = sprintf(
+            'Cannot infer translation id from node "%s". Please refactor to only translate constants in file "%s" on line %d',
+            get_class($node),
+            $this->file,
+            $node->getLine()
+        );
+
+        if (!$this->logger) {
+            throw new RuntimeException($message);
+        }
+
+        $this->logger->error($message);
+
+        return false;
     }
 }
