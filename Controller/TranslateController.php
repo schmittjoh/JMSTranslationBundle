@@ -52,6 +52,7 @@ class TranslateController
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
      * @Template
      * @param string $config
+     * @return array
      */
     public function indexAction()
     {
@@ -68,15 +69,14 @@ class TranslateController
         }
 
         $domains = array_keys($files);
-        $domain = $this->request->query->get('domain') ?: reset($domains);
         if ((!$domain = $this->request->query->get('domain')) || !isset($files[$domain])) {
             $domain = reset($domains);
         }
 
         $locales = array_keys($files[$domain]);
-        
+
         natsort($locales);
-        
+
         if ((!$locale = $this->request->query->get('locale')) || !isset($files[$domain][$locale])) {
             $locale = reset($locales);
         }
