@@ -14,7 +14,7 @@
     "minimum-stability": "stable",
     "require": {
         "symfony/framework-bundle": "~2.1",
-        "nikic/php-parser": "~1.4.1",
+        "nikic/php-parser": "~0.9.3",
         "symfony/console": "*"
     },
     "conflict": {
@@ -41,7 +41,7 @@
     "target-dir": "JMS/TranslationBundle",
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1-dev"
+            "dev-master": "1.1.1-dev"
         }
     }
 }
