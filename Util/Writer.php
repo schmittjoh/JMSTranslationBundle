@@ -70,7 +70,6 @@ class Writer
 
     public function write($content)
     {
-        $contentEndsWithNewLine = "\n" === substr($this->content, -1);
         $addition = '';
 
         $lines = explode("\n", $content);
