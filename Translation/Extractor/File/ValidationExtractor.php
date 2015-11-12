@@ -18,9 +18,10 @@
 
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
-use JMS\TranslationBundle\Model\Message;
 use Symfony\Component\Validator\Mapping\ClassMetadataFactoryInterface;
-use Symfony\Component\Validator\MetadataFactoryInterface;
+use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
+use Symfony\Component\Validator\MetadataFactoryInterface as LegacyMetadataFactoryInterface;
+use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 
@@ -39,7 +40,11 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
 
     public function __construct($metadataFactory)
     {
-        if (! ($metadataFactory instanceOf MetadataFactoryInterface || $metadataFactory instanceOf ClassMetadataFactoryInterface) ) {
+        if (! (
+            $metadataFactory instanceOf MetadataFactoryInterface
+            || $metadataFactory instanceof LegacyMetadataFactoryInterface
+            || $metadataFactory instanceOf ClassMetadataFactoryInterface
+        ) ) {
             throw new \InvalidArgumentException(sprintf('%s expects an instance of MetadataFactoryInterface or ClassMetadataFactoryInterface', get_class($this)));
         }
         $this->metadataFactory = $metadataFactory;

@@ -52,8 +52,15 @@ class ValidationExtractorTest extends \PHPUnit_Framework_TestCase
         }
         $file = new \SplFileInfo($file);
 
+        //use correct factory class depending on whether using Symfony 2 or 3
+        if (class_exists('Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory')) {
+            $metadataFactoryClass = 'Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory';
+        } else {
+            $metadataFactoryClass = 'Symfony\Component\Validator\Mapping\ClassMetadataFactory';
+        }
+
         if (null === $extractor) {
-            $factory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+            $factory = new $metadataFactoryClass(new AnnotationLoader(new AnnotationReader()));
             $extractor = new ValidationExtractor($factory);
         }
 
