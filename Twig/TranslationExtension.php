@@ -53,8 +53,8 @@ class TranslationExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'desc' => new \Twig_Filter_Method($this, 'desc'),
-            'meaning' => new \Twig_Filter_Method($this, 'meaning'),
+            new \Twig_SimpleFilter('desc', array($this, 'desc')),
+            new \Twig_SimpleFilter('meaning', array($this, 'meaning')),
         );
     }
 
@@ -64,11 +64,11 @@ class TranslationExtension extends \Twig_Extension
             $domain = 'messages';
         }
 
-        try {
-            return $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
-        } catch (\InvalidArgumentException $unableToChooseTranslationEx) {
+        if (false == $this->translator->getCatalogue($locale)->defines($message, $domain)) {
             return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
         }
+
+        return $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
     }
 
     public function desc($v)
