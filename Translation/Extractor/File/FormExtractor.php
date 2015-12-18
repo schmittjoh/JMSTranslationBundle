@@ -125,7 +125,7 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
                     foreach ($item->value->items as $sitem) {
                         $this->parseItem($sitem, $domain);
                     }
-                } elseif ('attr' === $item->key->value && is_array($item->value->items) ) {
+                } elseif ('attr' === $item->key->value && property_exists($item->value, 'items') && is_array($item->value->items) ) {
                     foreach ($item->value->items as $sitem) {
                         if ('placeholder' == $sitem->key->value){
                             $this->parseItem($sitem, $domain);
@@ -214,6 +214,9 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
         $docComment = is_object($docComment) ? $docComment->getText() : null;
 
         if ($docComment) {
+            if ($docComment instanceof \PhpParser\Comment\Doc) {
+                $docComment = $docComment->getText();
+            }
             foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
@@ -226,7 +229,7 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
         }
 
         // check if the value is explicitly set to false => e.g. for FormField that should be rendered without label
-        $ignore = $ignore || $item->value->value == false;
+        $ignore = $ignore || !$item->value instanceof PhpParser\Node\Scalar\String_ || $item->value->value == false;
 
         if (!$item->value instanceof String_ && !$item->value instanceof LNumber) {
             if ($ignore) {

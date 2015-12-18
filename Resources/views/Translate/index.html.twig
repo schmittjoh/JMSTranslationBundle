@@ -11,7 +11,7 @@
                 $(this).parent().submit();
             });
             
-            {% if isWriteable is sameas(true) %}
+            {% if isWriteable is same as(true) %}
             $('textarea')
                 .blur(function() {
                     var self = this;
@@ -76,7 +76,7 @@
         </select>
     </form>
     
-    {% if isWriteable is sameas(false) %}
+    {% if isWriteable is same as(false) %}
     <div class="alert-message error">
         The translation file "<strong>{{ file }}</strong>" is not writable.
     </div>

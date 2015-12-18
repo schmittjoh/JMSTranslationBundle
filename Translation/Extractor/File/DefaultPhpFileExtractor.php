@@ -80,6 +80,9 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $ignore = false;
         $desc = $meaning = null;
         if (null !== $docComment = $this->getDocCommentForNode($node)) {
+            if ($docComment instanceof \PhpParser\Comment\Doc) {
+                $docComment = $docComment->getText();
+            }
             foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$node->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
