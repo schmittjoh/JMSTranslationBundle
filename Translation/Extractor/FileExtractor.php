@@ -21,7 +21,7 @@ namespace JMS\TranslationBundle\Translation\Extractor;
 use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 
 use JMS\TranslationBundle\Twig\RemovingNodeVisitor;

@@ -28,7 +28,7 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * This parser can extract translation information from PHP files.
@@ -54,7 +54,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     }
 
     /**
-     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger)
     {

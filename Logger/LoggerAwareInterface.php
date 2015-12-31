@@ -18,7 +18,7 @@
 
 namespace JMS\TranslationBundle\Logger;
 
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
@@ -26,7 +26,7 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
 interface LoggerAwareInterface
 {
     /**
-     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      */
     function setLogger(LoggerInterface $logger);
 }

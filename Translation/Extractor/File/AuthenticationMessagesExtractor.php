@@ -28,7 +28,7 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, \PHPParser_NodeVisitor
 {

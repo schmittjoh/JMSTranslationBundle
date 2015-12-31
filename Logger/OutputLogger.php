@@ -19,7 +19,7 @@
 namespace JMS\TranslationBundle\Logger;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 class OutputLogger implements LoggerInterface
 {
