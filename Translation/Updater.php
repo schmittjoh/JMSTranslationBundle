@@ -148,9 +148,13 @@ class Updater
                 }
             }
 
-            $outputFile = $this->config->getTranslationsDir().'/'.$name.'.'.$this->config->getLocale().'.'.$format;
+            $outputFile = $this->config->getTranslationsDir().'/'.$name.'.';
+            if ($template = 'template' !== strtolower($this->config->getLocale())) {
+                $outputFile .= $this->config->getLocale().'.';
+            }
+            $outputFile .= $format;
             $this->logger->info(sprintf('Writing translation file "%s".', $outputFile));
-            $this->writer->write($this->scannedCatalogue, $name, $outputFile, $format);
+            $this->writer->write($this->scannedCatalogue, $name, $outputFile, $format, !$template);
         }
     }
 
