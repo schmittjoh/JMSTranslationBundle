@@ -31,6 +31,7 @@ final class ConfigBuilder
     private $excludedNames = array('*Test.php', '*TestCase.php');
     private $enabledExtractors = array();
     private $keepOldTranslations = false;
+    private $keepOldTranslationsMessages = false;
     private $loadResources = array();
 
     /**
@@ -188,6 +189,14 @@ final class ConfigBuilder
         return $this;
     }
 
+
+    public function setKeepOldTranslationsMessages($value)
+    {
+        $this->keepOldTranslationsMessages = $value;
+
+        return $this;
+    }
+
     public function getConfig()
     {
         return new Config(
@@ -202,6 +211,7 @@ final class ConfigBuilder
             $this->excludedNames,
             $this->enabledExtractors,
             $this->keepOldTranslations,
+            $this->keepOldTranslationsMessages,
             $this->loadResources
         );
     }

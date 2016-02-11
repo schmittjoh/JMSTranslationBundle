@@ -24,7 +24,9 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
 
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Symfony\Component\Translation\DataCollectorTranslator;
 use Symfony\Component\Translation\MessageCatalogue as SymfonyMessageCatalogue;
 use Symfony\Component\Finder\Finder;
 use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
@@ -52,6 +54,7 @@ class Updater
     private $scannedCatalogue;
     private $logger;
     private $writer;
+    private $translator;
 
     /**
      * @param LoaderManager $loader
@@ -59,12 +62,13 @@ class Updater
      * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
      * @param FileWriter $writer
      */
-    public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer)
+    public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer, Translator $translator)
     {
         $this->loader = $loader;
         $this->extractor = $extractor;
         $this->logger = $logger;
         $this->writer = $writer;
+        $this->translator = $translator;
     }
 
     /**
@@ -105,8 +109,7 @@ class Updater
         $catalogue
             ->get($id, $domain)
             ->setLocaleString($trans)
-            ->setNew(false)
-        ;
+            ->setNew(false);
 
         $this->writer->write($catalogue, $domain, $file, $format);
     }
@@ -136,8 +139,8 @@ class Updater
             $format = $this->detectOutputFormat($name);
 
             // delete translation files of other formats
-            foreach (Finder::create()->name('/^'.$name.'\.'.$this->config->getLocale().'\.[^\.]+$/')->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
-                if ('.'.$format === substr($file, -1 * strlen('.'.$format))) {
+            foreach (Finder::create()->name('/^' . $name . '\.' . $this->config->getLocale() . '\.[^\.]+$/')->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
+                if ('.' . $format === substr($file, -1 * strlen('.' . $format))) {
                     continue;
                 }
 
@@ -148,7 +151,7 @@ class Updater
                 }
             }
 
-            $outputFile = $this->config->getTranslationsDir().'/'.$name.'.'.$this->config->getLocale().'.'.$format;
+            $outputFile = $this->config->getTranslationsDir() . '/' . $name . '.' . $this->config->getLocale() . '.' . $format;
             $this->logger->info(sprintf('Writing translation file "%s".', $outputFile));
             $this->writer->write($this->scannedCatalogue, $name, $outputFile, $format);
         }
@@ -171,7 +174,7 @@ class Updater
         $otherDomainFormat = $localeFormat = $otherLocaleFormat = null;
         foreach (FileUtils::findTranslationFiles($this->config->getTranslationsDir()) as $domain => $locales) {
             foreach ($locales as $locale => $fileData) {
-                list($format, ) = $fileData;
+                list($format,) = $fileData;
 
                 if ($currentDomain !== $domain) {
                     $otherDomainFormat = $format;
@@ -245,6 +248,7 @@ class Updater
             }
         }
 
+        //keep old translations
         if ($this->config->isKeepOldMessages()) {
             foreach ($this->existingCatalogue->getDomains() as $domainCatalogue) {
                 foreach ($domainCatalogue->all() as $message) {
@@ -253,6 +257,23 @@ class Updater
                     }
 
                     $this->scannedCatalogue->add($message);
+                }
+            }
+        }
+
+        //keep old translations translated
+        if ($this->config->isKeepOldTranslationsMessages()) {
+
+            $locale = $this->scannedCatalogue->getLocale();
+            /** @var MessageCatalogue $domainCatalogue */
+            foreach ($this->scannedCatalogue->getDomains() as $domainCatalogue) {
+
+                /** @var Message $message */
+                foreach ($domainCatalogue->all() as $message) {
+
+                    $translated = $this->translator->trans($message->getId(), array(), $message->getDomain(), $locale);
+                    $message->setLocaleString($translated);
+                    $message->setNew(false);
                 }
             }
         }
