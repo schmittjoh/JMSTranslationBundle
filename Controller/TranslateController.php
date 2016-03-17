@@ -23,8 +23,8 @@ use JMS\TranslationBundle\Util\FileUtils;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\MessageCatalogue;
 
 /**
  * Translate Controller.
@@ -68,9 +68,9 @@ class TranslateController
         }
 
         $locales = array_keys($files[$domain]);
-        
+
         natsort($locales);
-        
+
         if ((!$locale = $request->query->get('locale')) || !isset($files[$domain][$locale])) {
             $locale = reset($locales);
         }

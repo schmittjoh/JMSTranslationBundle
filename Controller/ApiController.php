@@ -40,9 +40,6 @@ class ApiController
     /** @DI\Inject("jms_translation.config_factory") */
     private $configFactory;
 
-    /** @DI\Inject */
-    private $request;
-
     /** @DI\Inject("jms_translation.updater") */
     private $updater;
 
@@ -72,7 +69,7 @@ class ApiController
 
         $this->updater->updateTranslation(
             $file, $format, $domain, $locale, $id,
-            $this->request->request->get('message')
+	    $request->request->get('message')
         );
 
         return new Response();
