@@ -40,7 +40,7 @@ before_install:
     - travis_retry composer self-update
 
 install:
-    - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update
+    - composer require symfony/symfony:${SYMFONY_VERSION} --no-update
     - composer update ${COMPOSER_FLAGS} --prefer-source --no-interaction
 
 script:
