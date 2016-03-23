@@ -56,7 +56,17 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
     public function enterNode(\PHPParser_Node $node)
     {
         if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
-            $this->namespace = implode('\\', $node->name->parts);
+            if (isset($node->name)) {
+                $this->namespace = implode('\\', $node->name->parts);
+
+                return;
+            } else {
+                foreach ($node->stmts as $node) {
+                    $this->enterNode($node);
+                }
+
+                return;
+            }
 
             return;
         }

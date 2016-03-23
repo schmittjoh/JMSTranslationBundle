@@ -62,9 +62,17 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
     public function enterNode(\PHPParser_Node $node)
     {
         if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
-            $this->namespace = implode('\\', $node->name->parts);
+            if (isset($node->name)) {
+                $this->namespace = implode('\\', $node->name->parts);
 
-            return;
+                return;
+            } else {
+                foreach ($node->stmts as $node) {
+                    $this->enterNode($node);
+                }
+
+                return;
+            }
         }
 
         if ($node instanceof \PHPParser_Node_Stmt_Class) {

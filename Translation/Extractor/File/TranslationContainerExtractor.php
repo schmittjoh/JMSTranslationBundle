@@ -49,10 +49,18 @@ class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_
     public function enterNode(\PHPParser_Node $node)
     {
         if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
-            $this->namespace = implode('\\', $node->name->parts);
-            $this->useStatements = array();
+            if (isset($node->name)) {
+                $this->namespace = implode('\\', $node->name->parts);
+                $this->useStatements = array();
 
-            return;
+                return;
+            } else {
+                foreach ($node->stmts as $node) {
+                    $this->enterNode($node);
+                }
+
+                return;
+            }
         }
 
         if ($node instanceof \PHPParser_Node_Stmt_UseUse) {
