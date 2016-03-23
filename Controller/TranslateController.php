@@ -41,9 +41,6 @@ class TranslateController
     /** @DI\Inject("jms_translation.loader_manager") */
     private $loader;
 
-    /** @DI\Inject("service_container") */
-    private $container;
-
     /** @DI\Inject("%jms_translation.source_language%") */
     private $sourceLanguage;
 
