@@ -28,9 +28,13 @@ use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use PhpParser\Comment\Doc;
+use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 use Psr\Log\LoggerInterface;
 
-class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class FormExtractor implements FileVisitorInterface, NodeVisitor
 {
     private $docParser;
     private $traverser;
@@ -44,19 +48,19 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
     {
         $this->docParser = $docParser;
 
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
-        if ($node instanceof \PHPParser_Node_Stmt_Class) {
+        if ($node instanceof Node\Stmt\Class_) {
             $this->defaultDomain = null;
             $this->defaultDomainMessages = array();
         }
 
-        if ($node instanceof \PHPParser_Node_Expr_MethodCall) {
+        if ($node instanceof Node\Expr\MethodCall) {
             if (!is_string($node->name)) {
                 return;
             }
@@ -68,16 +72,16 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
             }
         }
 
-         if ($node instanceof \PHPParser_Node_Expr_Array) {
+         if ($node instanceof Node\Expr\Array_) {
             // first check if a translation_domain is set for this field
             $domain = null;
             foreach ($node->items as $item) {
-                if (!$item->key instanceof \PHPParser_Node_Scalar_String) {
+                if (!$item->key instanceof Node\Scalar\String_) {
                     continue;
                 }
 
                 if ('translation_domain' === $item->key->value) {
-                    if (!$item->value instanceof \PHPParser_Node_Scalar_String) {
+                    if (!$item->value instanceof Node\Scalar\String_) {
                         continue;
                     }
 
@@ -87,22 +91,22 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
             // look for options containing a message
             foreach ($node->items as $item) {
-                if (!$item->key instanceof \PHPParser_Node_Scalar_String) {
+                if (!$item->key instanceof Node\Scalar\String_) {
                     continue;
                 }
 
-                if ('empty_value' === $item->key->value && $item->value instanceof \PHPParser_Node_Expr_ConstFetch
-                    && $item->value->name instanceof \PHPParser_Node_Name && 'false' === $item->value->name->parts[0]) {
+                if ('empty_value' === $item->key->value && $item->value instanceof Node\Expr\ConstFetch
+                    && $item->value->name instanceof Node\Name && 'false' === $item->value->name->parts[0]) {
                 	continue;
                 }
-                if ('empty_value' === $item->key->value && $item->value instanceof \PHPParser_Node_Expr_Array) {
+                if ('empty_value' === $item->key->value && $item->value instanceof Node\Expr\Array_) {
                     foreach ($item->value->items as $sitem) {
                         $this->parseItem($sitem, $domain);
                     }
                     continue;
                 }
 
-                if ('choices' === $item->key->value && !$item->value instanceof \PHPParser_Node_Expr_Array) {
+                if ('choices' === $item->key->value && !$item->value instanceof Node\Expr\Array_) {
                     continue;
                 }
 
@@ -132,7 +136,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
     }
 
-    private function parseDefaultsCall($name, \PHPParser_Node $node)
+    private function parseDefaultsCall($name, Node $node)
     {
         static $returningMethods = array(
             'setdefaults' => true, 'replacedefaults' => true, 'setoptional' => true, 'setrequired' => true,
@@ -141,7 +145,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         );
 
         $var = $node->var;
-        while ($var instanceof \PHPParser_Node_Expr_MethodCall) {
+        while ($var instanceof Node\Expr\MethodCall) {
             if (!isset($returningMethods[strtolower($var->name)])) {
                 return;
             }
@@ -150,7 +154,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
 
 
-        if (!$var instanceof \PHPParser_Node_Expr_Variable) {
+        if (!$var instanceof Node\Expr\Variable) {
             return;
         }
 
@@ -160,19 +164,19 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
 
         // ignore everything except an array
-        if (!$node->args[0]->value instanceof \PHPParser_Node_Expr_Array) {
+        if (!$node->args[0]->value instanceof Node\Expr\Array_) {
             return;
         }
 
         // check if a translation_domain is set as a default option
         $domain = null;
         foreach ($node->args[0]->value->items as $item) {
-            if (!$item->key instanceof \PHPParser_Node_Scalar_String) {
+            if (!$item->key instanceof Node\Scalar\String_) {
                 continue;
             }
 
             if ('translation_domain' === $item->key->value) {
-                if (!$item->value instanceof \PHPParser_Node_Scalar_String) {
+                if (!$item->value instanceof Node\Scalar\String_) {
                     continue;
                 }
 
@@ -199,7 +203,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         $docComment = is_object($docComment) ? $docComment->getText() : null;
 
         if ($docComment) {
-            if ($docComment instanceof \PhpParser\Comment\Doc) {
+            if ($docComment instanceof Doc) {
                 $docComment = $docComment->getText();
             }
             foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
@@ -214,9 +218,9 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
 
         // check if the value is explicitly set to false => e.g. for FormField that should be rendered without label
-        $ignore = $ignore || !$item->value instanceof PhpParser\Node\Scalar\String_ || $item->value->value == false;
+        $ignore = $ignore || !$item->value instanceof Node\Scalar\String_ || $item->value->value == false;
 
-        if (!$item->value instanceof \PHPParser_Node_Scalar_String && !$item->value instanceof \PHPParser_Node_Scalar_LNumber) {
+        if (!$item->value instanceof Node\Scalar\String_ && !$item->value instanceof Node\Scalar\LNumber) {
             if ($ignore) {
                 return;
             }
@@ -280,7 +284,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
     }
 
-    public function leaveNode(\PHPParser_Node $node) { }
+    public function leaveNode(Node $node) { }
 
     public function beforeTraverse(array $nodes) { }
     public function afterTraverse(array $nodes) { }

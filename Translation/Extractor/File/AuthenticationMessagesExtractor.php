@@ -28,9 +28,12 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 use Psr\Log\LoggerInterface;
 
-class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, \PHPParser_NodeVisitor
+class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
     private $domain = 'authentication';
     private $traverser;
@@ -45,7 +48,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
     public function __construct(DocParser $parser)
     {
         $this->docParser = $parser;
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
@@ -59,15 +62,15 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $this->domain = $domain;
     }
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
-        if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
+        if ($node instanceof Node\Stmt\Namespace_) {
             $this->namespace = implode('\\', $node->name->parts);
 
             return;
         }
 
-        if ($node instanceof \PHPParser_Node_Stmt_Class) {
+        if ($node instanceof Node\Stmt\Class_) {
             $name = '' === $this->namespace ? $node->name : $this->namespace.'\\'.$node->name;
 
             if (!class_exists($name)) {
@@ -92,7 +95,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
             return;
         }
 
-        if ($node instanceof \PHPParser_Node_Stmt_ClassMethod) {
+        if ($node instanceof Node\Stmt\ClassMethod) {
             if ('getmessagekey' === strtolower($node->name)) {
                 $this->inGetMessageKey = true;
             }
@@ -104,7 +107,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
             return;
         }
 
-        if (!$node instanceof \PHPParser_Node_Stmt_Return) {
+        if (!$node instanceof Node\Stmt\Return_) {
             return;
         }
 
@@ -122,7 +125,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
             }
         }
 
-        if (!$node->expr instanceof \PHPParser_Node_Scalar_String) {
+        if (!$node->expr instanceof Node\Scalar\String_) {
             if ($ignore) {
                 return;
             }
@@ -154,15 +157,15 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $this->traverser->traverse($ast);
     }
 
-    public function leaveNode(\PHPParser_Node $node)
+    public function leaveNode(Node $node)
     {
-        if ($node instanceof \PHPParser_Node_Stmt_Class) {
+        if ($node instanceof Node\Stmt\Class_) {
             $this->inAuthException = false;
 
             return;
         }
 
-        if ($node instanceof \PHPParser_Node_Stmt_ClassMethod) {
+        if ($node instanceof Node\Stmt\ClassMethod) {
             $this->inGetMessageKey = false;
 
             return;

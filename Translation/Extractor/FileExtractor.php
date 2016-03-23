@@ -21,6 +21,9 @@ namespace JMS\TranslationBundle\Translation\Extractor;
 use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
+use PhpParser\Error;
+use PhpParser\Lexer;
+use PhpParser\ParserFactory;
 use Psr\Log\LoggerInterface;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 
@@ -53,8 +56,13 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->twig = $twig;
         $this->logger = $logger;
         $this->visitors = $visitors;
-        $lexer = new \PHPParser_Lexer();
-        $this->phpParser = new \PHPParser_Parser($lexer);
+        $lexer = new Lexer();
+        if(class_exists('PhpParser\ParserFactory')) {
+            $factory = new ParserFactory();
+            $this->phpParser = $factory->create(ParserFactory::PREFER_PHP7,$lexer);
+        } else {
+            $this->phpParser = new \PHPParser_Parser($lexer);
+        }
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
             if ($visitor instanceof RemovingNodeVisitor) {
@@ -149,7 +157,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
                     if ('php' === $extension) {
                         try {
                             $ast = $this->phpParser->parse(file_get_contents($file));
-                        } catch (\PHPParser_Error $ex) {
+                        } catch (Error $ex) {
                             throw new \RuntimeException(sprintf('Could not parse "%s": %s', $file, $ex->getMessage()), $ex->getCode(), $ex);
                         }
 
