@@ -106,9 +106,13 @@ class TranslationExtension extends \Twig_Extension
     private function transchoiceWithDefaultLegacy($message, $defaultMessage, $count, array $arguments, $domain, $locale)
     {
         try {
-            return $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
-        } catch (\InvalidArgumentException $e) {
-            return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
-        }
+            $translatedMessage = $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+
+            if ($translatedMessage !== $message) {
+                return $translatedMessage;
+            }
+        } catch (\InvalidArgumentException $e) {}
+        
+        return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
     }
 }
