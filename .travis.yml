@@ -15,7 +15,10 @@ php:
   - hhvm
 
 env:
-    - SYMFONY_VERSION=2.8.* TEST_COMMAND="phpunit"
+    global:
+        - TEST_COMMAND="phpunit"
+    matrix:
+        - SYMFONY_VERSION=2.8.*
 
 matrix:
     fast_finish: true
@@ -24,6 +27,8 @@ matrix:
         - env: SYMFONY_VERSION=3.0.*
 
     include:
+        - php: 5.3
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_VERSION=2.1.* COVERAGE=true TEST_COMMAND="phpunit --coverage-text --coverage-clover=build/coverage.xml"
         - php: 5.6
           env: SYMFONY_VERSION=2.1.*
         - php: 5.6
@@ -40,8 +45,6 @@ matrix:
           env: SYMFONY_VERSION=2.7.*
         - php: 5.6
           env: SYMFONY_VERSION=3.0.*
-        - php: 5.3
-          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" COVERAGE=true TEST_COMMAND="phpunit --coverage-text --coverage-clover=build/coverage.xml" SYMFONY_VERSION=2.3.*
 
 before_install:
     - travis_retry composer self-update
