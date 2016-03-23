@@ -24,6 +24,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Translation\MessageCatalogue;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Translate Controller.
@@ -32,9 +33,6 @@ use Symfony\Component\Translation\MessageCatalogue;
  */
 class TranslateController
 {
-    /** @DI\Inject */
-    private $request;
-
     /** @DI\Inject("jms_translation.config_factory") */
     private $configFactory;
 
@@ -47,12 +45,13 @@ class TranslateController
     /**
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
      * @Template
+     * @param Request $request
      * @return array
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $configs = $this->configFactory->getNames();
-        $config = $this->request->query->get('config') ?: reset($configs);
+        $config = $request->query->get('config') ?: reset($configs);
         if (!$config) {
             throw new RuntimeException('You need to configure at least one config under "jms_translation.configs".');
         }
@@ -64,7 +63,7 @@ class TranslateController
         }
 
         $domains = array_keys($files);
-        if ((!$domain = $this->request->query->get('domain')) || !isset($files[$domain])) {
+        if ((!$domain = $request->query->get('domain')) || !isset($files[$domain])) {
             $domain = reset($domains);
         }
 
@@ -72,7 +71,7 @@ class TranslateController
         
         natsort($locales);
         
-        if ((!$locale = $this->request->query->get('locale')) || !isset($files[$domain][$locale])) {
+        if ((!$locale = $request->query->get('locale')) || !isset($files[$domain][$locale])) {
             $locale = reset($locales);
         }
 
