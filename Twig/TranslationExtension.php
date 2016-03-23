@@ -64,8 +64,19 @@ class TranslationExtension extends \Twig_Extension
             $domain = 'messages';
         }
 
+        // If < sf2.6
+        if (!method_exists($this->translator, 'getCatalogue')) {
+            return $this->transchoiceWithDefaultLegacy($message, $defaultMessage, $count, $arguments, $domain, $locale);
+        }
+
         if (false == $this->translator->getCatalogue($locale)->defines($message, $domain)) {
-            return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+            return $this->translator->transChoice(
+                $defaultMessage,
+                $count,
+                array_merge(array('%count%' => $count), $arguments),
+                $domain,
+                $locale
+            );
         }
 
         return $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
@@ -84,5 +95,38 @@ class TranslationExtension extends \Twig_Extension
     public function getName()
     {
         return 'jms_translation';
+    }
+
+    /**
+     * This function exists to support Symfony 2.3
+     *
+     * @param string $message
+     * @param string $defaultMessage
+     * @param int $count
+     * @param array $arguments
+     * @param string $domain
+     * @param string $locale
+     *
+     * @return string
+     */
+    private function transchoiceWithDefaultLegacy($message, $defaultMessage, $count, array $arguments, $domain, $locale)
+    {
+        try {
+            return $this->translator->transChoice(
+                $message,
+                $count,
+                array_merge(array('%count%' => $count), $arguments),
+                $domain,
+                $locale
+            );
+        } catch (\InvalidArgumentException $e) {
+            return $this->translator->transChoice(
+                $defaultMessage,
+                $count,
+                array_merge(array('%count%' => $count), $arguments),
+                $domain,
+                $locale
+            );
+        }
     }
 }
