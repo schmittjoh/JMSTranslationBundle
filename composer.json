@@ -13,9 +13,10 @@
     ],
     "minimum-stability": "stable",
     "require": {
+        "php": "^5.3.3|^7.0",
         "symfony/framework-bundle": "~2.1|~3.0",
         "nikic/php-parser": "~1.4.1",
-        "symfony/console": "*"
+        "symfony/console": "~2.1|~3.0"
     },
     "conflict": {
         "twig/twig": "<1.12"
