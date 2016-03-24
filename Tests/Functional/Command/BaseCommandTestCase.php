@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-namespace JMS\TranslationBundle\Tests\Functional;
+namespace JMS\TranslationBundle\Tests\Functional\Command;
 
+use JMS\TranslationBundle\Tests\Functional\BaseTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 abstract class BaseCommandTestCase extends BaseTestCase

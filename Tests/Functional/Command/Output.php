@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\TranslationBundle\Tests\Functional;
+namespace JMS\TranslationBundle\Tests\Functional\Command;
 
 use Symfony\Component\Console\Output\Output as AbstractOutput;
 

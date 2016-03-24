@@ -17,7 +17,18 @@
             <directory>./Tests</directory>
         </testsuite>
     </testsuites>
-    
+
+    <filter>
+        <whitelist>
+            <directory>./</directory>
+            <exclude>
+                <directory>./Resources</directory>
+                <directory>./Tests</directory>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
     <groups>
         <exclude>
             <group>performance</group>

@@ -22,11 +22,13 @@
         "twig/twig": "<1.12"
     },
     "require-dev": {
+        "psr/log": "^1.0",
         "twig/twig": "^1.12",
         "symfony/symfony": "^2.3|^3.0",
         "symfony/expression-language": "~2.6|~3.0",
         "sensio/framework-extra-bundle": "^2.3|^3.0",
-        "jms/di-extra-bundle": "^1.1"
+        "jms/di-extra-bundle": "^1.1",
+        "matthiasnoback/symfony-dependency-injection-test": "^0.7.6"
     },
     "autoload": {
         "psr-0": { "JMS\\TranslationBundle": "" }

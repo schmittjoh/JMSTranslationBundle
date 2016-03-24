@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\TranslationBundle\Tests\Functional;
+namespace JMS\TranslationBundle\Tests\Functional\Command;
 
 use JMS\TranslationBundle\Command\ExtractTranslationCommand;
 use JMS\TranslationBundle\Util\FileUtils;
@@ -31,7 +31,7 @@ class ExtractCommandTest extends BaseCommandTestCase
             'app/console',
             'translation:extract',
             'en',
-            '--dir='.($inputDir = __DIR__.'/../Translation/Extractor/Fixture/SimpleTest'),
+            '--dir='.($inputDir = __DIR__.'/../../Translation/Extractor/Fixture/SimpleTest'),
             '--output-dir='.($outputDir = sys_get_temp_dir().'/'.uniqid('extract'))
         ));
 
@@ -65,7 +65,7 @@ class ExtractCommandTest extends BaseCommandTestCase
             'app/console',
             'translation:extract',
             'en',
-            '--dir='.($inputDir = __DIR__.'/../Translation/Extractor/Fixture/SimpleTest'),
+            '--dir='.($inputDir = __DIR__.'/../../Translation/Extractor/Fixture/SimpleTest'),
             '--output-dir='.($outputDir = sys_get_temp_dir().'/'.uniqid('extract')),
             '--dry-run',
             '--verbose'
