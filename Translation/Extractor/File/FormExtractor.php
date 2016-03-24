@@ -36,6 +36,10 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
     private $traverser;
     private $file;
     private $catalogue;
+
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
     private $defaultDomain;
     private $defaultDomainMessages;
@@ -223,7 +227,7 @@ class FormExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 
             $message = sprintf('Unable to extract translation id for form label/title/placeholder from non-string values, but got "%s" in %s on line %d. Please refactor your code to pass a string, or add "/** @Ignore */".', get_class($item->value), $this->file, $item->value->getLine());
             if ($this->logger) {
-                $this->logger->err($message);
+                $this->logger->error($message);
 
                 return;
             }
