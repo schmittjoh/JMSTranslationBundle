@@ -24,7 +24,7 @@ use Symfony\Component\Yaml\Inline;
 
 class YamlDumper extends ArrayStructureDumper
 {
-    private $writer;
+    protected $writer;
 
     public function __construct()
     {
@@ -39,7 +39,7 @@ class YamlDumper extends ArrayStructureDumper
         return $this->writer->getContent();
     }
 
-    private function dumpStructureRecursively(array $structure)
+    protected function dumpStructureRecursively(array $structure)
     {
         $isFirst = true;
         $precededByMessage = false;
