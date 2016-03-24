@@ -23,6 +23,9 @@ use JMS\TranslationBundle\Model\Message;
 
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 
 /**
  * Extracts translations from designated translation containers.
@@ -32,7 +35,7 @@ use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
 {
     private $traverser;
     private $file;
@@ -42,26 +45,26 @@ class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_
 
     public function __construct()
     {
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
-        if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
+        if ($node instanceof Node\Stmt\Namespace_) {
             $this->namespace = implode('\\', $node->name->parts);
             $this->useStatements = array();
 
             return;
         }
 
-        if ($node instanceof \PHPParser_Node_Stmt_UseUse) {
+        if ($node instanceof Node\Stmt\UseUse) {
             $this->useStatements[$node->alias] = implode('\\', $node->name->parts);
 
             return;
         }
 
-        if (!$node instanceof \PHPParser_Node_Stmt_Class) {
+        if (!$node instanceof Node\Stmt\Class_) {
             return;
         }
 
@@ -104,7 +107,7 @@ class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_
     }
 
     public function beforeTraverse(array $nodes) { }
-    public function leaveNode(\PHPParser_Node $node) { }
+    public function leaveNode(Node $node) { }
     public function afterTraverse(array $nodes) { }
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }

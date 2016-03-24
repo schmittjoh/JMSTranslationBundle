@@ -21,6 +21,8 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Doctrine\Common\Annotations\AnnotationReader;
 
+use PhpParser\Lexer;
+use PhpParser\ParserFactory;
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
 
 use Symfony\Component\Validator\Mapping\ClassMetadataFactory;
@@ -64,8 +66,14 @@ class ValidationExtractorTest extends \PHPUnit_Framework_TestCase
             $extractor = new ValidationExtractor($factory);
         }
 
-        $lexer = new \PHPParser_Lexer();
-        $parser = new \PHPParser_Parser($lexer);
+        $lexer = new Lexer();
+        if(class_exists('PhpParser\ParserFactory')) {
+            $factory = new ParserFactory();
+            $parser = $factory->create(ParserFactory::PREFER_PHP7,$lexer);
+        } else {
+            $parser = new \PHPParser_Parser($lexer);
+        }
+
         $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();

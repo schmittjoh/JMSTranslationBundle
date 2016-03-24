@@ -3,6 +3,7 @@
 
 ### 1.2.1 to next release
 
+* Support nikic/php-parser 1.4.x and 2.0.x
 
 ### 1.2.0 to 1.2.1
 

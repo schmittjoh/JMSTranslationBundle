@@ -18,6 +18,9 @@
 
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
+use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 use Symfony\Component\Validator\Mapping\ClassMetadataFactoryInterface;
 use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
 use Symfony\Component\Validator\MetadataFactoryInterface as LegacyMetadataFactoryInterface;
@@ -30,7 +33,7 @@ use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class ValidationExtractor implements FileVisitorInterface, NodeVisitor
 {
     private $metadataFactory;
     private $traverser;
@@ -49,19 +52,19 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
         }
         $this->metadataFactory = $metadataFactory;
 
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
-        if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
+        if ($node instanceof Node\Stmt\Namespace_) {
             $this->namespace = implode('\\', $node->name->parts);
 
             return;
         }
 
-        if (!$node instanceof \PHPParser_Node_Stmt_Class) {
+        if (!$node instanceof Node\Stmt\Class_) {
             return;
         }
 
@@ -93,7 +96,7 @@ class ValidationExtractor implements FileVisitorInterface, \PHPParser_NodeVisito
     }
 
     public function beforeTraverse(array $nodes) { }
-    public function leaveNode(\PHPParser_Node $node) { }
+    public function leaveNode(Node $node) { }
     public function afterTraverse(array $nodes) { }
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
