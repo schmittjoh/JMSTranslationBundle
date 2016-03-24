@@ -43,6 +43,10 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     private $catalogue;
     private $file;
     private $docParser;
+
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
     private $previousNode;
 
@@ -97,7 +101,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
             $message = sprintf('Can only extract the translation id from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
 
             if ($this->logger) {
-                $this->logger->err($message);
+                $this->logger->error($message);
                 return;
             }
 
@@ -116,7 +120,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
                 $message = sprintf('Can only extract the translation domain from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
 
                 if ($this->logger) {
-                    $this->logger->err($message);
+                    $this->logger->error($message);
                     return;
                 }
 

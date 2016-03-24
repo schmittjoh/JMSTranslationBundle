@@ -40,6 +40,10 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
     private $docParser;
     private $inAuthException = false;
     private $inGetMessageKey = false;
+
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
     public function __construct(DocParser $parser)
@@ -129,7 +133,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
 
             $message = sprintf('Could not extract id from return value, expected scalar string but got %s (in %s on line %d).', get_class($node->expr), $this->file, $node->expr->getLine());
             if ($this->logger) {
-                $this->logger->err($message);
+                $this->logger->error($message);
 
                 return;
             }
