@@ -45,7 +45,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
     private $traverser;
 
     /**
-     * @var array|\Twig_Node
+     * @var \Twig_Node[]
      */
     private $stack = array();
 
@@ -110,13 +110,15 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
                 $message->addSource(new FileSource((string) $this->file, $node->getLine()));
 
                 for ($i=count($this->stack)-2; $i>=0; $i-=1) {
-                    if (!$this->stack[$i] instanceof \Twig_Node_Expression_Filter) {
+                    $currentNode = $this->stack[$i];
+
+                    if (!$currentNode instanceof \Twig_Node_Expression_Filter) {
                         break;
                     }
 
-                    $name = $this->stack[$i]->getNode('filter')->getAttribute('value');
+                    $name = $currentNode->getNode('filter')->getAttribute('value');
                     if ('desc' === $name || 'meaning' === $name) {
-                        $arguments = $this->stack[$i]->getNode('arguments');
+                        $arguments = $currentNode->getNode('arguments');
                         if (!$arguments->hasNode(0)) {
                             throw new RuntimeException(sprintf('The "%s" filter requires exactly one argument, the description text.', $name));
                         }
@@ -208,6 +210,11 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
     {
     }
 
+    /**
+     * Inject a Logger
+     *
+     * @param LoggerInterface $logger
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -216,6 +223,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
     /**
      * @param \Twig_Node $node
      * @return bool
+     * @throws RuntimeException
      */
     private function checkNodeIsConstant(\Twig_Node $node)
     {
