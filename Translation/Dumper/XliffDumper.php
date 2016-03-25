@@ -35,11 +35,15 @@ class XliffDumper implements DumperInterface
     private $sourceLanguage = 'en';
     private $addDate = true;
     
-    /** @var boolean $addFileRefs */
+    /**
+     * @var boolean
+     */
     private $addFileRefs = true;
     
-    /** @var array $privateAttributes */
-    private $privateAttributes = ['id', 'resname', 'extradata'];
+    /**
+     * @var array
+     */
+    private $privateAttributes = array('id', 'resname', 'extradata');
 
     /**
      * @param $bool
