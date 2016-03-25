@@ -34,4 +34,17 @@
             <group>performance</group>
         </exclude>
     </groups>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="false">
+            <directory suffix=".php">*</directory>
+            <exclude>
+                <directory>build</directory>
+                <directory>Resources</directory>
+                <directory>Tests</directory>
+                <directory>vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
 </phpunit>
