@@ -25,6 +25,8 @@ use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use PhpParser\Lexer;
+use PhpParser\ParserFactory;
 
 class FormExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -244,8 +246,14 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         }
         $file = new \SplFileInfo($file);
 
-        $lexer = new \PHPParser_Lexer();
-        $parser = new \PHPParser_Parser($lexer);
+        $lexer = new Lexer();
+        if(class_exists('PhpParser\ParserFactory')) {
+            $factory = new ParserFactory();
+            $parser = $factory->create(ParserFactory::PREFER_PHP7,$lexer);
+        } else {
+            $parser = new \PHPParser_Parser($lexer);
+        }
+
         $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();

@@ -20,6 +20,7 @@ namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 
 /**
  * Writes translation files.
@@ -32,6 +33,9 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class FileWriter
 {
+    /**
+     * @var array
+     */
     private $dumpers;
 
     /**
@@ -43,11 +47,15 @@ class FileWriter
     }
 
     /**
-     * @param \JMS\TranslationBundle\Model\MessageCatalogue $domain
-     * @param $filePath
-     * @param $format
+     * Writes a message catalogue to file
+     *
+     * @param MessageCatalogue $catalogue
+     * @param string $domain
+     * @param string $filePath
+     * @param string $format
      * @param array $outputOptions
-     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     *
+     * @throws InvalidArgumentException
      */
     public function write(MessageCatalogue $catalogue, $domain, $filePath, $format, $outputOptions)
     {
@@ -62,7 +70,7 @@ class FileWriter
         
         $dumper = $this->dumpers[$format];
         
-        if ($dumper instanceof \JMS\TranslationBundle\Translation\Dumper\XliffDumper) {
+        if ($dumper instanceof XliffDumper) {
             if (isset($outputOptions['add_date'])) {
                 $dumper->setAddDate($outputOptions['add_date']);
             }

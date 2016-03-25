@@ -1,0 +1,19 @@
+
+| Q             | A
+| ------------- | ---
+| Bug fix?      | no
+| New feature?  | no
+| BC breaks?    | no
+| Deprecations? | no
+| Tests pass?   | no
+| Fixed tickets | 
+| License       | MIT
+
+
+## Description
+A few sentences describing the overall goals of the pull request's commits.
+
+## Todos
+- [ ] Tests
+- [ ] Documentation
+- [ ] Changelog

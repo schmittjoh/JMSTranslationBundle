@@ -24,7 +24,7 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
 
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Translation\MessageCatalogue as SymfonyMessageCatalogue;
 use Symfony\Component\Finder\Finder;
 use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
@@ -56,7 +56,7 @@ class Updater
     /**
      * @param LoaderManager $loader
      * @param ExtractorManager $extractor
-     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      * @param FileWriter $writer
      */
     public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer)
@@ -68,7 +68,7 @@ class Updater
     }
 
     /**
-     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger)
     {
