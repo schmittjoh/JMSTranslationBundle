@@ -32,12 +32,16 @@ final class ConfigBuilder
     private $enabledExtractors = array();
     private $keepOldTranslations = false;
     private $loadResources = array();
-    private $outputOptions = [
-        'xlf' => [
+
+    /**
+     * @var array
+     */
+    private $outputOptions = array(
+        'xlf' => array(
             'add_date' => true,
             'add_filerefs' => true
-        ]
-    ];
+        )
+    );
 
     /**
      * @static
