@@ -48,7 +48,7 @@ class FileWriterTest extends \PHPUnit_Framework_TestCase
 
         $path = tempnam(sys_get_temp_dir(), 'filewriter');
         
-        $writer->write($catalogue, 'messages', $path, 'test', []);
+        $writer->write($catalogue, 'messages', $path, 'test', array());
         @unlink($path);
     }
 }
