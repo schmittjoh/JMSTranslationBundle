@@ -18,6 +18,7 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
+use Prophecy\Argument;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 use Symfony\Bridge\Twig\Form\TwigRenderer;
 use Symfony\Component\Routing\RequestContext;
@@ -35,12 +36,20 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Twig\TranslationExtension;
 use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 
 class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \Twig_Environment
+     */
+    private $env;
+
+    protected function setUp()
+    {
+        $this->env = $this->createTwigEnvironment();
+    }
+
     public function testExtractSimpleTemplate()
     {
         $expected = new MessageCatalogue();
@@ -136,12 +145,47 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->extract('embedded_template.html.twig'));
     }
 
+    public function testSimpleTemplateWithExpressions()
+    {
+        $logger = $this->prophesize('Psr\Log\LoggerInterface');
+        $logger->error(Argument::any(), Argument::any())
+            ->shouldBeCalledTimes(3);
+
+        $extractor = new TwigFileExtractor($this->env);
+        $extractor->setLogger($logger->reveal());
+
+        $this->extract('simple_template_with_expressions.html.twig', $extractor);
+    }
+
+    public function testSimpleTemplateWithExpressionsWithoutLogger()
+    {
+        $this->setExpectedException('JMS\TranslationBundle\Exception\RuntimeException');
+        $this->extract('simple_template_with_expressions.html.twig');
+    }
+
     private function extract($file, TwigFileExtractor $extractor = null)
     {
         if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
             throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
         }
 
+        if (null === $extractor) {
+            $extractor = new TwigFileExtractor($this->env);
+        }
+
+        $ast = $this->env->parse($this->env->tokenize(file_get_contents($file), $file));
+
+        $catalogue = new MessageCatalogue();
+        $extractor->visitTwigFile(new \SplFileInfo($file), $catalogue, $ast);
+
+        return $catalogue;
+    }
+
+    /**
+     * @return \Twig_Environment
+     */
+    private function createTwigEnvironment()
+    {
         $env = new \Twig_Environment();
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new TranslationExtension($translator, true));
@@ -157,15 +201,6 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
             }
         }
 
-        if (null === $extractor) {
-            $extractor = new TwigFileExtractor($env);
-        }
-
-        $ast = $env->parse($env->tokenize(file_get_contents($file), $file));
-
-        $catalogue = new MessageCatalogue();
-        $extractor->visitTwigFile(new \SplFileInfo($file), $catalogue, $ast);
-
-        return $catalogue;
+        return $env;
     }
 }
