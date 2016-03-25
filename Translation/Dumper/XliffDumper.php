@@ -204,11 +204,12 @@ class XliffDumper implements DumperInterface
      * Extracts custom attributes from an existing xlf file
      *
      * @param string $filePath
+     *
      * @return array
      */
     public function extractCustomAttributes($filePath)
     {
-        $result = [];
+        $result = array();
         
         if ($filePath && file_exists($filePath)) {
             $contents = file_get_contents($filePath);
@@ -218,7 +219,7 @@ class XliffDumper implements DumperInterface
                     $transUnitAttribs = $transUnit->attributes();
                     if (isset($transUnitAttribs['id'])) {
                         $id = (string) $transUnitAttribs['id'];
-                        $attribs = [];
+                        $attribs = array();
                         foreach ($transUnitAttribs as $attribKey => $attribValue) {
                             if (!in_array($attribKey, $this->privateAttributes)) {
                                 $attribs[$attribKey] = (string) $attribValue;
