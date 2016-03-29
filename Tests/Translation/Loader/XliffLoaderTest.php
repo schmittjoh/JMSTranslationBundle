@@ -18,7 +18,7 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Loader;
 
-use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Model\Message\XliffMessage;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
@@ -46,13 +46,13 @@ class XliffLoaderTest extends \PHPUnit_Framework_TestCase
 
         $expected = new MessageCatalogue();
         $expected->setLocale('en');
-        $expected->add(Message::create('foo1')
+        $expected->add(XliffMessage::create('foo1')
             ->setDesc('foo1')->setLocaleString('bar')->setNew(false));
-        $expected->add(Message::create('foo2')
+        $expected->add(XliffMessage::create('foo2')
             ->setDesc('foo2')->setLocaleString('bar')->setNew(false));
-        $expected->add(Message::create('foo3')
+        $expected->add(XliffMessage::create('foo3')
             ->setDesc('foo3')->setLocaleString('bar')->setNew(false));
-        $expected->add(Message::create('foo4')
+        $expected->add(XliffMessage::create('foo4')
             ->setDesc('foo4')->setLocaleString('bar')->setNew(false));
 
         $this->assertEquals(

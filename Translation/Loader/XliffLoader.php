@@ -21,7 +21,7 @@ namespace JMS\TranslationBundle\Translation\Loader;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\FileSource;
-use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Model\Message\XliffMessage as Message;
 
 class XliffLoader implements LoaderInterface
 {
@@ -52,6 +52,23 @@ class XliffLoader implements LoaderInterface
                     ->setDesc((string) $trans->source)
                     ->setLocaleString((string) $trans->target)
             ;
+
+            $m->setApproved($trans['approved']=='yes');
+
+            if (isset($trans->target['state'])) {
+                $m->setState($trans->target['state']);
+            }
+
+            if (isset($trans->note)) {
+                if (count($trans->note) > 1) {
+                    foreach ($trans->note as $note) {
+                        $m->addNote((string) $note, isset($note['from']) ? ((string) $note['from']) : null);
+                    }
+                } else {
+                    $m->addNote((string) $trans->note, isset($trans->note['from']) ? ((string) $trans->note['from']) : null);
+                }
+            }
+
             $catalogue->add($m);
 
             if ($hasReferenceFiles) {
