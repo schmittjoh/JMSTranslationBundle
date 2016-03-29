@@ -23,13 +23,23 @@ use JMS\TranslationBundle\Util\Writer;
 
 class PhpDumper extends ArrayStructureDumper
 {
+    /**
+     * @var Writer
+     */
     private $writer;
 
+    /**
+     * PhpDumper constructor.
+     */
     public function __construct()
     {
         $this->writer = new Writer();
     }
 
+    /**
+     * @param array $structure
+     * @return string
+     */
     protected function dumpStructure(array $structure)
     {
         $this->writer
@@ -44,6 +54,9 @@ class PhpDumper extends ArrayStructureDumper
         return $this->writer->outdent()->writeln(');')->getContent();
     }
 
+    /**
+     * @param array $structure
+     */
     private function dumpStructureRecursively(array $structure)
     {
         $isFirst = true;
@@ -63,7 +76,7 @@ class PhpDumper extends ArrayStructureDumper
                 if ($meaning) {
                     $this->writer->writeln('// Meaning: '.$meaning);
                 }
-            } else if (!$isFirst) {
+            } elseif (!$isFirst) {
                 $this->writer->write("\n");
             }
 

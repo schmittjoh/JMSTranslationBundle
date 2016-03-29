@@ -19,16 +19,14 @@
 namespace JMS\TranslationBundle\Translation\Extractor;
 
 use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
-
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use PhpParser\Error;
 use PhpParser\Lexer;
+use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Psr\Log\LoggerInterface;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
-
 use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
-
 use JMS\TranslationBundle\Translation\ExtractorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Finder\Finder;
@@ -40,28 +38,73 @@ use Symfony\Component\Finder\Finder;
  */
 class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 {
+    /**
+     * @var \Twig_Environment
+     */
     private $twig;
+
+    /**
+     * @var array
+     */
     private $visitors;
+
+    /**
+     * @var Parser
+     */
     private $phpParser;
+
+    /**
+     * @var array
+     */
     private $pattern;
+
+    /**
+     * @var string
+     */
     private $directory;
+
+    /**
+     * @var RemovingNodeVisitor|\Twig_NodeVisitorInterface
+     */
     private $removingTwigVisitor;
+
+    /**
+     * @var DefaultApplyingNodeVisitor|RemovingNodeVisitor|\Twig_NodeVisitorInterface
+     */
     private $defaultApplyingTwigVisitor;
+
+    /**
+     * @var array
+     */
     private $excludedNames = array();
+
+    /**
+     * @var array
+     */
     private $excludedDirs = array();
+
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
+    /**
+     * FileExtractor constructor.
+     * @param \Twig_Environment $twig
+     * @param LoggerInterface $logger
+     * @param array $visitors
+     */
     public function __construct(\Twig_Environment $twig, LoggerInterface $logger, array $visitors)
     {
         $this->twig = $twig;
         $this->logger = $logger;
         $this->visitors = $visitors;
         $lexer = new Lexer();
-        if(class_exists('PhpParser\ParserFactory')) {
+        if (class_exists('PhpParser\ParserFactory')) {
             $factory = new ParserFactory();
-            $this->phpParser = $factory->create(ParserFactory::PREFER_PHP7,$lexer);
+            $this->phpParser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
         } else {
-            $this->phpParser = new \PHPParser_Parser($lexer);
+            $this->phpParser = new Parser($lexer);
         }
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
@@ -80,6 +123,9 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->excludedDirs  = array();
     }
 
+    /**
+     * @param LoggerInterface $logger
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -93,6 +139,9 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         }
     }
 
+    /**
+     * @param $directory
+     */
     public function setDirectory($directory)
     {
         if (!is_dir($directory)) {
@@ -102,21 +151,34 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->directory = $directory;
     }
 
+    /**
+     * @param array $dirs
+     */
     public function setExcludedDirs(array $dirs)
     {
         $this->excludedDirs = $dirs;
     }
 
+    /**
+     * @param array $names
+     */
     public function setExcludedNames(array $names)
     {
         $this->excludedNames = $names;
     }
 
+    /**
+     * @param array $pattern
+     */
     public function setPattern(array $pattern)
     {
         $this->pattern = $pattern;
     }
 
+    /**
+     * @return MessageCatalogue
+     * @throws \Exception
+     */
     public function extract()
     {
         if (!empty($this->removingTwigVisitor)) {
@@ -163,7 +225,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 
                         $visitingMethod = 'visitPhpFile';
                         $visitingArgs[] = $ast;
-                    } else if ('twig' === $extension) {
+                    } elseif ('twig' === $extension) {
                         $visitingMethod = 'visitTwigFile';
                         $visitingArgs[] = $this->twig->parse($this->twig->tokenize(file_get_contents($file), (string) $file));
                     }
@@ -193,5 +255,85 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 
             throw $ex;
         }
+    }
+
+    /**
+     * @return \Twig_Environment
+     */
+    public function getTwig()
+    {
+        return $this->twig;
+    }
+
+    /**
+     * @param \Twig_Environment $twig
+     */
+    public function setTwig($twig)
+    {
+        $this->twig = $twig;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVisitors()
+    {
+        return $this->visitors;
+    }
+
+    /**
+     * @param array $visitors
+     */
+    public function setVisitors($visitors)
+    {
+        $this->visitors = $visitors;
+    }
+
+    /**
+     * @return Parser
+     */
+    public function getPhpParser()
+    {
+        return $this->phpParser;
+    }
+
+    /**
+     * @param Parser $phpParser
+     */
+    public function setPhpParser($phpParser)
+    {
+        $this->phpParser = $phpParser;
+    }
+
+    /**
+     * @return RemovingNodeVisitor|\Twig_NodeVisitorInterface
+     */
+    public function getRemovingTwigVisitor()
+    {
+        return $this->removingTwigVisitor;
+    }
+
+    /**
+     * @param RemovingNodeVisitor|\Twig_NodeVisitorInterface $removingTwigVisitor
+     */
+    public function setRemovingTwigVisitor($removingTwigVisitor)
+    {
+        $this->removingTwigVisitor = $removingTwigVisitor;
+    }
+
+    /**
+     * @return DefaultApplyingNodeVisitor|RemovingNodeVisitor|\Twig_NodeVisitorInterface
+     */
+    public function getDefaultApplyingTwigVisitor()
+    {
+        return $this->defaultApplyingTwigVisitor;
+    }
+
+    /**
+     * @param DefaultApplyingNodeVisitor|RemovingNodeVisitor|\Twig_NodeVisitorInterface $defaultApplyingTwigVisitor
+     */
+    public function setDefaultApplyingTwigVisitor($defaultApplyingTwigVisitor)
+    {
+        $this->defaultApplyingTwigVisitor = $defaultApplyingTwigVisitor;
     }
 }

@@ -22,7 +22,6 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Translation\MessageCatalogue as SymfonyCatalogue;
 use Symfony\Component\Translation\Dumper\DumperInterface as SymfonyDumper;
-
 use JMS\TranslationBundle\Model\MessageCatalogue;
 
 /**
@@ -37,15 +36,33 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class SymfonyDumperAdapter implements DumperInterface
 {
+    /**
+     * @var SymfonyDumper
+     */
     private $dumper;
+
+    /**
+     * @var string
+     */
     private $format;
 
+    /**
+     * SymfonyDumperAdapter constructor.
+     * @param SymfonyDumper $dumper
+     * @param $format string
+     */
     public function __construct(SymfonyDumper $dumper, $format)
     {
         $this->dumper = $dumper;
         $this->format = $format;
     }
 
+    /**
+     * @param MessageCatalogue $catalogue
+     * @param string $domain
+     * @return string
+     * @throws RuntimeException
+     */
     public function dump(MessageCatalogue $catalogue, $domain = 'messages')
     {
         $symfonyCatalogue = new SymfonyCatalogue($catalogue->getLocale());

@@ -20,7 +20,6 @@ namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
-
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;

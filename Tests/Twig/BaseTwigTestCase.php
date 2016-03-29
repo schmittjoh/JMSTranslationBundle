@@ -25,7 +25,7 @@ use JMS\TranslationBundle\Twig\TranslationExtension;
 
 abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
 {
-    protected final function parse($file, $debug = false)
+    final protected function parse($file, $debug = false)
     {
         $content = file_get_contents(__DIR__.'/Fixture/'.$file);
 

@@ -18,8 +18,6 @@
 
 namespace JMS\TranslationBundle\Translation;
 
-use JMS\TranslationBundle\Model\Message;
-
 /**
  * Translation Container Interface.
  *
@@ -38,5 +36,5 @@ interface TranslationContainerInterface
      *
      * @return array<Message>
      */
-    static function getTranslationMessages();
+    public static function getTranslationMessages();
 }

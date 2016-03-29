@@ -31,8 +31,15 @@ use Symfony\Component\Translation\Loader\LoaderInterface as SymfonyLoader;
  */
 class SymfonyLoaderAdapter implements LoaderInterface
 {
+    /**
+     * @var SymfonyLoader
+     */
     private $loader;
 
+    /**
+     * SymfonyLoaderAdapter constructor.
+     * @param SymfonyLoader $loader
+     */
     public function __construct(SymfonyLoader $loader)
     {
         $this->loader = $loader;

@@ -28,5 +28,5 @@ interface LoggerAwareInterface
     /**
      * @param LoggerInterface $logger
      */
-    function setLogger(LoggerInterface $logger);
+    public function setLogger(LoggerInterface $logger);
 }
