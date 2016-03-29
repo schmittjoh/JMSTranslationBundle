@@ -30,21 +30,81 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 final class Config
 {
+    /**
+     * @var string
+     */
     private $translationsDir;
+
+    /**
+     * @var string
+     */
     private $locale;
+
+    /**
+     * @var array
+     */
     private $ignoredDomains;
+
+    /**
+     * @var array
+     */
     private $domains;
+
+    /**
+     * @var string
+     */
     private $outputFormat;
+
+    /**
+     * @var string
+     */
     private $defaultOutputFormat;
+
+    /**
+     * @var array
+     */
     private $scanDirs;
+
+    /**
+     * @var array
+     */
     private $excludedDirs;
+
+    /**
+     * @var array
+     */
     private $excludedNames;
+
+    /**
+     * @var array
+     */
     private $enabledExtractors;
 
+    /**
+     * @var
+     */
     private $keepOldMessages;
+
+    /**
+     * @var array
+     */
     private $loadResources;
 
-
+    /**
+     * Config constructor.
+     * @param $translationsDir
+     * @param $locale
+     * @param array $ignoredDomains
+     * @param array $domains
+     * @param $outputFormat
+     * @param $defaultOutputFormat
+     * @param array $scanDirs
+     * @param array $excludedDirs
+     * @param array $excludedNames
+     * @param array $enabledExtractors
+     * @param $keepOldMessages
+     * @param array $loadResources
+     */
     public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
     {
         if (empty($translationsDir)) {
@@ -138,7 +198,7 @@ final class Config
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getOutputFormat()
     {
@@ -146,7 +206,7 @@ final class Config
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDefaultOutputFormat()
     {
