@@ -46,63 +46,98 @@ class XliffMessage extends Message
 	const STATE_NEW = 'new';
 	const STATE_SIGNED_OFF = 'signed-off';
 	const STATE_TRANSLATED = 'translated';
-	
+
 	protected $approved = false;
 	protected $state;
 	protected $notes = array();
-	
+
+	/**
+	 * @return bool
+	 */
 	public function isApproved() {
 		return $this->approved;
 	}
-	
+
+	/**
+	 * @param $approved
+	 * @return $this
+	 */
 	public function setApproved($approved) {
 		$this->approved = (bool) $approved;
 		return $this;
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function hasState() {
 		return isset($this->state);
 	}
-	
+
+	/**
+	 * @param string $state
+	 * @return $this
+	 */
 	public function setState($state = null) {
-		if (!in_array($state, static::$states)) {
-		    throw new RuntimeException(sprintf('Invalid XLIFF message-state: %s', $state));
-		}
 		$this->state = $state;
 		parent::setNew($this->isNew());
 		return $this;
 	}
 
+	/**
+	 * @return XliffMessageState|string
+	 */
 	public function getState() {
 	    return $this->state;
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function isNew() {
-		return $this->state === static::STATE_NEW;
+		return $this->state === XliffMessageState::STATE_NEW;
 	}
-	
+
+	/**
+	 * @param bool $bool
+	 * @return $this
+	 */
 	public function setNew($bool) {
 		if ($bool) {
-			$this->state = static::STATE_NEW;
+			$this->state = XliffMessageState::STATE_NEW;
 		} else if ($this->isNew()) {
 			// $bool==false => leave state untouched unless it is set to STATE_NEW
 			$this->state = null;
 		}
 		return parent::setNew($bool);
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function isWritable() {
-		return !($this->isApproved() || ($this->hasState() && $this->state !== static::STATE_NEW));
+		return !($this->isApproved() || ($this->hasState() && $this->state !== XliffMessageState::STATE_NEW));
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasNotes() {
 		return !empty($this->notes);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getNotes() {
 		return $this->notes;
 	}
 
+	/**
+	 * @param $text
+	 * @param null $from
+	 * @return $this
+	 */
 	public function addNote($text, $from = null) {
 		$note = array(
 			'text' => (string) $text,
@@ -114,6 +149,10 @@ class XliffMessage extends Message
 		return $this;
 	}
 
+	/**
+	 * @param array $notes
+	 * @return $this
+	 */
 	public function setNotes(array $notes = array()) {
 		$this->notes = $notes;
 		return $this;
@@ -124,22 +163,7 @@ class XliffMessage extends Message
 	 */
 	public function __construct($id, $domain = 'messages') {
 		parent::__construct($id, $domain);
-		$this->state = parent::isNew() ? static::STATE_NEW : null; // sync with the parent's new-attribute
-		if (empty(self::$states)) {
-			self::$states = array(
-				self::STATE_NONE,
-				self::STATE_FINAL,
-				self::STATE_NEEDS_ADAPTATION,
-				self::STATE_NEEDS_L10N,
-				self::STATE_NEEDS_REVIEW_ADAPTATION,
-				self::STATE_NEEDS_REVIEW_L10N,
-				self::STATE_NEEDS_REVIEW_TRANSLATION,
-				self::STATE_NEEDS_TRANSLATION,
-				self::STATE_NEW,
-				self::STATE_SIGNED_OFF,
-				self::STATE_TRANSLATED
-			);
-		}
+		$this->state = parent::isNew() ? XliffMessageState::STATE_NEW : null; // sync with the parent's new-attribute
 	}
 	
 	/**
