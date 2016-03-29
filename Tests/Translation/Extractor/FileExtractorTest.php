@@ -18,7 +18,7 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor;
 
-use Symfony\Component\HttpKernel\Log\NullLogger;
+use Psr\Log\NullLogger;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use Doctrine\Common\Annotations\AnnotationReader;

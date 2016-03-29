@@ -19,11 +19,8 @@
 namespace JMS\TranslationBundle\Tests\Translation;
 
 use JMS\TranslationBundle\Model\Message;
-
 use JMS\TranslationBundle\Model\MessageCatalogue;
-
-use Symfony\Component\HttpKernel\Log\NullLogger;
-
+use Psr\Log\NullLogger;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Translation\ExtractorManager;
 

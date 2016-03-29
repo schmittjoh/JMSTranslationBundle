@@ -20,11 +20,7 @@ namespace JMS\TranslationBundle\Controller;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
-
-use JMS\TranslationBundle\Translation\XliffMessageUpdater;
-
 use JMS\TranslationBundle\Util\FileUtils;
-
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -69,7 +65,7 @@ class ApiController
 
         $this->updater->updateTranslation(
             $file, $format, $domain, $locale, $id,
-	    $request->request->get('message')
+            $request->request->get('message')
         );
 
         return new Response();
