@@ -117,7 +117,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $message->merge($message2);
 
         $this->assertEquals('foo_desc', $message->getDesc());
-        $this->assertEquals('foo_desc', $message->getLocaleString());
+        $this->assertEquals('foo_id', $message->getLocaleString());
         $this->assertEquals('bar_meaning', $message->getMeaning());
         $this->assertSame(array($s1, $s2), $message->getSources());
     }
@@ -152,10 +152,10 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
         $message->mergeScanned($scannedMessage);
 
-        $this->assertEquals('bar', $message->getDesc());
+        $this->assertEquals('foobar', $message->getDesc());
         $this->assertEquals('foobar', $message->getLocaleString());
         $this->assertFalse($message->isNew());
-        $this->assertEquals(array(), current($message->getSources()));
+        $this->assertEquals(array(), $message->getSources());
     }
 
     public function testGetIsNew()
