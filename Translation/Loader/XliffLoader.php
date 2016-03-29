@@ -25,6 +25,12 @@ use JMS\TranslationBundle\Model\Message;
 
 class XliffLoader implements LoaderInterface
 {
+    /**
+     * @param mixed $resource
+     * @param string $locale
+     * @param string $domain
+     * @return MessageCatalogue
+     */
     public function load($resource, $locale, $domain = 'messages')
     {
         $previous = libxml_use_internal_errors(true);
@@ -34,6 +40,7 @@ class XliffLoader implements LoaderInterface
 
             throw new RuntimeException(sprintf('Could not load XML-file "%s": %s', $resource, $libxmlError->message));
         }
+
         libxml_use_internal_errors($previous);
 
         $doc->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
@@ -77,7 +84,6 @@ class XliffLoader implements LoaderInterface
             if (!($state = (string) $trans->target->attributes()->state) || 'new' !== $state) {
                 $m->setNew(false);
             }
-
         }
 
         return $catalogue;

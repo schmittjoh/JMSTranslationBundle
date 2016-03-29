@@ -30,13 +30,24 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
 {
+    /**
+     * @var bool
+     */
     private $enabled = true;
 
+    /**
+     * @param $bool
+     */
     public function setEnabled($bool)
     {
-        $this->enabled = (Boolean) $bool;
+        $this->enabled = (bool) $bool;
     }
 
+    /**
+     * @param \Twig_NodeInterface $node
+     * @param \Twig_Environment $env
+     * @return \Twig_NodeInterface
+     */
     public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
     {
         if (!$this->enabled) {
@@ -45,7 +56,6 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
 
         if ($node instanceof \Twig_Node_Expression_Filter
                 && 'desc' === $node->getNode('filter')->getAttribute('value')) {
-
             $transNode = $node->getNode('node');
             while ($transNode instanceof \Twig_Node_Expression_Filter
                        && 'trans' !== $transNode->getNode('filter')->getAttribute('value')
@@ -83,7 +93,6 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
             // if the |trans filter has replacements parameters
             // (e.g. |trans({'%foo%': 'bar'}))
             if ($wrappingNode->getNode('arguments')->hasNode(0)) {
-
                 $lineno =  $wrappingNode->getLine();
 
                 // remove the replacements from the test node
@@ -113,11 +122,19 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
         return $node;
     }
 
+    /**
+     * @param \Twig_NodeInterface $node
+     * @param \Twig_Environment $env
+     * @return \Twig_NodeInterface
+     */
     public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
     {
         return $node;
     }
 
+    /**
+     * @return int
+     */
     public function getPriority()
     {
         return -2;

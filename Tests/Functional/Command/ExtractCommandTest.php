@@ -72,24 +72,23 @@ class ExtractCommandTest extends BaseCommandTestCase
         ));
 
         $expectedOutput = array(
-            'php.foo->',                                                                                                                                 
-            'php.bar-> Bar',                                                                                                                                 
-            'php.baz->',                                                                                                                                 
-            'php.foo_bar-> Foo',                                                                                                                                
-            'twig.foo->',                                                                                                                                  
-            'twig.bar-> Bar',                                                                                                                                  
-            'twig.baz->',                                                                                                                                  
-            'twig.foo_bar-> Foo',                                                                                                                                  
-            'form.foo->',                                                                                                                                  
-            'form.bar->',                                                                                                                                  
+            'php.foo->',
+            'php.bar-> Bar',
+            'php.baz->',
+            'php.foo_bar-> Foo',
+            'twig.foo->',
+            'twig.bar-> Bar',
+            'twig.baz->',
+            'twig.foo_bar-> Foo',
+            'form.foo->',
+            'form.bar->',
             'controller.foo-> Foo',
         );
 
         $this->getApp()->run($input, $output = new Output());
         
-        foreach($expectedOutput as $transID){
-            $this->assertContains($transID, $output->getContent());    
+        foreach ($expectedOutput as $transID) {
+            $this->assertContains($transID, $output->getContent());
         }
-
     }
 }

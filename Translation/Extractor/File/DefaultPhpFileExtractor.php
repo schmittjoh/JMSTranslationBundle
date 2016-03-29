@@ -44,17 +44,40 @@ use Psr\Log\LoggerInterface;
  */
 class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
+    /**
+     * @var NodeTraverser
+     */
     private $traverser;
+
+    /**
+     * @var MessageCatalogue
+     */
     private $catalogue;
+
+    /**
+     * @var \SplFileInfo
+     */
     private $file;
+
+    /**
+     * @var DocParser
+     */
     private $docParser;
 
     /**
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var
+     */
     private $previousNode;
 
+    /**
+     * DefaultPhpFileExtractor constructor.
+     * @param DocParser $docParser
+     */
     public function __construct(DocParser $docParser)
     {
         $this->docParser = $docParser;
@@ -70,13 +93,15 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->logger = $logger;
     }
 
+    /**
+     * @param Node $node
+     * @return void
+     */
     public function enterNode(Node $node)
     {
-
         if (!$node instanceof Node\Expr\MethodCall
             || !is_string($node->name)
             || ('trans' !== strtolower($node->name) && 'transchoice' !== strtolower($node->name))) {
-
             $this->previousNode = $node;
             return;
         }
@@ -90,9 +115,9 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
             foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$node->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
-                } else if ($annot instanceof Desc) {
+                } elseif ($annot instanceof Desc) {
                     $desc = $annot->text;
-                } else if ($annot instanceof Meaning) {
+                } elseif ($annot instanceof Meaning) {
                     $meaning = $annot->text;
                 }
             }
@@ -145,6 +170,11 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->catalogue->add($message);
     }
 
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param array $ast
+     */
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
     {
         $this->file = $file;
@@ -152,12 +182,51 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->traverser->traverse($ast);
     }
 
-    public function beforeTraverse(array $nodes) { }
-    public function leaveNode(Node $node) { }
-    public function afterTraverse(array $nodes) { }
-    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
+    /**
+     * @param array $nodes
+     * @return void
+     */
+    public function beforeTraverse(array $nodes)
+    {
+    }
 
+    /**
+     * @param Node $node
+     * @return void
+     */
+    public function leaveNode(Node $node)
+    {
+    }
+
+    /**
+     * @param array $nodes
+     * @return void
+     */
+    public function afterTraverse(array $nodes)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     */
+    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param \Twig_Node $ast
+     */
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    {
+    }
+
+    /**
+     * @param Node $node
+     * @return null|string
+     */
     private function getDocCommentForNode(Node $node)
     {
         // check if there is a doc comment for the ID argument

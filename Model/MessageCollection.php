@@ -31,14 +31,27 @@ use JMS\TranslationBundle\Exception\InvalidArgumentException;
  */
 class MessageCollection
 {
+    /**
+     * @var MessageCatalogue
+     */
     private $catalogue;
+
+    /**
+     * @var array
+     */
     private $messages = array();
 
+    /**
+     * @param MessageCatalogue $catalogue
+     */
     public function setCatalogue(MessageCatalogue $catalogue)
     {
         $this->catalogue = $catalogue;
     }
 
+    /**
+     * @return MessageCatalogue
+     */
     public function getCatalogue()
     {
         return $this->catalogue;
@@ -146,6 +159,10 @@ class MessageCollection
         }
     }
 
+    /**
+     * @param Message $oldMessage
+     * @param Message $newMessage
+     */
     private function checkConsistency(Message $oldMessage, Message $newMessage)
     {
         $oldDesc = $oldMessage->getDesc();
