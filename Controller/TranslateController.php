@@ -19,6 +19,8 @@
 namespace JMS\TranslationBundle\Controller;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
+use JMS\TranslationBundle\Translation\ConfigFactory;
+use JMS\TranslationBundle\Translation\LoaderManager;
 use JMS\TranslationBundle\Util\FileUtils;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -33,13 +35,22 @@ use Symfony\Component\Translation\MessageCatalogue;
  */
 class TranslateController
 {
-    /** @DI\Inject("jms_translation.config_factory") */
+    /**
+     * @DI\Inject("jms_translation.config_factory")
+     * @var ConfigFactory
+     */
     private $configFactory;
 
-    /** @DI\Inject("jms_translation.loader_manager") */
+    /**
+     * @DI\Inject("jms_translation.loader_manager")
+     * @var LoaderManager
+     */
     private $loader;
 
-    /** @DI\Inject("%jms_translation.source_language%") */
+    /**
+     * @DI\Inject("%jms_translation.source_language%")
+     * @var string
+     */
     private $sourceLanguage;
 
     /**

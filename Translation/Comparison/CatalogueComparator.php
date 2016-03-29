@@ -46,10 +46,9 @@ class CatalogueComparator
     /**
      * Compares two message catalogues.
      *
-     * @param MessageCatalogue $a
-     * @param MessageCatalogue $b
-     * @throws \RuntimeException
-     * @return \JMS\CommandBundle\Translation\ComparisonResult
+     * @param MessageCatalogue $current
+     * @param MessageCatalogue $new
+     * @return ChangeSet
      */
     public function compare(MessageCatalogue $current, MessageCatalogue $new)
     {

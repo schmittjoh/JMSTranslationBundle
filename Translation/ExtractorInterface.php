@@ -20,5 +20,5 @@ namespace JMS\TranslationBundle\Translation;
 
 interface ExtractorInterface
 {
-    function extract();
+    public function extract();
 }

@@ -32,7 +32,14 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class XliffDumper implements DumperInterface
 {
+    /**
+     * @var string
+     */
     private $sourceLanguage = 'en';
+
+    /**
+     * @var bool
+     */
     private $addDate = true;
 
     /**
@@ -40,7 +47,7 @@ class XliffDumper implements DumperInterface
      */
     public function setAddDate($bool)
     {
-        $this->addDate = (Boolean) $bool;
+        $this->addDate = (bool) $bool;
     }
 
     /**
@@ -52,7 +59,8 @@ class XliffDumper implements DumperInterface
     }
 
     /**
-     * @param \JMS\TranslationBundle\Model\MessageCatalogue $domain
+     * @param MessageCatalogue $catalogue
+     * @param MessageCatalogue|string $domain
      * @return string
      */
     public function dump(MessageCatalogue $catalogue, $domain = 'messages')
@@ -137,7 +145,6 @@ class XliffDumper implements DumperInterface
             if ($meaning = $message->getMeaning()) {
                 $unit->setAttribute('extradata', 'Meaning: '.$meaning);
             }
-
         }
 
         return $doc->saveXML();

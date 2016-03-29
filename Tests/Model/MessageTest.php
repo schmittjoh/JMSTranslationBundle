@@ -19,7 +19,6 @@
 namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
-
 use JMS\TranslationBundle\Model\Message;
 
 class MessageTest extends \PHPUnit_Framework_TestCase
