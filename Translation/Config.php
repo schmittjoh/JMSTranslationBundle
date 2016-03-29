@@ -43,13 +43,16 @@ final class Config
 
     private $keepOldMessages;
     private $loadResources;
+    private $sourceLanguage;
 
 
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources, $sourceLanguage = null)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
         }
+
+        $this->sourceLanguage = $sourceLanguage;
 
         if (!is_dir($translationsDir)) {
             if (false === @mkdir($translationsDir, 0777, true)) {
@@ -207,5 +210,13 @@ final class Config
     public function getLoadResources()
     {
         return $this->loadResources;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSourceLanguage()
+    {
+        return $this->sourceLanguage;
     }
 }

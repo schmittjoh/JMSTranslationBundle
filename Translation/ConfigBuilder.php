@@ -32,6 +32,7 @@ final class ConfigBuilder
     private $enabledExtractors = array();
     private $keepOldTranslations = false;
     private $loadResources = array();
+    private $sourceLanguage = 'en';
 
     /**
      * @static
@@ -52,6 +53,7 @@ final class ConfigBuilder
         $builder->setExcludedNames($config->getExcludedNames());
         $builder->setEnabledExtractors($config->getEnabledExtractors());
         $builder->setLoadResources($config->getLoadResources());
+        $builder->setSourceLanguage($config->getSourceLanguage());
 
         return $builder;
     }
@@ -187,6 +189,12 @@ final class ConfigBuilder
 
         return $this;
     }
+    
+    public function setSourceLanguage($sourceLanguage)
+    {
+        $this->sourceLanguage = $sourceLanguage;
+        return $this;
+    }
 
     public function getConfig()
     {
@@ -202,7 +210,8 @@ final class ConfigBuilder
             $this->excludedNames,
             $this->enabledExtractors,
             $this->keepOldTranslations,
-            $this->loadResources
+            $this->loadResources,
+            $this->sourceLanguage
         );
     }
 
