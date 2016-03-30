@@ -27,6 +27,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use PhpParser\Lexer;
 use PhpParser\ParserFactory;
+use Symfony\Component\HttpKernel\Kernel;
 
 class FormExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,7 +41,13 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormType.php';
 
-        $message = new Message('bar');
+        // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
+        // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
+        if (Kernel::VERSION_ID >= 30000) {
+            $message = new Message('foo');
+        } else {
+            $message = new Message('bar');
+        }
         $message->addSource(new FileSource($path, 36));
         $expected->add($message);
 
@@ -83,7 +90,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected->add($message);
 
         $message = new Message('form.label.created');
-        $message->addSource(new FileSource($path, 68));
+        $message->addSource(new FileSource($path, 75));
         $expected->add($message);
 
         $message = new Message('field.with.placeholder');
@@ -101,15 +108,23 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.year');
-        $message->addSource(new FileSource($path, 72));
+        $message->addSource(new FileSource($path, 79));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.month');
-        $message->addSource(new FileSource($path, 72));
+        $message->addSource(new FileSource($path, 79));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.day');
-        $message->addSource(new FileSource($path, 72));
+        $message->addSource(new FileSource($path, 79));
+        $expected->add($message);
+
+        $message = new Message('form.choice.choice_as_values.label.foo');
+        $message->addSource(new FileSource($path, 68));
+        $expected->add($message);
+
+        $message = new Message('form.choice.choice_as_values.label.bar');
+        $message->addSource(new FileSource($path, 69));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
@@ -124,7 +139,13 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormTypeWithInterface.php';
 
-        $message = new Message('bar');
+        // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
+        // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
+        if (Kernel::VERSION_ID >= 30000) {
+            $message = new Message('foo');
+        } else {
+            $message = new Message('bar');
+        }
         $message->addSource(new FileSource($path, 36));
         $expected->add($message);
 
