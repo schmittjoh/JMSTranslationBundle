@@ -63,6 +63,13 @@ class MyFormType extends AbstractType
             	'label' => false,
 	            'attr' => array('placeholder' => /** @Desc("Field with a placeholder but no label") */ 'form.placeholder.text.but.no.label')
             ))
+            ->add('field_with_choice_as_values', 'choice', array(
+                'choices' => array(
+                    'form.choice.choice_as_values.label.foo' => 'form.choice.choice_as_values.value.foo',
+                    'form.choice.choice_as_values.label.bar' => 'form.choice.choice_as_values.value.bar'
+                ),
+                'choices_as_values' => true,
+            ))
         ;
         $child = $builder->create('created', 'text', array(
                   'label' => 'form.label.created'

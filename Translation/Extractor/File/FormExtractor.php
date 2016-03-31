@@ -33,6 +33,7 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 class FormExtractor implements FileVisitorInterface, NodeVisitor
 {
@@ -119,7 +120,24 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
                 }
 
                 if ('choices' === $item->key->value) {
+
+                    //Checking for the choice_as_values in the same form item
+                    $choicesAsValues = false;
+                    foreach ($node->items as $choiceItem) {
+                        if ($choiceItem->key !== null && 'choices_as_values' === $choiceItem->key->value) {
+                            $choicesAsValues = ($choiceItem->value->name->parts[0] === 'true');
+                        }
+                    }
+
                     foreach ($item->value->items as $sitem) {
+                        // If we have a choice as value that differ from the Symfony default strategy
+                        // we should invert the key and the value
+                        if (Kernel::VERSION_ID < 30000 && $choicesAsValues === true || Kernel::VERSION_ID >= 30000) {
+                            $newItem = clone $sitem;
+                            $newItem->key = $sitem->value;
+                            $newItem->value = $sitem->key;
+                            $sitem = $newItem;
+                        }
                         $this->parseItem($sitem, $domain);
                     }
                 } elseif ('attr' === $item->key->value && is_array($item->value->items) ) {
