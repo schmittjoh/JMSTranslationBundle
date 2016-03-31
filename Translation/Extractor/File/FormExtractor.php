@@ -110,12 +110,23 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
                     }
                     continue;
                 }
+                
+                if ('placeholder' === $item->key->value && $item->value instanceof \PHPParser_Node_Expr_ConstFetch
+                    && $item->value->name instanceof \PHPParser_Node_Name && 'false' === $item->value->name->parts[0]) {
+                    continue;
+                }
+                if ('placeholder' === $item->key->value && $item->value instanceof \PHPParser_Node_Expr_Array) {
+                    foreach ($item->value->items as $sitem) {
+                        $this->parseItem($sitem, $domain);
+                    }
+                    continue;
+                }
 
                 if ('choices' === $item->key->value && !$item->value instanceof Node\Expr\Array_) {
                     continue;
                 }
 
-                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value && 'choices' !== $item->key->value && 'invalid_message' !== $item->key->value && 'attr' !== $item->key->value ) {
+                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value && 'placeholder' !== $item->key->value && 'choices' !== $item->key->value && 'invalid_message' !== $item->key->value && 'attr' !== $item->key->value ) {
                     continue;
                 }
 
