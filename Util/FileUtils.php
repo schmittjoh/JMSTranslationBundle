@@ -57,5 +57,7 @@ abstract class FileUtils
         return $files;
     }
 
-    private final function __construct() { }
+    final private function __construct()
+    {
+    }
 }

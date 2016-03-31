@@ -39,5 +39,5 @@ interface LoaderInterface
      * @param string $domain
      * @return MessageCatalogue
      */
-    function load($resource, $locale, $domain = 'messages');
+    public function load($resource, $locale, $domain = 'messages');
 }

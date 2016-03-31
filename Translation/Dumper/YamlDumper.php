@@ -24,13 +24,23 @@ use Symfony\Component\Yaml\Inline;
 
 class YamlDumper extends ArrayStructureDumper
 {
+    /**
+     * @var Writer
+     */
     private $writer;
 
+    /**
+     * YamlDumper constructor.
+     */
     public function __construct()
     {
         $this->writer = new Writer();
     }
 
+    /**
+     * @param array $structure
+     * @return string
+     */
     protected function dumpStructure(array $structure)
     {
         $this->writer->reset();
@@ -39,6 +49,9 @@ class YamlDumper extends ArrayStructureDumper
         return $this->writer->getContent();
     }
 
+    /**
+     * @param array $structure
+     */
     private function dumpStructureRecursively(array $structure)
     {
         $isFirst = true;
@@ -59,7 +72,7 @@ class YamlDumper extends ArrayStructureDumper
                 if ($meaning) {
                     $this->writer->writeln('# Meaning: '.$meaning);
                 }
-            } else if (!$isFirst) {
+            } elseif (!$isFirst) {
                 $this->writer->write("\n");
             }
 

@@ -38,9 +38,9 @@ abstract class BaseLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $expected = new MessageCatalogue('en');
         $expected->add(array(
-        	'foo.bar.baz' => 'Foo',
-        	'foo.bar.moo' => 'foo.bar.moo',
-        	'foo.baz' => 'foo.baz',
+            'foo.bar.baz' => 'Foo',
+            'foo.bar.moo' => 'foo.bar.moo',
+            'foo.baz' => 'foo.baz',
         ));
 
         $file = $this->getInputFile('structure_with_metadata');

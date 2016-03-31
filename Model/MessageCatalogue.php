@@ -34,7 +34,14 @@ use JMS\TranslationBundle\Exception\InvalidArgumentException;
  */
 class MessageCatalogue
 {
+    /**
+     * @var string
+     */
     private $locale;
+
+    /**
+     * @var array
+     */
     private $domains = array();
 
     /**
@@ -131,6 +138,9 @@ class MessageCatalogue
         return $this->domains[$domain];
     }
 
+    /**
+     * @return array
+     */
     public function getDomains()
     {
         return $this->domains;

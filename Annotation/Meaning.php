@@ -30,11 +30,15 @@ final class Meaning
     /** @var string @Required */
     public $text;
 
+    /**
+     * Meaning constructor.
+     */
     public function __construct()
     {
         if (0 === func_num_args()) {
             return;
         }
+
         $values = func_get_arg(0);
 
         if (isset($values['value'])) {
