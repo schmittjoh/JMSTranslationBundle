@@ -46,6 +46,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'The config to use')
             ->addOption('bundle', 'b', InputOption::VALUE_REQUIRED, 'The bundle that you want to extract translations for.')
             ->addOption('exclude-name', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A pattern which should be ignored, e.g. *Test.php')
+            ->addOption('include-name', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A pattern which should not be ignored')
             ->addOption('exclude-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A directory name which should be ignored, e.g. Tests')
             ->addOption('ignore-domain', 'i', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'A domain to ignore.')
             ->addOption('domain', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Use only this domain.')
@@ -85,6 +86,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $config->getScanDirs())));
             $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $config->getExcludedDirs() ? implode(', ', $config->getExcludedDirs()) : '# none #'));
             $output->writeln(sprintf('Excluded Names: <info>%s</info>', $config->getExcludedNames() ? implode(', ', $config->getExcludedNames()) : '# none #'));
+            $output->writeln(sprintf('Included Names: <info>%s</info>', $config->getIncludedNames() ? implode(', ', $config->getIncludedNames()) : '# none #'));
             $output->writeln(sprintf('Output-Format: <info>%s</info>', $config->getOutputFormat() ? $config->getOutputFormat() : '# whatever is present, if nothing then '.$config->getDefaultOutputFormat().' #'));
             $output->writeln(sprintf('Custom Extractors: <info>%s</info>', $config->getEnabledExtractors() ? implode(', ', array_keys($config->getEnabledExtractors())) : '# none #'));
             $output->writeln('============================================================');
@@ -168,6 +170,10 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
         if ($excludeNames = $input->getOption('exclude-name')) {
             $builder->setExcludedNames($excludeNames);
+        }
+
+        if ($includeNames = $input->getOption('include-name')) {
+            $builder->setIncludedNames($includeNames);
         }
 
         if ($format = $input->getOption('default-output-format')) {

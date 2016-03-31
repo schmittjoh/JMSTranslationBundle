@@ -39,13 +39,14 @@ final class Config
     private $scanDirs;
     private $excludedDirs;
     private $excludedNames;
+    private $includedNames;
     private $enabledExtractors;
 
     private $keepOldMessages;
     private $loadResources;
 
 
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $includedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -82,6 +83,7 @@ final class Config
         $this->scanDirs = $scanDirs;
         $this->excludedDirs = $excludedDirs;
         $this->excludedNames = $excludedNames;
+        $this->includedNames = $includedNames;
         $this->enabledExtractors = $enabledExtractors;
         $this->keepOldMessages = $keepOldMessages;
         $this->loadResources = $loadResources;
@@ -183,6 +185,14 @@ final class Config
     public function getExcludedNames()
     {
         return $this->excludedNames;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIncludedNames()
+    {
+        return $this->includedNames;
     }
 
     /**

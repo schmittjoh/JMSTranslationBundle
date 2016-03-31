@@ -43,10 +43,10 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     private $twig;
     private $visitors;
     private $phpParser;
-    private $pattern;
     private $directory;
     private $removingTwigVisitor;
     private $defaultApplyingTwigVisitor;
+    private $includedNames = array();
     private $excludedNames = array();
     private $excludedDirs = array();
     private $logger;
@@ -112,9 +112,9 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->excludedNames = $names;
     }
 
-    public function setPattern(array $pattern)
+    public function setIncludedNames(array $names)
     {
-        $this->pattern = $pattern;
+        $this->includedNames = $names;
     }
 
     public function extract()
@@ -132,12 +132,12 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
             $finder->exclude($dir);
         }
 
-        foreach ($this->excludedNames as $name) {
-            $finder->notName($name);
+        foreach ($this->includedNames as $name) {
+            $finder->name($name);
         }
 
-        if ($this->pattern) {
-            $finder->name($this->pattern);
+        foreach ($this->excludedNames as $name) {
+            $finder->notName($name);
         }
 
         $curTwigLoader = $this->twig->getLoader();
