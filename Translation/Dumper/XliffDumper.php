@@ -58,7 +58,7 @@ class XliffDumper implements DumperInterface
      */
     public function setAddReference($bool)
     {
-        $this->addReference = (Boolean) $bool;
+        $this->addReference = $bool;
     }
 
     /**
@@ -66,7 +66,7 @@ class XliffDumper implements DumperInterface
      */
     public function setAddReferencePosition($bool)
     {
-        $this->addReferencePosition = (Boolean) $bool;
+        $this->addReferencePosition = $bool;
     }
 
     /**
