@@ -186,7 +186,7 @@ class Message
      */
     public function merge(Message $message)
     {
-        if ($this->id !== $message->getId()) {
+        if ((string) $this->id !== (string) $message->getId()) {
             throw new RuntimeException(sprintf('You can only merge messages with the same id. Expected id "%s", but got "%s".', $this->id, $message->getId()));
         }
 
@@ -219,7 +219,7 @@ class Message
      */
     public function mergeExisting(Message $message)
     {
-        if ($this->id !== $message->getId()) {
+        if ((string) $this->id !== (string) $message->getId()) {
             throw new RuntimeException(sprintf('You can only merge messages with the same id. Expected id "%s", but got "%s".', $this->id, $message->getId()));
         }
 

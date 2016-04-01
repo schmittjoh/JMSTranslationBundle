@@ -107,8 +107,10 @@ class Updater
             ->setLocaleString($trans)
             ->setNew(false)
         ;
-
-        $this->writer->write($catalogue, $domain, $file, $format);
+        
+        $outputOptions = $this->config['output_options'][$format];
+         
+        $this->writer->write($catalogue, $domain, $file, $format, $outputOptions);
     }
 
     /**
@@ -149,8 +151,9 @@ class Updater
             }
 
             $outputFile = $this->config->getTranslationsDir().'/'.$name.'.'.$this->config->getLocale().'.'.$format;
+            $outputOptions = $this->config->getOutputOptions($format);
             $this->logger->info(sprintf('Writing translation file "%s".', $outputFile));
-            $this->writer->write($this->scannedCatalogue, $name, $outputFile, $format);
+            $this->writer->write($this->scannedCatalogue, $name, $outputFile, $format, $outputOptions);
         }
     }
 

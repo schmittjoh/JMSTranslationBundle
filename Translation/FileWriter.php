@@ -20,6 +20,7 @@ namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 
 /**
  * Writes translation files.
@@ -32,6 +33,9 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class FileWriter
 {
+    /**
+     * @var array
+     */
     private $dumpers;
 
     /**
@@ -43,13 +47,17 @@ class FileWriter
     }
 
     /**
-     * @param \JMS\TranslationBundle\Model\MessageCatalogue $catalogue
+     * Writes a message catalogue to file
+     *
+     * @param MessageCatalogue $catalogue
      * @param string $domain
      * @param string $filePath
      * @param string $format
-     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     * @param array $outputOptions
+     *
+     * @throws InvalidArgumentException
      */
-    public function write(MessageCatalogue $catalogue, $domain, $filePath, $format)
+    public function write(MessageCatalogue $catalogue, $domain, $filePath, $format, $outputOptions)
     {
         if (!isset($this->dumpers[$format])) {
             throw new InvalidArgumentException(sprintf('The format "%s" is not supported.', $format));
@@ -59,7 +67,18 @@ class FileWriter
         $catalogue->getDomain($domain)->sort(function($a, $b) {
             return strcmp($a->getId(), $b->getId());
         });
-
-        file_put_contents($filePath, $this->dumpers[$format]->dump($catalogue, $domain));
+        
+        $dumper = $this->dumpers[$format];
+        
+        if ($dumper instanceof XliffDumper) {
+            if (isset($outputOptions['add_date'])) {
+                $dumper->setAddDate($outputOptions['add_date']);
+            }
+            if (isset($outputOptions['add_filerefs'])) {
+                $dumper->setAddFileRefs($outputOptions['add_filerefs']);
+            }
+        }
+        
+        file_put_contents($filePath, $dumper->dump($catalogue, $domain, $filePath));
     }
 }
