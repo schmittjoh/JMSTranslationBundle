@@ -25,7 +25,7 @@ final class ConfigBuilder
     private $ignoredDomains = array();
     private $domains = array();
     private $outputFormat;
-    private $defaultOutputFormat = 'xliff';
+    private $defaultOutputFormat = 'xlf';
     private $scanDirs = array();
     private $excludedDirs = array('Tests');
     private $excludedNames = array('*Test.php', '*TestCase.php');
