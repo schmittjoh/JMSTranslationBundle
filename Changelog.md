@@ -4,6 +4,7 @@
 ### 1.2.1 to next release
 
 * Support nikic/php-parser 1.4.x and 2.0.x
+* Set XLF as default output format of the ExtractTranslationCommand
 
 ### 1.2.0 to 1.2.1
 
