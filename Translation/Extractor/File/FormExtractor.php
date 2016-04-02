@@ -140,7 +140,7 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
                         }
                         $this->parseItem($sitem, $domain);
                     }
-                } elseif ('attr' === $item->key->value && is_array($item->value->items) ) {
+                } elseif ('attr' === $item->key->value && isset($item->value->items) && is_array($item->value->items) ) {
                     foreach ($item->value->items as $sitem) {
                         if ('placeholder' == $sitem->key->value){
                             $this->parseItem($sitem, $domain);
