@@ -133,7 +133,7 @@ class OutputLogger implements LoggerInterface
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @param array $context
      * @return void
      */

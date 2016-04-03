@@ -253,7 +253,7 @@ final class ConfigBuilder
     }
 
     /**
-     * @param $alias
+     * @param string $alias
      * @return $this
      */
     public function enableExtractor($alias)

@@ -191,7 +191,7 @@ class Message
     }
 
     /**
-     * @param $meaning
+     * @param string $meaning
      * @return $this
      */
     public function setMeaning($meaning)

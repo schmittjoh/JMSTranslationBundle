@@ -89,9 +89,6 @@ class Writer
         return $this;
     }
 
-    /**
-     *
-     */
     public function revert()
     {
         $change = array_pop($this->changes);

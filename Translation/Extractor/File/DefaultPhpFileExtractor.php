@@ -70,7 +70,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     private $logger;
 
     /**
-     * @var
+     * @var Node
      */
     private $previousNode;
 
