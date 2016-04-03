@@ -26,14 +26,13 @@ use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
 use Symfony\Component\Validator\MetadataFactoryInterface as LegacyMetadataFactoryInterface;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 
 /**
  * Extracts translations validation constraints.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class ValidationExtractor implements FileVisitorInterface, NodeVisitor
+class ValidationExtractor extends AbstractFileExtractor implements NodeVisitor
 {
     /**
      * @var ClassMetadataFactoryInterface|MetadataFactoryInterface|LegacyMetadataFactoryInterface
@@ -125,47 +124,6 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
         $this->namespace = '';
         $this->catalogue = $catalogue;
         $this->traverser->traverse($ast);
-    }
-
-    /**
-     * @param array $nodes
-     * @return void
-     */
-    public function beforeTraverse(array $nodes)
-    {
-    }
-
-    /**
-     * @param Node $node
-     * @return void
-     */
-    public function leaveNode(Node $node)
-    {
-    }
-
-    /**
-     * @param array $nodes
-     * @return void
-     */
-    public function afterTraverse(array $nodes)
-    {
-    }
-
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     */
-    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
-    {
-    }
-
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     * @param \Twig_Node $ast
-     */
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
-    {
     }
 
     /**

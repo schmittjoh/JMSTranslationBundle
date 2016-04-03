@@ -34,7 +34,7 @@ use PhpParser\NodeVisitor;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class TranslationContainerExtractor extends AbstractFileExtractor implements NodeVisitor
+class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
 {
     /**
      * @var NodeTraverser
@@ -134,5 +134,46 @@ class TranslationContainerExtractor extends AbstractFileExtractor implements Nod
         $this->file = $file;
         $this->catalogue = $catalogue;
         $this->traverser->traverse($ast);
+    }
+
+    /**
+     * @param array $nodes
+     * @return void
+     */
+    public function beforeTraverse(array $nodes)
+    {
+    }
+
+    /**
+     * @param Node $node
+     * @return void
+     */
+    public function leaveNode(Node $node)
+    {
+    }
+
+    /**
+     * @param array $nodes
+     * @return void
+     */
+    public function afterTraverse(array $nodes)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     */
+    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param \Twig_Node $ast
+     */
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    {
     }
 }

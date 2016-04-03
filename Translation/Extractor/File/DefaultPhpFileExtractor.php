@@ -25,15 +25,12 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Annotation\Desc;
 use JMS\TranslationBundle\Annotation\Ignore;
-use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\Node\Scalar\String_;
-use Psr\Log\LoggerInterface;
 
 /**
  * This parser can extract translation information from PHP files.
@@ -42,7 +39,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
+class DefaultPhpFileExtractor extends AbstractFileExtractor implements NodeVisitor
 {
     /**
      * @var NodeTraverser
@@ -65,11 +62,6 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     private $docParser;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @var
      */
     private $previousNode;
@@ -83,14 +75,6 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->docParser = $docParser;
         $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
-    }
-
-    /**
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 
     /**
@@ -180,47 +164,6 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->file = $file;
         $this->catalogue = $catalogue;
         $this->traverser->traverse($ast);
-    }
-
-    /**
-     * @param array $nodes
-     * @return void
-     */
-    public function beforeTraverse(array $nodes)
-    {
-    }
-
-    /**
-     * @param Node $node
-     * @return void
-     */
-    public function leaveNode(Node $node)
-    {
-    }
-
-    /**
-     * @param array $nodes
-     * @return void
-     */
-    public function afterTraverse(array $nodes)
-    {
-    }
-
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     */
-    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
-    {
-    }
-
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     * @param \Twig_Node $ast
-     */
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
-    {
     }
 
     /**

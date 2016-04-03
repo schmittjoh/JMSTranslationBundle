@@ -25,15 +25,12 @@ use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Annotation\Desc;
 use JMS\TranslationBundle\Annotation\Ignore;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use Doctrine\Common\Annotations\DocParser;
-use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
-use Psr\Log\LoggerInterface;
 
-class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
+class AuthenticationMessagesExtractor extends AbstractFileExtractor implements NodeVisitor
 {
     /**
      * @var string
@@ -76,11 +73,6 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
     private $inGetMessageKey = false;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * AuthenticationMessagesExtractor constructor.
      * @param DocParser $parser
      */
@@ -89,14 +81,6 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $this->docParser = $parser;
         $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
-    }
-
-    /**
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 
     /**
@@ -228,38 +212,5 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
 
             return;
         }
-    }
-
-    /**
-     * @param array $nodes
-     * @return null|\PhpParser\Node[]|void
-     */
-    public function beforeTraverse(array $nodes)
-    {
-    }
-
-    /**
-     * @param array $nodes
-     * @return null|\PhpParser\Node[]|void
-     */
-    public function afterTraverse(array $nodes)
-    {
-    }
-
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     */
-    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
-    {
-    }
-
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     * @param \Twig_Node $ast
-     */
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
-    {
     }
 }

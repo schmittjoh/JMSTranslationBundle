@@ -23,8 +23,9 @@ use Symfony\Bridge\Twig\Node\TransNode;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 
-class TwigFileExtractor extends AbstractFileExtractor implements \Twig_NodeVisitorInterface
+class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterface
 {
     /**
      * @var \SplFileInfo
@@ -183,5 +184,22 @@ class TwigFileExtractor extends AbstractFileExtractor implements \Twig_NodeVisit
         array_pop($this->stack);
 
         return $node;
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     */
+    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param array $ast
+     */
+    public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
+    {
     }
 }
