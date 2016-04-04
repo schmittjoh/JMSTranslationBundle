@@ -63,6 +63,11 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
         $message->addSource(new FileSource($path, 82));
         $expected->add($message);
 
+        $message = new Message('Foo Bar Moo');
+        $message->setDesc('Foo Bar Moo');
+        $message->addSource(new FileSource($path, 88));
+        $expected->add($message);
+
         $this->assertEquals($expected, $catalogue);
     }
 
@@ -78,6 +83,10 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
         $message = new Message('baz', 'moo');
         $message->setDesc('Foo Bar');
         $message->addSource(new FileSource($path, 3));
+        $expected->add($message);
+
+        $message = new Message('Foo Bar Moo');
+        $message->addSource(new FileSource($path, 5));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('template.html.php'));

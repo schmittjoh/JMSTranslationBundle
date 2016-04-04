@@ -156,7 +156,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
 
     private function concatToString($node)
     {
-        if ($node instanceof \PHPParser_Node_Scalar_String) {
+        if ($node instanceof String_) {
             return $node->value;
         } else {
             return self::concatToString($node->left) . self::concatToString($node->right);
