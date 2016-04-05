@@ -36,6 +36,9 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
      */
     private $extractor;
 
+    /**
+     * @group testExtract
+     */
     public function testExtract()
     {
         $expected = new MessageCatalogue();

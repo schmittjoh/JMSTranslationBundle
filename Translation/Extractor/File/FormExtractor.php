@@ -109,84 +109,152 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
 
         if ($node instanceof Node\Expr\Array_) {
             // first check if a translation_domain is set for this field
-            $domain = null;
-            foreach ($node->items as $item) {
-                if (!$item->key instanceof Node\Scalar\String_) {
-                    continue;
-                }
-
-                if ('translation_domain' === $item->key->value) {
-                    if (!$item->value instanceof Node\Scalar\String_) {
-                        continue;
-                    }
-
-                    $domain = $item->value->value;
-                }
-            }
+            $domain = $this->getDomain($node);
 
             // look for options containing a message
             foreach ($node->items as $item) {
-                if (!$item->key instanceof Node\Scalar\String_) {
+                if (!$item->key instanceof Node\Scalar\String_ ) {
                     continue;
                 }
 
-                if ('empty_value' === $item->key->value && $item->value instanceof Node\Expr\ConstFetch
-                    && $item->value->name instanceof Node\Name && 'false' === $item->value->name->parts[0]) {
-                    continue;
-                }
-                if ('empty_value' === $item->key->value && $item->value instanceof Node\Expr\Array_) {
-                    foreach ($item->value->items as $sitem) {
-                        $this->parseItem($sitem, $domain);
-                    }
-                    continue;
-                }
-
-                if ('choices' === $item->key->value && !$item->value instanceof Node\Expr\Array_) {
-                    continue;
-                }
-
-                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value && 'choices' !== $item->key->value && 'invalid_message' !== $item->key->value && 'attr' !== $item->key->value) {
-                    continue;
-                }
-
-                if ('choices' === $item->key->value) {
-
-                    //Checking for the choice_as_values in the same form item
-                    $choicesAsValues = false;
-                    foreach ($node->items as $choiceItem) {
-                        if ($choiceItem->key !== null && 'choices_as_values' === $choiceItem->key->value) {
-                            $choicesAsValues = ($choiceItem->value->name->parts[0] === 'true');
+                switch($item->key->value) {
+                    case 'label':
+                        $this->parseItem($item,$domain);
+                        break;
+                    case 'invalid_message':
+                        $this->parseItem($item, 'validators');
+                        break;
+                    case 'empty_value':
+                        if ($this->parseEmptyValueNode($item, $domain)) {
+                            continue 2;
                         }
-                    }
-
-                    foreach ($item->value->items as $sitem) {
-                        // If we have a choice as value that differ from the Symfony default strategy
-                        // we should invert the key and the value
-                        if (Kernel::VERSION_ID < 30000 && $choicesAsValues === true || Kernel::VERSION_ID >= 30000) {
-                            $newItem = clone $sitem;
-                            $newItem->key = $sitem->value;
-                            $newItem->value = $sitem->key;
-                            $sitem = $newItem;
+                        $this->parseItem($item,$domain);
+                        break;
+                    case 'choices':
+                        if ($this->parseChoiceNode($item, $node, $domain)) {
+                            continue 2;
                         }
-                        $this->parseItem($sitem, $domain);
-                    }
-                } elseif ('attr' === $item->key->value && $item->value instanceof Node\Expr\Array_) {
-                    foreach ($item->value->items as $sitem) {
-                        if ('placeholder' == $sitem->key->value) {
-                            $this->parseItem($sitem, $domain);
+                        $this->parseItem($item,$domain);
+                        break;
+                    case 'attr':
+                        if ($this->parseAttrNode($item, $domain)) {
+                            continue 2;
                         }
-                        if ('title' == $sitem->key->value) {
-                            $this->parseItem($sitem, $domain);
-                        }
-                    }
-                } elseif ('invalid_message' === $item->key->value) {
-                    $this->parseItem($item, 'validators');
-                } else {
-                    $this->parseItem($item, $domain);
+                        $this->parseItem($item,$domain);
+                        break;
                 }
             }
         }
     }
+
+    /**
+     * @param Node $node
+     * @return null|string
+     */
+    public function getDomain(Node $node)
+    {
+        $domain = null;
+
+        foreach ($node->items as $item) {
+            if (!$item->key instanceof Node\Scalar\String_) {
+                continue;
+            }
+
+            if ('translation_domain' === $item->key->value) {
+                if (!$item->value instanceof Node\Scalar\String_) {
+                    continue;
+                }
+
+                $domain = $item->value->value;
+            }
+        }
+
+        return $domain;
+    }
+
+    /**
+     * @param Node $item
+     * @param $domain
+     * @return bool
+     */
+    public function parseEmptyValueNode(Node $item, $domain)
+    {
+        // Skip empty_value when false
+        if ($item->value instanceof Node\Expr\ConstFetch && $item->value->name instanceof Node\Name && 'false' === $item->value->name->parts[0]) {
+            return true;
+        }
+
+        // Parse when its value is an array of values
+        if ($item->value instanceof Node\Expr\Array_) {
+            foreach ($item->value->items as $subItem) {
+                $this->parseItem($subItem, $domain);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Node $item
+     * @param Node $node
+     * @param $domain
+     * @return bool
+     */
+    public function parseChoiceNode(Node $item, Node $node, $domain)
+    {
+        // Skip any choices that aren't arrays (ChoiceListInterface or Closure etc)
+        if (!$item->value instanceof Node\Expr\Array_) {
+            return true;
+        }
+
+        //Checking for the choice_as_values in the same form item
+        $choicesAsValues = false;
+        foreach ($node->items as $choiceItem) {
+            if ($choiceItem->key !== null && 'choices_as_values' === $choiceItem->key->value) {
+                $choicesAsValues = ($choiceItem->value->name->parts[0] === 'true');
+            }
+        }
+
+        foreach ($item->value->items as $subItem) {
+            // If we have a choice as value that differ from the Symfony default strategy
+            // we should invert the key and the value
+            if (Kernel::VERSION_ID < 30000 && $choicesAsValues === true || Kernel::VERSION_ID >= 30000) {
+                $newItem = clone $subItem;
+                $newItem->key = $subItem->value;
+                $newItem->value = $subItem->key;
+                $subItem = $newItem;
+            }
+            $this->parseItem($subItem, $domain);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Node $item
+     * @param $domain
+     * @return bool
+     */
+    public function parseAttrNode(Node $item, $domain)
+    {
+        if (!$item->value instanceof Node\Expr\Array_) {
+            return true;
+        }
+
+        foreach ($item->value->items as $sitem) {
+            if ('placeholder' == $sitem->key->value) {
+                $this->parseItem($sitem, $domain);
+            }
+            if ('title' == $sitem->key->value) {
+                $this->parseItem($sitem, $domain);
+            }
+        }
+
+        return true;
+    }
+
 
     /**
      * @param Node $node
