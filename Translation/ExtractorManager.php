@@ -126,6 +126,15 @@ class ExtractorManager implements ExtractorInterface
     }
 
     /**
+     * @param array $annotations
+     *
+     */
+    public function setIgnoredAnnotations(array $annotations)
+    {
+        $this->fileExtractor->setIgnoredAnnotations($annotations);
+    }
+
+    /**
      * @return \JMS\TranslationBundle\Model\MessageCatalogue
      */
     public function extract()
