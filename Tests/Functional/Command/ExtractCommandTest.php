@@ -44,6 +44,7 @@ class ExtractCommandTest extends BaseCommandTestCase
            .'Excluded Names: *Test.php, *TestCase.php'."\n"
            .'Output-Format: # whatever is present, if nothing then xliff #'."\n"
            .'Custom Extractors: # none #'."\n"
+           .'Ignored Annotations: # none #'."\n"
            .'============================================================'."\n"
            .'Loading catalogues from "'.$outputDir.'"'."\n"
            .'Extracting translation keys'."\n"

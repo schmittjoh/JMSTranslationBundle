@@ -32,6 +32,7 @@ use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
 use JMS\TranslationBundle\Translation\ExtractorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Finder\Finder;
+use Doctrine\Common\Annotations\AnnotationReader;
 
 /**
  * File-based extractor.
@@ -49,6 +50,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     private $defaultApplyingTwigVisitor;
     private $excludedNames = array();
     private $excludedDirs = array();
+    private $ignoredAnnotations = array();
     private $logger;
 
     public function __construct(\Twig_Environment $twig, LoggerInterface $logger, array $visitors)
@@ -112,6 +114,11 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->excludedNames = $names;
     }
 
+    public function setIgnoredAnnotations(array $annotations)
+    {
+        $this->ignoredAnnotations = $annotations;
+    }
+
     public function setPattern(array $pattern)
     {
         $this->pattern = $pattern;
@@ -138,6 +145,10 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 
         if ($this->pattern) {
             $finder->name($this->pattern);
+        }
+
+        foreach ($this->ignoredAnnotations as $annotation) {
+            AnnotationReader::addGlobalIgnoredName($annotation);
         }
 
         $curTwigLoader = $this->twig->getLoader();

@@ -43,9 +43,9 @@ final class Config
 
     private $keepOldMessages;
     private $loadResources;
+    private $ignoredAnnotations;
 
-
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources, array $ignoredAnnotations)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -85,6 +85,7 @@ final class Config
         $this->enabledExtractors = $enabledExtractors;
         $this->keepOldMessages = $keepOldMessages;
         $this->loadResources = $loadResources;
+        $this->ignoredAnnotations = $ignoredAnnotations;
     }
 
     /**
@@ -207,5 +208,13 @@ final class Config
     public function getLoadResources()
     {
         return $this->loadResources;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIgnoredAnnotations()
+    {
+        return $this->ignoredAnnotations;
     }
 }

@@ -32,6 +32,7 @@ final class ConfigBuilder
     private $enabledExtractors = array();
     private $keepOldTranslations = false;
     private $loadResources = array();
+    private $ignoredAnnotations = array();
 
     /**
      * @static
@@ -52,6 +53,7 @@ final class ConfigBuilder
         $builder->setExcludedNames($config->getExcludedNames());
         $builder->setEnabledExtractors($config->getEnabledExtractors());
         $builder->setLoadResources($config->getLoadResources());
+        $builder->setIgnoredAnnotations($config->getIgnoredAnnotations());
 
         return $builder;
     }
@@ -153,6 +155,7 @@ final class ConfigBuilder
         return $this;
     }
 
+
     public function setExcludedNames(array $names)
     {
         $this->excludedNames = $names;
@@ -202,13 +205,21 @@ final class ConfigBuilder
             $this->excludedNames,
             $this->enabledExtractors,
             $this->keepOldTranslations,
-            $this->loadResources
+            $this->loadResources,
+            $this->ignoredAnnotations
         );
     }
 
     public function setLoadResources(array $loadResources)
     {
         $this->loadResources = $loadResources;
+
+        return $this;
+    }
+
+    public function setIgnoredAnnotations(array $annotations)
+    {
+        $this->ignoredAnnotations = $annotations;
 
         return $this;
     }
