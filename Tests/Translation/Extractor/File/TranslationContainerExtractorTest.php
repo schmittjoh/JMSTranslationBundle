@@ -23,6 +23,9 @@ use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Extractor\File\TranslationContainerExtractor;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use PhpParser\Lexer;
+use PhpParser\Parser;
+use PhpParser\ParserFactory;
 
 class TranslationContainerExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -53,9 +56,15 @@ class TranslationContainerExtractorTest extends \PHPUnit_Framework_TestCase
             $extractor = new TranslationContainerExtractor();
         }
 
-        $lexer = new \PHPParser_Lexer(file_get_contents($file));
-        $parser = new \PHPParser_Parser();
-        $ast = $parser->parse($lexer);
+        $lexer = new Lexer();
+        if (class_exists('PhpParser\ParserFactory')) {
+            $factory = new ParserFactory();
+            $parser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
+        } else {
+            $parser = new Parser($lexer);
+        }
+
+        $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();
         $extractor->visitPhpFile($file, $catalogue, $ast);

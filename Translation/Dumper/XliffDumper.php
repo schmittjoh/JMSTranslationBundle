@@ -32,7 +32,14 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class XliffDumper implements DumperInterface
 {
+    /**
+     * @var string
+     */
     private $sourceLanguage = 'en';
+
+    /**
+     * @var bool
+     */
     private $addDate = false;
 
     /**
@@ -40,7 +47,7 @@ class XliffDumper implements DumperInterface
      */
     public function setAddDate($bool)
     {
-        $this->addDate = (Boolean) $bool;
+        $this->addDate = (bool) $bool;
     }
 
     /**
@@ -52,7 +59,8 @@ class XliffDumper implements DumperInterface
     }
 
     /**
-     * @param \JMS\TranslationBundle\Model\MessageCatalogue $domain
+     * @param MessageCatalogue $catalogue
+     * @param MessageCatalogue|string $domain
      * @return string
      */
     public function dump(MessageCatalogue $catalogue, $domain = 'messages')
@@ -95,6 +103,25 @@ class XliffDumper implements DumperInterface
             $unit->setAttribute('id', hash('sha1', $id));
             $unit->setAttribute('resname', $id);
 
+            $unit->appendChild($source = $doc->createElement('source'));
+            if (preg_match('/[<>&]/', $message->getSourceString())) {
+                $source->appendChild($doc->createCDATASection($message->getSourceString()));
+            } else {
+                $source->appendChild($doc->createTextNode($message->getSourceString()));
+            }
+
+            $unit->appendChild($target = $doc->createElement('target'));
+            if (preg_match('/[<>&]/', $message->getLocaleString())) {
+                $target->appendChild($doc->createCDATASection($message->getLocaleString()));
+            } else {
+                $target->appendChild($doc->createTextNode($message->getLocaleString()));
+            }
+
+            if ($message->isNew()) {
+                $target->setAttribute('state', 'new');
+            }
+
+            // As per the OASIS XLIFF 1.2 non-XLIFF elements must be at the end of the <trans-unit>
             if ($sources = $message->getSources()) {
                 foreach ($sources as $source) {
                     if ($source instanceof FileSource) {
@@ -117,24 +144,6 @@ class XliffDumper implements DumperInterface
 
             if ($meaning = $message->getMeaning()) {
                 $unit->setAttribute('extradata', 'Meaning: '.$meaning);
-            }
-
-            $unit->appendChild($source = $doc->createElement('source'));
-            if (preg_match('/[<>&]/', $message->getSourceString())) {
-                $source->appendChild($doc->createCDATASection($message->getSourceString()));
-            } else {
-                $source->appendChild($doc->createTextNode($message->getSourceString()));
-            }
-
-            $unit->appendChild($target = $doc->createElement('target'));
-            if (preg_match('/[<>&]/', $message->getLocaleString())) {
-                $target->appendChild($doc->createCDATASection($message->getLocaleString()));
-            } else {
-                $target->appendChild($doc->createTextNode($message->getLocaleString()));
-            }
-
-            if ($message->isNew()) {
-                $target->setAttribute('state', 'new');
             }
         }
 

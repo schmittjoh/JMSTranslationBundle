@@ -21,7 +21,6 @@ namespace JMS\TranslationBundle\Translation;
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Util\FileUtils;
-use JMS\TranslationBundle\Translation\Loader\LoaderInterface;
 
 class LoaderManager
 {
@@ -68,7 +67,6 @@ class LoaderManager
                 list($format, $file) = $data;
 
                 $catalogue->merge($this->getLoader($format)->load($file, $locale, $domain));
-
             }
         }
 

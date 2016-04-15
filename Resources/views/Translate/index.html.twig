@@ -19,17 +19,20 @@
                         type: 'POST',
                         headers: {'X-HTTP-METHOD-OVERRIDE': 'PUT'},
                         data: {'_method': 'PUT', 'message': $(this).val()},
+                        beforeSend: function() {
+                            $(self).parent().closest('td').prev('td').children('.alert-message').remove();
+                        },
                         error: function() {
-                            $(self).parent().prepend('<div class="alert-message error">Translation could not be saved</div>');
+                            $(self).parent().closest('td').prev('td').append('<span class="alert-message label error">Could not be saved.</span>');
                         },
                         success: function() {
-                            $(self).parent().prepend('<div class="alert-message success">Translation was saved.</div>');
+                            $(self).parent().closest('td').prev('td').append('<span class="alert-message label success">Translation was saved.</span>');
                         },
                         complete: function() {
                             var parent = $(self).parent();
                             $(self).data('timeoutId', setTimeout(function() {
                                 $(self).data('timeoutId', undefined);
-                                parent.children('.alert-message').fadeOut(300, function() { $(this).remove(); });
+                                parent.closest('td').prev('td').children('.alert-message').fadeOut(300, function() { $(this).remove(); });
                             }, 10000));
                         }
                     });

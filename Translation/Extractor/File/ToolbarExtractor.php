@@ -29,10 +29,13 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
-use JMS\TranslationBundle\Logger\LoggerAwareInterface;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use PhpParser\Comment\Doc;
+use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
+use Psr\Log\LoggerInterface;
 
-class ToolbarExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class ToolbarExtractor implements FileVisitorInterface, NodeVisitor
 {
     private $docParser;
     private $traverser;
@@ -44,14 +47,14 @@ class ToolbarExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
     {
         $this->docParser = $docParser;
 
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
-        if ($node instanceof \PHPParser_Node_Expr_MethodCall) {
+        if ($node instanceof Node\Expr\MethodCall) {
 
             if (!is_string($node->name)) {
                 return;
@@ -64,7 +67,7 @@ class ToolbarExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
     }
 
-    private function parseNode(\PHPParser_Node_Expr_MethodCall $node)
+    private function parseNode(Node\Expr\MethodCall $node)
     {
         if (count($node->args) >= 1) {
             $first_argument = $node->args[0];
@@ -74,6 +77,9 @@ class ToolbarExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
             $docComment = $first_argument->getDocComment();
 
             if ($docComment) {
+                if ($docComment instanceof Doc) {
+                    $docComment = $docComment->getText();
+                }
                 foreach ($this->docParser->parse($docComment, 'file ' . $this->file . ' near line ' . $first_argument->value->getLine()) as $annot) {
                     if ($annot instanceof Ignore) {
                         $ignore = true;
@@ -85,7 +91,7 @@ class ToolbarExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                 }
             }
 
-            if (!$first_argument->value instanceof \PHPParser_Node_Scalar_String) {
+            if (!$first_argument->value instanceof Node\Scalar\String_) {
                 if ($ignore) {
                     return;
                 }
@@ -131,7 +137,7 @@ class ToolbarExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         $this->traverser->traverse($ast);
     }
 
-    public function leaveNode(\PHPParser_Node $node) { }
+    public function leaveNode(Node $node) { }
 
     public function beforeTraverse(array $nodes) { }
     public function afterTraverse(array $nodes) { }

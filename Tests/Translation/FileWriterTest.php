@@ -32,7 +32,7 @@ class FileWriterTest extends \PHPUnit_Framework_TestCase
         $dumper
             ->expects($this->once())
             ->method('dump')
-            ->will($this->returnCallback(function($v) use($self) {
+            ->will($this->returnCallback(function ($v) use ($self) {
                 $self->assertEquals(array('foo.bar', 'foo.bar.baz'), array_keys($v->getDomain('messages')->all()));
             }))
         ;

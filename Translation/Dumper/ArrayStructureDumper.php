@@ -23,13 +23,24 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 
 abstract class ArrayStructureDumper implements DumperInterface
 {
+    /**
+     * @var bool
+     */
     private $prettyPrint = true;
 
+    /**
+     * @param $bool
+     */
     public function setPrettyPrint($bool)
     {
-        $this->prettyPrint = (Boolean) $bool;
+        $this->prettyPrint = (bool) $bool;
     }
 
+    /**
+     * @param MessageCatalogue $catalogue
+     * @param string $domain
+     * @return string
+     */
     public function dump(MessageCatalogue $catalogue, $domain = 'messages')
     {
         $structure = $catalogue->getDomain($domain)->all();
@@ -46,7 +57,7 @@ abstract class ArrayStructureDumper implements DumperInterface
                 // are before sub-paths, e.g.
                 // array_keys($structure) = array('foo.bar', 'foo.bar.baz')
                 // but NOT: array_keys($structure) = array('foo.bar.baz', 'foo.bar')
-                for ($i=0,$c=count($parts); $i<$c; $i++) {
+                for ($i=0, $c=count($parts); $i<$c; $i++) {
                     if ($i+1 === $c) {
                         $pointer[$parts[$i]] = $message;
                         break;
@@ -73,5 +84,9 @@ abstract class ArrayStructureDumper implements DumperInterface
         return $this->dumpStructure($structure);
     }
 
+    /**
+     * @param array $structure
+     * @return string
+     */
     abstract protected function dumpStructure(array $structure);
 }

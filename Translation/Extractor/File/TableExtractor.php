@@ -29,10 +29,14 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
-use JMS\TranslationBundle\Logger\LoggerAwareInterface;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use PhpParser\Comment\Doc;
+use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
+use Psr\Log\LoggerInterface;
 
-class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class TableExtractor implements FileVisitorInterface, NodeVisitor
 {
     private $docParser;
     private $traverser;
@@ -50,19 +54,19 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
     {
         $this->docParser = $docParser;
 
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
         if ($node->getDocComment() !== null)
         {
             $this->last_node_with_comment = $node;
         }
         
-        if ($node instanceof \PHPParser_Node_Expr_MethodCall) {
+        if ($node instanceof MethodCall) {
 
             if (!is_string($node->name)) {
                 return;
@@ -75,7 +79,7 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
         
         // Find iocn definitions
-        if ($node instanceof \PHPParser_Node_Expr_Array) {
+        if ($node instanceof Node\Expr\Array_) {
             // Icon definitions contain an 'icon' and 'title' array-key
             $icon_element = $this->findArrayItemWithName($node, 'icon');
             $title_element = $this->findArrayItemWithName($node, 'title');
@@ -105,7 +109,7 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
     }
 
-    private function parseNode(\PHPParser_Node_Expr_MethodCall $node)
+    private function parseNode(MethodCall $node)
     {
         // Add translation for column name
         if (count($node->args) >= 1) {
@@ -116,7 +120,7 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
                 return;
             }
 
-            if (!$first_argument->value instanceof \PHPParser_Node_Scalar_String) {
+            if (!$first_argument->value instanceof Node\Scalar\String_) {
 
                 $message = sprintf('Unable to extract translation id for table column name from non-string values, but got "%s" in %s on line %d. Please refactor your code to pass a string, or add "/** @Ignore */".', get_class($first_argument->value), $this->file, $first_argument->value->getLine());
                 if ($this->logger) {
@@ -142,23 +146,26 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         // Add translation for dropdown link names
         if (count($node->args) >= 3) {
             $third_argument = $node->args[2];
-            if ($third_argument->value instanceof \PHPParser_Node_Expr_Array) {
+            if ($third_argument->value instanceof Node\Expr\Array_) {
                 $array_argument = $third_argument->value;
                 $formatter = $this->findArrayItemWithName($array_argument, 'formatter');
-                if ($formatter instanceof \PHPParser_Node_Expr_Array) {
+                if ($formatter instanceof Node\Expr\Array_) {
                     $this->parseFormatterNode($formatter);
                 }
             }
         }
     }
     
-    private function getDocCommentData(\PHPParser_Node $node)
+    private function getDocCommentData(Node $node)
     {
         $ignore = false;
         $desc = $meaning = null;
         $docComment = $node->getDocComment();
 
         if ($docComment) {
+            if ($docComment instanceof Doc) {
+                $docComment = $docComment->getText();
+            }
             foreach ($this->docParser->parse($docComment, 'file ' . $this->file . ' near line ' . $node->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
@@ -173,14 +180,14 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         return [$ignore, $desc, $meaning];
     }
     
-    private function parseFormatterNode(\PHPParser_Node_Expr_Array $formatter)
+    private function parseFormatterNode(Node\Expr\Array_ $formatter)
     {
         $formatter_name = $this->findArrayItemWithName($formatter, 'formatter');
-        if ($formatter_name instanceof \PHPParser_Node_Scalar_String && $formatter_name->value == 'dropdown') {
+        if ($formatter_name instanceof Node\Scalar\String_ && $formatter_name->value == 'dropdown') {
             $links = $this->findArrayItemWithName($formatter, 'links');
-            if ($links instanceof \PHPParser_Node_Expr_Array) {
+            if ($links instanceof Node\Expr\Array_) {
                 foreach ($links->items as $item) {
-                    if ($item->key instanceof \PHPParser_Node_Scalar_String) {
+                    if ($item->key instanceof Node\Scalar\String_) {
                         list($ignore, $desc, $meaning) = $this->getDocCommentData($item->key);
                         if ($ignore) {
                             return;
@@ -196,11 +203,11 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         }
     }
     
-    private function findArrayItemWithName(\PHPParser_Node_Expr_Array $array, $name)
+    private function findArrayItemWithName(Node\Expr\Array_ $array, $name)
     {
         foreach ($array->items as $item)
         {
-            if ($item->key instanceof \PHPParser_Node_Scalar_String && $item->key->value == $name)
+            if ($item->key instanceof Node\Scalar\String_ && $item->key->value == $name)
             {
                 return $item->value;
             }
@@ -233,7 +240,7 @@ class TableExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
         $this->traverser->traverse($ast);
     }
 
-    public function leaveNode(\PHPParser_Node $node) { }
+    public function leaveNode(Node $node) { }
 
     public function beforeTraverse(array $nodes) { }
     public function afterTraverse(array $nodes) { }
