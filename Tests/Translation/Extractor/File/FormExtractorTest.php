@@ -282,4 +282,17 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
 
         return $catalogue;
     }
+
+    public function testAttrArrayForm()
+    {
+        $expected = new MessageCatalogue();
+        $path = __DIR__.'/Fixture/MyAttrArrayType.php';
+
+        $message = new Message('form.label.firstname');
+        $message->addSource(new FileSource($path, 31));
+        $expected->add($message);
+
+        $this->assertEquals($expected, $this->extract('MyAttrArrayType.php'));
+
+    }
 }
