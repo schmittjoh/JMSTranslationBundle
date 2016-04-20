@@ -82,6 +82,6 @@ class ApiController
             $request->request->get('message')
         );
 
-        return new Response();
+        return new Response('Translation was saved');
     }
 }

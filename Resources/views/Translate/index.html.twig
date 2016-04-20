@@ -25,8 +25,12 @@
                         error: function() {
                             $(self).parent().closest('td').prev('td').append('<span class="alert-message label error">Could not be saved.</span>');
                         },
-                        success: function() {
-                            $(self).parent().closest('td').prev('td').append('<span class="alert-message label success">Translation was saved.</span>');
+                        success: function(data) {
+                            if (data == 'Translation was saved') {
+                                $(self).parent().closest('td').prev('td').append('<span class="alert-message label success">Translation was saved.</span>');
+                            } else {
+                                $(self).parent().closest('td').prev('td').append('<span class="alert-message label error">Could not be saved.</span>');
+                            }
                         },
                         complete: function() {
                             var parent = $(self).parent();
