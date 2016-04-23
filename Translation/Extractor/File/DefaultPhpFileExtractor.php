@@ -69,6 +69,8 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
      */
     private $logger;
 
+    private $previousDoc;
+
     /**
      * @var Node
      */
@@ -102,6 +104,11 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         if (!$node instanceof Node\Expr\MethodCall
             || !is_string($node->name)
             || ('trans' !== strtolower($node->name) && 'transchoice' !== strtolower($node->name))) {
+
+            if (null !== $node->getDocComment())
+            {
+                $this->previousDoc = $node->getDocComment();
+            }
             $this->previousNode = $node;
             return;
         }
@@ -180,6 +187,9 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->file = $file;
         $this->catalogue = $catalogue;
         $this->traverser->traverse($ast);
+        
+        // At the end of the file, clear the doc comment
+        $this->previousDoc = null;
     }
 
     /**
@@ -240,7 +250,11 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         // /** @Desc("FOO") */ ->trans('my.id')
         // /** @Desc("FOO") */ $translator->trans('my.id')
         if (null !== $comment = $node->getDocComment()) {
-            return $comment->getText();
+            return is_object($comment) ? $comment->getText() : $comment;
+        } elseif (null !== $this->previousDoc) {
+            $comment = $this->previousDoc;
+            $this->previousDoc = null;
+            return is_object($comment) ? $comment->getText() : $comment;
         } elseif (null !== $this->previousNode && $this->previousNode->getDocComment() !== null) {
             $comment = $this->previousNode->getDocComment();
             return is_object($comment) ? $comment->getText() : $comment;

@@ -27,3 +27,6 @@ class DefaultController
         return /** @Desc("Foo") */ $this->translator->trans('controller.foo');
     }
 }
+
+// Dummy Desc that should not be used in next file
+/** @Desc("Dummy") */

@@ -35,6 +35,7 @@ class MyFormType extends AbstractType
             ->add('states', 'choice', array(
                 'choices' => array('foo' => 'bar'),
                 'empty_value' => /** @Desc("Please select a state") */ 'form.states.empty_value',
+                'help' => /** @Desc("This is a help text") */ 'form.states.help',
             ))
             ->add('countries', 'choice', array('empty_value' => false))
             ->add('password', 'repeated', array(

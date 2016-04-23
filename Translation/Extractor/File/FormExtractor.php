@@ -134,6 +134,10 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                     && $item->value->name instanceof Node\Name && 'false' === $item->value->name->parts[0]) {
                     continue;
                 }
+                if ('help' === $item->key->value && $item->value instanceof Node\Expr\ConstFetch
+                    && $item->value->name instanceof Node\Name && 'false' === $item->value->name->parts[0]) {
+                    continue;
+                }
                 if ('empty_value' === $item->key->value && $item->value instanceof Node\Expr\Array_) {
                     foreach ($item->value->items as $sitem) {
                         $this->parseItem($sitem, $domain);
@@ -145,7 +149,19 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                     continue;
                 }
 
-                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value && 'choices' !== $item->key->value && 'invalid_message' !== $item->key->value && 'attr' !== $item->key->value) {
+                if ('message' === $item->key->value && !$item->value instanceof Node\Scalar\String_) {
+                    continue;
+                }
+
+                if ('label' === $item->key->value && !$item->value instanceof Node\Scalar\String_) {
+                    continue;
+                }
+
+                if ('placeholder' === $item->key->value && !$item->value instanceof Node\Scalar\String_) {
+                    continue;
+                }
+                
+                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value && 'help' !== $item->key->value && 'choices' !== $item->key->value && 'invalid_message' !== $item->key->value && 'attr' !== $item->key->value && 'placeholder' !== $item->key->value) {
                     continue;
                 }
 
@@ -170,6 +186,8 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                         }
                         $this->parseItem($sitem, $domain);
                     }
+                } elseif ('invalid_message' === $item->key->value || 'message' === $item->key->value) {
+                    $this->parseItem($item, 'validators');
                 } elseif ('attr' === $item->key->value && is_array($item->value->items)) {
                     foreach ($item->value->items as $sitem) {
                         if ('placeholder' == $sitem->key->value) {

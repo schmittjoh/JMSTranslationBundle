@@ -44,6 +44,13 @@ class Controller
     {
         $this->session->setFlash('foo', $this->translator->trans(/** @Desc("Foo bar") */ 'text.foo_bar'));
     }
+    
+    public function anotherAction()
+    {
+        /** @Desc("Baz Qux") */
+        $this->session->setFlash('baz', $this->translator->trans('text.baz_qux'));
+        $this->session->setFlash('qux', $this->translator->trans('text.qux_baz'));
+    }
 
     public function welcomeAction()
     {
