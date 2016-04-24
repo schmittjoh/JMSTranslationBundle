@@ -56,7 +56,7 @@ class FileWriter
         }
 
         // sort messages before dumping
-        $catalogue->getDomain($domain)->sort(function($a, $b) {
+        $catalogue->getDomain($domain)->sort(function ($a, $b) {
             return strcmp($a->getId(), $b->getId());
         });
 

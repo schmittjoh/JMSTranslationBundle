@@ -29,13 +29,34 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 class Writer
 {
+    /**
+     * @var int
+     */
     public $indentationSpaces = 4;
+
+    /**
+     * @var int
+     */
     public $indentationLevel = 0;
+
+    /**
+     * @var string
+     */
     public $content = '';
+
+    /**
+     * @var int
+     */
     public $changeCount = 0;
 
+    /**
+     * @var array
+     */
     private $changes = array();
 
+    /**
+     * @return $this
+     */
     public function indent()
     {
         $this->indentationLevel += 1;
@@ -43,6 +64,9 @@ class Writer
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function outdent()
     {
         $this->indentationLevel -= 1;
@@ -54,6 +78,10 @@ class Writer
         return $this;
     }
 
+    /**
+     * @param $content
+     * @return $this
+     */
     public function writeln($content)
     {
         $this->write($content."\n");
@@ -68,13 +96,17 @@ class Writer
         $this->content = substr($this->content, 0, -1 * strlen($change));
     }
 
+    /**
+     * @param $content
+     * @return $this
+     */
     public function write($content)
     {
         $contentEndsWithNewLine = "\n" === substr($this->content, -1);
         $addition = '';
 
         $lines = explode("\n", $content);
-        for ($i=0,$c=count($lines); $i<$c; $i++) {
+        for ($i=0, $c=count($lines); $i<$c; $i++) {
             if ($this->indentationLevel > 0
                 && !empty($lines[$i])
                 && ((empty($addition) && "\n" === substr($this->content, -1)) || "\n" === substr($addition, -1))) {
@@ -95,6 +127,10 @@ class Writer
         return $this;
     }
 
+    /**
+     * @param bool $preserveNewLines
+     * @return $this
+     */
     public function rtrim($preserveNewLines = true)
     {
         if (!$preserveNewLines) {
@@ -113,6 +149,9 @@ class Writer
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function reset()
     {
         $this->content = '';
@@ -121,6 +160,9 @@ class Writer
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getContent()
     {
         return $this->content;

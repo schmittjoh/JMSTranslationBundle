@@ -25,13 +25,24 @@ namespace JMS\TranslationBundle\Twig;
  */
 class RemovingNodeVisitor implements \Twig_NodeVisitorInterface
 {
+    /**
+     * @var bool
+     */
     private $enabled = true;
 
+    /**
+     * @param $bool
+     */
     public function setEnabled($bool)
     {
-        $this->enabled = (Boolean) $bool;
+        $this->enabled = (bool) $bool;
     }
 
+    /**
+     * @param \Twig_NodeInterface $node
+     * @param \Twig_Environment $env
+     * @return \Twig_NodeInterface
+     */
     public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
     {
         if ($this->enabled && $node instanceof \Twig_Node_Expression_Filter) {
@@ -45,11 +56,19 @@ class RemovingNodeVisitor implements \Twig_NodeVisitorInterface
         return $node;
     }
 
+    /**
+     * @param \Twig_NodeInterface $node
+     * @param \Twig_Environment $env
+     * @return \Twig_NodeInterface
+     */
     public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
     {
         return $node;
     }
 
+    /**
+     * @return int
+     */
     public function getPriority()
     {
         return -1;

@@ -33,21 +33,49 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
-class FormExtractor implements FileVisitorInterface, NodeVisitor
+class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeVisitor
 {
+    /**
+     * @var DocParser
+     */
     private $docParser;
+
+    /**
+     * @var NodeTraverser
+     */
     private $traverser;
+
+    /**
+     * @var string
+     */
     private $file;
+
+    /**
+     * @var MessageCatalogue
+     */
     private $catalogue;
 
     /**
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var string
+     */
     private $defaultDomain;
+
+    /**
+     * @var string
+     */
     private $defaultDomainMessages;
 
+    /**
+     * FormExtractor constructor.
+     * @param DocParser $docParser
+     */
     public function __construct(DocParser $docParser)
     {
         $this->docParser = $docParser;
@@ -56,7 +84,10 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
         $this->traverser->addVisitor($this);
     }
 
-
+    /**
+     * @param Node $node
+     * @return null
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Class_) {
@@ -71,12 +102,12 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
 
             $name = strtolower($node->name);
             if ('setdefaults' === $name || 'replacedefaults' === $name) {
-                $this->parseDefaultsCall($name, $node);
+                $this->parseDefaultsCall($node);
                 return;
             }
         }
 
-         if ($node instanceof Node\Expr\Array_) {
+        if ($node instanceof Node\Expr\Array_) {
             // first check if a translation_domain is set for this field
             $domain = null;
             foreach ($node->items as $item) {
@@ -101,7 +132,7 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
 
                 if ('empty_value' === $item->key->value && $item->value instanceof Node\Expr\ConstFetch
                     && $item->value->name instanceof Node\Name && 'false' === $item->value->name->parts[0]) {
-                	continue;
+                    continue;
                 }
                 if ('empty_value' === $item->key->value && $item->value instanceof Node\Expr\Array_) {
                     foreach ($item->value->items as $sitem) {
@@ -114,21 +145,38 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
                     continue;
                 }
 
-                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value && 'choices' !== $item->key->value && 'invalid_message' !== $item->key->value && 'attr' !== $item->key->value ) {
+                if ('label' !== $item->key->value && 'empty_value' !== $item->key->value && 'choices' !== $item->key->value && 'invalid_message' !== $item->key->value && 'attr' !== $item->key->value) {
                     continue;
                 }
 
                 if ('choices' === $item->key->value) {
+
+                    //Checking for the choice_as_values in the same form item
+                    $choicesAsValues = false;
+                    foreach ($node->items as $choiceItem) {
+                        if ($choiceItem->key !== null && 'choices_as_values' === $choiceItem->key->value) {
+                            $choicesAsValues = ($choiceItem->value->name->parts[0] === 'true');
+                        }
+                    }
+
                     foreach ($item->value->items as $sitem) {
+                        // If we have a choice as value that differ from the Symfony default strategy
+                        // we should invert the key and the value
+                        if (Kernel::VERSION_ID < 30000 && $choicesAsValues === true || Kernel::VERSION_ID >= 30000) {
+                            $newItem = clone $sitem;
+                            $newItem->key = $sitem->value;
+                            $newItem->value = $sitem->key;
+                            $sitem = $newItem;
+                        }
                         $this->parseItem($sitem, $domain);
                     }
-                } elseif ('attr' === $item->key->value && is_array($item->value->items) ) {
+                } elseif ('attr' === $item->key->value && $item->value instanceof Node\Expr\Array_) {
                     foreach ($item->value->items as $sitem) {
-                        if ('placeholder' == $sitem->key->value){
+                        if ('placeholder' == $sitem->key->value) {
                             $this->parseItem($sitem, $domain);
                         }
-                        if('title' == $sitem->key->value) {
-                          	$this->parseItem($sitem, $domain);
+                        if ('title' == $sitem->key->value) {
+                            $this->parseItem($sitem, $domain);
                         }
                     }
                 } elseif ('invalid_message' === $item->key->value) {
@@ -140,7 +188,10 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
         }
     }
 
-    private function parseDefaultsCall($name, Node $node)
+    /**
+     * @param Node $node
+     */
+    private function parseDefaultsCall(Node $node)
     {
         static $returningMethods = array(
             'setdefaults' => true, 'replacedefaults' => true, 'setoptional' => true, 'setrequired' => true,
@@ -156,7 +207,6 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
 
             $var = $var->var;
         }
-
 
         if (!$var instanceof Node\Expr\Variable) {
             return;
@@ -187,9 +237,12 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
                 $this->defaultDomain = $item->value->value;
             }
         }
-
     }
 
+    /**
+     * @param $item
+     * @param null $domain
+     */
     private function parseItem($item, $domain = null)
     {
         // get doc comment
@@ -213,9 +266,9 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
             foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
-                } else if ($annot instanceof Desc) {
+                } elseif ($annot instanceof Desc) {
                     $desc = $annot->text;
-                } else if ($annot instanceof Meaning) {
+                } elseif ($annot instanceof Meaning) {
                     $meaning = $annot->text;
                 }
             }
@@ -254,6 +307,13 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
         }
     }
 
+    /**
+     * @param string $id
+     * @param string $source
+     * @param null|string $domain
+     * @param null|string $desc
+     * @param null|string $meaning
+     */
     private function addToCatalogue($id, $source, $domain = null, $desc = null, $meaning = null)
     {
         if (null === $domain) {
@@ -275,6 +335,11 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
         $this->catalogue->add($message);
     }
 
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param array $ast
+     */
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
     {
         $this->file = $file;
@@ -288,13 +353,50 @@ class FormExtractor implements FileVisitorInterface, NodeVisitor
         }
     }
 
-    public function leaveNode(Node $node) { }
+    /**
+     * @param Node $node
+     * @return null|\PhpParser\Node[]|void
+     */
+    public function leaveNode(Node $node)
+    {
+    }
 
-    public function beforeTraverse(array $nodes) { }
-    public function afterTraverse(array $nodes) { }
-    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
+    /**
+     * @param array $nodes
+     * @return null|\PhpParser\Node[]|void
+     */
+    public function beforeTraverse(array $nodes)
+    {
+    }
 
+    /**
+     * @param array $nodes
+     * @return null|\PhpParser\Node[]|void
+     */
+    public function afterTraverse(array $nodes)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     */
+    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param \Twig_Node $ast
+     */
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    {
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;

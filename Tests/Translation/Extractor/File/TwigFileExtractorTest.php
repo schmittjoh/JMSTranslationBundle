@@ -126,14 +126,14 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 
     public function testEmbeddedTemplate()
     {
-    	$expected = new MessageCatalogue();
+        $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/embedded_template.html.twig';
 
         $message = new Message('foo');
         $message->addSource(new FileSource($path, 3));
         $expected->add($message);
 
-    	$this->assertEquals($expected, $this->extract('embedded_template.html.twig'));
+        $this->assertEquals($expected, $this->extract('embedded_template.html.twig'));
     }
 
     private function extract($file, TwigFileExtractor $extractor = null)

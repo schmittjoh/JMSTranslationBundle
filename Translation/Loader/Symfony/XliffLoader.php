@@ -46,6 +46,7 @@ class XliffLoader implements LoaderInterface
 
             throw new RuntimeException(sprintf('An error occurred while reading "%s": %s', $resource, $error->message));
         }
+
         libxml_use_internal_errors($previous);
 
         $xml->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
@@ -57,6 +58,7 @@ class XliffLoader implements LoaderInterface
 
             $catalogue->set($id, (string) $translation->target, $domain);
         }
+
         $catalogue->addResource(new FileResource($resource));
 
         return $catalogue;

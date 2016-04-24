@@ -20,21 +20,38 @@ namespace JMS\TranslationBundle\Translation\Comparison;
 
 class ChangeSet
 {
+    /**
+     * @var array
+     */
     private $addedMessages;
+
+    /**
+     * @var array
+     */
     private $deletedMessages;
 
+    /**
+     * ChangeSet constructor.
+     * @param array $addedMessages
+     * @param array $deletedMessages
+     */
     public function __construct(array $addedMessages, array $deletedMessages)
     {
         $this->addedMessages = $addedMessages;
         $this->deletedMessages = $deletedMessages;
     }
 
+    /**
+     * @return array
+     */
     public function getAddedMessages()
     {
         return $this->addedMessages;
-
     }
 
+    /**
+     * @return array
+     */
     public function getDeletedMessages()
     {
         return $this->deletedMessages;

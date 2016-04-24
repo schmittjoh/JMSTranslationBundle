@@ -35,13 +35,44 @@ use Psr\Log\LoggerInterface;
 
 class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
+    /**
+     * @var string
+     */
     private $domain = 'authentication';
+
+    /**
+     * @var NodeTraverser
+     */
     private $traverser;
+
+    /**
+     * @var \SplFileInfo
+     */
     private $file;
+
+    /**
+     * @var MessageCatalogue
+     */
     private $catalogue;
+
+    /**
+     * @var string
+     */
     private $namespace = '';
+
+    /**
+     * @var DocParser
+     */
     private $docParser;
+
+    /**
+     * @var bool
+     */
     private $inAuthException = false;
+
+    /**
+     * @var bool
+     */
     private $inGetMessageKey = false;
 
     /**
@@ -49,6 +80,10 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
      */
     private $logger;
 
+    /**
+     * AuthenticationMessagesExtractor constructor.
+     * @param DocParser $parser
+     */
     public function __construct(DocParser $parser)
     {
         $this->docParser = $parser;
@@ -56,16 +91,26 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $this->traverser->addVisitor($this);
     }
 
+    /**
+     * @param LoggerInterface $logger
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
+    /**
+     * @param $domain
+     */
     public function setDomain($domain)
     {
         $this->domain = $domain;
     }
 
+    /**
+     * @param Node $node
+     * @return void
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Namespace_) {
@@ -121,9 +166,9 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
             foreach ($this->docParser->parse($docComment->getText(), 'file '.$this->file.' near line '.$node->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
-                } else if ($annot instanceof Desc) {
+                } elseif ($annot instanceof Desc) {
                     $desc = $annot->text;
-                } else if ($annot instanceof Meaning) {
+                } elseif ($annot instanceof Meaning) {
                     $meaning = $annot->text;
                 }
             }
@@ -153,6 +198,11 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $this->catalogue->add($message);
     }
 
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param array $ast
+     */
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
     {
         $this->file = $file;
@@ -161,6 +211,10 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $this->traverser->traverse($ast);
     }
 
+    /**
+     * @param Node $node
+     * @return false|null|Node|\PhpParser\Node[]|void
+     */
     public function leaveNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Class_) {
@@ -176,8 +230,36 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         }
     }
 
-    public function beforeTraverse(array $nodes) { }
-    public function afterTraverse(array $nodes) { }
-    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
+    /**
+     * @param array $nodes
+     * @return null|\PhpParser\Node[]|void
+     */
+    public function beforeTraverse(array $nodes)
+    {
+    }
+
+    /**
+     * @param array $nodes
+     * @return null|\PhpParser\Node[]|void
+     */
+    public function afterTraverse(array $nodes)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     */
+    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param \Twig_Node $ast
+     */
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    {
+    }
 }
