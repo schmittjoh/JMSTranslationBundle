@@ -124,6 +124,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                     case 'invalid_message':
                         $this->parseItem($item, 'validators');
                         break;
+                    case 'placeholder':
                     case 'empty_value':
                         if ($this->parseEmptyValueNode($item, $domain)) {
                             continue 2;
