@@ -37,6 +37,41 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
     private $extractor;
 
     /**
+     * @group placeholder
+     */
+    public function testPlaceholderExtract()
+    {
+        $expected = new MessageCatalogue();
+        $path = __DIR__.'/Fixture/MyPlaceholderFormType.php';
+
+        $message = new Message('field.with.placeholder');
+        $message->addSource(new FileSource($path, 29));
+        $expected->add($message);
+
+        $message = new Message('form.placeholder.text');
+        $message->setDesc('Field with a placeholder value');
+        $message->addSource(new FileSource($path, 30));
+        $expected->add($message);
+
+        $message = new Message('form.placeholder.text.but.no.label');
+        $message->setDesc('Field with a placeholder but no label');
+        $message->addSource(new FileSource($path, 34));
+        $expected->add($message);
+
+        $message = new Message('form.choice_placeholder');
+        $message->setDesc('Choice field with a placeholder');
+        $message->addSource(new FileSource($path, 37));
+        $expected->add($message);
+
+        $message = new Message('form.choice_empty_value');
+        $message->setDesc('Choice field with an empty_value');
+        $message->addSource(new FileSource($path, 40));
+        $expected->add($message);
+
+        $this->assertEquals($expected, $this->extract('MyPlaceholderFormType.php'));
+    }
+
+    /**
      * @group testExtract
      */
     public function testExtract()
