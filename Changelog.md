@@ -3,6 +3,7 @@
 
 ### 1.2.2 to next release
 
+* Support for placeholders and empty_value.
 
 ### 1.2.1 to 1.2.2
 
