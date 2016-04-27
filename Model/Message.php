@@ -242,6 +242,20 @@ class Message
     }
 
     /**
+     * Return true if we have a translated string. This is not the same as running:
+     *   $str = $message->getLocaleString();
+     *   $bool = !empty($str);
+     *
+     * The $message->getLocaleString() will return a description or an id if the localeString does not exist.
+     *
+     * @return bool
+     */
+    public function hasLocaleString()
+    {
+        return !empty($this->localeString);
+    }
+
+    /**
      * Merges an extracted message.
      *
      * Do not use this if you want to merge a message from an existing catalogue.
@@ -262,11 +276,15 @@ class Message
 
         if (null !== $desc = $message->getDesc()) {
             $this->desc = $desc;
-
+            $this->localeString = null;
+            if ($message->hasLocaleString()) {
+                $this->localeString = $message->getLocaleString();
+            }
         }
 
         foreach ($message->getSources() as $source) {
             $this->addSource($source);
+
         }
 
         $this->new = $message->isNew();
