@@ -244,7 +244,7 @@ class Updater
         ));
 
         $this->extractor->reset();
-        $this->extractor->setDirectories($config->getScanDirs());
+        $this->extractor->setDirectories($config->getScanDirs(), $config->isRecursive());
         $this->extractor->setExcludedDirs($config->getExcludedDirs());
         $this->extractor->setExcludedNames($config->getExcludedNames());
         $this->extractor->setEnabledExtractors($config->getEnabledExtractors());

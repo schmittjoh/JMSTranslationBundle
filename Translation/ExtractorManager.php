@@ -20,6 +20,7 @@ namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Finder\Finder;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
@@ -70,27 +71,33 @@ class ExtractorManager implements ExtractorInterface
 
     /**
      * @param array $directories
+     * @param boolean $recursive
      */
-    public function setDirectories(array $directories)
+    public function setDirectories(array $directories, $recursive = false)
     {
         $this->directories = array();
-        
         foreach ($directories as $dir) {
-            $this->addDirectory($dir);
+            $this->addDirectory($dir, $recursive);
         }
     }
 
     /**
      * @param $directory
+     * @param boolean $recursive
      * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
      */
-    public function addDirectory($directory)
+    public function addDirectory($directory, $recursive = false)
     {
         if (!is_dir($directory)) {
             throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $directory));
         }
-
         $this->directories[] = $directory;
+        if ($recursive) {
+            $finder = new Finder();
+            foreach ($finder->directories()->in($directory) as $subdir) {
+                $this->directories[] = $subdir->getPathName();
+            }
+        }
     }
 
     /**
