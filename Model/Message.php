@@ -44,6 +44,7 @@ class Message
     private $domain;
 
     /**
+     * This is the translated string.
      * @var string
      */
     private $localeString;
@@ -146,6 +147,12 @@ class Message
     }
 
     /**
+     * This will return:
+     * 1) the localeString, ie the translated string
+     * 2) description (if new)
+     * 3) id (if new)
+     * 4) empty string
+     *
      * @return string
      */
     public function getLocaleString()
@@ -255,10 +262,7 @@ class Message
 
         if (null !== $desc = $message->getDesc()) {
             $this->desc = $desc;
-            $this->localeString = null;
-            if ($localeString = $message->getLocaleString()) {
-                $this->localeString = $localeString;
-            }
+
         }
 
         foreach ($message->getSources() as $source) {
