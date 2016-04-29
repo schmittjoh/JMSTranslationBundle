@@ -11,6 +11,16 @@
                 $(this).parent().submit();
             });
             
+            $('.truncate-left').trunk8({
+                side: 'left',
+                fill: '<a href="#" class="untruncate">&hellip;</a>'
+            });
+
+            $(document).on('click', '.untruncate', function (event) {
+                $(this).parent().trunk8('revert');
+                event.preventDefault();
+            });
+            
             {% if isWriteable is sameas(true) %}
             $('textarea')
                 .blur(function() {
