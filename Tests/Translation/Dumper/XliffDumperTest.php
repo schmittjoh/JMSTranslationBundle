@@ -53,6 +53,15 @@ EOF;
         $this->assertEquals($expected, $dumper->dump($catalogue, 'messages'));
     }
 
+    public function testDumpStructureFullPaths()
+    {
+        $dumper = $this->getDumper();
+
+        $catalogue = $this->getStructureCatalogue();
+
+        $this->assertEquals($this->getOutput('structure'), $dumper->dump($catalogue, 'messages'));
+    }
+
     /**
      * * Test the fact that the references positions are not in the dumped xliff
      */
