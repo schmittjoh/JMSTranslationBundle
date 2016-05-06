@@ -76,6 +76,12 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
             $message->addSource(new FileSource($basePath.'Resources/views/'.$engine.'_template.html.'.$engine, 7));
             $expected[$engine.'.foo_bar'] = $message;
         }
+		
+		// File with global namespace.
+        $message = new Message('globalnamespace.foo');
+        $message->addSource(new FileSource($basePath.'GlobalNamespace.php', 27));
+        $message->setDesc('Bar');
+        $expected['globalnamespace.foo'] = $message;
 
         $actual = $this->extract(__DIR__.'/Fixture/SimpleTest')->getDomain('messages')->all();
 
