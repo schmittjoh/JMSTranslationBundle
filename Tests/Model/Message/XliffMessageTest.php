@@ -19,14 +19,14 @@
 namespace JMS\TranslationBundle\Tests\Model\Message;
 
 use JMS\TranslationBundle\Model\FileSource;
-
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\Message\XliffMessage;
 use JMS\TranslationBundle\Tests\Model\MessageTest;
 
 class XliffMessageTest extends MessageTest
 {
-    public function testSetIsApproved() {
+    public function testSetIsApproved()
+    {
         $message = new XliffMessage('foo');
         $this->assertFalse($message->isApproved());
         $this->assertSame($message, $message->setApproved(true));
@@ -35,7 +35,8 @@ class XliffMessageTest extends MessageTest
         $this->assertFalse($message->isApproved());
     }
 
-    public function testHasState() {
+    public function testHasState()
+    {
         $message = new XliffMessage('foo');
         $this->assertTrue($message->hasState());
         $message->setState(XliffMessage::STATE_TRANSLATED);
@@ -46,7 +47,8 @@ class XliffMessageTest extends MessageTest
         $this->assertTrue($message->hasState());
     }
 
-    public function testGetSetState() {
+    public function testGetSetState()
+    {
         $message = new XliffMessage('foo');
         $this->assertEquals(XliffMessage::STATE_NEW, $message->getState());
         $message->setState(XliffMessage::STATE_TRANSLATED);
@@ -57,7 +59,8 @@ class XliffMessageTest extends MessageTest
         $this->assertEquals(XliffMessage::STATE_NEW, $message->getState());
     }
 
-    public function testSetIsNew() {
+    public function testSetIsNew()
+    {
         $message = new XliffMessage('foo');
         $this->assertTrue($message->isNew());
         $this->assertSame($message, $message->setNew(false));
@@ -72,7 +75,8 @@ class XliffMessageTest extends MessageTest
         $this->assertFalse($message->isNew());
     }
 
-    public function testisWritable() {
+    public function testisWritable()
+    {
         $message = new XliffMessage('foo');
         $this->assertTrue($message->isWritable());
         $this->assertSame($message, $message->setState(XliffMessage::STATE_FINAL));
@@ -97,12 +101,13 @@ class XliffMessageTest extends MessageTest
         $this->assertSame($notes, $message->getNotes());
     }
 
-    public function testMerge() {
+    public function testMerge()
+    {
         $messageWrite = new XliffMessage('foo');
         $messageWrite->setDesc('foo');
         $messageWrite->setMeaning('foo');
         $messageWrite->addSource($s1 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'));
-        
+
         $messageRead = new XliffMessage('foo');
         $messageRead->setDesc('bar');
         $messageRead->setApproved(true);
@@ -152,7 +157,8 @@ class XliffMessageTest extends MessageTest
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $message7->getState());
     }
 
-    public function testMergeExisting() {
+    public function testMergeExisting()
+    {
         $scannedMessage = new XliffMessage('foo');
         $scannedMessage->setDesc('foo');
 
@@ -210,7 +216,8 @@ class XliffMessageTest extends MessageTest
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $scannedMessage4->getState());
     }
 
-    public function testMergeScanned() {
+    public function testMergeScanned()
+    {
         $existingMessage = new XliffMessage('foo');
         $existingMessage->setLocaleString('bar');
         $existingMessage->addSource(new FileSource('bar'));
@@ -221,10 +228,10 @@ class XliffMessageTest extends MessageTest
         $scannedMessage->setDesc('foo');
         $scannedMessage->setApproved(true);
         $scannedMessage->setState(XliffMessage::STATE_TRANSLATED);
-        
+
         $scannedMessage1 = new Message('foo');
         $scannedMessage1->setDesc('foo');
-        
+
         $existingMessage1 = clone $existingMessage;
         $scannedMessage1 = clone $scannedMessage;
         $existingMessage1->mergeScanned($scannedMessage1);
@@ -272,5 +279,4 @@ class XliffMessageTest extends MessageTest
         $this->assertTrue($existingMessage4->isApproved());
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $existingMessage4->getState());
     }
-	
 }

@@ -18,7 +18,6 @@
 
 namespace JMS\TranslationBundle\Model\Message;
 
-use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\Message;
 
 /**
@@ -28,15 +27,15 @@ use JMS\TranslationBundle\Model\Message;
  */
 class XliffMessageState extends Message
 {
-	const STATE_NONE = null;
-	const STATE_FINAL = 'final';
-	const STATE_NEEDS_ADAPTATION = 'needs-adaptation';
-	const STATE_NEEDS_L10N = 'needs-l10n';
-	const STATE_NEEDS_REVIEW_ADAPTATION = 'needs-review-adaptation';
-	const STATE_NEEDS_REVIEW_L10N = 'needs-review-l10n';
-	const STATE_NEEDS_REVIEW_TRANSLATION = 'needs-review-translation';
-	const STATE_NEEDS_TRANSLATION = 'needs-translation';
-	const STATE_NEW = 'new';
-	const STATE_SIGNED_OFF = 'signed-off';
-	const STATE_TRANSLATED = 'translated';
+    const STATE_NONE = null;
+    const STATE_FINAL = 'final';
+    const STATE_NEEDS_ADAPTATION = 'needs-adaptation';
+    const STATE_NEEDS_L10N = 'needs-l10n';
+    const STATE_NEEDS_REVIEW_ADAPTATION = 'needs-review-adaptation';
+    const STATE_NEEDS_REVIEW_L10N = 'needs-review-l10n';
+    const STATE_NEEDS_REVIEW_TRANSLATION = 'needs-review-translation';
+    const STATE_NEEDS_TRANSLATION = 'needs-translation';
+    const STATE_NEW = 'new';
+    const STATE_SIGNED_OFF = 'signed-off';
+    const STATE_TRANSLATED = 'translated';
 }

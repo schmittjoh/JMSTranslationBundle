@@ -28,7 +28,8 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 class Message
 {
     /**
-     * Unique ID of this message (same across the same domain)
+     * Unique ID of this message (same across the same domain).
+     *
      * @var string
      */
     private $id;
@@ -45,33 +46,38 @@ class Message
 
     /**
      * This is the translated string.
+     *
      * @var string
      */
     private $localeString;
 
     /**
-     * Additional information about the intended meaning
+     * Additional information about the intended meaning.
+     *
      * @var string
      */
     private $meaning;
 
     /**
-     * The description/sample for translators
+     * The description/sample for translators.
      *
      * @var string
      */
     private $desc;
 
     /**
-     * The sources where this message occurs
+     * The sources where this message occurs.
+     *
      * @var array
      */
     private $sources = array();
 
     /**
      * @static
+     *
      * @param $id
      * @param string $domain
+     *
      * @return Message
      */
     public static function forThisFile($id, $domain = 'messages')
@@ -88,8 +94,10 @@ class Message
 
     /**
      * @static
+     *
      * @param $id
      * @param string $domain
+     *
      * @return Message
      */
     public static function create($id, $domain = 'messages')
@@ -109,6 +117,7 @@ class Message
 
     /**
      * @param SourceInterface $source
+     *
      * @return Message
      */
     public function addSource(SourceInterface $source)
@@ -151,7 +160,7 @@ class Message
      * 1) the localeString, ie the translated string
      * 2) description (if new)
      * 3) id (if new)
-     * 4) empty string
+     * 4) empty string.
      *
      * @return string
      */
@@ -199,6 +208,7 @@ class Message
 
     /**
      * @param string $meaning
+     *
      * @return $this
      */
     public function setMeaning($meaning)
@@ -210,6 +220,7 @@ class Message
 
     /**
      * @param bool $bool
+     *
      * @return $this
      */
     public function setNew($bool)
@@ -221,6 +232,7 @@ class Message
 
     /**
      * @param string $desc
+     *
      * @return $this
      */
     public function setDesc($desc)
@@ -232,6 +244,7 @@ class Message
 
     /**
      * @param string $str
+     *
      * @return $this
      */
     public function setLocaleString($str)
@@ -241,7 +254,8 @@ class Message
         return $this;
     }
 
-    public function setSources(array $sources = array()) {
+    public function setSources(array $sources = array())
+    {
         $this->sources = $sources;
 
         return $this;
@@ -250,7 +264,7 @@ class Message
     /**
      * Return true if we have a translated string. This is not the same as running:
      *   $str = $message->getLocaleString();
-     *   $bool = !empty($str);
+     *   $bool = !empty($str);.
      *
      * The $message->getLocaleString() will return a description or an id if the localeString does not exist.
      *
@@ -268,6 +282,7 @@ class Message
      * In these cases, use mergeExisting() instead.
      *
      * @param Message $message
+     *
      * @throws RuntimeException
      */
     public function merge(Message $message)
@@ -290,13 +305,9 @@ class Message
 
         foreach ($message->getSources() as $source) {
             $this->addSource($source);
-
         }
 
         $this->setNew($message->isNew());
-        if ($localeString = $message->getLocaleString()) {
-            $this->localeString = $localeString;
-        }
     }
 
     /**
@@ -306,6 +317,7 @@ class Message
      * In these cases, use merge() instead.
      *
      * @param Message $message
+     *
      * @deprecated not in use atm
      */
     public function mergeExisting(Message $message)
@@ -338,9 +350,11 @@ class Message
      * instead of the scanned message, so extra information read from the existing message is not discarded.
      *
      * @param Message $message
+     *
      * @author Dieter Peeters <peetersdiet@gmail.com>
      */
-    public function mergeScanned(Message $message) {
+    public function mergeScanned(Message $message)
+    {
         if ($this->id !== $message->getId()) {
             throw new RuntimeException(sprintf('You can only merge messages with the same id. Expected id "%s", but got "%s".', $this->id, $message->getId()));
         }
@@ -365,6 +379,7 @@ class Message
 
     /**
      * @param SourceInterface $source
+     *
      * @return bool
      */
     public function hasSource(SourceInterface $source)
