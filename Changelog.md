@@ -4,6 +4,12 @@
 ### 1.2.2 to next release
 
 * Support for placeholders and empty_value.
+* Slightly easier webui extension with new extensible js class
+* Extracted strings have the full source path stored
+* Improvements to WebUI logic
+* Various extraction bug fixes (attr as variable)
+* Various improvements to xliff dumper
+* Ensure full symfony 3.0 support and tests
 
 ### 1.2.1 to 1.2.2
 
