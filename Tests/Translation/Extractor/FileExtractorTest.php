@@ -18,6 +18,7 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor;
 
+use JMS\TranslationBundle\Translation\FileSourceFactory;
 use Psr\Log\NullLogger;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
@@ -110,12 +111,14 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
 
         $factory = new $metadataFactoryClass(new AnnotationLoader(new AnnotationReader()));
 
+        $dummyFileSourceFactory = new FileSourceFactory('faux');
+
         $extractor = new FileExtractor($twig, new NullLogger(), array(
-            new DefaultPhpFileExtractor($docParser),
+            new DefaultPhpFileExtractor($docParser, $dummyFileSourceFactory),
             new TranslationContainerExtractor(),
-            new TwigFileExtractor($twig),
+            new TwigFileExtractor($twig, $dummyFileSourceFactory),
             new ValidationExtractor($factory),
-            new FormExtractor($docParser),
+            new FormExtractor($docParser, $dummyFileSourceFactory),
         ));
         $extractor->setDirectory($directory);
 

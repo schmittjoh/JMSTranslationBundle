@@ -24,6 +24,7 @@ use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -295,7 +296,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         ));
         $docParser->setIgnoreNotImportedAnnotations(true);
 
-        $this->extractor = new FormExtractor($docParser);
+        $this->extractor = new FormExtractor($docParser, new FileSourceFactory('faux'));
     }
 
     private function extract($file)
