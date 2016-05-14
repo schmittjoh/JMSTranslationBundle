@@ -10,7 +10,7 @@ also set-up some pre-defined settings via the configuration:
     jms_translation:
         configs:
             app:
-                dirs: ["%kernel.root_dir%", "%kernel.root_dir%/../src]"
+                dirs: ["%kernel.root_dir%", "%kernel.root_dir%/../src"]
                 output_dir: "%kernel.root_dir%/Resources/translations"
                 ignored_domains: [routes]
                 excluded_names: ["*TestCase.php", "*Test.php"]
