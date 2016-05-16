@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *

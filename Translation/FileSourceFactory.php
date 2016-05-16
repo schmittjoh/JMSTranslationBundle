@@ -48,7 +48,6 @@ class FileSourceFactory
         if (0 === strpos($path, $this->kernelRoot)) {
             $path = substr($path, strlen($this->kernelRoot));
         }
-        $path = str_replace($this->kernelRoot, '', $path);
 
         return new FileSource($path, $line, $column);
     }

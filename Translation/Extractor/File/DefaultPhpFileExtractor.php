@@ -48,6 +48,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
      * @var FileSourceFactory
      */
     private $fileSourceFactory;
+    
     /**
      * @var NodeTraverser
      */

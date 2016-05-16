@@ -41,6 +41,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      * @var FileSourceFactory
      */
     private $fileSourceFactory;
+    
     /**
      * @var DocParser
      */
