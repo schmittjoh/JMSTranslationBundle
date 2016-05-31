@@ -8,21 +8,21 @@ Bug reports
 
 If you find a bug or a documentation issue, please report it or even better: fix it :). If you report it,
 please be as precise as possible. Please use the provided template when creating an issue. Your issue is 
-more likley to get fast feedback if you are clear and detailed in your report. disclosing the vulnerability.
+more likley to get fast feedback if you are clear and detailed in your report.
 
 Feature requests
 ----------------
 
-If you think a feature is missing, please report it or even better: implement it :). If you report it, describe the more
-precisely what you would like to see implemented and we will discuss what is the best approach for it. If you can do
-some research before submitting it and link the resources to your description, you're awesome! It will allow us to more
-easily understood/implement it.
+If you think a feature is missing, please report it or even better: implement it :). If you report it,describe the 
+feature as precisely as possible, including what you would like to see implemented and we will discuss what is the 
+best approach for it. If you can do some research before submitting it and provide links to the resources in your 
+description, you're awesome! It will allow us to more easily understood/implement it.
 
 Sending a Pull Request
 ----------------------
 
 If you're here, you are going to fix a bug or implement a feature and you're the best!
-To do it, first fork the repository, clone it and create a new branch with the following commands:
+To do it, first fork the repository on Github. Following the commands below you can clone it and create a new branch:
 
 ```bash
 $ git clone git@github.com:your-name/repo-name.git
@@ -41,7 +41,7 @@ Write code and tests. When you are ready, run the tests.
 $ phpunit
 ```
 
-When you are ready with the code, tested it and documented it, you can commit and push it with the following commands:
+When you feel your code is ready, tested and documented, you can commit and push it with the following commands:
 
 ```bash
 $ git commit -m "Feature or bug fix description"
@@ -87,7 +87,7 @@ Reviewing a pull request
 ------------------------
 
 This repository has a few maintainers, to ensure the quality of the code each pull request must be reviewed by at least two 
-maintainers. The second maintaier is free to merge the first maintainer also agrees with the change. 
+maintainers. The second maintaier is free to merge if the first maintainer also agrees with the change. 
 
 
 Release
