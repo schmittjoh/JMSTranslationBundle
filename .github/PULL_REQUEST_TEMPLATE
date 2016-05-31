@@ -1,13 +1,13 @@
 
 | Q             | A
 | ------------- | ---
-| Bug fix?      | no
-| New feature?  | no
-| BC breaks?    | no
-| Deprecations? | no
-| Tests pass?   | no
+| Bug fix?      | yes/no
+| New feature?  | yes/no
+| BC breaks?    | yes/no
+| Deprecations? | yes/no
+| Tests pass?   | yes/no
 | Fixed tickets | 
-| License       | MIT
+| License       | Apache2
 
 
 ## Description
