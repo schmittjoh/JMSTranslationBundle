@@ -75,9 +75,10 @@ class MessageCollection
     /**
      * @param Message $message
      */
-    public function set(Message $message)
+    public function set(Message $message, $force = false)
     {
-        if (isset($this->messages[$id = $message->getId()])) {
+        $id = $message->getId();
+        if (!$force && isset($this->messages[$id])) {
             $this->checkConsistency($this->messages[$id], $message);
         }
 
