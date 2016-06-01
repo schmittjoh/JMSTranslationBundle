@@ -51,10 +51,12 @@ class XliffLoader implements LoaderInterface
         $catalogue = new MessageCatalogue();
         $catalogue->setLocale($locale);
 
+        /** @var \SimpleXMLElement $trans */
         foreach ($doc->xpath('//xliff:trans-unit') as $trans) {
             $id = ($resName = (string) $trans->attributes()->resname)
                        ? $resName : (string) $trans->source;
 
+            /** @var Message $m */
             $m = Message::create($id, $domain)
                     ->setDesc((string) $trans->source)
                     ->setLocaleString((string) $trans->target)
@@ -66,13 +68,20 @@ class XliffLoader implements LoaderInterface
                 $m->setState($trans->target['state']);
             }
 
+            // Create closure
+            $addNoteToMessage = function(Message $m, $note) {
+                $m->addNote((string) $note, isset($note['from']) ? ((string) $note['from']) : null);
+            };
+
+            // If the translation has a note
             if (isset($trans->note)) {
+                // If we have more than one note. We can't use is_array becuase $trans->note is a \SimpleXmlElement
                 if (count($trans->note) > 1) {
                     foreach ($trans->note as $note) {
-                        $m->addNote((string) $note, isset($note['from']) ? ((string) $note['from']) : null);
+                        $addNoteToMessage($m, $note);
                     }
                 } else {
-                    $m->addNote((string) $trans->note, isset($trans->note['from']) ? ((string) $trans->note['from']) : null);
+                    $addNoteToMessage($m, $trans->note);
                 }
             }
 
