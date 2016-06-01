@@ -81,7 +81,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected->add($message);
 
         $message = new Message('form.label.created');
-        $message->addSource(new FileSource($path, 74));
+        $message->addSource(new FileSource($path, 68));
         $expected->add($message);
 
         $message = new Message('field.with.placeholder');
@@ -98,31 +98,18 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 64));
         $expected->add($message);
 
-        $message = new Message('form.label.field_with_domain_label', 'messages_domain');
-        $message->addSource(new FileSource($path, 67));
-        $expected->add($message);
-
-        $message = new Message('form.label.field_with_domains_label', 'messages_domains_one');
-        $message->addSource(new FileSource($path, 70));
-        $expected->add($message);
-
-        $message = new Message('form.label.field_with_domains_label', 'messages_domains_two');
-        $message->addSource(new FileSource($path, 70));
-        $expected->add($message);
-
         $message = new Message('form.dueDate.empty.year');
-        $message->addSource(new FileSource($path, 78));
+        $message->addSource(new FileSource($path, 72));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.month');
-        $message->addSource(new FileSource($path, 78));
+        $message->addSource(new FileSource($path, 72));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.day');
-        $message->addSource(new FileSource($path, 78));
+        $message->addSource(new FileSource($path, 72));
         $expected->add($message);
-
-
+        
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
 
@@ -244,8 +231,6 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
             'desc' => 'JMS\TranslationBundle\Annotation\Desc',
             'meaning' => 'JMS\TranslationBundle\Annotation\Meaning',
             'ignore' => 'JMS\TranslationBundle\Annotation\Ignore',
-            'domain' => 'JMS\TranslationBundle\Annotation\Domain',
-            'domains' => 'JMS\TranslationBundle\Annotation\Domains',
         ));
         $docParser->setIgnoreNotImportedAnnotations(true);
 
