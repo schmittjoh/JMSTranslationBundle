@@ -74,7 +74,7 @@ Writing tests
 -------------
 
 Test cases should be as small as possible and cover all the new functionallity you add. Many of our tests are using fixtures. You 
-should not modify those fixtures, istead you should create new ones. Modifying the fixtures may cause other tests to break and you should only modify other tests if you are making BC breaking changes. 
+should not modify those fixtures, instead you should create new ones. Modifying the fixtures may cause other tests to break and you should only modify other tests if you are making BC breaking changes. 
 
 Coding standard
 ---------------
