@@ -77,7 +77,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
     public function testExtract()
     {
         $expected = new MessageCatalogue();
-        $path = __DIR__.'/Fixture/MyFormType.php';
+        $path = __DIR__ . '/Fixture/MyFormType.php';
 
         // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
         // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
@@ -164,7 +164,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message = new Message('form.choice.choice_as_values.label.bar');
         $message->addSource(new FileSource($path, 69));
         $expected->add($message);
-        
+
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
 
@@ -175,7 +175,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
     public function testExtractWithInterface()
     {
         $expected = new MessageCatalogue();
-        $path = __DIR__.'/Fixture/MyFormTypeWithInterface.php';
+        $path = __DIR__ . '/Fixture/MyFormTypeWithInterface.php';
 
         // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
         // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
@@ -211,7 +211,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
     public function testExtractWithDefaultDomain()
     {
         $expected = new MessageCatalogue();
-        $path = __DIR__.'/Fixture/MyFormTypeWithDefaultDomain.php';
+        $path = __DIR__ . '/Fixture/MyFormTypeWithDefaultDomain.php';
 
         $message = new Message('form.label.lastname', 'person');
         $message->setDesc('Lastname');
@@ -237,8 +237,8 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
     public function testExtractWithWithSubscriberAndListener()
     {
         $expected = new MessageCatalogue();
-        $path = __DIR__.'/Fixture/MyFormTypeWithSubscriberAndListener.php';
-        $pathSubscriber = __DIR__.'/Fixture/MyFormSubscriber.php';
+        $path = __DIR__ . '/Fixture/MyFormTypeWithSubscriberAndListener.php';
+        $pathSubscriber = __DIR__ . '/Fixture/MyFormSubscriber.php';
 
         $message = new Message('form.label.lastname');
         $message->setDesc('Lastname');
@@ -274,6 +274,27 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $catalogue);
     }
 
+    public function testExtractWithDomainAnnotation()
+    {
+        $expected = new MessageCatalogue();
+        $path = __DIR__ . '/Fixture/MyFormTypeWithDomainAnnotation.php';
+
+        $message = new Message('form.label.field_with_domain_label', 'messages_domain');
+        $message->addSource(new FileSource($path, 30));
+        $expected->add($message);
+
+        $message = new Message('form.label.field_with_domains_label', 'messages_domains_one');
+        $message->addSource(new FileSource($path, 34));
+        $expected->add($message);
+
+        $message = new Message('form.label.field_with_domains_label', 'messages_domains_two');
+        $message->addSource(new FileSource($path, 34));
+        $expected->add($message);
+
+        $catalogue = $this->extract('MyFormTypeWithDomainAnnotation.php');
+        $this->assertEquals($expected, $catalogue);
+    }
+
     /**
      * Run extractor tests with and without a default domain as a form option
      * with the same extractor instance to see that the default domain isn't
@@ -300,7 +321,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
 
     private function extract($file)
     {
-        if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
+        if (!is_file($file = __DIR__ . '/Fixture/' . $file)) {
             throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
         }
         $file = new \SplFileInfo($file);
