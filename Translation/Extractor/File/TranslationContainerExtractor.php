@@ -20,9 +20,11 @@ namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\Message;
-
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 
 /**
  * Extracts translations from designated translation containers.
@@ -32,36 +34,64 @@ use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
+class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
 {
+    /**
+     * @var NodeTraverser
+     */
     private $traverser;
+
+    /**
+     * @var string
+     */
     private $file;
+
+    /**
+     * @var MessageCatalogue
+     */
     private $catalogue;
+
+    /**
+     * @var string
+     */
     private $namespace = '';
+
+    /**
+     * @var array
+     */
     private $useStatements = array();
 
+    /**
+     * TranslationContainerExtractor constructor.
+     */
     public function __construct()
     {
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
-    public function enterNode(\PHPParser_Node $node)
+    /**
+     * @param Node $node
+     * @return null|Node|void
+     */
+    public function enterNode(Node $node)
     {
-        if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
-            $this->namespace = implode('\\', $node->name->parts);
+        if ($node instanceof Node\Stmt\Namespace_) {
+            if (isset($node->name)) {
+                $this->namespace = implode('\\', $node->name->parts);
+            }
             $this->useStatements = array();
 
             return;
         }
 
-        if ($node instanceof \PHPParser_Node_Stmt_UseUse) {
+        if ($node instanceof Node\Stmt\UseUse) {
             $this->useStatements[$node->alias] = implode('\\', $node->name->parts);
 
             return;
         }
 
-        if (!$node instanceof \PHPParser_Node_Stmt_Class) {
+        if (!$node instanceof Node\Stmt\Class_) {
             return;
         }
 
@@ -96,6 +126,11 @@ class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_
         }
     }
 
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param array $ast
+     */
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
     {
         $this->file = $file;
@@ -103,9 +138,44 @@ class TranslationContainerExtractor implements FileVisitorInterface, \PHPParser_
         $this->traverser->traverse($ast);
     }
 
-    public function beforeTraverse(array $nodes) { }
-    public function leaveNode(\PHPParser_Node $node) { }
-    public function afterTraverse(array $nodes) { }
-    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
+    /**
+     * @param array $nodes
+     * @return void
+     */
+    public function beforeTraverse(array $nodes)
+    {
+    }
+
+    /**
+     * @param Node $node
+     * @return void
+     */
+    public function leaveNode(Node $node)
+    {
+    }
+
+    /**
+     * @param array $nodes
+     * @return void
+     */
+    public function afterTraverse(array $nodes)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     */
+    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param \Twig_Node $ast
+     */
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    {
+    }
 }

@@ -32,15 +32,32 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class XliffDumper implements DumperInterface
 {
+    /**
+     * @var string
+     */
     private $sourceLanguage = 'en';
+
+    /**
+     * @var bool
+     */
     private $addDate = true;
+
+    /**
+     * @var bool
+     */
+    private $addReference = true;
+
+    /**
+     * @var bool
+     */
+    private $addReferencePosition = true;
 
     /**
      * @param $bool
      */
     public function setAddDate($bool)
     {
-        $this->addDate = (Boolean) $bool;
+        $this->addDate = (bool) $bool;
     }
 
     /**
@@ -52,7 +69,24 @@ class XliffDumper implements DumperInterface
     }
 
     /**
-     * @param \JMS\TranslationBundle\Model\MessageCatalogue $domain
+     * @param $bool
+     */
+    public function setAddReference($bool)
+    {
+        $this->addReference = $bool;
+    }
+
+    /**
+     * @param $bool
+     */
+    public function setAddReferencePosition($bool)
+    {
+        $this->addReferencePosition = $bool;
+    }
+
+    /**
+     * @param MessageCatalogue $catalogue
+     * @param MessageCatalogue|string $domain
      * @return string
      */
     public function dump(MessageCatalogue $catalogue, $domain = 'messages')
@@ -113,31 +147,34 @@ class XliffDumper implements DumperInterface
                 $target->setAttribute('state', 'new');
             }
 
-            // As per the OASIS XLIFF 1.2 non-XLIFF elements must be at the end of the <trans-unit>
-            if ($sources = $message->getSources()) {
-                foreach ($sources as $source) {
-                    if ($source instanceof FileSource) {
-                        $unit->appendChild($refFile = $doc->createElement('jms:reference-file', $source->getPath()));
+            if ($this->addReference) {
+                // As per the OASIS XLIFF 1.2 non-XLIFF elements must be at the end of the <trans-unit>
+                if ($sources = $message->getSources()) {
+                    foreach ($sources as $source) {
+                        if ($source instanceof FileSource) {
+                            $unit->appendChild($refFile = $doc->createElement('jms:reference-file', $source->getPath()));
 
-                        if ($source->getLine()) {
-                            $refFile->setAttribute('line', $source->getLine());
+                            if ($this->addReferencePosition) {
+                                if ($source->getLine()) {
+                                    $refFile->setAttribute('line', $source->getLine());
+                                }
+
+                                if ($source->getColumn()) {
+                                    $refFile->setAttribute('column', $source->getColumn());
+                                }
+                            }
+
+                            continue;
                         }
 
-                        if ($source->getColumn()) {
-                            $refFile->setAttribute('column', $source->getColumn());
-                        }
-
-                        continue;
+                        $unit->appendChild($doc->createElementNS('jms:reference', (string) $source));
                     }
-
-                    $unit->appendChild($doc->createElementNS('jms:reference', (string) $source));
                 }
             }
 
             if ($meaning = $message->getMeaning()) {
                 $unit->setAttribute('extradata', 'Meaning: '.$meaning);
             }
-
         }
 
         return $doc->saveXML();

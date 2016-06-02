@@ -19,8 +19,7 @@
 namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
-
+use Psr\Log\LoggerInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
@@ -35,7 +34,7 @@ class ExtractorManager implements ExtractorInterface
 
     /**
      * @param Extractor\FileExtractor $extractor
-     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      * @param array $customExtractors
      */
     public function __construct(FileExtractor $extractor, LoggerInterface $logger, array $customExtractors = array())
@@ -53,7 +52,7 @@ class ExtractorManager implements ExtractorInterface
     }
 
     /**
-     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger)
     {

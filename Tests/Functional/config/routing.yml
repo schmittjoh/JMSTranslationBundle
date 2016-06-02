@@ -1,3 +1,8 @@
+JMSTranslationBundle_ui:
+    resource: "@JMSTranslationBundle/Controller/"
+    type:     annotation
+    prefix:   /_trans
+
 TestBundle:
     type: annotation
     resource: "@TestBundle/Controller/"

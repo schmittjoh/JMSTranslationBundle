@@ -35,7 +35,7 @@ interface FileVisitorInterface
      * @param \SplFileInfo $file
      * @param MessageCatalogue $catalogue
      */
-    function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue);
+    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue);
 
     /**
      * Called when a PHP file is encountered.
@@ -44,9 +44,9 @@ interface FileVisitorInterface
      *
      * @param \SplFileInfo $file
      * @param MessageCatalogue $catalogue
-     * @param \PHPParser_Node $ast
+     * @param array $ast
      */
-    function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast);
+    public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast);
 
     /**
      * Called when a Twig file is encountered.
@@ -57,5 +57,5 @@ interface FileVisitorInterface
      * @param MessageCatalogue $catalogue
      * @param \Twig_Node $ast
      */
-    function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast);
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast);
 }

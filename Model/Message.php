@@ -27,22 +27,45 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 class Message
 {
-    /** Unique ID of this message (same across the same domain) */
+    /**
+     * Unique ID of this message (same across the same domain)
+     * @var string
+     */
     private $id;
 
+    /**
+     * @var bool
+     */
     private $new = true;
 
+    /**
+     * @var string
+     */
     private $domain;
 
+    /**
+     * This is the translated string.
+     * @var string
+     */
     private $localeString;
 
-    /** Additional information about the intended meaning */
+    /**
+     * Additional information about the intended meaning
+     * @var string
+     */
     private $meaning;
 
-    /** The description/sample for translators */
+    /**
+     * The description/sample for translators
+     *
+     * @var string
+     */
     private $desc;
 
-    /** The sources where this message occurs */
+    /**
+     * The sources where this message occurs
+     * @var array
+     */
     private $sources = array();
 
     /**
@@ -99,21 +122,39 @@ class Message
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getDomain()
     {
         return $this->domain;
     }
 
+    /**
+     * @return bool
+     */
     public function isNew()
     {
         return $this->new;
     }
 
+    /**
+     * This will return:
+     * 1) the localeString, ie the translated string
+     * 2) description (if new)
+     * 3) id (if new)
+     * 4) empty string
+     *
+     * @return string
+     */
     public function getLocaleString()
     {
         return $this->localeString !== null ? $this->localeString : ($this->new ? ($this->desc !== null ? $this->desc : $this->id) : '');
@@ -132,21 +173,34 @@ class Message
         return $this->desc ?: $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getMeaning()
     {
         return $this->meaning;
     }
 
+    /**
+     * @return string
+     */
     public function getDesc()
     {
         return $this->desc;
     }
 
+    /**
+     * @return array
+     */
     public function getSources()
     {
         return $this->sources;
     }
 
+    /**
+     * @param string $meaning
+     * @return $this
+     */
     public function setMeaning($meaning)
     {
         $this->meaning = $meaning;
@@ -154,13 +208,21 @@ class Message
         return $this;
     }
 
+    /**
+     * @param bool $bool
+     * @return $this
+     */
     public function setNew($bool)
     {
-        $this->new = (Boolean) $bool;
+        $this->new = (bool) $bool;
 
         return $this;
     }
 
+    /**
+     * @param string $desc
+     * @return $this
+     */
     public function setDesc($desc)
     {
         $this->desc = $desc;
@@ -168,11 +230,29 @@ class Message
         return $this;
     }
 
+    /**
+     * @param string $str
+     * @return $this
+     */
     public function setLocaleString($str)
     {
         $this->localeString = $str;
 
         return $this;
+    }
+
+    /**
+     * Return true if we have a translated string. This is not the same as running:
+     *   $str = $message->getLocaleString();
+     *   $bool = !empty($str);
+     *
+     * The $message->getLocaleString() will return a description or an id if the localeString does not exist.
+     *
+     * @return bool
+     */
+    public function hasLocaleString()
+    {
+        return !empty($this->localeString);
     }
 
     /**
@@ -197,13 +277,14 @@ class Message
         if (null !== $desc = $message->getDesc()) {
             $this->desc = $desc;
             $this->localeString = null;
-            if ($localeString = $message->getLocaleString()) {
-                $this->localeString = $localeString;
+            if ($message->hasLocaleString()) {
+                $this->localeString = $message->getLocaleString();
             }
         }
 
         foreach ($message->getSources() as $source) {
             $this->addSource($source);
+
         }
 
         $this->new = $message->isNew();
@@ -237,6 +318,10 @@ class Message
         }
     }
 
+    /**
+     * @param SourceInterface $source
+     * @return bool
+     */
     public function hasSource(SourceInterface $source)
     {
         foreach ($this->sources as $cSource) {

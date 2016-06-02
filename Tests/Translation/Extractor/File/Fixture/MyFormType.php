@@ -56,19 +56,26 @@ class MyFormType extends AbstractType
                 'translation_domain' => 'address'
             ))
             ->add('field_with_placeholder', 'text', array(
-            	'label' => 'field.with.placeholder',
-	            'attr' => array('placeholder' => /** @Desc("Field with a placeholder value") */ 'form.placeholder.text')
+                'label' => 'field.with.placeholder',
+                'attr' => array('placeholder' => /** @Desc("Field with a placeholder value") */ 'form.placeholder.text')
             ))
             ->add('field_without_label', 'text', array(
-            	'label' => false,
-	            'attr' => array('placeholder' => /** @Desc("Field with a placeholder but no label") */ 'form.placeholder.text.but.no.label')
+                'label' => false,
+                'attr' => array('placeholder' => /** @Desc("Field with a placeholder but no label") */ 'form.placeholder.text.but.no.label')
+            ))
+            ->add('field_with_choice_as_values', 'choice', array(
+                'choices' => array(
+                    'form.choice.choice_as_values.label.foo' => 'form.choice.choice_as_values.value.foo',
+                    'form.choice.choice_as_values.label.bar' => 'form.choice.choice_as_values.value.bar'
+                ),
+                'choices_as_values' => true,
             ))
         ;
         $child = $builder->create('created', 'text', array(
                   'label' => 'form.label.created'
               ))
         ;
-        $builder->add('dueDate','date', array(
+        $builder->add('dueDate', 'date', array(
                 'empty_value' => array('year' => 'form.dueDate.empty.year', 'month' => 'form.dueDate.empty.month', 'day'=>'form.dueDate.empty.day')
         ));
     }

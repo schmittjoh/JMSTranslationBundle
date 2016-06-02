@@ -1,7 +1,8 @@
 imports:
     - { resource: framework.yml }
     - { resource: twig.yml }
+    - { resource: bundle.yml }
 
 services:
     logger:
-        class: Symfony\Component\HttpKernel\Log\NullLogger
+        class: Psr\Log\NullLogger

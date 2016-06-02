@@ -2,55 +2,12 @@
 
 {% block javascripts %}
     {{ parent() }}
-    
     <script language="javascript" type="text/javascript">
-        $(document).ready(function() {
-            var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
-        
-            $('#config select').change(function() {
-                $(this).parent().submit();
-            });
-            
-            {% if isWriteable is sameas(true) %}
-            $('textarea')
-                .blur(function() {
-                    var self = this;
-                    $.ajax(updateMessagePath + '?id=' + encodeURIComponent($(this).data('id')), {
-                        type: 'POST',
-                        headers: {'X-HTTP-METHOD-OVERRIDE': 'PUT'},
-                        data: {'_method': 'PUT', 'message': $(this).val()},
-                        beforeSend: function() {
-                            $(self).parent().closest('td').prev('td').children('.alert-message').remove();
-                        },
-                        error: function() {
-                            $(self).parent().closest('td').prev('td').append('<span class="alert-message label error">Could not be saved.</span>');
-                        },
-                        success: function() {
-                            $(self).parent().closest('td').prev('td').append('<span class="alert-message label success">Translation was saved.</span>');
-                        },
-                        complete: function() {
-                            var parent = $(self).parent();
-                            $(self).data('timeoutId', setTimeout(function() {
-                                $(self).data('timeoutId', undefined);
-                                parent.closest('td').prev('td').children('.alert-message').fadeOut(300, function() { $(this).remove(); });
-                            }, 10000));
-                        }
-                    });
-                })
-                .focus(function() {
-                    this.select();
-                    
-                    var timeoutId = $(this).data('timeoutId');
-                    if (timeoutId) {
-                        clearTimeout(timeoutId);
-                        $(this).data('timeoutId', undefined);
-                    }
-                    
-                    $(this).parent().children('.alert-message').remove();
-                })
-            ;
-            {% endif %}
-        });
+        var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
+        var isWritable        = {{ isWriteable is sameas(true) ? 'true' : 'false' }};
+        var JMS               = new JMSTranslationManager(updateMessagePath, isWritable);
+
+        JMS.ready();
     </script>
 {% endblock %}
 

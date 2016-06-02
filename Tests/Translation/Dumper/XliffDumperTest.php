@@ -18,10 +18,9 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
+use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
-
 use JMS\TranslationBundle\Model\MessageCatalogue;
-
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 
@@ -52,6 +51,59 @@ class XliffDumperTest extends BaseDumperTest
 
 EOF;
         $this->assertEquals($expected, $dumper->dump($catalogue, 'messages'));
+    }
+
+    public function testDumpStructureFullPaths()
+    {
+        $dumper = $this->getDumper();
+
+        $catalogue = $this->getStructureCatalogue();
+
+        $this->assertEquals($this->getOutput('structure'), $dumper->dump($catalogue, 'messages'));
+    }
+
+    /**
+     * * Test the fact that the references positions are not in the dumped xliff
+     */
+    public function testDumpStructureWithoutReferencePosition()
+    {
+        $dumper = $this->getDumper();
+        $dumper->setAddReferencePosition(false);
+
+        $catalogue = $this->getStructureCatalogue();
+
+        $this->assertEquals($this->getOutput('structure_without_reference_position'), $dumper->dump($catalogue, 'messages'));
+    }
+
+    /**
+     * Test the fact that the references are not in the dumped xliff
+     */
+    public function testDumpStructureWithoutReference()
+    {
+        $dumper = $this->getDumper();
+        $dumper->setAddReference(false);
+
+        $catalogue = $this->getStructureCatalogue();
+
+        $this->assertEquals($this->getOutput('structure_without_reference'), $dumper->dump($catalogue, 'messages'));
+    }
+
+    /**
+     * Get the catalogue used for the structure tests
+     *
+     * @return MessageCatalogue
+     */
+    protected function getStructureCatalogue()
+    {
+        $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('en');
+
+        $message = new Message('foo.bar.baz');
+        $message->addSource(new FileSource('/a/b/c/foo/bar', 1, 2));
+        $message->addSource(new FileSource('bar/baz', 1, 2));
+        $catalogue->add($message);
+
+        return $catalogue;
     }
 
     protected function getDumper()

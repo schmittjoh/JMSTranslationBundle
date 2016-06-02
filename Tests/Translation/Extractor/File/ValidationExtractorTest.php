@@ -20,11 +20,11 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Doctrine\Common\Annotations\AnnotationReader;
-
+use PhpParser\Lexer;
+use PhpParser\Parser;
+use PhpParser\ParserFactory;
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
-
 use Symfony\Component\Validator\Mapping\ClassMetadataFactory;
-
 use JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
@@ -52,13 +52,26 @@ class ValidationExtractorTest extends \PHPUnit_Framework_TestCase
         }
         $file = new \SplFileInfo($file);
 
+        //use correct factory class depending on whether using Symfony 2 or 3
+        if (class_exists('Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory')) {
+            $metadataFactoryClass = 'Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory';
+        } else {
+            $metadataFactoryClass = 'Symfony\Component\Validator\Mapping\ClassMetadataFactory';
+        }
+
         if (null === $extractor) {
-            $factory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+            $factory = new $metadataFactoryClass(new AnnotationLoader(new AnnotationReader()));
             $extractor = new ValidationExtractor($factory);
         }
 
-        $lexer = new \PHPParser_Lexer();
-        $parser = new \PHPParser_Parser($lexer);
+        $lexer = new Lexer();
+        if (class_exists('PhpParser\ParserFactory')) {
+            $factory = new ParserFactory();
+            $parser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
+        } else {
+            $parser = new Parser($lexer);
+        }
+
         $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();
