@@ -18,6 +18,7 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
+use JMS\TranslationBundle\Annotation\Domain;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
@@ -280,15 +281,15 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $path = __DIR__ . '/Fixture/MyFormTypeWithDomainAnnotation.php';
 
         $message = new Message('form.label.field_with_domain_label', 'messages_domain');
-        $message->addSource(new FileSource($path, 30));
+        $message->addSource(new FileSource($path, 33));
         $expected->add($message);
 
         $message = new Message('form.label.field_with_domains_label', 'messages_domains_one');
-        $message->addSource(new FileSource($path, 34));
+        $message->addSource(new FileSource($path, 37));
         $expected->add($message);
 
         $message = new Message('form.label.field_with_domains_label', 'messages_domains_two');
-        $message->addSource(new FileSource($path, 34));
+        $message->addSource(new FileSource($path, 37));
         $expected->add($message);
 
         $catalogue = $this->extract('MyFormTypeWithDomainAnnotation.php');
@@ -313,6 +314,8 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
             'desc' => 'JMS\TranslationBundle\Annotation\Desc',
             'meaning' => 'JMS\TranslationBundle\Annotation\Meaning',
             'ignore' => 'JMS\TranslationBundle\Annotation\Ignore',
+            'domain' => 'JMS\TranslationBundle\Annotation\Domain',
+            'domains' => 'JMS\TranslationBundle\Annotation\Domains',
         ));
         $docParser->setIgnoreNotImportedAnnotations(true);
 

@@ -20,6 +20,8 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor\File\Fixture;
 
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\AbstractType;
+use JMS\TranslationBundle\Annotation\Domain;
+use JMS\TranslationBundle\Annotation\Domains;
 
 class MyFormTypeWithDomainAnnotation extends AbstractType
 {
