@@ -324,7 +324,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
 
     private function extract($file)
     {
-        if (!is_file($file = __DIR__ . '/Fixture/' . $file)) {
+        if (!is_file($file = __DIR__.'/Fixture/' . $file)) {
             throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
         }
         $file = new \SplFileInfo($file);
