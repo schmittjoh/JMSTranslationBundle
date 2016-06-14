@@ -19,11 +19,13 @@
 namespace JMS\TranslationBundle\Controller;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Exception\InvalidArgumentException;
+use JMS\TranslationBundle\Translation\ConfigFactory;
+use JMS\TranslationBundle\Translation\LoaderManager;
 use JMS\TranslationBundle\Util\FileUtils;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\MessageCatalogue;
 
 /**
@@ -33,30 +35,34 @@ use Symfony\Component\Translation\MessageCatalogue;
  */
 class TranslateController
 {
-    /** @DI\Inject */
-    private $request;
-
-    /** @DI\Inject("jms_translation.config_factory") */
+    /**
+     * @DI\Inject("jms_translation.config_factory")
+     * @var ConfigFactory
+     */
     private $configFactory;
 
-    /** @DI\Inject("jms_translation.loader_manager") */
+    /**
+     * @DI\Inject("jms_translation.loader_manager")
+     * @var LoaderManager
+     */
     private $loader;
 
-    /** @DI\Inject("service_container") */
-    private $container;
-
-    /** @DI\Inject("%jms_translation.source_language%") */
+    /**
+     * @DI\Inject("%jms_translation.source_language%")
+     * @var string
+     */
     private $sourceLanguage;
 
     /**
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
      * @Template
-     * @param string $config
+     * @param Request $request
+     * @return array
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $configs = $this->configFactory->getNames();
-        $config = $this->request->query->get('config') ?: reset($configs);
+        $config = $request->query->get('config') ?: reset($configs);
         if (!$config) {
             throw new RuntimeException('You need to configure at least one config under "jms_translation.configs".');
         }
@@ -68,16 +74,15 @@ class TranslateController
         }
 
         $domains = array_keys($files);
-        $domain = $this->request->query->get('domain') ?: reset($domains);
-        if ((!$domain = $this->request->query->get('domain')) || !isset($files[$domain])) {
+        if ((!$domain = $request->query->get('domain')) || !isset($files[$domain])) {
             $domain = reset($domains);
         }
 
         $locales = array_keys($files[$domain]);
-        
+
         natsort($locales);
-        
-        if ((!$locale = $this->request->query->get('locale')) || !isset($files[$domain][$locale])) {
+
+        if ((!$locale = $request->query->get('locale')) || !isset($files[$domain][$locale])) {
             $locale = reset($locales);
         }
 

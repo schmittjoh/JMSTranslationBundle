@@ -22,6 +22,15 @@ Key Features include:
   to re-type many command line arguments/options
 - Web-based UI for easier translation of messages
 
+Components:
+
+This bundle has three major components:
+
+- **Extractor** - extracts translation keys from your source code
+- **Dumper** - writes translations to file
+- **WebUI** - lets you edit your translations in a user friendly interface
+
+
 Documentation
 -------------
 

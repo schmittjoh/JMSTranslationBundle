@@ -20,11 +20,14 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Doctrine\Common\Annotations\DocParser;
-
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use PhpParser\Lexer;
+use PhpParser\Parser;
+use PhpParser\ParserFactory;
+use Symfony\Component\HttpKernel\Kernel;
 
 class FormExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,12 +36,56 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
      */
     private $extractor;
 
+    /**
+     * @group placeholder
+     */
+    public function testPlaceholderExtract()
+    {
+        $expected = new MessageCatalogue();
+        $path = __DIR__.'/Fixture/MyPlaceholderFormType.php';
+
+        $message = new Message('field.with.placeholder');
+        $message->addSource(new FileSource($path, 29));
+        $expected->add($message);
+
+        $message = new Message('form.placeholder.text');
+        $message->setDesc('Field with a placeholder value');
+        $message->addSource(new FileSource($path, 30));
+        $expected->add($message);
+
+        $message = new Message('form.placeholder.text.but.no.label');
+        $message->setDesc('Field with a placeholder but no label');
+        $message->addSource(new FileSource($path, 34));
+        $expected->add($message);
+
+        $message = new Message('form.choice_placeholder');
+        $message->setDesc('Choice field with a placeholder');
+        $message->addSource(new FileSource($path, 37));
+        $expected->add($message);
+
+        $message = new Message('form.choice_empty_value');
+        $message->setDesc('Choice field with an empty_value');
+        $message->addSource(new FileSource($path, 40));
+        $expected->add($message);
+
+        $this->assertEquals($expected, $this->extract('MyPlaceholderFormType.php'));
+    }
+
+    /**
+     * @group testExtract
+     */
     public function testExtract()
     {
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormType.php';
 
-        $message = new Message('bar');
+        // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
+        // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
+        if (Kernel::VERSION_ID >= 30000) {
+            $message = new Message('foo');
+        } else {
+            $message = new Message('bar');
+        }
         $message->addSource(new FileSource($path, 36));
         $expected->add($message);
 
@@ -81,7 +128,7 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected->add($message);
 
         $message = new Message('form.label.created');
-        $message->addSource(new FileSource($path, 68));
+        $message->addSource(new FileSource($path, 75));
         $expected->add($message);
 
         $message = new Message('field.with.placeholder');
@@ -99,15 +146,23 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.year');
-        $message->addSource(new FileSource($path, 72));
+        $message->addSource(new FileSource($path, 79));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.month');
-        $message->addSource(new FileSource($path, 72));
+        $message->addSource(new FileSource($path, 79));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.day');
-        $message->addSource(new FileSource($path, 72));
+        $message->addSource(new FileSource($path, 79));
+        $expected->add($message);
+
+        $message = new Message('form.choice.choice_as_values.label.foo');
+        $message->addSource(new FileSource($path, 68));
+        $expected->add($message);
+
+        $message = new Message('form.choice.choice_as_values.label.bar');
+        $message->addSource(new FileSource($path, 69));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
@@ -122,7 +177,13 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormTypeWithInterface.php';
 
-        $message = new Message('bar');
+        // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
+        // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
+        if (Kernel::VERSION_ID >= 30000) {
+            $message = new Message('foo');
+        } else {
+            $message = new Message('bar');
+        }
         $message->addSource(new FileSource($path, 36));
         $expected->add($message);
 
@@ -244,13 +305,32 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         }
         $file = new \SplFileInfo($file);
 
-        $lexer = new \PHPParser_Lexer();
-        $parser = new \PHPParser_Parser($lexer);
+        $lexer = new Lexer();
+        if (class_exists('PhpParser\ParserFactory')) {
+            $factory = new ParserFactory();
+            $parser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
+        } else {
+            $parser = new Parser($lexer);
+        }
+
         $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();
         $this->extractor->visitPhpFile($file, $catalogue, $ast);
 
         return $catalogue;
+    }
+
+    public function testAttrArrayForm()
+    {
+        $expected = new MessageCatalogue();
+        $path = __DIR__.'/Fixture/MyAttrArrayType.php';
+
+        $message = new Message('form.label.firstname');
+        $message->addSource(new FileSource($path, 31));
+        $expected->add($message);
+
+        $this->assertEquals($expected, $this->extract('MyAttrArrayType.php'));
+
     }
 }

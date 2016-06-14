@@ -35,6 +35,9 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
  */
 class ExtractTranslationCommand extends ContainerAwareCommand
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
@@ -53,12 +56,17 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->addOption('output-dir', null, InputOption::VALUE_REQUIRED, 'The directory where files should be written to.')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'When specified, changes are _NOT_ persisted to disk.')
             ->addOption('output-format', null, InputOption::VALUE_REQUIRED, 'The output format that should be used (in most cases, it is better to change only the default-output-format).')
-            ->addOption('default-output-format', null, InputOption::VALUE_REQUIRED, 'The default output format (defaults to xliff).')
+            ->addOption('default-output-format', null, InputOption::VALUE_REQUIRED, 'The default output format (defaults to xlf).')
             ->addOption('keep', null, InputOption::VALUE_NONE, 'Define if the updater service should keep the old translation (defaults to false).')
-            ->addOption('external-translations-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED , 'Load external translation ressources')
+            ->addOption('external-translations-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Load external translation resources')
         ;
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $builder = $input->getOption('config') ?
@@ -100,20 +108,20 @@ class ExtractTranslationCommand extends ContainerAwareCommand
                 $changeSet = $updater->getChangeSet($config);
 
                 $output->writeln('Added Messages: '.count($changeSet->getAddedMessages()));
-                if($input->hasParameterOption('--verbose')){
-                    foreach($changeSet->getAddedMessages() as $message){
+                if ($input->hasParameterOption('--verbose')) {
+                    foreach ($changeSet->getAddedMessages() as $message) {
                         $output->writeln($message->getId(). '-> '.$message->getDesc());
-                    }   
+                    }
                 }
 
                 if ($config->isKeepOldMessages()) {
                     $output->writeln('Deleted Messages: # none as "Keep Old Translations" is true #');
                 } else {
                     $output->writeln('Deleted Messages: '.count($changeSet->getDeletedMessages()));
-                    if($input->hasParameterOption('--verbose')){
-                        foreach($changeSet->getDeletedMessages() as $message){
+                    if ($input->hasParameterOption('--verbose')) {
+                        foreach ($changeSet->getDeletedMessages() as $message) {
                             $output->writeln($message->getId(). '-> '.$message->getDesc());
-                        }   
+                        }
                     }
                 }
 
@@ -126,6 +134,10 @@ class ExtractTranslationCommand extends ContainerAwareCommand
         $output->writeln('done!');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param ConfigBuilder $builder
+     */
     private function updateWithInput(InputInterface $input, ConfigBuilder $builder)
     {
         if ($bundle = $input->getOption('bundle')) {
@@ -188,7 +200,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
         if ($input->hasParameterOption('--keep') || $input->hasParameterOption('--keep=true')) {
             $builder->setKeepOldTranslations(true);
-        } else if ($input->hasParameterOption('--keep=false')) {
+        } elseif ($input->hasParameterOption('--keep=false')) {
             $builder->setKeepOldTranslations(false);
         }
 

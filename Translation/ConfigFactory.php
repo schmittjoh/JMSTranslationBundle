@@ -22,18 +22,33 @@ use JMS\TranslationBundle\Exception\InvalidArgumentException;
 
 class ConfigFactory
 {
+    /**
+     * @var array
+     */
     private $builders;
 
+    /**
+     * ConfigFactory constructor.
+     * @param array $builders ConfigBuilder
+     */
     public function __construct(array $builders = array())
     {
         $this->builders = $builders;
     }
 
+    /**
+     * @return array of strings
+     */
     public function getNames()
     {
         return array_keys($this->builders);
     }
 
+    /**
+     * @param $name
+     * @return ConfigBuilder
+     * @throws InvalidArgumentException
+     */
     public function getBuilder($name)
     {
         if (!isset($this->builders[$name])) {
@@ -43,11 +58,20 @@ class ConfigFactory
         return $this->builders[$name];
     }
 
+    /**
+     * @param $name
+     * @param $locale
+     * @return ConfigBuilder
+     */
     public function getConfig($name, $locale)
     {
         return $this->getBuilder($name)->setLocale($locale)->getConfig();
     }
 
+    /**
+     * @param string $name
+     * @param ConfigBuilder $builder
+     */
     public function addBuilder($name, $builder)
     {
         $this->builders[$name] = $builder;
