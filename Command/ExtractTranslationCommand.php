@@ -90,7 +90,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
             $output->writeln(sprintf('Extracting Translations for locale <info>%s</info>', $locale));
             $output->writeln(sprintf('Keep old translations: <info>%s</info>', $config->isKeepOldMessages() ? 'Yes' : 'No'));
-            $output->writeln(sprintf('Keep old translations messages: <info>%s</info>', $config->isKeepOldTranslationsMessages() ? 'Yes' : 'No'));
+            $output->writeln(sprintf('Keep old translations messages: <info>%s</info>', $config->isKeepOldTranslationMessages() ? 'Yes' : 'No'));
             $output->writeln(sprintf('Output-Path: <info>%s</info>', $config->getTranslationsDir()));
             $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $config->getScanDirs())));
             $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $config->getExcludedDirs() ? implode(', ', $config->getExcludedDirs()) : '# none #'));
@@ -127,8 +127,8 @@ class ExtractTranslationCommand extends ContainerAwareCommand
                     }
                 }
 
-                if ($config->isKeepOldTranslationsMessages()) {
-                    $output->writeln('Not keeping old Translations Messages');
+                if ($config->isKeepOldTranslationMessages()) {
+                    $output->writeln('Not keeping old Translation Messages');
                 }
 
                 return;
@@ -211,9 +211,9 @@ class ExtractTranslationCommand extends ContainerAwareCommand
         }
 
         if ($input->hasParameterOption('--keeptm') || $input->hasParameterOption('--keeptm=true')) {
-            $builder->setKeepOldTranslationsMessages(true);
+            $builder->setKeepOldTranslationMessages(true);
         } else if ($input->hasParameterOption('--keeptm=false')) {
-            $builder->setKeepOldTranslationsMessages(false);
+            $builder->setKeepOldTranslationMessages(false);
         }
 
         if ($loadResource = $input->getOption('external-translations-dir')) {

@@ -286,7 +286,7 @@ class Updater
         }
 
         //keep old translations translated
-        if ($this->config->isKeepOldTranslationsMessages()) {
+        if ($this->config->isKeepOldTranslationMessages()) {
 
             $locale = $this->scannedCatalogue->getLocale();
             /** @var MessageCatalogue $domainCatalogue */

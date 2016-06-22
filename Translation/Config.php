@@ -88,7 +88,7 @@ final class Config
     /**
      * @var bool
      */
-    private $keepOldTranslationsMessages;
+    private $keepOldTranslationMessages;
 
     /**
      * @var array
@@ -108,10 +108,10 @@ final class Config
      * @param array $excludedNames
      * @param array $enabledExtractors
      * @param bool $keepOldMessages
-     * @param bool $keepOldTranslationsMessages
+     * @param bool $keepOldTranslationMessages
      * @param array $loadResources
      */
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, $keepOldTranslationsMessages, array $loadResources)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, $keepOldTranslationMessages, array $loadResources)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -150,7 +150,7 @@ final class Config
         $this->excludedNames = $excludedNames;
         $this->enabledExtractors = $enabledExtractors;
         $this->keepOldMessages = $keepOldMessages;
-        $this->keepOldTranslationsMessages = $keepOldTranslationsMessages;
+        $this->keepOldTranslationMessages = $keepOldTranslationMessages;
         $this->loadResources = $loadResources;
     }
 
@@ -271,9 +271,9 @@ final class Config
     /**
      * @return bool
      */
-    public function isKeepOldTranslationsMessages()
+    public function isKeepOldTranslationMessages()
     {
-        return $this->keepOldTranslationsMessages;
+        return $this->keepOldTranslationMessages;
     }
 
     /**
