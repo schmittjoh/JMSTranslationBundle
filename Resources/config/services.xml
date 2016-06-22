@@ -38,6 +38,7 @@
             <argument type="service" id="jms_translation.extractor_manager" />
             <argument type="service" id="logger" />
             <argument type="service" id="jms_translation.file_writer" />
+            <argument type="service" id="translator.default" />
         </service>
         
         <service id="jms_translation.config_factory" class="%jms_translation.config_factory.class%" />

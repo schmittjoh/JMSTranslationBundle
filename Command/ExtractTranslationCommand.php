@@ -59,6 +59,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             ->addOption('default-output-format', null, InputOption::VALUE_REQUIRED, 'The default output format (defaults to xlf).')
             ->addOption('keep', null, InputOption::VALUE_NONE, 'Define if the updater service should keep the old translation (defaults to false).')
             ->addOption('external-translations-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Load external translation resources')
+            ->addOption('keeptm', null, InputOption::VALUE_NONE, 'Define if the updater service should keep the old translation messages (defaults to false).')
         ;
     }
 
@@ -89,6 +90,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
             $output->writeln(sprintf('Extracting Translations for locale <info>%s</info>', $locale));
             $output->writeln(sprintf('Keep old translations: <info>%s</info>', $config->isKeepOldMessages() ? 'Yes' : 'No'));
+            $output->writeln(sprintf('Keep old translations messages: <info>%s</info>', $config->isKeepOldTranslationsMessages() ? 'Yes' : 'No'));
             $output->writeln(sprintf('Output-Path: <info>%s</info>', $config->getTranslationsDir()));
             $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $config->getScanDirs())));
             $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $config->getExcludedDirs() ? implode(', ', $config->getExcludedDirs()) : '# none #'));
@@ -123,6 +125,10 @@ class ExtractTranslationCommand extends ContainerAwareCommand
                             $output->writeln($message->getId(). '-> '.$message->getDesc());
                         }
                     }
+                }
+
+                if ($config->isKeepOldTranslationsMessages()) {
+                    $output->writeln('Not keeping old Translations Messages');
                 }
 
                 return;
@@ -202,6 +208,12 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             $builder->setKeepOldTranslations(true);
         } elseif ($input->hasParameterOption('--keep=false')) {
             $builder->setKeepOldTranslations(false);
+        }
+
+        if ($input->hasParameterOption('--keeptm') || $input->hasParameterOption('--keeptm=true')) {
+            $builder->setKeepOldTranslationsMessages(true);
+        } else if ($input->hasParameterOption('--keeptm=false')) {
+            $builder->setKeepOldTranslationsMessages(false);
         }
 
         if ($loadResource = $input->getOption('external-translations-dir')) {

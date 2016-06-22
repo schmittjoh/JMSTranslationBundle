@@ -37,7 +37,8 @@ class ExtractCommandTest extends BaseCommandTestCase
 
         $expectedOutput =
             'Extracting Translations for locale en'."\n"
-           .'Keep old translations: No'."\n"
+           .'Keep old translations: No'."\n" 
+           .'Keep old translations messages: No'."\n"
            .'Output-Path: '.$outputDir."\n"
            .'Directories: '.$inputDir."\n"
            .'Excluded Directories: Tests'."\n"
