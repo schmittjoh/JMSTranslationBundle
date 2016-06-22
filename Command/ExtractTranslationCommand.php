@@ -90,7 +90,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
 
             $output->writeln(sprintf('Extracting Translations for locale <info>%s</info>', $locale));
             $output->writeln(sprintf('Keep old translations: <info>%s</info>', $config->isKeepOldMessages() ? 'Yes' : 'No'));
-            $output->writeln(sprintf('Keep old translations messages: <info>%s</info>', $config->isKeepOldTranslationMessages() ? 'Yes' : 'No'));
+            $output->writeln(sprintf('Keep old translation messages: <info>%s</info>', $config->isKeepOldTranslationMessages() ? 'Yes' : 'No'));
             $output->writeln(sprintf('Output-Path: <info>%s</info>', $config->getTranslationsDir()));
             $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $config->getScanDirs())));
             $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $config->getExcludedDirs() ? implode(', ', $config->getExcludedDirs()) : '# none #'));
