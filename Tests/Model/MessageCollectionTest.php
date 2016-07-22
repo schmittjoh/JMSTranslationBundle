@@ -121,7 +121,7 @@ class MessageCollectionTest extends \PHPUnit_Framework_TestCase
         $col->add($m = new Message('a'));
         $col->add(new Message('b'));
         $col->add(new Message('c'));
-        $col->filter(function($v) { return 'a' === $v->getId(); });
+        $col->filter(function ($v) { return 'a' === $v->getId(); });
 
         $this->assertEquals(array('a'), array_keys($col->all()));
         $this->assertSame($m, $col->get('a'));
@@ -266,5 +266,4 @@ class MessageCollectionTest extends \PHPUnit_Framework_TestCase
         $col->set($msg);
         $col->set($msg2);
     }
-
 }

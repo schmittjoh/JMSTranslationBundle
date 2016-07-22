@@ -18,7 +18,7 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor;
 
-use Symfony\Component\HttpKernel\Log\NullLogger;
+use Psr\Log\NullLogger;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -77,7 +77,13 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
             $expected[$engine.'.foo_bar'] = $message;
         }
 
-        $actual = $this->extract(__DIR__.'/Fixture/SimpleTest/')->getDomain('messages')->all();
+        // File with global namespace.
+        $message = new Message('globalnamespace.foo');
+        $message->addSource(new FileSource($basePath.'GlobalNamespace.php', 27));
+        $message->setDesc('Bar');
+        $expected['globalnamespace.foo'] = $message;
+
+        $actual = $this->extract(__DIR__.'/Fixture/SimpleTest')->getDomain('messages')->all();
 
         asort($expected);
         asort($actual);
@@ -101,7 +107,14 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
         ));
         $docParser->setIgnoreNotImportedAnnotations(true);
 
-        $factory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        //use correct factory class depending on whether using Symfony 2 or 3
+        if (class_exists('Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory')) {
+            $metadataFactoryClass = 'Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory';
+        } else {
+            $metadataFactoryClass = 'Symfony\Component\Validator\Mapping\ClassMetadataFactory';
+        }
+
+        $factory = new $metadataFactoryClass(new AnnotationLoader(new AnnotationReader()));
 
         $extractor = new FileExtractor($twig, new NullLogger(), array(
             new DefaultPhpFileExtractor($docParser),

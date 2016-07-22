@@ -19,12 +19,10 @@
 namespace JMS\TranslationBundle\Controller;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
+use JMS\TranslationBundle\Translation\ConfigFactory;
+use JMS\TranslationBundle\Translation\Updater;
 use Symfony\Component\HttpFoundation\Response;
-
-use JMS\TranslationBundle\Translation\XliffMessageUpdater;
-
 use JMS\TranslationBundle\Util\FileUtils;
-
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -37,21 +35,30 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ApiController
 {
-    /** @DI\Inject("jms_translation.config_factory") */
+    /**
+     * @DI\Inject("jms_translation.config_factory")
+     * @var ConfigFactory
+     */
     private $configFactory;
 
-    /** @DI\Inject */
-    private $request;
-
-    /** @DI\Inject("jms_translation.updater") */
+    /**
+     * @DI\Inject("jms_translation.updater")
+     * @var Updater
+     */
     private $updater;
 
     /**
      * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages",
-     * 			name="jms_translation_update_message",
-     * 			defaults = {"id" = null},
-     * 			options = {"i18n" = false})
+     *            name="jms_translation_update_message",
+     *            defaults = {"id" = null},
+     *            options = {"i18n" = false})
      * @Method("PUT")
+     * @param Request $request
+     * @param string $config
+     * @param string $domain
+     * @param string $locale
+     *
+     * @return Response
      */
     public function updateMessageAction(Request $request, $config, $domain, $locale)
     {
@@ -72,9 +79,9 @@ class ApiController
 
         $this->updater->updateTranslation(
             $file, $format, $domain, $locale, $id,
-            $this->request->request->get('message')
+            $request->request->get('message')
         );
 
-        return new Response();
+        return new Response('Translation was saved');
     }
 }

@@ -16,25 +16,21 @@
  * limitations under the License.
  */
 
-namespace JMS\TranslationBundle\Tests\Functional;
+namespace JMS\TranslationBundle\Tests\Functional\Command;
 
-use Symfony\Component\Console\Output\Output as AbstractOutput;
+use JMS\TranslationBundle\Tests\Functional\BaseTestCase;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-class Output extends AbstractOutput
+abstract class BaseCommandTestCase extends BaseTestCase
 {
-    private $content = '';
-
-    public function doWrite($content, $newline)
+    protected function getApp(array $options = array())
     {
-        $this->content .= $content;
+        $kernel = $this->createKernel($options);
+        $kernel->boot();
 
-        if ($newline) {
-            $this->content .= "\n";
-        }
-    }
+        $app = new Application($kernel);
+        $app->setAutoExit(false);
 
-    public function getContent()
-    {
-        return $this->content;
+        return $app;
     }
 }

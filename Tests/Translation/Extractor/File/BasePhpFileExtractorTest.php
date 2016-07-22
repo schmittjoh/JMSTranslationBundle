@@ -19,14 +19,15 @@
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Model\MessageCatalogue;
-
 use Doctrine\Common\Annotations\DocParser;
-
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use PhpParser\Lexer;
+use PhpParser\Parser;
+use PhpParser\ParserFactory;
 
 abstract class BasePhpFileExtractorTest extends \PHPUnit_Framework_TestCase
 {
-    protected final function extract($file, FileVisitorInterface $extractor = null)
+    final protected function extract($file, FileVisitorInterface $extractor = null)
     {
         if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
             throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
@@ -37,8 +38,14 @@ abstract class BasePhpFileExtractorTest extends \PHPUnit_Framework_TestCase
             $extractor = $this->getDefaultExtractor();
         }
 
-        $lexer = new \PHPParser_Lexer();
-        $parser = new \PHPParser_Parser($lexer);
+        $lexer = new Lexer();
+        if (class_exists('PhpParser\ParserFactory')) {
+            $factory = new ParserFactory();
+            $parser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
+        } else {
+            $parser = new Parser($lexer);
+        }
+
         $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();
@@ -49,7 +56,7 @@ abstract class BasePhpFileExtractorTest extends \PHPUnit_Framework_TestCase
 
     abstract protected function getDefaultExtractor();
 
-    protected final function getDocParser()
+    final protected function getDocParser()
     {
         $docParser = new DocParser();
         $docParser->setImports(array(

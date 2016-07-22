@@ -28,7 +28,12 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use PhpParser\Comment\Doc;
+use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
+use PhpParser\Node\Scalar\String_;
+use Psr\Log\LoggerInterface;
 
 /**
  * This parser can extract translation information from PHP files.
@@ -37,37 +42,76 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, \PHPParser_NodeVisitor
+class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
+    /**
+     * @var NodeTraverser
+     */
     private $traverser;
+
+    /**
+     * @var MessageCatalogue
+     */
     private $catalogue;
+
+    /**
+     * @var \SplFileInfo
+     */
     private $file;
+
+    /**
+     * @var DocParser
+     */
     private $docParser;
+
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
+
+    /**
+     * @var Node
+     */
     private $previousNode;
 
+    /**
+     * Methods and "domain" parameter offset to extract from PHP code
+     *
+     * @var array method => position of the "domain" parameter
+     */
+    protected $methodsToExtractFrom = array(
+        'trans' => 2,
+        'transchoice' => 3,
+    );
+
+    /**
+     * DefaultPhpFileExtractor constructor.
+     * @param DocParser $docParser
+     */
     public function __construct(DocParser $docParser)
     {
         $this->docParser = $docParser;
-        $this->traverser = new \PHPParser_NodeTraverser();
+        $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
 
     /**
-     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
-    public function enterNode(\PHPParser_Node $node)
+    /**
+     * @param Node $node
+     * @return void
+     */
+    public function enterNode(Node $node)
     {
-
-        if (!$node instanceof \PHPParser_Node_Expr_MethodCall
+        if (!$node instanceof Node\Expr\MethodCall
             || !is_string($node->name)
-            || ('trans' !== strtolower($node->name) && 'transchoice' !== strtolower($node->name))) {
-
+            || !in_array(strtolower($node->name), array_map('strtolower', array_keys($this->methodsToExtractFrom)))) {
             $this->previousNode = $node;
             return;
         }
@@ -75,12 +119,15 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $ignore = false;
         $desc = $meaning = null;
         if (null !== $docComment = $this->getDocCommentForNode($node)) {
+            if ($docComment instanceof Doc) {
+                $docComment = $docComment->getText();
+            }
             foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$node->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
-                } else if ($annot instanceof Desc) {
+                } elseif ($annot instanceof Desc) {
                     $desc = $annot->text;
-                } else if ($annot instanceof Meaning) {
+                } elseif ($annot instanceof Meaning) {
                     $meaning = $annot->text;
                 }
             }
@@ -90,12 +137,13 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
             return;
         }
 
-        if (!$node->args[0]->value instanceof \PHPParser_Node_Scalar_String) {
+        if (!$node->args[0]->value instanceof String_) {
+
 
             $message = sprintf('Can only extract the translation id from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
 
             if ($this->logger) {
-                $this->logger->err($message);
+                $this->logger->error($message);
                 return;
             }
 
@@ -104,14 +152,15 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
 
         $id = $node->args[0]->value->value;
 
-        $index = 'trans' === strtolower($node->name) ? 2 : 3;
+        $index = $this->methodsToExtractFrom[strtolower($node->name)];
         if (isset($node->args[$index])) {
-            if (!$node->args[$index]->value instanceof \PHPParser_Node_Scalar_String) {
+
+            if (!$node->args[$index]->value instanceof String_) {
 
                 $message = sprintf('Can only extract the translation domain from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
 
                 if ($this->logger) {
-                    $this->logger->err($message);
+                    $this->logger->error($message);
                     return;
                 }
 
@@ -131,6 +180,11 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->catalogue->add($message);
     }
 
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param array $ast
+     */
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
     {
         $this->file = $file;
@@ -138,18 +192,57 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->traverser->traverse($ast);
     }
 
-    public function beforeTraverse(array $nodes) { }
-    public function leaveNode(\PHPParser_Node $node) { }
-    public function afterTraverse(array $nodes) { }
-    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue) { }
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast) { }
+    /**
+     * @param array $nodes
+     * @return void
+     */
+    public function beforeTraverse(array $nodes)
+    {
+    }
 
-    private function getDocCommentForNode(\PHPParser_Node $node)
+    /**
+     * @param Node $node
+     * @return void
+     */
+    public function leaveNode(Node $node)
+    {
+    }
+
+    /**
+     * @param array $nodes
+     * @return void
+     */
+    public function afterTraverse(array $nodes)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     */
+    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
+    {
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param MessageCatalogue $catalogue
+     * @param \Twig_Node $ast
+     */
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    {
+    }
+
+    /**
+     * @param Node $node
+     * @return null|string
+     */
+    private function getDocCommentForNode(Node $node)
     {
         // check if there is a doc comment for the ID argument
         // ->trans(/** @Desc("FOO") */ 'my.id')
         if (null !== $comment = $node->args[0]->getDocComment()) {
-            return $comment;
+            return $comment->getText();
         }
 
         // this may be placed somewhere up in the hierarchy,
@@ -157,9 +250,10 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         // /** @Desc("FOO") */ ->trans('my.id')
         // /** @Desc("FOO") */ $translator->trans('my.id')
         if (null !== $comment = $node->getDocComment()) {
-            return $comment;
-        } elseif (null !== $this->previousNode) {
-            return $this->previousNode->getDocComment();
+            return $comment->getText();
+        } elseif (null !== $this->previousNode && $this->previousNode->getDocComment() !== null) {
+            $comment = $this->previousNode->getDocComment();
+            return is_object($comment) ? $comment->getText() : $comment;
         }
 
         return null;

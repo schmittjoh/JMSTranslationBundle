@@ -87,3 +87,4 @@ class Controller
         $this->translator->trans(/** @Ignore */ 'text.ignored');
     }
 }
+

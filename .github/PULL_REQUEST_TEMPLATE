@@ -1,0 +1,19 @@
+
+| Q             | A
+| ------------- | ---
+| Bug fix?      | yes/no
+| New feature?  | yes/no
+| BC breaks?    | yes/no
+| Deprecations? | yes/no
+| Tests pass?   | yes/no
+| Fixed tickets | 
+| License       | Apache2
+
+
+## Description
+A few sentences describing the overall goals of the pull request's commits.
+
+## Todos
+- [ ] Tests
+- [ ] Documentation
+- [ ] Changelog

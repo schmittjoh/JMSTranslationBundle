@@ -18,17 +18,13 @@
 
 namespace JMS\TranslationBundle\Translation;
 
+use JMS\TranslationBundle\Translation\Comparison\ChangeSet;
 use JMS\TranslationBundle\Util\FileUtils;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
-
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
-use Symfony\Component\Translation\MessageCatalogue as SymfonyMessageCatalogue;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;
-use Symfony\Bundle\FrameworkBundle\Translation\TranslationLoader;
-use Symfony\Component\Translation\Loader\LoaderInterface;
 
 /**
  * Wrapper around the different components.
@@ -41,22 +37,45 @@ use Symfony\Component\Translation\Loader\LoaderInterface;
  */
 class Updater
 {
+    /**
+     * @var LoaderManager
+     */
     private $loader;
+
+    /**
+     * @var ExtractorManager
+     */
     private $extractor;
 
     /**
      * @var Config
      */
     private $config;
+
+    /**
+     * @var MessageCatalogue
+     */
     private $existingCatalogue;
+
+    /**
+     * @var MessageCatalogue
+     */
     private $scannedCatalogue;
+
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
+
+    /**
+     * @var FileWriter
+     */
     private $writer;
 
     /**
      * @param LoaderManager $loader
      * @param ExtractorManager $extractor
-     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      * @param FileWriter $writer
      */
     public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer)
@@ -68,7 +87,7 @@ class Updater
     }
 
     /**
-     * @param \Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger)
     {
@@ -78,7 +97,7 @@ class Updater
 
     /**
      * @param Config $config
-     * @return \JMS\CommandBundle\Translation\ComparisonResult
+     * @return ChangeSet
      */
     public function getChangeSet(Config $config)
     {
@@ -117,7 +136,7 @@ class Updater
      * This will not change files of ignored domains. It will also not
      * change files of another than the current locale.
      *
-     * @return void
+     * @param Config $config
      */
     public function process(Config $config)
     {
@@ -157,9 +176,9 @@ class Updater
     /**
      * Detects the most suitable output format to use.
      *
-     * @param string $domain
-     * @throws \RuntimeException
-     * @return string the output format
+     * @param $currentDomain
+     * @return string
+     * @internal param string $domain
      */
     private function detectOutputFormat($currentDomain)
     {
@@ -241,7 +260,9 @@ class Updater
                     continue;
                 }
 
-                $message->mergeExisting($this->existingCatalogue->get($message->getId(), $message->getDomain()));
+                $existingMessage = clone $this->existingCatalogue->get($message->getId(), $message->getDomain());
+                $existingMessage->mergeScanned($message);
+                $this->scannedCatalogue->set($existingMessage, true);
             }
         }
 

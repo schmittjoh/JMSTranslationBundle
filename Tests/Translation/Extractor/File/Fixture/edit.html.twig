@@ -5,7 +5,7 @@
         {% include "UserBundle:Profile:navbar.html.twig" with {"selected": "edit"} only %}
     </ul>
     
-    <form action="{{ path("profile_edit") }}" method="post" {{ form_enctype(form) }}>
+    <form action="{{ path("profile_edit") }}" method="post">
         <fieldset>
             <legend>{{ "header.edit_profile"|trans }}</legend>
             {{ form_widget(form) }}
