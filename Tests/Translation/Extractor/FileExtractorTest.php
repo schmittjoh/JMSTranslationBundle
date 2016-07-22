@@ -88,7 +88,7 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
         asort($expected);
         asort($actual);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expected, str_replace('/', '\\', $actual));
     }
 
     private function extract($directory)

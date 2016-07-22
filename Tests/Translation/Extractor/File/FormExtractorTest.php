@@ -79,8 +79,15 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected = new MessageCatalogue();
         $path = __DIR__.'/Fixture/MyFormType.php';
 
-//        $message = new Message('form.label.firstname');
-//        $message->addSource(new FileSource($path, 30));
+        $message = new Message('form.label.firstname');
+        $message->setDesc(null);
+        $message->addSource(new FileSource($path, 30));
+        $expected->add($message);
+
+        $message = new Message('form.label.lastname');
+        $message->setDesc('Lastname');
+        $message->addSource(new FileSource($path, 33));
+        $expected->add($message);
 
         // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
         // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
@@ -89,21 +96,6 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         } else {
             $message = new Message('bar');
         }
-        $message->addSource(new FileSource($path, 36));
-        $expected->add($message);
-
-        $message = new Message('form.states.empty_value');
-        $message->setDesc('Please select a state');
-        $message->addSource(new FileSource($path, 37));
-
-        $expected->add($message);
-
-        $message = new Message('form.label.lastname');
-        $message->setDesc('Lastname');
-        $message->addSource(new FileSource($path, 33));
-        $expected->add($message);
-
-        $message = new Message('bar');
         $message->addSource(new FileSource($path, 36));
         $expected->add($message);
 
@@ -150,8 +142,16 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $message->addSource(new FileSource($path, 64));
         $expected->add($message);
 
-        $message = new Message('form.label.created');
+        $message = new Message('form.choice.choice_as_values.label.foo');
         $message->addSource(new FileSource($path, 68));
+        $expected->add($message);
+
+        $message = new Message('form.choice.choice_as_values.label.bar');
+        $message->addSource(new FileSource($path, 69));
+        $expected->add($message);
+
+        $message = new Message('form.label.created');
+        $message->addSource(new FileSource($path, 75));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.year');
@@ -164,14 +164,6 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
 
         $message = new Message('form.dueDate.empty.day');
         $message->addSource(new FileSource($path, 79));
-        $expected->add($message);
-
-        $message = new Message('form.choice.choice_as_values.label.foo');
-        $message->addSource(new FileSource($path, 68));
-        $expected->add($message);
-
-        $message = new Message('form.choice.choice_as_values.label.bar');
-        $message->addSource(new FileSource($path, 69));
         $expected->add($message);
 
         $extracted = $this->extract('MyFormType.php');
