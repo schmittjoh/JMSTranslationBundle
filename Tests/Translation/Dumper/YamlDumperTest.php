@@ -48,6 +48,6 @@ class YamlDumperTest extends BaseDumperTest
             throw new InvalidArgumentException(sprintf('There is no output for key "%s".', $key));
         }
 
-        return file_get_contents($file);
+        return str_replace("\r\n", "\n", file_get_contents($file));
     }
 }

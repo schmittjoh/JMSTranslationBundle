@@ -124,6 +124,6 @@ EOF;
 //         $doc = \DOMDocument::load($file);
 //         $this->assertTrue($doc->schemaValidate(__DIR__.'/../../../Resources/schema/xliff-core-1.2-strict.xsd'));
 
-        return file_get_contents($file);
+        return str_replace("\r\n", "\n", file_get_contents($file));
     }
 }
