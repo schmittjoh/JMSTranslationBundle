@@ -182,7 +182,6 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      * @param Node $item
      * @param $domain
      * @return bool
-     * @internal
      */
     protected function parseEmptyValueNode(Node $item, $domain)
     {
@@ -213,7 +212,6 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      * @param Node $node
      * @param $domain
      * @return bool
-     * @internal
      */
     protected function parseChoiceNode(Node $item, Node $node, $domain)
     {
@@ -254,7 +252,6 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      * @param Node $item
      * @param $domain
      * @return bool
-     * @internal
      */
     protected function parseAttrNode(Node $item, $domain)
     {
@@ -330,7 +327,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      * @param $item
      * @param null $domain
      */
-    private function parseItem($item, $domain = null)
+    protected function parseItem($item, $domain = null)
     {
         // get doc comment
         $ignore = false;
