@@ -152,7 +152,7 @@ final class ConfigBuilder
 
         return $this;
     }
-    
+
     public function setExcludedNames(array $names)
     {
         $this->excludedNames = $names;
