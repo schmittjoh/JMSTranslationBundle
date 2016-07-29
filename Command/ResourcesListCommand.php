@@ -22,7 +22,6 @@ use JMS\TranslationBundle\Translation\ConfigBuilder;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Translation\Config;
 use JMS\TranslationBundle\Logger\OutputLogger;
-
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,13 +30,15 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Finder\Finder;
 use JMS\TranslationBundle\Util\FileUtils;
 
-
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
 class ResourcesListCommand extends ContainerAwareCommand
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
@@ -50,7 +51,7 @@ class ResourcesListCommand extends ContainerAwareCommand
     /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return mixed
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -93,7 +94,7 @@ class ResourcesListCommand extends ContainerAwareCommand
         $files = array();
         // Register translation resources
         foreach ($dirs as $dir) {
-            foreach(FileUtils::findTranslationFiles($dir) as $catalogue => $locales) {
+            foreach (FileUtils::findTranslationFiles($dir) as $catalogue => $locales) {
                 foreach ($locales as $file) {
                     $files[] = $file[1];
                 }

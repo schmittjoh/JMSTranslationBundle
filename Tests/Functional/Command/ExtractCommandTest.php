@@ -42,13 +42,13 @@ class ExtractCommandTest extends BaseCommandTestCase
            .'Directories: '.$inputDir."\n"
            .'Excluded Directories: Tests'."\n"
            .'Excluded Names: *Test.php, *TestCase.php'."\n"
-           .'Output-Format: # whatever is present, if nothing then xliff #'."\n"
+           .'Output-Format: # whatever is present, if nothing then xlf #'."\n"
            .'Custom Extractors: # none #'."\n"
            .'============================================================'."\n"
            .'Loading catalogues from "'.$outputDir.'"'."\n"
            .'Extracting translation keys'."\n"
            .'Extracting messages from directory : '.$inputDir."\n"
-           .'Writing translation file "'.$outputDir.'/messages.en.xliff".'."\n"
+           .'Writing translation file "'.$outputDir.'/messages.en.xlf".'."\n"
            .'done!'."\n"
         ;
 
@@ -72,24 +72,23 @@ class ExtractCommandTest extends BaseCommandTestCase
         ));
 
         $expectedOutput = array(
-            'php.foo->',                                                                                                                                 
-            'php.bar-> Bar',                                                                                                                                 
-            'php.baz->',                                                                                                                                 
-            'php.foo_bar-> Foo',                                                                                                                                
-            'twig.foo->',                                                                                                                                  
-            'twig.bar-> Bar',                                                                                                                                  
-            'twig.baz->',                                                                                                                                  
-            'twig.foo_bar-> Foo',                                                                                                                                  
-            'form.foo->',                                                                                                                                  
-            'form.bar->',                                                                                                                                  
+            'php.foo->',
+            'php.bar-> Bar',
+            'php.baz->',
+            'php.foo_bar-> Foo',
+            'twig.foo->',
+            'twig.bar-> Bar',
+            'twig.baz->',
+            'twig.foo_bar-> Foo',
+            'form.foo->',
+            'form.bar->',
             'controller.foo-> Foo',
         );
 
         $this->getApp()->run($input, $output = new Output());
         
-        foreach($expectedOutput as $transID){
-            $this->assertContains($transID, $output->getContent());    
+        foreach ($expectedOutput as $transID) {
+            $this->assertContains($transID, $output->getContent());
         }
-
     }
 }

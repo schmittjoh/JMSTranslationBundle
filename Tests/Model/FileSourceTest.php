@@ -132,7 +132,7 @@ class FileSourceTest extends \PHPUnit_Framework_TestCase
         $tests[] = array(new FileSource('foo/bar', 1), 'foo/bar on line 1');
         $tests[] = array(new FileSource('foo/bar', null, 2), 'foo/bar');
         $tests[] = array(new FileSource('foo/bar', 1, 2), 'foo/bar on line 1 at column 2');
-        $tests[] = array(new FileSource('a/b/c/foo/bar'), 'c/foo/bar');
+        $tests[] = array(new FileSource('a/b/c/foo/bar'), 'a/b/c/foo/bar');
 
         return $tests;
     }

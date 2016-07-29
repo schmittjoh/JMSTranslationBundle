@@ -1,9 +1,24 @@
 # Changelog
 
 
-### 1.2.1 to next release
+### 1.2.2 to next release
+
+* Support for placeholders and empty_value.
+* Slightly easier webui extension with new extensible js class
+* Extracted strings have the full source path stored
+* Improvements to WebUI logic
+* Various extraction bug fixes (attr as variable)
+* Various improvements to xliff dumper
+* Ensure full symfony 3.0 support and tests
+
+### 1.2.1 to 1.2.2
 
 * Support nikic/php-parser 1.4.x and 2.0.x
+* Set XLF as default output format of the ExtractTranslationCommand
+* Better compatibility with Symfony 3.0
+* Bugfixes with calls to the logger
+* Added more tests for controllers, extension, compiler passes and config
+* Code and doc cleanup 
 
 ### 1.2.0 to 1.2.1
 

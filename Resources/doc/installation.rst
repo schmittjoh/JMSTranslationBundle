@@ -21,3 +21,10 @@ register the new bundle:
         new JMS\TranslationBundle\JMSTranslationBundle(),
         // ...
     );
+
+Congratulations the bundle is now installed. Lets start configure with the bundle.
+These resources may be of interest:
+
+- :doc:`Example configuration <cookbook/extraction_config.rst`
+- :doc:`Configuration reference <cookbook/config_reference.rst`
+- :doc:`Using the WebUI <webinterface.rst`

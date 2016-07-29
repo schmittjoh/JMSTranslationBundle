@@ -52,11 +52,13 @@ class FileWriter
     public function write(MessageCatalogue $catalogue, $domain, $filePath, $format)
     {
         if (!isset($this->dumpers[$format])) {
-            throw new InvalidArgumentException(sprintf('The format "%s" is not supported.', $format));
+            $allowedFormats = array_keys($this->dumpers);
+            $allowedFormatsString = join(',', $allowedFormats);
+            throw new InvalidArgumentException(sprintf('The format "%s" is not supported. Allowed formats:%s', $format, $allowedFormatsString));
         }
 
         // sort messages before dumping
-        $catalogue->getDomain($domain)->sort(function($a, $b) {
+        $catalogue->getDomain($domain)->sort(function ($a, $b) {
             return strcmp($a->getId(), $b->getId());
         });
 

@@ -28,11 +28,21 @@ namespace JMS\TranslationBundle\Twig;
  */
 class NormalizingNodeVisitor implements \Twig_NodeVisitorInterface
 {
+    /**
+     * @param \Twig_NodeInterface $node
+     * @param \Twig_Environment $env
+     * @return \Twig_NodeInterface
+     */
     public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
     {
         return $node;
     }
 
+    /**
+     * @param \Twig_NodeInterface $node
+     * @param \Twig_Environment $env
+     * @return \Twig_Node_Expression_Constant|\Twig_NodeInterface
+     */
     public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
     {
         if ($node instanceof \Twig_Node_Expression_Binary_Concat
@@ -44,6 +54,9 @@ class NormalizingNodeVisitor implements \Twig_NodeVisitorInterface
         return $node;
     }
 
+    /**
+     * @return int
+     */
     public function getPriority()
     {
         return -3;
