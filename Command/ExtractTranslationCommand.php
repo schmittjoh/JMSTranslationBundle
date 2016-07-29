@@ -195,6 +195,5 @@ class ExtractTranslationCommand extends ContainerAwareCommand
         if ($loadResource = $input->getOption('external-translations-dir')) {
             $builder->setLoadResources($loadResource);
         }
-
     }
 }

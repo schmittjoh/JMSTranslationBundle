@@ -43,7 +43,6 @@ final class Config
 
     private $keepOldMessages;
     private $loadResources;
-    private $ignoredAnnotations;
 
     public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
     {
