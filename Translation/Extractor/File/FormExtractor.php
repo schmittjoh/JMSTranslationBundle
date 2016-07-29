@@ -379,7 +379,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             throw new RuntimeException($message);
         }
 
-        $source = new FileSource((string) $this->file, $item->value->getLine());
+        $source = new FileSource($this->file->getRelativePathname(), $item->value->getLine());
         $id = $item->value->value;
 
         if (null === $domain) {
