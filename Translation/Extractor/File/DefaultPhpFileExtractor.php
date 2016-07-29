@@ -154,6 +154,11 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $this->catalogue->add($message);
     }
 
+
+    /**
+     * @param $node
+     * @return string
+     */
     private function concatToString($node)
     {
         if ($node instanceof String_) {
