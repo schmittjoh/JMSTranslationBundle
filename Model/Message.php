@@ -106,12 +106,12 @@ class Message
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @param string $domain
      */
     public function __construct($id, $domain = 'messages')
     {
-        $this->id = $id;
+        $this->id = (string) $id;
         $this->domain = $domain;
     }
 
