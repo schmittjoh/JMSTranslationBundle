@@ -172,7 +172,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $message = new Message($id, $domain);
         $message->setDesc($desc);
         $message->setMeaning($meaning);
-        $message->addSource($this->fileSourceFactory->create((string) $this->file, $node->getLine()));
+        $message->addSource($this->fileSourceFactory->create($this->file, $node->getLine()));
         $this->catalogue->add($message);
     }
 

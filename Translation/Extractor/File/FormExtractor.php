@@ -53,7 +53,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     private $traverser;
 
     /**
-     * @var string
+     * @var \SplFileInfo
      */
     private $file;
 
@@ -385,7 +385,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             throw new RuntimeException($message);
         }
 
-        $source = $this->fileSourceFactory->create((string) $this->file, $item->value->getLine());
+        $source = $this->fileSourceFactory->create($this->file, $item->value->getLine());
         $id = $item->value->value;
 
         if (null === $domain) {

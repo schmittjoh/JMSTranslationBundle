@@ -29,6 +29,7 @@ class FileSourceFactory
 
     /**
      * FileSourceFactory constructor.
+     *
      * @param string $kernelRoot
      */
     public function __construct($kernelRoot)
@@ -37,14 +38,17 @@ class FileSourceFactory
     }
 
     /**
-     * Generate a new FileSource with a relative path
-     * @param          $path string
-     * @param null|int $line
-     * @param null|int $column
+     * Generate a new FileSource with a relative path.
+     *
+     * @param \SplFileInfo $path   string
+     * @param null|int     $line
+     * @param null|int     $column
+     *
      * @return FileSource
      */
-    public function create($path, $line = null, $column = null)
+    public function create(\SplFileInfo $file, $line = null, $column = null)
     {
+        $path = (string) $file;
         if (0 === strpos($path, $this->kernelRoot)) {
             $path = substr($path, strlen($this->kernelRoot));
         }
