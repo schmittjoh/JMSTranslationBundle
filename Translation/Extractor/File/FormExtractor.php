@@ -65,12 +65,12 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     /**
      * @var string
      */
-    private $defaultDomain;
+    protected $defaultDomain;
 
     /**
      * @var string
      */
-    private $defaultDomainMessages;
+    protected $defaultDomainMessages;
 
     /**
      * FormExtractor constructor.
@@ -182,7 +182,6 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      * @param Node $item
      * @param $domain
      * @return bool
-     * @internal
      */
     protected function parseEmptyValueNode(Node $item, $domain)
     {
@@ -204,7 +203,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     }
 
     /**
-     * This parses any Node of type choices. 
+     * This parses any Node of type choices.
      *
      * Returning true means either that regardless of whether
      * parsing has occurred or not, the enterNode function should move on to the next node item.
@@ -213,7 +212,6 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      * @param Node $node
      * @param $domain
      * @return bool
-     * @internal
      */
     protected function parseChoiceNode(Node $item, Node $node, $domain)
     {
@@ -246,7 +244,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     }
 
     /**
-     * This parses any Node of type attr 
+     * This parses any Node of type attr
      *
      * Returning true means either that regardless of whether
      * parsing has occurred or not, the enterNode function should move on to the next node item.
@@ -254,7 +252,6 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      * @param Node $item
      * @param $domain
      * @return bool
-     * @internal
      */
     protected function parseAttrNode(Node $item, $domain)
     {
@@ -278,12 +275,12 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     /**
      * @param Node $node
      */
-    private function parseDefaultsCall(Node $node)
+    protected function parseDefaultsCall(Node $node)
     {
         static $returningMethods = array(
-            'setdefaults' => true, 'replacedefaults' => true, 'setoptional' => true, 'setrequired' => true,
-            'setallowedvalues' => true, 'addallowedvalues' => true, 'setallowedtypes' => true,
-            'addallowedtypes' => true, 'setfilters' => true
+          'setdefaults' => true, 'replacedefaults' => true, 'setoptional' => true, 'setrequired' => true,
+          'setallowedvalues' => true, 'addallowedvalues' => true, 'setallowedtypes' => true,
+          'addallowedtypes' => true, 'setfilters' => true
         );
 
         $var = $node->var;
@@ -330,7 +327,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      * @param $item
      * @param null $domain
      */
-    private function parseItem($item, $domain = null)
+    protected function parseItem($item, $domain = null)
     {
         // get doc comment
         $ignore = false;
@@ -384,10 +381,10 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
 
         if (null === $domain) {
             $this->defaultDomainMessages[] = array(
-                'id' => $id,
-                'source' => $source,
-                'desc' => $desc,
-                'meaning' => $meaning
+              'id' => $id,
+              'source' => $source,
+              'desc' => $desc,
+              'meaning' => $meaning
             );
         } else {
             $this->addToCatalogue($id, $source, $domain, $desc, $meaning);

@@ -10,6 +10,7 @@
 * Various extraction bug fixes (attr as variable)
 * Various improvements to xliff dumper
 * Ensure full symfony 3.0 support and tests
+* Added ability to extend the FormExtractor
 
 ### 1.2.1 to 1.2.2
 
