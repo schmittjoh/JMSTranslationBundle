@@ -138,6 +138,10 @@ class XliffDumper implements DumperInterface
                 $source->appendChild($doc->createCDATASection($message->getSourceString()));
             } else {
                 $source->appendChild($doc->createTextNode($message->getSourceString()));
+
+                if (preg_match("/\r\n|\n|\r|\t/", $message->getSourceString())) {
+                    $source->setAttribute('xml:space', 'preserve');
+                }
             }
 
             $unit->appendChild($target = $doc->createElement('target'));
@@ -145,6 +149,10 @@ class XliffDumper implements DumperInterface
                 $target->appendChild($doc->createCDATASection($message->getLocaleString()));
             } else {
                 $target->appendChild($doc->createTextNode($message->getLocaleString()));
+
+                if (preg_match("/\r\n|\n|\r|\t/", $message->getLocaleString())) {
+                    $target->setAttribute('xml:space', 'preserve');
+                }
             }
 
             if ($message instanceof XliffMessage) {
