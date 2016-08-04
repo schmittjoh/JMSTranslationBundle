@@ -1,0 +1,7 @@
+{% set key="expression" %}
+
+{{ key|trans|desc("Foo Bar")|meaning("Some Meaning")}}
+
+{{ "text.foo_bar"|trans({}, key) }}
+
+{% trans with {'%name%': 'Johannes'} from key %}text.name{% endtrans %}
