@@ -38,9 +38,6 @@ matrix:
         - php: 7.1
           env: SYMFONY_VERSION=3.*
 
-before_script:
-    - phpenv config-add travis.php.ini
-
 before_install:
     - travis_retry composer self-update
 
