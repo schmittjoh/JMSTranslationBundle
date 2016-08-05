@@ -59,7 +59,7 @@ EOF;
 
         $catalogue = $this->getStructureCatalogue();
 
-        $this->assertEquals($this->getOutput('structure'), $dumper->dump($catalogue, 'messages'));
+        $this->assertEquals($this->getOutput('structure_full_path'), $dumper->dump($catalogue, 'messages'));
     }
 
     /**
@@ -99,8 +99,11 @@ EOF;
         $catalogue->setLocale('en');
 
         $message = new Message('foo.bar.baz');
-        $message->addSource(new FileSource('/a/b/c/foo/bar', 1, 2));
+        $message->addSource(new FileSource('/z/order/test', 1, 2));
         $message->addSource(new FileSource('bar/baz', 1, 2));
+        $message->addSource(new FileSource('bar/baz', 1, 5));
+        $message->addSource(new FileSource('/a/b/c/foo/bar', 1, 2));
+
         $catalogue->add($message);
 
         return $catalogue;
