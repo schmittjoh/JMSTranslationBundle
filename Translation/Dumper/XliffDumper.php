@@ -207,7 +207,7 @@ class XliffDumper implements DumperInterface
      */
     protected function getSortedSources($sources)
     {
-        $indexedSources = [];
+        $indexedSources = array();
         foreach ($sources as $source) {
             if ($source instanceof FileSource) {
                 $index = $source->getPath();
