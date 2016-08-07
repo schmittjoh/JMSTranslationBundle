@@ -12,6 +12,7 @@
 * The `DefaultPhpFileExtractor` could be extended an modified which function we should extraction messages from.
 * Make sure Message ID is always a string to avoid issues with numerial IDs. 
 * Make source files clickable in WebUI
+* Message sources in Xliff files will be sorted in alphabetical order 
 
 ### 1.2.2 to 1.2.3
 

@@ -213,7 +213,7 @@ class XliffDumper implements DumperInterface
      * @param array $sources
      * @return FileSource
      */
-    protected function getSortedSources($sources)
+    protected function getSortedSources(array $sources)
     {
         $indexedSources = array();
         foreach ($sources as $source) {
