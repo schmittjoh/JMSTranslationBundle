@@ -34,7 +34,10 @@
                         <h6>Sources</h6>
                         <ul>
                         {% for source in message.sources %}
-                            <li title="{{ source }}" class="jms-sources-list-item truncate-left">{{ source }}</li>
+                            {%- set link = source.path|file_link(source.line) %}
+                            {%- if link %}<a href="{{ link }}" title="{{ source }}">{% else %}<span>{% endif %}
+                                <li class="jms-sources-list-item truncate-left">{{ source }}</li>
+                            {%- if link %}</a>{% else %}</span>{% endif %}
                         {% endfor %}
                         </ul>
                     {% endif %}
