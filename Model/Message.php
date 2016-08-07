@@ -79,6 +79,8 @@ class Message
      * @param string $domain
      *
      * @return Message
+     *
+     * @deprecated Will be removed in 2.0. Use the FileSourceFactory
      */
     public static function forThisFile($id, $domain = 'messages')
     {

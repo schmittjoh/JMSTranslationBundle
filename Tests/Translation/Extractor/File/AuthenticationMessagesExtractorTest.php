@@ -22,6 +22,7 @@ use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\AuthenticationMessagesExtractor;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
 
 class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
 {
@@ -44,6 +45,6 @@ class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
 
     protected function getDefaultExtractor()
     {
-        return new AuthenticationMessagesExtractor($this->getDocParser());
+        return new AuthenticationMessagesExtractor($this->getDocParser(), new FileSourceFactory('faux'));
     }
 }

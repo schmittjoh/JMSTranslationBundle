@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="jms_translation.twig_extension.class">JMS\TranslationBundle\Twig\TranslationExtension</parameter>
-        
+
         <parameter key="jms_translation.extractor_manager.class">JMS\TranslationBundle\Translation\ExtractorManager</parameter>
         <parameter key="jms_translation.extractor.file_extractor.class">JMS\TranslationBundle\Translation\Extractor\FileExtractor</parameter>
         <parameter key="jms_translation.extractor.file.default_php_extractor">JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor</parameter>
@@ -15,21 +15,22 @@
         <parameter key="jms_translation.extractor.file.form_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\FormExtractor</parameter>
         <parameter key="jms_translation.extractor.file.validation_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor</parameter>
         <parameter key="jms_translation.extractor.file.authentication_message_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\AuthenticationMessagesExtractor</parameter>
-        
+
         <parameter key="jms_translation.loader.symfony.xliff_loader.class">JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader</parameter>
         <parameter key="jms_translation.loader.xliff_loader.class">JMS\TranslationBundle\Translation\Loader\XliffLoader</parameter>
         <parameter key="jms_translation.loader.symfony_adapter.class">JMS\TranslationBundle\Translation\Loader\SymfonyLoaderAdapter</parameter>
         <parameter key="jms_translation.loader_manager.class">JMS\TranslationBundle\Translation\LoaderManager</parameter>
-        
+
         <parameter key="jms_translation.dumper.php_dumper.class">JMS\TranslationBundle\Translation\Dumper\PhpDumper</parameter>
         <parameter key="jms_translation.dumper.xliff_dumper.class">JMS\TranslationBundle\Translation\Dumper\XliffDumper</parameter>
         <parameter key="jms_translation.dumper.yaml_dumper.class">JMS\TranslationBundle\Translation\Dumper\YamlDumper</parameter>
         <parameter key="jms_translation.dumper.symfony_adapter.class">JMS\TranslationBundle\Translation\Dumper\SymfonyDumperAdapter</parameter>
-        
+
         <parameter key="jms_translation.file_writer.class">JMS\TranslationBundle\Translation\FileWriter</parameter>
-        
+
         <parameter key="jms_translation.updater.class">JMS\TranslationBundle\Translation\Updater</parameter>
         <parameter key="jms_translation.config_factory.class">JMS\TranslationBundle\Translation\ConfigFactory</parameter>
+        <parameter key="jms_translation.file_source_factory.class">JMS\TranslationBundle\Translation\FileSourceFactory</parameter>
     </parameters>
 
     <services>
@@ -39,18 +40,22 @@
             <argument type="service" id="logger" />
             <argument type="service" id="jms_translation.file_writer" />
         </service>
-        
+
         <service id="jms_translation.config_factory" class="%jms_translation.config_factory.class%" />
-        
+
+        <service id="jms_translation.file_source_factory" class="%jms_translation.file_source_factory.class%">
+            <argument>%kernel.root_dir%</argument>
+        </service>
+
         <service id="jms_translation.file_writer" class="%jms_translation.file_writer.class%" public="false" />
-        
+
         <!-- Loaders -->
         <service id="jms_translation.loader.symfony_adapter" class="%jms_translation.loader.symfony_adapter.class%" public="false" abstract="true" />
         <service id="jms_translation.loader_manager" class="%jms_translation.loader_manager.class%" /><!-- public as needed by the TranslateController -->
         <service id="jms_translation.loader.xliff_loader" class="%jms_translation.loader.xliff_loader.class%" public="false">
             <tag name="jms_translation.loader" format="xliff" />
         </service>
-        
+
         <!-- Dumpers -->
         <service id="jms_translation.dumper.php_dumper" class="%jms_translation.dumper.php_dumper.class%" public="false">
             <tag name="jms_translation.dumper" format="php" />
@@ -71,13 +76,13 @@
             <tag name="jms_translation.dumper" format="yml" />
         </service>
         <service id="jms_translation.dumper.symfony_adapter" class="%jms_translation.dumper.symfony_adapter.class%" public="false" abstract="true" />
-        
+
         <!-- Extractors -->
         <service id="jms_translation.extractor_manager" class="%jms_translation.extractor_manager.class%" public="false">
             <argument type="service" id="jms_translation.extractor.file_extractor" />
             <argument type="service" id="logger" />
         </service>
-        
+
         <!-- File-based extractors -->
         <service id="jms_translation.extractor.file_extractor" class="%jms_translation.extractor.file_extractor.class%" public="false">
             <argument type="service" id="twig" />
@@ -85,10 +90,12 @@
         </service>
         <service id="jms_translation.extractor.file.default_php_extractor" class="%jms_translation.extractor.file.default_php_extractor%" public="false">
             <argument type="service" id="jms_translation.doc_parser" />
+            <argument type="service" id="jms_translation.file_source_factory" />
             <tag name="jms_translation.file_visitor" />
         </service>
         <service id="jms_translation.extractor.file.form_extractor" class="%jms_translation.extractor.file.form_extractor.class%" public="false">
             <argument type="service" id="jms_translation.doc_parser" />
+            <argument type="service" id="jms_translation.file_source_factory" />
             <tag name="jms_translation.file_visitor" />
         </service>
         <service id="jms_translation.extractor.file.translation_container_extractor" class="%jms_translation.extractor.file.translation_container_extractor%" public="false">
@@ -96,6 +103,7 @@
         </service>
         <service id="jms_translation.extractor.file.twig_extractor" class="%jms_translation.extractor.file.twig_extractor%" public="false">
             <argument type="service" id="twig" />
+            <argument type="service" id="jms_translation.file_source_factory" />
             <tag name="jms_translation.file_visitor" />
         </service>
         <service id="jms_translation.extractor.file.validation_extractor" class="%jms_translation.extractor.file.validation_extractor.class%" public="false">
@@ -104,9 +112,10 @@
         </service>
         <service id="jms_translation.extractor.file.authentication_message_extractor" class="%jms_translation.extractor.file.authentication_message_extractor.class%" public="false">
             <argument type="service" id="jms_translation.doc_parser" />
+            <argument type="service" id="jms_translation.file_source_factory" />
             <tag name="jms_translation.file_visitor" />
         </service>
-        
+
         <!-- Util -->
         <service id="jms_translation.doc_parser" class="Doctrine\Common\Annotations\DocParser" public="false">
             <call method="setImports">

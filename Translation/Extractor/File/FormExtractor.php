@@ -19,7 +19,6 @@
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Annotation\Desc;
@@ -28,6 +27,7 @@ use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
@@ -37,6 +37,11 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeVisitor
 {
+    /**
+     * @var FileSourceFactory
+     */
+    private $fileSourceFactory;
+    
     /**
      * @var DocParser
      */
@@ -48,7 +53,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     private $traverser;
 
     /**
-     * @var string
+     * @var \SplFileInfo
      */
     private $file;
 
@@ -75,11 +80,12 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     /**
      * FormExtractor constructor.
      * @param DocParser $docParser
+     * @param FileSourceFactory $fileSourceFactory
      */
-    public function __construct(DocParser $docParser)
+    public function __construct(DocParser $docParser, FileSourceFactory $fileSourceFactory)
     {
         $this->docParser = $docParser;
-
+        $this->fileSourceFactory = $fileSourceFactory;
         $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
@@ -379,7 +385,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             throw new RuntimeException($message);
         }
 
-        $source = new FileSource((string) $this->file, $item->value->getLine());
+        $source = $this->fileSourceFactory->create($this->file, $item->value->getLine());
         $id = $item->value->value;
 
         if (null === $domain) {

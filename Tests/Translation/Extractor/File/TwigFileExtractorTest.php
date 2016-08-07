@@ -18,6 +18,7 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
+use JMS\TranslationBundle\Translation\FileSourceFactory;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 use Symfony\Bridge\Twig\Form\TwigRenderer;
 use Symfony\Component\Routing\RequestContext;
@@ -158,7 +159,7 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         }
 
         if (null === $extractor) {
-            $extractor = new TwigFileExtractor($env);
+            $extractor = new TwigFileExtractor($env, new FileSourceFactory('faux'));
         }
 
         $ast = $env->parse($env->tokenize(file_get_contents($file), $file));

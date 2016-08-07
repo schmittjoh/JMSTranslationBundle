@@ -23,6 +23,7 @@ use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
 
 class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
 {
@@ -85,6 +86,6 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
 
     protected function getDefaultExtractor()
     {
-        return new DefaultPhpFileExtractor($this->getDocParser());
+        return new DefaultPhpFileExtractor($this->getDocParser(), new FileSourceFactory('faux'));
     }
 }
