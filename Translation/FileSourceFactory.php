@@ -19,6 +19,7 @@
 namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Model\FileSource;
+use JMS\TranslationBundle\Util\FileUtils;
 
 class FileSourceFactory
 {
@@ -40,7 +41,7 @@ class FileSourceFactory
     /**
      * Generate a new FileSource with a relative path.
      *
-     * @param \SplFileInfo $path   string
+     * @param \SplFileInfo $file   string
      * @param null|int     $line
      * @param null|int     $column
      *
@@ -48,11 +49,6 @@ class FileSourceFactory
      */
     public function create(\SplFileInfo $file, $line = null, $column = null)
     {
-        $path = (string) $file;
-        if (0 === strpos($path, $this->kernelRoot)) {
-            $path = substr($path, strlen($this->kernelRoot));
-        }
-
-        return new FileSource($path, $line, $column);
+        return new FileSource(FileUtils::getRelativePath((string) $file, $this->kernelRoot), $line, $column);
     }
 }
