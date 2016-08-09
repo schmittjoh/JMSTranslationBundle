@@ -20,7 +20,7 @@ namespace JMS\TranslationBundle\Util;
 
 use Symfony\Component\Finder\Finder;
 
-final class FileUtils
+abstract class FileUtils
 {
     /**
      * Returns the available translation files.
@@ -35,7 +35,6 @@ final class FileUtils
      *        )
      *    )
      *
-     * @param string $directory
      * @throws \RuntimeException
      *
      * @return array
@@ -57,31 +56,6 @@ final class FileUtils
         uksort($files, 'strcasecmp');
 
         return $files;
-    }
-
-    /**
-     * @param string $path
-     * @param string $rootPath
-     *
-     * @return string
-     */
-    public static function getRelativePath($path, $rootPath)
-    {
-        if (0 === strpos($path, $rootPath)) {
-            return substr($path, strlen($rootPath));
-        }
-        $ds = DIRECTORY_SEPARATOR;
-        $rootDirectoryArray = explode($ds, $rootPath);
-        $pathDirectoryArray = explode($ds, $path);
-        $relativePath = $ds;
-
-        foreach ($rootDirectoryArray as $index => $rootCurrentDirectory) {
-            $pathCurrentDirectory = array_shift($pathDirectoryArray);
-            if ($pathCurrentDirectory !== $rootCurrentDirectory) {
-                $relativePath = $ds . '..' . $relativePath . $pathCurrentDirectory . $ds;
-            }
-        }
-        return $relativePath.implode($ds, $pathDirectoryArray);
     }
 
     final private function __construct()

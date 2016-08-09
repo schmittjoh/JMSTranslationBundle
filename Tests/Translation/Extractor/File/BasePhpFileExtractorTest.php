@@ -21,6 +21,7 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -67,5 +68,10 @@ abstract class BasePhpFileExtractorTest extends \PHPUnit_Framework_TestCase
         $docParser->setIgnoreNotImportedAnnotations(true);
 
         return $docParser;
+    }
+
+    protected function getFileSourceFactory()
+    {
+        return new FileSourceFactory('faux');
     }
 }

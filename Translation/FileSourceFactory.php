@@ -19,7 +19,6 @@
 namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Model\FileSource;
-use JMS\TranslationBundle\Util\FileUtils;
 
 class FileSourceFactory
 {
@@ -49,6 +48,31 @@ class FileSourceFactory
      */
     public function create(\SplFileInfo $file, $line = null, $column = null)
     {
-        return new FileSource(FileUtils::getRelativePath((string) $file, $this->kernelRoot), $line, $column);
+        return new FileSource(self::getRelativePath((string) $file, $this->kernelRoot), $line, $column);
+    }
+
+    /**
+     * @param string $path
+     * @param string $rootPath
+     *
+     * @return string
+     */
+    protected static function getRelativePath($path, $rootPath)
+    {
+        if (0 === strpos($path, $rootPath)) {
+            return substr($path, strlen($rootPath));
+        }
+        $ds = DIRECTORY_SEPARATOR;
+        $rootDirectoryArray = explode($ds, $rootPath);
+        $pathDirectoryArray = explode($ds, $path);
+        $relativePath = $ds;
+
+        foreach ($rootDirectoryArray as $index => $rootCurrentDirectory) {
+            $pathCurrentDirectory = array_shift($pathDirectoryArray);
+            if ($pathCurrentDirectory !== $rootCurrentDirectory) {
+                $relativePath = $ds . '..' . $relativePath . $pathCurrentDirectory . $ds;
+            }
+        }
+        return $relativePath.implode($ds, $pathDirectoryArray);
     }
 }
