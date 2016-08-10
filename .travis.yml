@@ -16,7 +16,7 @@ php:
 
 env:
     global:
-        - TEST_COMMAND="phpunit"
+        - TEST_COMMAND="./vendor/bin/phpunit"
     matrix:
         - SYMFONY_VERSION=2.8.*
 
@@ -27,7 +27,7 @@ matrix:
 
     include:
         - php: 5.3
-          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_VERSION=2.3.* COVERAGE=true TEST_COMMAND="phpunit --coverage-text --coverage-clover=build/coverage.xml"
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_VERSION=2.3.0 COVERAGE=true TEST_COMMAND="./vendor/bin/phpunit --coverage-text --coverage-clover=build/coverage.xml"
         - php: 5.6
           env: SYMFONY_VERSION=2.3.*
         - php: 5.6
