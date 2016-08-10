@@ -65,7 +65,7 @@ class XliffLoader implements LoaderInterface
             $m->setApproved($trans['approved']=='yes');
 
             if (isset($trans->target['state'])) {
-                $m->setState($trans->target['state']);
+                $m->setState((string) $trans->target['state']);
             }
 
             // Create closure
