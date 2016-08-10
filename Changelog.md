@@ -2,6 +2,8 @@
 
 ### 1.3.0 to UNRELEASED
 
+* Fixed new messages not showing at the top in WebUI when in XLIFF format. 
+
 ### 1.2.3 to 1.3.0
 
 * XliffMessage is improved with note elements and attributes. 
