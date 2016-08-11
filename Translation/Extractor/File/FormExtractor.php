@@ -23,6 +23,8 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Annotation\Desc;
 use JMS\TranslationBundle\Annotation\Ignore;
+use JMS\TranslationBundle\Annotation\Domain;
+use JMS\TranslationBundle\Annotation\Domains;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
@@ -363,7 +365,12 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                     $desc = $annot->text;
                 } elseif ($annot instanceof Meaning) {
                     $meaning = $annot->text;
+                } else if ($annot instanceof Domain) {
+                    $domain = $annot->text;
+                } else if ($annot instanceof Domains) {
+                    $domains = $annot->texts;
                 }
+
             }
         }
 
@@ -388,13 +395,17 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         $source = $this->fileSourceFactory->create($this->file, $item->value->getLine());
         $id = $item->value->value;
 
-        if (null === $domain) {
+        if (null === $domain && empty($domains)) {
             $this->defaultDomainMessages[] = array(
                 'id' => $id,
                 'source' => $source,
                 'desc' => $desc,
                 'meaning' => $meaning
             );
+        } elseif(!empty($domains)) {
+            foreach($domains as $domain){
+                $this->addToCatalogue($id, $source, $domain, $desc, $meaning);
+            }
         } else {
             $this->addToCatalogue($id, $source, $domain, $desc, $meaning);
         }
