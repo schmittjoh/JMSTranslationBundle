@@ -36,6 +36,7 @@ abstract class FileUtils
      *    )
      *
      * @throws \RuntimeException
+     *
      * @return array
      */
     public static function findTranslationFiles($directory)
@@ -51,9 +52,9 @@ abstract class FileUtils
                 $file
             );
         }
-        
+
         uksort($files, 'strcasecmp');
-        
+
         return $files;
     }
 
