@@ -107,8 +107,27 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             }
 
             $name = strtolower($node->name);
-            if ('setdefaults' === $name || 'replacedefaults' === $name) {
-                $this->parseDefaultsCall($node);
+
+            if (in_array($name, array('setdefaults', 'replacedefaults'))) {
+                $this->parseDefaultsCall($node, 0);
+                return;
+            } else if (in_array($name, array('createformbuilder'))) {
+                $this->parseDefaultsCall($node, 1);
+                return;
+            } else if (in_array($name, array(
+              'builder',
+              'create',
+              'createbuilder'
+            ))) {
+                $this->parseDefaultsCall($node, 2);
+                return;
+            } else if (in_array($name, array(
+              'createnamed',
+              'createforproperty',
+              'createnamedbuilder',
+              'createbuilderforproperty'
+            ))) {
+                $this->parseDefaultsCall($node, 3);
                 return;
             }
         }
@@ -283,8 +302,9 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
 
     /**
      * @param Node $node
+     * @param int $optionsIndex
      */
-    private function parseDefaultsCall(Node $node)
+    private function parseDefaultsCall(Node $node, $optionsIndex)
     {
         static $returningMethods = array(
             'setdefaults' => true, 'replacedefaults' => true, 'setoptional' => true, 'setrequired' => true,
@@ -306,18 +326,18 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         }
 
         // check if options were passed
-        if (!isset($node->args[0])) {
+        if (!isset($node->args[$optionsIndex])) {
             return;
         }
 
         // ignore everything except an array
-        if (!$node->args[0]->value instanceof Node\Expr\Array_) {
+        if (!$node->args[$optionsIndex]->value instanceof Node\Expr\Array_) {
             return;
         }
 
         // check if a translation_domain is set as a default option
         $domain = null;
-        foreach ($node->args[0]->value->items as $item) {
+        foreach ($node->args[$optionsIndex]->value->items as $item) {
             if (!$item->key instanceof Node\Scalar\String_) {
                 continue;
             }

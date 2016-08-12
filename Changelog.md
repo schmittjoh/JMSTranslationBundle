@@ -2,7 +2,8 @@
 
 ### 1.3.0 to UNRELEASED
 
-* Fixed new messages not showing at the top in WebUI when in XLIFF format. 
+* Fix new messages not showing at the top in WebUI when in XLIFF format. 
+* Fix Form parser not taking default domains into account in some cases.
 
 ### 1.2.3 to 1.3.0
 
