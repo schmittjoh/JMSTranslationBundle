@@ -1,8 +1,11 @@
 # Changelog
 
-### 1.3.0 to UNRELEASED
+### 1.3.1 to UNRELEASED
 
-* Fixed new messages not showing at the top in WebUI when in XLIFF format. 
+### 1.3.0 to 1.3.1
+
+* Fixed new messages not showing at the top in WebUI when in XLIFF format.
+* Fixed relative path calculation when file path is not expressed in the form of `kernel.root_dir."/../whatever"`
 
 ### 1.2.3 to 1.3.0
 
