@@ -19,7 +19,6 @@
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Annotation\Desc;
@@ -28,6 +27,7 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
@@ -35,6 +35,11 @@ use Psr\Log\LoggerInterface;
 
 class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
+    /**
+     * @var FileSourceFactory
+     */
+    private $fileSourceFactory;
+
     /**
      * @var string
      */
@@ -83,10 +88,12 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
     /**
      * AuthenticationMessagesExtractor constructor.
      * @param DocParser $parser
+     * @param FileSourceFactory $fileSourceFactory
      */
-    public function __construct(DocParser $parser)
+    public function __construct(DocParser $parser, FileSourceFactory $fileSourceFactory)
     {
         $this->docParser = $parser;
+        $this->fileSourceFactory = $fileSourceFactory;
         $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
@@ -194,7 +201,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $message = Message::create($node->expr->value, $this->domain)
             ->setDesc($desc)
             ->setMeaning($meaning)
-            ->addSource(new FileSource((string) $this->file, $node->expr->getLine()))
+            ->addSource($this->fileSourceFactory->create($this->file, $node->expr->getLine()))
         ;
 
         $this->catalogue->add($message);

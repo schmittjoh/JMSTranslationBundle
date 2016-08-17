@@ -20,7 +20,6 @@ namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Doctrine\Common\Annotations\DocParser;
-use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Annotation\Desc;
@@ -28,6 +27,7 @@ use JMS\TranslationBundle\Annotation\Ignore;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
@@ -44,6 +44,11 @@ use Psr\Log\LoggerInterface;
  */
 class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
+    /**
+     * @var FileSourceFactory
+     */
+    private $fileSourceFactory;
+    
     /**
      * @var NodeTraverser
      */
@@ -87,10 +92,12 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     /**
      * DefaultPhpFileExtractor constructor.
      * @param DocParser $docParser
+     * @param FileSourceFactory $fileSourceFactory
      */
-    public function __construct(DocParser $docParser)
+    public function __construct(DocParser $docParser, FileSourceFactory $fileSourceFactory)
     {
         $this->docParser = $docParser;
+        $this->fileSourceFactory = $fileSourceFactory;
         $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($this);
     }
@@ -175,8 +182,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $message = new Message($id, $domain);
         $message->setDesc($desc);
         $message->setMeaning($meaning);
-        $message->addSource(new FileSource((string) $this->file, $node->getLine()));
-
+        $message->addSource($this->fileSourceFactory->create($this->file, $node->getLine()));
         $this->catalogue->add($message);
     }
 

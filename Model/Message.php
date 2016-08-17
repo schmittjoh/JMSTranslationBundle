@@ -79,6 +79,8 @@ class Message
      * @param string $domain
      *
      * @return Message
+     *
+     * @deprecated Will be removed in 2.0. Use the FileSourceFactory
      */
     public static function forThisFile($id, $domain = 'messages')
     {
@@ -106,12 +108,12 @@ class Message
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @param string $domain
      */
     public function __construct($id, $domain = 'messages')
     {
-        $this->id = $id;
+        $this->id = (string) $id;
         $this->domain = $domain;
     }
 

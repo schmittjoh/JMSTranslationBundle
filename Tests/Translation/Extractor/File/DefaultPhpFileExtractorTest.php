@@ -18,8 +18,6 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
-use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
@@ -30,37 +28,38 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
     {
         $catalogue = $this->extract('Controller.php');
 
-        $path = __DIR__.'/Fixture/Controller.php';
+        $fileSourceFactory = $this->getFileSourceFactory();
+        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/Controller.php');
 
         $expected = new MessageCatalogue();
 
         $message = new Message('text.foo_bar');
         $message->setDesc('Foo bar');
-        $message->addSource(new FileSource($path, 45));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 45));
         $expected->add($message);
 
         $message = new Message('text.sign_up_successful');
         $message->setDesc('Welcome %name%! Thanks for signing up.');
-        $message->addSource(new FileSource($path, 52));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 52));
         $expected->add($message);
 
         $message = new Message('button.archive');
         $message->setDesc('Archive Message');
         $message->setMeaning('The verb (to archive), describes an action');
-        $message->addSource(new FileSource($path, 59));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 59));
         $expected->add($message);
 
         $message = new Message('text.irrelevant_doc_comment', 'baz');
-        $message->addSource(new FileSource($path, 71));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 71));
         $expected->add($message);
 
         $message = new Message('text.array_method_call');
-        $message->addSource(new FileSource($path, 76));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 76));
         $expected->add($message);
 
         $message = new Message('text.var.assign');
         $message->setDesc('The var %foo% should be assigned.');
-        $message->addSource(new FileSource($path, 82));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 82));
         $expected->add($message);
 
         $this->assertEquals($expected, $catalogue);
@@ -69,15 +68,16 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
     public function testExtractTemplate()
     {
         $expected = new MessageCatalogue();
-        $path = __DIR__.'/Fixture/template.html.php';
+        $fileSourceFactory = $this->getFileSourceFactory();
+        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/template.html.php');
 
         $message = new Message('foo.bar');
-        $message->addSource(new FileSource($path, 1));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 1));
         $expected->add($message);
 
         $message = new Message('baz', 'moo');
         $message->setDesc('Foo Bar');
-        $message->addSource(new FileSource($path, 3));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 3));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('template.html.php'));
@@ -85,6 +85,6 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
 
     protected function getDefaultExtractor()
     {
-        return new DefaultPhpFileExtractor($this->getDocParser());
+        return new DefaultPhpFileExtractor($this->getDocParser(), $fileSourceFactory = $this->getFileSourceFactory());
     }
 }

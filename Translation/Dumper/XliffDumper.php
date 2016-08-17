@@ -138,6 +138,10 @@ class XliffDumper implements DumperInterface
                 $source->appendChild($doc->createCDATASection($message->getSourceString()));
             } else {
                 $source->appendChild($doc->createTextNode($message->getSourceString()));
+
+                if (preg_match("/\r\n|\n|\r|\t/", $message->getSourceString())) {
+                    $source->setAttribute('xml:space', 'preserve');
+                }
             }
 
             $unit->appendChild($target = $doc->createElement('target'));
@@ -145,6 +149,10 @@ class XliffDumper implements DumperInterface
                 $target->appendChild($doc->createCDATASection($message->getLocaleString()));
             } else {
                 $target->appendChild($doc->createTextNode($message->getLocaleString()));
+
+                if (preg_match("/\r\n|\n|\r|\t/", $message->getLocaleString())) {
+                    $target->setAttribute('xml:space', 'preserve');
+                }
             }
 
             if ($message instanceof XliffMessage) {
@@ -167,7 +175,8 @@ class XliffDumper implements DumperInterface
             if ($this->addReference) {
                 // As per the OASIS XLIFF 1.2 non-XLIFF elements must be at the end of the <trans-unit>
                 if ($sources = $message->getSources()) {
-                    foreach ($sources as $source) {
+                    $sortedSources = $this->getSortedSources($sources);
+                    foreach ($sortedSources as $source) {
                         if ($source instanceof FileSource) {
                             $unit->appendChild($refFile = $doc->createElement('jms:reference-file', $source->getPath()));
 
@@ -195,5 +204,41 @@ class XliffDumper implements DumperInterface
         }
 
         return $doc->saveXML();
+    }
+
+    /**
+     * Sort the sources by path-line-column
+     * If the reference position are not used, the reference file will be write once
+     *
+     * @param array $sources
+     * @return FileSource
+     */
+    protected function getSortedSources(array $sources)
+    {
+        $indexedSources = array();
+        foreach ($sources as $source) {
+            if ($source instanceof FileSource) {
+                $index = $source->getPath();
+
+                if ($this->addReferencePosition) {
+                    $index .= '-';
+                    if ($source->getLine()) {
+                        $index .= $source->getLine();
+                    }
+                    $index .= '-';
+                    if ($source->getColumn()) {
+                        $index .= $source->getColumn();
+                    }
+                }
+            } else {
+                $index = (string) $source;
+            }
+
+            $indexedSources[$index] = $source;
+        }
+
+        ksort($indexedSources);
+
+        return $indexedSources;
     }
 }

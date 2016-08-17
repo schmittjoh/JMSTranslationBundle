@@ -1,15 +1,33 @@
 # Changelog
 
+### 1.3.1 to UNRELEASED
 
-### 1.2.2 to next release
+### 1.3.0 to 1.3.1
+
+* Fixed new messages not showing at the top in WebUI when in XLIFF format.
+* Fixed relative path calculation when file path is not expressed in the form of `kernel.root_dir."/../whatever"`
+
+### 1.2.3 to 1.3.0
+
+* XliffMessage is improved with note elements and attributes. 
+* Keeping new lines inside translations
+* Fix global namespace extraction.
+* Better documentation
+* Clearer Exception messages
+* The `DefaultPhpFileExtractor` could be extended an modified which function we should extraction messages from.
+* Make sure Message ID is always a string to avoid issues with numerial IDs. 
+* Make source files clickable in WebUI
+* Message sources in Xliff files will be sorted in alphabetical order 
+
+### 1.2.2 to 1.2.3
 
 * Support for placeholders and empty_value.
-* Slightly easier webui extension with new extensible js class
+* Slightly easier WebUI extension with new extensible js class
 * Extracted strings have the full source path stored
 * Improvements to WebUI logic
 * Various extraction bug fixes (attr as variable)
 * Various improvements to xliff dumper
-* Ensure full symfony 3.0 support and tests
+* Ensure full Symfony 3.0 support and tests
 
 ### 1.2.1 to 1.2.2
 

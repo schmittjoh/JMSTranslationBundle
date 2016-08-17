@@ -18,7 +18,6 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
-use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\AuthenticationMessagesExtractor;
@@ -29,14 +28,18 @@ class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
     {
         $expected = new MessageCatalogue();
 
+        $fileSourceFactory = $this->getFileSourceFactory();
+        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyAuthException.php');
+
         $message = new Message('security.authentication_error.foo', 'authentication');
         $message->setDesc('%foo% is invalid.');
-        $message->addSource(new FileSource(__DIR__.'/Fixture/MyAuthException.php', 35));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 35));
         $expected->add($message);
 
         $message = new Message('security.authentication_error.bar', 'authentication');
         $message->setDesc('An authentication error occurred.');
-        $message->addSource(new FileSource(__DIR__.'/Fixture/MyAuthException.php', 39));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 39));
+
         $expected->add($message);
 
         $extracted = $this->extract('MyAuthException.php');
@@ -48,6 +51,6 @@ class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
 
     protected function getDefaultExtractor()
     {
-        return new AuthenticationMessagesExtractor($this->getDocParser());
+        return new AuthenticationMessagesExtractor($this->getDocParser(), $this->getFileSourceFactory());
     }
 }
