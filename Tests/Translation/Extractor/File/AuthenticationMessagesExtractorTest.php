@@ -44,7 +44,9 @@ class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
 
         $extracted = $this->extract('MyAuthException.php');
 
-        $this->assertFalse($extracted->getDomains()['authentication']->has('security.authentication_error.ignored'));
+        $domains = $extracted->getDomains();
+
+        $this->assertFalse($domains['authentication']->has('security.authentication_error.ignored'));
 
         $this->assertEquals($expected, $extracted);
     }
