@@ -81,7 +81,7 @@ class XliffLoader implements LoaderInterface
                         $addNoteToMessage($m, $note);
                     }
                 } else {
-                    $addNoteToMessage($m, $trans->note);
+                    $m->setMeaning($trans->note);
                 }
             }
 
