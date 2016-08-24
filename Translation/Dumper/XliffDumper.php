@@ -51,7 +51,7 @@ class XliffDumper implements DumperInterface
     /**
      * @var bool
      */
-    private $addReferencePosition = true;
+    private $addReferencePosition = false;
 
     /**
      * @param $bool
