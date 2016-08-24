@@ -1,6 +1,7 @@
 # Changelog
 
 ### 1.3.1 to UNRELEASED
+* Allow to edit Meaning field in WebUI
 
 ### 1.3.0 to 1.3.1
 
