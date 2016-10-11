@@ -75,7 +75,8 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
         if ($node instanceof TransNode) {
             $id = $node->getNode('body')->getAttribute('data');
             $domain = 'messages';
-            if (null !== $domainNode = $node->getNode('domain')) {
+            // Older version of Symfony are storing null in the node instead of omitting it
+            if ($node->hasNode('domain') && null !== $domainNode = $node->getNode('domain')) {
                 $domain = $domainNode->getAttribute('value');
             }
 
