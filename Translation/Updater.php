@@ -117,13 +117,15 @@ class Updater
      * @param string $locale
      * @param string $id
      * @param string $trans
+     * @param string $meaning
      */
-    public function updateTranslation($file, $format, $domain, $locale, $id, $trans)
+    public function updateTranslation($file, $format, $domain, $locale, $id, $trans, $meaning)
     {
         $catalogue = $this->loader->loadFile($file, $format, $locale, $domain);
         $catalogue
             ->get($id, $domain)
             ->setLocaleString($trans)
+            ->setMeaning($meaning)
             ->setNew(false)
         ;
 
