@@ -61,35 +61,36 @@ class Configuration implements ConfigurationInterface
                                 ->arrayNode('dirs')
                                     ->requiresAtLeastOneElement()
                                     ->prototype('scalar')
-                                        ->validate()
-                                            ->always(function ($v) use ($c) {
-                                                $v = str_replace(DIRECTORY_SEPARATOR, '/', $v);
-
-                                                if ('@' === $v[0]) {
-                                                    if (false === $pos = strpos($v, '/')) {
-                                                        $bundleName = substr($v, 1);
-                                                    } else {
-                                                        $bundleName = substr($v, 1, $pos - 2);
-                                                    }
-
-                                                    $bundles = $c->getParameter('kernel.bundles');
-                                                    if (!isset($bundles[$bundleName])) {
-                                                        throw new \Exception(sprintf('The bundle "%s" does not exist. Available bundles: %s', $bundleName, array_keys($bundles)));
-                                                    }
-
-                                                    $ref = new \ReflectionClass($bundles[$bundleName]);
-                                                    $v = false === $pos ? dirname($ref->getFileName()) : dirname($ref->getFileName()).substr($v, $pos);
-                                                }
-
-                                                if (!is_dir($v)) {
-                                                    throw new \Exception(sprintf('The directory "%s" does not exist.', $v));
-                                                }
-
-                                                return $v;
-                                            })
-                                        ->end()
+//                                        ->validate()
+//                                            ->always(function ($v) use ($c) {
+//                                                $v = str_replace(DIRECTORY_SEPARATOR, '/', $v);
+//
+//                                                if ('@' === $v[0]) {
+//                                                    if (false === $pos = strpos($v, '/')) {
+//                                                        $bundleName = substr($v, 1);
+//                                                    } else {
+//                                                        $bundleName = substr($v, 1, $pos - 2);
+//                                                    }
+//
+//                                                    $bundles = $c->getParameter('kernel.bundles');
+//                                                    if (!isset($bundles[$bundleName])) {
+//                                                        throw new \Exception(sprintf('The bundle "%s" does not exist. Available bundles: %s', $bundleName, array_keys($bundles)));
+//                                                    }
+//
+//                                                    $ref = new \ReflectionClass($bundles[$bundleName]);
+//                                                    $v = false === $pos ? dirname($ref->getFileName()) : dirname($ref->getFileName()).substr($v, $pos);
+//                                                }
+//
+//                                                if (!is_dir($v)) {
+//                                                    throw new \Exception(sprintf('The directory "%s" does not exist.', $v));
+//                                                }
+//
+//                                                return $v;
+//                                            })
+//                                        ->end()
                                     ->end()
                                 ->end()
+                                ->booleanNode('validate_dir')->defaultTrue()->end()
                                 ->arrayNode('excluded_dirs')
                                     ->prototype('scalar')->end()
                                 ->end()

@@ -38,6 +38,44 @@ class JMSTranslationExtension extends Extension
 
         $requests = array();
         foreach ($config['configs'] as $name => $extractConfig) {
+            // do we need to validate the dirs?
+
+            if ($extractConfig['validate_dir']) {
+                $bundles = $container->getParameter('kernel.bundles');
+
+                foreach ($extractConfig['dirs'] as $v) {
+                    $v = str_replace(DIRECTORY_SEPARATOR, '/', $v);
+
+                    if ('@' === $v[0]) {
+                        if (false === $pos = strpos($v, '/')) {
+                            $bundleName = substr($v, 1);
+                        } else {
+                            $bundleName = substr($v, 1, $pos - 2);
+                        }
+
+                        if (!isset($bundles[$bundleName])) {
+                            throw new \Exception(
+                                sprintf(
+                                    'The bundle "%s" does not exist. Available bundles: %s',
+                                    $bundleName,
+                                    array_keys($bundles)
+                                )
+                            );
+                        }
+
+                        $ref = new \ReflectionClass($bundles[$bundleName]);
+                        $v = false === $pos ? dirname($ref->getFileName()) : dirname($ref->getFileName()) . substr(
+                                $v,
+                                $pos
+                            );
+                    }
+
+                    if (!is_dir($v)) {
+                        throw new \Exception(sprintf('The directory "%s" does not exist.', $v));
+                    }
+                }
+            }
+
             $def = new Definition('JMS\TranslationBundle\Translation\ConfigBuilder');
             $def->addMethodCall('setTranslationsDir', array($extractConfig['output_dir']));
             $def->addMethodCall('setScanDirs', array($extractConfig['dirs']));
