@@ -81,4 +81,10 @@ class Controller
         /** @Desc("The var %foo% should be assigned.") */
         return $this->translator->trans('text.var.assign', array('%foo%' => 'fooVar'));
     }
+
+    public function concatString()
+    {
+        /** @Desc("Foo Bar Moo") */
+        return $this->translator->trans("Foo" . " Bar" . " Moo");
+    }
 }

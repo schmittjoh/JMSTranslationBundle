@@ -33,6 +33,7 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -140,12 +141,12 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
             }
         }
 
-        if (!$node->args[0]->value instanceof String_) {
+        if (!$node->args[0]->value instanceof String_ and !$node->args[0]->value instanceof Concat) {
             if ($ignore) {
                 return;
             }
 
-            $message = sprintf('Can only extract the translation id from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
+            $message = sprintf('Can only extract the translation id from a scalar string or a Concat, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
 
             if ($this->logger) {
                 $this->logger->error($message);
@@ -155,16 +156,20 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
             throw new RuntimeException($message);
         }
 
-        $id = $node->args[0]->value->value;
+        if ($node->args[0]->value instanceof Concat) {
+            $id = $this->concatToString($node->args[0]->value);
+        } else {
+            $id = $node->args[0]->value->value;
+        }
 
         $index = $this->methodsToExtractFrom[strtolower($node->name)];
         if (isset($node->args[$index])) {
-            if (!$node->args[$index]->value instanceof String_) {
+            if (!$node->args[$index]->value instanceof String_ and !$node->args[$index]->value instanceof Concat) {
                 if ($ignore) {
                     return;
                 }
 
-                $message = sprintf('Can only extract the translation domain from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
+                $message = sprintf('Can only extract the translation domain from a scalar string or a Concat, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
 
                 if ($this->logger) {
                     $this->logger->error($message);
@@ -174,7 +179,11 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
                 throw new RuntimeException($message);
             }
 
-            $domain = $node->args[$index]->value->value;
+            if ($node->args[$index]->value instanceof Concat) {
+                $domain = $this->concatToString($node->args[$index]->value);
+            } else {
+                $domain = $node->args[$index]->value->value;
+            }
         } else {
             $domain = 'messages';
         }
@@ -184,6 +193,19 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $message->setMeaning($meaning);
         $message->addSource($this->fileSourceFactory->create($this->file, $node->getLine()));
         $this->catalogue->add($message);
+    }
+
+    /**
+     * @param $node
+     * @return string
+     */
+    private function concatToString($node)
+    {
+        if ($node instanceof String_) {
+            return $node->value;
+        } else {
+            return self::concatToString($node->left) . self::concatToString($node->right);
+        }
     }
 
     /**

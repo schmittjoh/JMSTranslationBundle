@@ -216,7 +216,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
                 if (false !== $pos = strrpos($file, '.')) {
                     $extension = substr($file, $pos + 1);
 
-                    if ('php' === $extension) {
+                    if ('php' === $extension or 'phtml' === $extension) {
                         try {
                             $ast = $this->phpParser->parse(file_get_contents($file));
                         } catch (Error $ex) {
@@ -227,7 +227,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
                         $visitingArgs[] = $ast;
                     } elseif ('twig' === $extension) {
                         $visitingMethod = 'visitTwigFile';
-                        $visitingArgs[] = $this->twig->parse($this->twig->tokenize(file_get_contents($file), (string) $file));
+                        $visitingArgs[] = $this->twig->parse($this->twig->tokenize(file_get_contents($file), (string)$file));
                     }
                 }
 
