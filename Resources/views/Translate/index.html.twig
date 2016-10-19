@@ -4,7 +4,7 @@
     {{ parent() }}
     <script language="javascript" type="text/javascript">
         var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
-        var isWritable        = {{ isWriteable is sameas(true) ? 'true' : 'false' }};
+        var isWritable        = {{ isWriteable is same as(true) ? 'true' : 'false' }};
         var JMS               = new JMSTranslationManager(updateMessagePath, isWritable);
 
         JMS.ready();
@@ -33,7 +33,7 @@
         </select>
     </form>
     
-    {% if isWriteable is sameas(false) %}
+    {% if isWriteable is same as(false) %}
     <div class="alert-message error">
         The translation file "<strong>{{ file }}</strong>" is not writable.
     </div>
