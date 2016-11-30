@@ -41,7 +41,7 @@ class XliffDumper implements DumperInterface
     /**
      * @var bool
      */
-    private $addDate = true;
+    private $addDate = false;
 
     /**
      * @var bool
@@ -51,7 +51,7 @@ class XliffDumper implements DumperInterface
     /**
      * @var bool
      */
-    private $addReferencePosition = true;
+    private $addReferencePosition = false;
 
     /**
      * @param $bool
@@ -168,6 +168,10 @@ class XliffDumper implements DumperInterface
                         }
                     }
                 }
+                elseif($meaning = $message->getMeaning()) {
+                    $unit->appendChild($doc->createElement('note', $meaning));
+                }
+
             } elseif ($message->isNew()) {
                 $target->setAttribute('state', XliffMessage::STATE_NEW);
             }
@@ -198,7 +202,7 @@ class XliffDumper implements DumperInterface
                 }
             }
 
-            if ($meaning = $message->getMeaning()) {
+            if ($meaning = $message->getMeaning() && $message->hasNotes()) {
                 $unit->setAttribute('extradata', 'Meaning: '.$meaning);
             }
         }

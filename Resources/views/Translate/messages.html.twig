@@ -14,13 +14,12 @@
                     <p><abbr title="{{ id }}">{{ id|slice(0, 25) }}{% if id|length > 25 %}...{% endif %}</abbr></p>
                 </td>
                 <td>
-                    <textarea data-id="{{ id }}" class="span6"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{{ message.localeString }}</textarea></td>
+                    <textarea data-id="{{ id }}" class="span6 message"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{{ message.localeString }}</textarea>
+                    <div class="notice"></div>
+                </td>
                 <td>
-                    {% if message.meaning is not empty %}
-                        <h6>Meaning</h6>
-                        <p>{{ message.meaning }}</p>
-                    {% endif %}
-
+                    <h6>Meaning</h6>
+                    <textarea class="span6 meaning" rows="3"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{{ message.meaning }}</textarea>
                     {% if alternativeMessages[id] is defined %}
                         <h6>Alternative Translations</h6>
                         {% for locale, altMessage in alternativeMessages[id] %}

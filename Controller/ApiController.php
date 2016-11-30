@@ -79,7 +79,8 @@ class ApiController
 
         $this->updater->updateTranslation(
             $file, $format, $domain, $locale, $id,
-            $request->request->get('message')
+            $request->request->get('message'),
+            $request->request->get('meaning')
         );
 
         return new Response('Translation was saved');
