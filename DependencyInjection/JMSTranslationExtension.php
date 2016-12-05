@@ -42,6 +42,10 @@ class JMSTranslationExtension extends Extension
         $container->setParameter('jms_translation.source_language', $config['source_language']);
         $container->setParameter('jms_translation.locales', $config['locales']);
 
+        foreach ($config['dumper'] as $option => $value) {
+            $container->setParameter("jms_translation.dumper.{$option}", $value);
+        }
+
         $requests = array();
         foreach ($config['configs'] as $name => $extractConfig) {
             $def = new Definition('JMS\TranslationBundle\Translation\ConfigBuilder');
