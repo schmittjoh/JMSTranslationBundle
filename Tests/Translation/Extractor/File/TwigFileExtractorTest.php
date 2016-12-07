@@ -162,7 +162,7 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
             $extractor = new TwigFileExtractor($env, new FileSourceFactory('faux'));
         }
 
-        $ast = $env->parse($env->tokenize(file_get_contents($file), $file));
+        $ast = $env->parse($env->tokenize(new \Twig_Source(file_get_contents($file), $file)));
 
         $catalogue = new MessageCatalogue();
         $extractor->visitTwigFile(new \SplFileInfo($file), $catalogue, $ast);

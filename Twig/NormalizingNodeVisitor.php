@@ -46,9 +46,9 @@ class NormalizingNodeVisitor implements \Twig_NodeVisitorInterface
     public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
     {
         if ($node instanceof \Twig_Node_Expression_Binary_Concat
-            && ($left = $node->getNode('left')) instanceof \Twig_Node_Expression_Constant
-            && ($right = $node->getNode('right')) instanceof \Twig_Node_Expression_Constant) {
-            return new \Twig_Node_Expression_Constant($left->getAttribute('value').$right->getAttribute('value'), $left->getLine());
+                && ($left = $node->getNode('left')) instanceof \Twig_Node_Expression_Constant
+                && ($right = $node->getNode('right')) instanceof \Twig_Node_Expression_Constant) {
+            return new \Twig_Node_Expression_Constant($left->getAttribute('value').$right->getAttribute('value'), $left->getTemplateLine());
         }
 
         return $node;

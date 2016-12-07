@@ -75,7 +75,7 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
             // so that we can catch a possible exception when the default translation has not yet
             // been extracted
             if ('transchoice' === $transNode->getNode('filter')->getAttribute('value')) {
-                $transchoiceArguments = new \Twig_Node_Expression_Array(array(), $transNode->getLine());
+                $transchoiceArguments = new \Twig_Node_Expression_Array(array(), $transNode->getTemplateLine());
                 $transchoiceArguments->addElement($wrappingNode->getNode('node'));
                 $transchoiceArguments->addElement($defaultNode);
                 foreach ($wrappingNode->getNode('arguments') as $arg) {
@@ -83,8 +83,8 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
                 }
 
                 $transchoiceNode = new \Twig_Node_Expression_MethodCall(
-                    new \Twig_Node_Expression_ExtensionReference('jms_translation', $transNode->getLine()),
-                    'transchoiceWithDefault', $transchoiceArguments, $transNode->getLine());
+                    new \Twig_Node_Expression_ExtensionReference('jms_translation', $transNode->getTemplateLine()),
+                    'transchoiceWithDefault', $transchoiceArguments, $transNode->getTemplateLine());
                 $node->setNode('node', $transchoiceNode);
 
                 return $node;
@@ -93,7 +93,7 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
             // if the |trans filter has replacements parameters
             // (e.g. |trans({'%foo%': 'bar'}))
             if ($wrappingNode->getNode('arguments')->hasNode(0)) {
-                $lineno =  $wrappingNode->getLine();
+                $lineno =  $wrappingNode->getTemplateLine();
 
                 // remove the replacements from the test node
                 $testNode->setNode('arguments', clone $testNode->getNode('arguments'));
@@ -111,10 +111,10 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
             }
 
             $condition = new \Twig_Node_Expression_Conditional(
-                new \Twig_Node_Expression_Binary_Equal($testNode, $transNode->getNode('node'), $wrappingNode->getLine()),
+                new \Twig_Node_Expression_Binary_Equal($testNode, $transNode->getNode('node'), $wrappingNode->getTemplateLine()),
                 $defaultNode,
                 clone $wrappingNode,
-                $wrappingNode->getLine()
+                $wrappingNode->getTemplateLine()
             );
             $node->setNode('node', $condition);
         }
