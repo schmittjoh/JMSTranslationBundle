@@ -15,6 +15,7 @@
         <parameter key="jms_translation.extractor.file.form_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\FormExtractor</parameter>
         <parameter key="jms_translation.extractor.file.validation_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor</parameter>
         <parameter key="jms_translation.extractor.file.authentication_message_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\AuthenticationMessagesExtractor</parameter>
+        <parameter key="jms_translation.extractor.file.constraint_message_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\ConstraintMessageExtractor</parameter>
 
         <parameter key="jms_translation.loader.symfony.xliff_loader.class">JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader</parameter>
         <parameter key="jms_translation.loader.xliff_loader.class">JMS\TranslationBundle\Translation\Loader\XliffLoader</parameter>
@@ -113,6 +114,9 @@
         <service id="jms_translation.extractor.file.authentication_message_extractor" class="%jms_translation.extractor.file.authentication_message_extractor.class%" public="false">
             <argument type="service" id="jms_translation.doc_parser" />
             <argument type="service" id="jms_translation.file_source_factory" />
+            <tag name="jms_translation.file_visitor" />
+        </service>
+        <service id="jms_translation.extractor.file.constraint_message_extractor" class="%jms_translation.extractor.file.constraint_message_extractor.class%" public="false">
             <tag name="jms_translation.file_visitor" />
         </service>
 
