@@ -33,7 +33,7 @@ abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
         }
         $source = new \Twig_Source($content, $hard_filename);
 
-        $env = new \Twig_Environment();
+        $env = new \Twig_Environment(new \Twig_Loader_Array());
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new TranslationExtension($translator, $debug));
 

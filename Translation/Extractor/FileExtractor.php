@@ -203,7 +203,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         }
 
         $curTwigLoader = $this->twig->getLoader();
-        $this->twig->setLoader(new \Twig_Loader_String());
+        $this->twig->setLoader(new \Twig_Loader_Array());
 
         try {
             $catalogue = new MessageCatalogue();

@@ -143,7 +143,7 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
             throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
         }
 
-        $env = new \Twig_Environment();
+        $env = new \Twig_Environment(new \Twig_Loader_Array());
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new TranslationExtension($translator, true));
         $env->addExtension(new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext())));
