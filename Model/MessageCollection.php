@@ -86,6 +86,15 @@ class MessageCollection
     }
 
     /**
+     * @param Message $message
+     */
+    public function delete(Message $message)
+    {
+            unset($this->messages[$id]);
+    }
+
+
+    /**
      * @param $id
      * @return mixed
      * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
