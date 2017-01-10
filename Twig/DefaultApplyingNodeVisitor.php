@@ -83,7 +83,7 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
                 }
 
                 $transchoiceNode = new \Twig_Node_Expression_MethodCall(
-                    new \Twig_Node_Expression_ExtensionReference('jms_translation', $transNode->getTemplateLine()),
+                    new NodeExpressionExtensionReference('jms_translation', $transNode->getTemplateLine()),
                     'transchoiceWithDefault', $transchoiceArguments, $transNode->getTemplateLine());
                 $node->setNode('node', $transchoiceNode);
 
