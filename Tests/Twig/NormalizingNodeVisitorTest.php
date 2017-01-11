@@ -22,9 +22,9 @@ class NormalizingNodeVisitorTest extends BaseTwigTestCase
 {
     public function testBinaryConcatOfConstants()
     {
-        $this->assertEquals(
-            $this->parse('binary_concat_of_constants_compiled.html.twig'),
-            $this->parse('binary_concat_of_constants.html.twig')
-        );
+        $expected = $this->parse('binary_concat_of_constants_compiled.html.twig');
+        $actual = $this->parse('binary_concat_of_constants.html.twig', false, 'binary_concat_of_constants_compiled.html.twig');
+
+        $this->assertEquals($expected, $actual);
     }
 }

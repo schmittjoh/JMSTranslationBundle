@@ -25,7 +25,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 
-class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterface
+class Twig2FileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterface
 {
     /**
      * @var FileSourceFactory
@@ -64,11 +64,11 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function enterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         $this->stack[] = $node;
 
@@ -162,18 +162,18 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
         $this->traverser->traverse($ast);
         $this->traverseEmbeddedTemplates($ast);
     }
-    
+
     /**
      * If the current Twig Node has embedded templates, we want to travese these templates
-     * in the same manner as we do the main twig template to ensure all translations are 
+     * in the same manner as we do the main twig template to ensure all translations are
      * caught.
-     * 
+     *
      * @param \Twig_Node $node
      */
     private function traverseEmbeddedTemplates(\Twig_Node $node)
     {
         $templates = $node->getAttribute('embedded_templates');
-        
+
         foreach ($templates as $template) {
             $this->traverser->traverse($template);
             if ($template->hasAttribute('embedded_templates')) {
@@ -183,11 +183,11 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function leaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         array_pop($this->stack);
 

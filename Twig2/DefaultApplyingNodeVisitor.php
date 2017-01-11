@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-namespace JMS\TranslationBundle\Twig;
+namespace JMS\TranslationBundle\Twig2;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
+use JMS\TranslationBundle\Twig\NodeExpressionExtensionReference;
 
 /**
  * Applies the value of the "desc" filter if the "trans" filter has no
@@ -44,22 +45,22 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function enterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         if (!$this->enabled) {
             return $node;
         }
 
         if ($node instanceof \Twig_Node_Expression_Filter
-                && 'desc' === $node->getNode('filter')->getAttribute('value')) {
+            && 'desc' === $node->getNode('filter')->getAttribute('value')) {
             $transNode = $node->getNode('node');
             while ($transNode instanceof \Twig_Node_Expression_Filter
-                       && 'trans' !== $transNode->getNode('filter')->getAttribute('value')
-                       && 'transchoice' !== $transNode->getNode('filter')->getAttribute('value')) {
+                && 'trans' !== $transNode->getNode('filter')->getAttribute('value')
+                && 'transchoice' !== $transNode->getNode('filter')->getAttribute('value')) {
                 $transNode = $transNode->getNode('node');
             }
 
@@ -123,11 +124,11 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function leaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         return $node;
     }

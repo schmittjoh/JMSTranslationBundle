@@ -23,7 +23,7 @@ class RemovingNodeVisitorTest extends BaseTwigTestCase
     public function testRemovalWithSimpleTemplate()
     {
         $expected = $this->parse('simple_template_compiled.html.twig');
-        $actual = $this->parse('simple_template.html.twig');
+        $actual = $this->parse('simple_template.html.twig', false, 'simple_template_compiled.html.twig');
 
         $this->assertEquals($expected, $actual);
     }

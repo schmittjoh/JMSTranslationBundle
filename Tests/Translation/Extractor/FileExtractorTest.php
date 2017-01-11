@@ -95,7 +95,7 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
 
     private function extract($directory)
     {
-        $twig = new \Twig_Environment();
+        $twig = new \Twig_Environment(new \Twig_Loader_Array());
         $twig->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $twig->addExtension(new TranslationExtension($translator));
         $loader=new \Twig_Loader_Filesystem(realpath(__DIR__."/Fixture/SimpleTest/Resources/views/"));
