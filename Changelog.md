@@ -2,6 +2,8 @@
 
 ### 1.3.1 to UNRELEASED
 
+* DefaultPhpFileExtractor can be extended to define domain where should be extracted messages.
+
 ### 1.3.0 to 1.3.1
 
 * Fixed new messages not showing at the top in WebUI when in XLIFF format.
