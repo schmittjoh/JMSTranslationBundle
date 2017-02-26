@@ -104,7 +104,8 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
             $factory = new ParserFactory();
             $this->phpParser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
         } else {
-            $this->phpParser = new Parser($lexer);
+            //@todo modified by MO to call \Parser
+            $this->phpParser = new \Parser($lexer);
         }
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
@@ -203,7 +204,11 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         }
 
         $curTwigLoader = $this->twig->getLoader();
-        $this->twig->setLoader(new \Twig_Loader_String());
+
+        // Replaced by Mark Ogilvie to make compatale with Twig 2.0
+        // @todo submit for PR
+        //$this->twig->setLoader(new \Twig_Loader_String());
+        $this->twig->setLoader(new \Twig_Loader_Array());
 
         try {
             $catalogue = new MessageCatalogue();
@@ -227,7 +232,11 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
                         $visitingArgs[] = $ast;
                     } elseif ('twig' === $extension) {
                         $visitingMethod = 'visitTwigFile';
-                        $visitingArgs[] = $this->twig->parse($this->twig->tokenize(file_get_contents($file), (string) $file));
+                        $twigSource = new \Twig_Source(file_get_contents($file), (string) $file);
+                        $visitingArgs[] = $this->twig->parse($this->twig->tokenize($twigSource));
+                        // Replaced by Mark Ogilvie to make compatable with Twig 2.0
+                        // @todo submit for PR
+                        //$visitingArgs[] = $this->twig->parse(file_get_contents($file), (string) $file);
                     }
                 }
 

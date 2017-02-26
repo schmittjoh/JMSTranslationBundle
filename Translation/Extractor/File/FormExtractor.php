@@ -338,6 +338,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      */
     private function parseItem($item, $domain = null)
     {
+
         // get doc comment
         $ignore = false;
         $desc = $meaning = $docComment = null;
@@ -346,7 +347,8 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             $docComment = $item->key->getDocComment();
         }
 
-        if (!$docComment) {
+        // @todo modified conditional By MO to make compatible with 2.0
+        if (!$docComment && $item->value !== null ) {
             $docComment = $item->value->getDocComment();
         }
 
@@ -356,7 +358,12 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             if ($docComment instanceof Doc) {
                 $docComment = $docComment->getText();
             }
-            foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
+            // @todo inserted By MO to make compatible with 2.0
+            if($item->value !== null){
+                $value = $item->value->getTemplateLine();
+            }
+
+            foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$value) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
                 } elseif ($annot instanceof Desc) {
