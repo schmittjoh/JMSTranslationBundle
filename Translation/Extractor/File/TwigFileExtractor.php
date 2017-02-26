@@ -64,11 +64,11 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function enterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         $this->stack[] = $node;
 
@@ -81,7 +81,9 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
             }
 
             $message = new Message($id, $domain);
-            $message->addSource($this->fileSourceFactory->create($this->file, $node->getLine()));
+            // @todo Modified by MO.
+            $message->addSource($this->fileSourceFactory->create($this->file, $node->getTemplateLine()));
+            //$message->addSource($this->fileSourceFactory->create($this->file, $node->getLine()));
             $this->catalogue->add($message);
         } elseif ($node instanceof \Twig_Node_Expression_Filter) {
             $name = $node->getNode('filter')->getAttribute('value');
@@ -110,7 +112,9 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
                 }
 
                 $message = new Message($id, $domain);
-                $message->addSource($this->fileSourceFactory->create($this->file, $node->getLine()));
+                // @todo replaced by MO to make compatible with 2.0
+                $message->addSource($this->fileSourceFactory->create($this->file, $node->getTemplateLine()));
+                //$message->addSource($this->fileSourceFactory->create($this->file, $node->getLine()));
 
                 for ($i=count($this->stack)-2; $i>=0; $i-=1) {
                     if (!$this->stack[$i] instanceof \Twig_Node_Expression_Filter) {
@@ -183,11 +187,11 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function leaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         array_pop($this->stack);
 

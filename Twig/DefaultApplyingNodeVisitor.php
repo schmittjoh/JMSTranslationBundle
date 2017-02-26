@@ -44,11 +44,11 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function enterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         if (!$this->enabled) {
             return $node;
@@ -123,11 +123,11 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function leaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         return $node;
     }
