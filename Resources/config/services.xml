@@ -38,6 +38,7 @@
             <service id="jms_translation.updater" class="%jms_translation.updater.class%">
                 <argument type="service" id="jms_translation.loader_manager" />
                 <argument type="service" id="jms_translation.extractor_manager" />
+                <argument type="service" id="logger" />
                 <argument type="service" id="jms_translation.file_writer" />
             </service>
 
@@ -45,8 +46,7 @@
 
             <!-- Extractor factory to manage serve Twig 1.* or ".0 versions-->
             <service id="jms_translation.extractor_factory" class="%jms_translation.extractor_factory.class%">
-                <argument type="service" id="twig" />
-                <argument type="service" id="logger" />
+                <argument type="service" id="twig" />                
                 <argument type="service" id="jms_translation.doc_parser" />
                 <argument type="service" id="jms_translation.file_source_factory" />
             </service>
