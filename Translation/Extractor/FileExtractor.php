@@ -104,7 +104,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
             $factory = new ParserFactory();
             $this->phpParser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
         } else {
-            $this->phpParser = new Parser($lexer);
+            $this->phpParser = new \Parser($lexer);
         }
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
@@ -226,9 +226,14 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
                         $visitingMethod = 'visitPhpFile';
                         $visitingArgs[] = $ast;
                     } elseif ('twig' === $extension) {
-                        $visitingMethod = 'visitTwigFile';
-                        $visitingArgs[] = $this->twig->parse($this->twig->tokenize(file_get_contents($file), (string) $file));
-                    }
+                        // Inserted to maintain BC with Twig 1.*
+                        if (\Twig_Environment::MAJOR_VERSION === 1) {
+                            $visitingArgs[] = $this->twig->parse($this->twig->tokenize(file_get_contents($file), (string)$file));
+                        } else {
+                            $twigSource = new \Twig_Source(file_get_contents($file), (string)$file);
+                            $visitingArgs[] = $this->twig->parse($this->twig->tokenize($twigSource));
+
+                        }}
                 }
 
                 foreach ($this->visitors as $visitor) {
