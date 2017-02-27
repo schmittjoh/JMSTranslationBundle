@@ -25,7 +25,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 
-class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterface
+class TwigFileExtractorTwig2 implements FileVisitorInterface, \Twig_NodeVisitorInterface
 {
     /**
      * @var FileSourceFactory
@@ -73,6 +73,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
         $this->stack[] = $node;
 
         if ($node instanceof TransNode) {
+
             $id = $node->getNode('body')->getAttribute('data');
             $domain = 'messages';
             // Older version of Symfony are storing null in the node instead of omitting it
@@ -81,7 +82,9 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
             }
 
             $message = new Message($id, $domain);
-            $message->addSource($this->fileSourceFactory->create($this->file, $node->getLine()));
+            // @todo Modified by MO.
+            $message->addSource($this->fileSourceFactory->create($this->file, $node->getTemplateLine()));
+            //$message->addSource($this->fileSourceFactory->create($this->file, $node->getLine()));
             $this->catalogue->add($message);
         } elseif ($node instanceof \Twig_Node_Expression_Filter) {
             $name = $node->getNode('filter')->getAttribute('value');
@@ -101,6 +104,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
                 if ($arguments->hasNode($index)) {
                     $argument = $arguments->getNode($index);
                     if (!$argument instanceof \Twig_Node_Expression_Constant) {
+
                         return $node;
                         // FIXME: Throw exception if there is some way for the user to turn this off
                         //        on a case-by-case basis, similar to @Ignore in PHP
@@ -110,7 +114,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
                 }
 
                 $message = new Message($id, $domain);
-                $message->addSource($this->fileSourceFactory->create($this->file, $node->getLine()));
+                $message->addSource($this->fileSourceFactory->create($this->file, $node->getTemplateLine()));
 
                 for ($i=count($this->stack)-2; $i>=0; $i-=1) {
                     if (!$this->stack[$i] instanceof \Twig_Node_Expression_Filter) {
