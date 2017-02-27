@@ -18,17 +18,17 @@
 
 namespace JMS\TranslationBundle\Translation\Extractor;
 
-use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\ExtractorInterface;
+use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
+use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
 use PhpParser\Error;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Psr\Log\LoggerInterface;
-use JMS\TranslationBundle\Logger\LoggerAwareInterface;
-use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
-use JMS\TranslationBundle\Translation\ExtractorInterface;
-use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -226,6 +226,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
                         $visitingMethod = 'visitPhpFile';
                         $visitingArgs[] = $ast;
                     } elseif ('twig' === $extension) {
+                        $visitingMethod = 'visitTwigFile';
                         // Inserted to maintain BC with Twig 1.*
                         if (\Twig_Environment::MAJOR_VERSION === 1) {
                             $visitingArgs[] = $this->twig->parse($this->twig->tokenize(file_get_contents($file), (string)$file));
