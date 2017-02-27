@@ -104,7 +104,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
             $factory = new ParserFactory();
             $this->phpParser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
         } else {
-            $this->phpParser = new \Parser($lexer);
+            $this->phpParser = new Parser($lexer);
         }
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
@@ -203,7 +203,12 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         }
 
         $curTwigLoader = $this->twig->getLoader();
-        $this->twig->setLoader(new \Twig_Loader_String());
+        // Inserted to maintain BC with Twig 1.*
+        if (\Twig_Environment::MAJOR_VERSION === 1) {
+            $this->twig->setLoader(new \Twig_Loader_String());
+        } else {
+            $this->twig->setLoader(new \Twig_Loader_Array());
+        }
 
         try {
             $catalogue = new MessageCatalogue();
