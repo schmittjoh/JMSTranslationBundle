@@ -36,7 +36,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Extractor\ExtractorInterface;
 
-class FormExtractorTwig2 implements FileVisitorInterface, LoggerAwareInterface, NodeVisitor, FormExtractorInterface
+class FormExtractorTwig2 implements FileVisitorInterface, LoggerAwareInterface, NodeVisitor
 {
     /**
      * @var FileSourceFactory
