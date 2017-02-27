@@ -25,7 +25,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 
-class TwigFileExtractorTwig2 implements FileVisitorInterface, \Twig_NodeVisitorInterface, TwigFileExtractorInterface
+class TwigFileExtractorTwig2 implements FileVisitorInterface, \Twig_NodeVisitorInterface
 {
     /**
      * @var FileSourceFactory
