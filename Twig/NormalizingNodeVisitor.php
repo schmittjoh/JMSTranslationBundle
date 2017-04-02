@@ -29,21 +29,21 @@ namespace JMS\TranslationBundle\Twig;
 class NormalizingNodeVisitor implements \Twig_NodeVisitorInterface
 {
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function enterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         return $node;
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_Node_Expression_Constant|\Twig_NodeInterface
+     * @return \Twig_Node_Expression_Constant|\Twig_Node
      */
-    public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function leaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         if ($node instanceof \Twig_Node_Expression_Binary_Concat
             && ($left = $node->getNode('left')) instanceof \Twig_Node_Expression_Constant
