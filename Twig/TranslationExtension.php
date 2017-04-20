@@ -30,12 +30,12 @@ class TranslationExtension extends \Twig_Extension
     /**
      * @var TranslatorInterface
      */
-    private $translator;
+    protected $translator;
 
     /**
      * @var bool
      */
-    private $debug;
+    protected $debug;
 
     /**
      * TranslationExtension constructor.
@@ -151,7 +151,7 @@ class TranslationExtension extends \Twig_Extension
             }
         } catch (\InvalidArgumentException $e) {
         }
-        
+
         return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
     }
 }

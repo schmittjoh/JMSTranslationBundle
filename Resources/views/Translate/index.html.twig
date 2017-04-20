@@ -4,7 +4,7 @@
     {{ parent() }}
     <script language="javascript" type="text/javascript">
         var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
-        var isWritable        = {{ isWriteable is sameas(true) ? 'true' : 'false' }};
+        var isWritable        = {{ isWriteable is same as(true) ? 'true' : 'false' }};
         var JMS               = new JMSTranslationManager(updateMessagePath, isWritable);
 
         JMS.ready();
@@ -19,44 +19,44 @@
             <option value="{{ config }}"{% if config == selectedConfig %} selected="selected"{% endif %}>{{ config }}</option>
             {% endfor %}
         </select>
-    
+
         <select name="domain" class="span3">
             {% for domain in domains %}
             <option value="{{ domain }}"{% if domain == selectedDomain %} selected="selected"{% endif %}>{{ domain }}</option>
             {% endfor %}
         </select>
-        
+
         <select name="locale" class="span2">
             {% for locale in locales %}
             <option value="{{ locale }}"{% if locale == selectedLocale %} selected="selected"{% endif %}>{{ locale }}</option>
             {% endfor %}
         </select>
     </form>
-    
-    {% if isWriteable is sameas(false) %}
+
+    {% if isWriteable is same as(false) %}
     <div class="alert-message error">
         The translation file "<strong>{{ file }}</strong>" is not writable.
     </div>
     {% endif %}
-    
+
     {% if "xliff" != format %}
     <div class="alert-message warning">
-        Due to limitations of the different loaders/dumpers, some features are unfortunately limited to the XLIFF format. 
-        
+        Due to limitations of the different loaders/dumpers, some features are unfortunately limited to the XLIFF format.
+
         <br /><br />
-        
+
         However, you can easily convert your existing translation files to the XLIFF format by running:<br />
         <code>php app/console translation:extract {{ selectedLocale }} --config={{ selectedConfig }} --output-format=xliff</code>
     </div>
     {% endif %}
 
     <h2>Available Messages</h2>
-    
+
     {% if newMessages is not empty %}
     <h3>New Messages</h3>
     {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": newMessages} %}
     {% endif %}
-    
+
     {% if existingMessages is not empty %}
     <h3>Existing Messages</h3>
     {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": existingMessages} %}

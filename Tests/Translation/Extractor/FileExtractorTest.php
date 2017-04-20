@@ -29,17 +29,29 @@ use JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\TranslationContainerExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
-use JMS\TranslationBundle\Twig\TranslationExtension;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 
 class FileExtractorTest extends \PHPUnit_Framework_TestCase
 {
+    protected $twigExtractorClass;
+    protected $translationExtensionClass;
+
+    public function setUp()
+    {
+        $this->twigExtractorClass = 'JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor';
+        $this->translationExtensionClass = 'JMS\TranslationBundle\Twig\TranslationExtension';
+
+        if (defined('Twig_Environment::MAJOR_VERSION') && \Twig_Environment::MAJOR_VERSION > 1) {
+            $this->twigExtractorClass = 'JMS\TranslationBundle\Translation\Extractor\File\Twig2FileExtractor';
+            $this->translationExtensionClass = 'JMS\TranslationBundle\Twig2\TranslationExtension';
+        }
+    }
+
     public function testExtractWithSimpleTestFixtures()
     {
         $expected = array();
@@ -95,9 +107,9 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
 
     private function extract($directory)
     {
-        $twig = new \Twig_Environment();
+        $twig = new \Twig_Environment(new \Twig_Loader_Array(array()));
         $twig->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
-        $twig->addExtension(new TranslationExtension($translator));
+        $twig->addExtension(new $this->translationExtensionClass($translator));
         $loader=new \Twig_Loader_Filesystem(realpath(__DIR__."/Fixture/SimpleTest/Resources/views/"));
         $twig->setLoader($loader);
 
@@ -123,7 +135,7 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
         $extractor = new FileExtractor($twig, new NullLogger(), array(
             new DefaultPhpFileExtractor($docParser, $dummyFileSourceFactory),
             new TranslationContainerExtractor(),
-            new TwigFileExtractor($twig, $dummyFileSourceFactory),
+            new $this->twigExtractorClass($twig, $dummyFileSourceFactory),
             new ValidationExtractor($factory),
             new FormExtractor($docParser, $dummyFileSourceFactory),
         ));

@@ -19,6 +19,7 @@
 namespace JMS\TranslationBundle\Translation\Extractor;
 
 use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
+use JMS\TranslationBundle\Twig2\DefaultApplyingNodeVisitor as Twig2DefaultApplyingNodeVisitor;
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use PhpParser\Error;
 use PhpParser\Lexer;
@@ -27,6 +28,7 @@ use PhpParser\ParserFactory;
 use Psr\Log\LoggerInterface;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
+use JMS\TranslationBundle\Twig2\RemovingNodeVisitor as Twig2RemovingNodeVisitor;
 use JMS\TranslationBundle\Translation\ExtractorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Finder\Finder;
@@ -108,10 +110,10 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         }
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
-            if ($visitor instanceof RemovingNodeVisitor) {
+            if ($visitor instanceof RemovingNodeVisitor || $visitor instanceof Twig2RemovingNodeVisitor) {
                 $this->removingTwigVisitor = $visitor;
             }
-            if ($visitor instanceof DefaultApplyingNodeVisitor) {
+            if ($visitor instanceof DefaultApplyingNodeVisitor || $visitor instanceof Twig2DefaultApplyingNodeVisitor) {
                 $this->defaultApplyingTwigVisitor = $visitor;
             }
         }
@@ -203,7 +205,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         }
 
         $curTwigLoader = $this->twig->getLoader();
-        $this->twig->setLoader(new \Twig_Loader_String());
+        $this->twig->setLoader(new \Twig_Loader_Array(array()));
 
         try {
             $catalogue = new MessageCatalogue();
@@ -227,7 +229,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
                         $visitingArgs[] = $ast;
                     } elseif ('twig' === $extension) {
                         $visitingMethod = 'visitTwigFile';
-                        $visitingArgs[] = $this->twig->parse($this->twig->tokenize(file_get_contents($file), (string) $file));
+                        $visitingArgs[] = $this->twig->parse($this->twig->tokenize(new \Twig_Source(file_get_contents($file), (string) $file)));
                     }
                 }
 

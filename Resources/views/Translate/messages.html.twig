@@ -14,7 +14,7 @@
                     <p><abbr title="{{ id }}">{{ id|slice(0, 25) }}{% if id|length > 25 %}...{% endif %}</abbr></p>
                 </td>
                 <td>
-                    <textarea data-id="{{ id }}" class="span6"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{{ message.localeString }}</textarea></td>
+                    <textarea data-id="{{ id }}" class="span6"{% if isWriteable is same as(false) %} readonly="readonly"{% endif %}>{{ message.localeString }}</textarea></td>
                 <td>
                     {% if message.meaning is not empty %}
                         <h6>Meaning</h6>
