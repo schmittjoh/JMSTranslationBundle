@@ -26,7 +26,9 @@ use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
+use JMS\TranslationBundle\Twig2\RemovingNodeVisitor as Twig2RemovingNodeVisitor;
 use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
+use JMS\TranslationBundle\Twig2\DefaultApplyingNodeVisitor as Twig2DefaultApplyingNodeVisitor;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -34,11 +36,45 @@ use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExte
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Twig\TranslationExtension;
+use JMS\TranslationBundle\Twig2\TranslationExtension as Twig2TranslationExtension;
 use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
+use JMS\TranslationBundle\Translation\Extractor\File\Twig2FileExtractor;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 
 class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var \Twig_Environment */
+    protected $env;
+
+    /** @var \JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor */
+    protected $extractor;
+
+    public function setUp()
+    {
+        $this->env = new \Twig_Environment(new \Twig_Loader_Array());
+        $this->env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
+
+        \Twig_Environment::MAJOR_VERSION === 1 ?
+            $this->env->addExtension(new TranslationExtension($translator, true)) :
+            $this->env->addExtension(new Twig2TranslationExtension($translator, true));
+
+        $this->env->addExtension(new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext())));
+        $this->env->addExtension(new FormExtension(new TwigRenderer(new TwigRendererEngine())));
+
+        foreach ($this->env->getNodeVisitors() as $visitor) {
+            if ($visitor instanceof DefaultApplyingNodeVisitor || $visitor instanceof Twig2DefaultApplyingNodeVisitor) {
+                $visitor->setEnabled(false);
+            }
+            if ($visitor instanceof RemovingNodeVisitor || $visitor instanceof Twig2RemovingNodeVisitor) {
+                $visitor->setEnabled(false);
+            }
+        }
+
+        $this->extractor = \Twig_Environment::MAJOR_VERSION === 1 ?
+            new TwigFileExtractor($this->env, new FileSourceFactory('faux')) :
+            new Twig2FileExtractor($this->env, new FileSourceFactory('faux'));
+    }
+
     public function testExtractSimpleTemplate()
     {
         $expected = new MessageCatalogue();
@@ -143,26 +179,11 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
             throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
         }
 
-        $env = new \Twig_Environment();
-        $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
-        $env->addExtension(new TranslationExtension($translator, true));
-        $env->addExtension(new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext())));
-        $env->addExtension(new FormExtension(new TwigRenderer(new TwigRendererEngine())));
-
-        foreach ($env->getNodeVisitors() as $visitor) {
-            if ($visitor instanceof DefaultApplyingNodeVisitor) {
-                $visitor->setEnabled(false);
-            }
-            if ($visitor instanceof RemovingNodeVisitor) {
-                $visitor->setEnabled(false);
-            }
-        }
-
         if (null === $extractor) {
-            $extractor = new TwigFileExtractor($env, new FileSourceFactory('faux'));
+            $extractor = $this->extractor;
         }
 
-        $ast = $env->parse($env->tokenize(file_get_contents($file), $file));
+        $ast = $this->env->parse($this->env->tokenize(new \Twig_Source(file_get_contents($file), $file)));
 
         $catalogue = new MessageCatalogue();
         $extractor->visitTwigFile(new \SplFileInfo($file), $catalogue, $ast);
