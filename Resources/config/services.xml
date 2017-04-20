@@ -63,10 +63,9 @@
             </call>
             <tag name="jms_translation.dumper" format="xliff" />
         </service>
-        <service id="jms_translation.dumper.xlf_dumper" class="%jms_translation.dumper.xliff_dumper.class%" public="false">
-            <call method="setSourceLanguage">
-                <argument>%jms_translation.source_language%</argument>
-            </call>
+        <service id="jms_translation.dumper.xlf_dumper" class="%jms_translation.dumper.symfony_adapter.class%" public="false">
+            <argument type="service" id="translation.dumper.xliff" />
+            <argument>xlf</argument>
             <tag name="jms_translation.dumper" format="xlf" />
         </service>
         <service id="jms_translation.dumper.yaml_dumper" class="%jms_translation.dumper.yaml_dumper.class%" public="false">
