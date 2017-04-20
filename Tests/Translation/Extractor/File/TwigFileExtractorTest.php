@@ -51,7 +51,7 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->env = new \Twig_Environment(new \Twig_Loader_Array());
+        $this->env = new \Twig_Environment(new \Twig_Loader_Array(array()));
         $this->env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
 
         if (defined('Twig_Environment::MAJOR_VERSION') && \Twig_Environment::MAJOR_VERSION > 1) {

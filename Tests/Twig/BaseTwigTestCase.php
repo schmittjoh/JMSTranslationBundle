@@ -38,7 +38,7 @@ abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
     {
         $content = file_get_contents(__DIR__.'/Fixture/'.$file);
 
-        $env = new \Twig_Environment(new \Twig_Loader_Array());
+        $env = new \Twig_Environment(new \Twig_Loader_Array(array()));
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new $this->extensionClass($translator, $debug));
 
