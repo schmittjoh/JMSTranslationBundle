@@ -69,7 +69,7 @@ class Configuration implements ConfigurationInterface
                                                     if (false === $pos = strpos($v, '/')) {
                                                         $bundleName = substr($v, 1);
                                                     } else {
-                                                        $bundleName = substr($v, 1, $pos - 2);
+                                                        $bundleName = substr($v, 1, $pos - 1);
                                                     }
 
                                                     $bundles = $c->getParameter('kernel.bundles');
