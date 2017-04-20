@@ -54,9 +54,11 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $this->env = new \Twig_Environment(new \Twig_Loader_Array());
         $this->env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
 
-        \Twig_Environment::MAJOR_VERSION === 1 ?
-            $this->env->addExtension(new TranslationExtension($translator, true)) :
+        if (defined('Twig_Environment::MAJOR_VERSION') && \Twig_Environment::MAJOR_VERSION > 1) {
             $this->env->addExtension(new Twig2TranslationExtension($translator, true));
+        } else {
+            $this->env->addExtension(new TranslationExtension($translator, true));
+        }
 
         $this->env->addExtension(new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext())));
         $this->env->addExtension(new FormExtension(new TwigRenderer(new TwigRendererEngine())));
@@ -70,9 +72,11 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
             }
         }
 
-        $this->extractor = \Twig_Environment::MAJOR_VERSION === 1 ?
-            new TwigFileExtractor($this->env, new FileSourceFactory('faux')) :
-            new Twig2FileExtractor($this->env, new FileSourceFactory('faux'));
+        if (defined('Twig_Environment::MAJOR_VERSION') && \Twig_Environment::MAJOR_VERSION > 1) {
+            $this->extractor = new Twig2FileExtractor($this->env, new FileSourceFactory('faux'));
+        } else {
+            $this->extractor = new TwigFileExtractor($this->env, new FileSourceFactory('faux'));
+        }
     }
 
     public function testExtractSimpleTemplate()

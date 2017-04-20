@@ -29,7 +29,7 @@ abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->extensionClass = 'JMS\TranslationBundle\Twig\TranslationExtension';
-        if (\Twig_Environment::MAJOR_VERSION > 1) {
+        if (defined('Twig_Environment::MAJOR_VERSION') && \Twig_Environment::MAJOR_VERSION > 1) {
             $this->extensionClass = 'JMS\TranslationBundle\Twig2\TranslationExtension';
         }
     }
