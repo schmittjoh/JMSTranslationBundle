@@ -30,12 +30,12 @@ class TranslationExtension extends \Twig_Extension
     /**
      * @var TranslatorInterface
      */
-    protected $translator;
+    private $translator;
 
     /**
      * @var bool
      */
-    protected $debug;
+    private $debug;
 
     /**
      * TranslationExtension constructor.
