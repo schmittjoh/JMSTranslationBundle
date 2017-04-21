@@ -18,7 +18,9 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor;
 
+use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
 use JMS\TranslationBundle\Translation\FileSourceFactory;
+use JMS\TranslationBundle\Twig\TranslationExtension;
 use Psr\Log\NullLogger;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
@@ -38,20 +40,6 @@ use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 
 class FileExtractorTest extends \PHPUnit_Framework_TestCase
 {
-    protected $twigExtractorClass;
-    protected $translationExtensionClass;
-
-    public function setUp()
-    {
-        $this->twigExtractorClass = 'JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor';
-        $this->translationExtensionClass = 'JMS\TranslationBundle\Twig\TranslationExtension';
-
-        if (defined('Twig_Environment::MAJOR_VERSION') && \Twig_Environment::MAJOR_VERSION > 1) {
-            $this->twigExtractorClass = 'JMS\TranslationBundle\Translation\Extractor\File\Twig2FileExtractor';
-            $this->translationExtensionClass = 'JMS\TranslationBundle\Twig2\TranslationExtension';
-        }
-    }
-
     public function testExtractWithSimpleTestFixtures()
     {
         $expected = array();
@@ -109,7 +97,7 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
     {
         $twig = new \Twig_Environment(new \Twig_Loader_Array(array()));
         $twig->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
-        $twig->addExtension(new $this->translationExtensionClass($translator));
+        $twig->addExtension(new TranslationExtension($translator));
         $loader=new \Twig_Loader_Filesystem(realpath(__DIR__."/Fixture/SimpleTest/Resources/views/"));
         $twig->setLoader($loader);
 
@@ -135,7 +123,7 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
         $extractor = new FileExtractor($twig, new NullLogger(), array(
             new DefaultPhpFileExtractor($docParser, $dummyFileSourceFactory),
             new TranslationContainerExtractor(),
-            new $this->twigExtractorClass($twig, $dummyFileSourceFactory),
+            new TwigFileExtractor($twig, $dummyFileSourceFactory),
             new ValidationExtractor($factory),
             new FormExtractor($docParser, $dummyFileSourceFactory),
         ));

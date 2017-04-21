@@ -28,7 +28,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
+class DefaultApplyingNodeVisitor extends \Twig_BaseNodeVisitor
 {
     /**
      * @var bool
@@ -44,11 +44,11 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         if (!$this->enabled) {
             return $node;
@@ -121,11 +121,11 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         return $node;
     }

@@ -5,10 +5,13 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="jms_translation.twig_extension.class">JMS\TranslationBundle\Twig\TranslationExtension</parameter>
+
         <parameter key="jms_translation.extractor_manager.class">JMS\TranslationBundle\Translation\ExtractorManager</parameter>
         <parameter key="jms_translation.extractor.file_extractor.class">JMS\TranslationBundle\Translation\Extractor\FileExtractor</parameter>
         <parameter key="jms_translation.extractor.file.default_php_extractor">JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor</parameter>
         <parameter key="jms_translation.extractor.file.translation_container_extractor">JMS\TranslationBundle\Translation\Extractor\File\TranslationContainerExtractor</parameter>
+        <parameter key="jms_translation.extractor.file.twig_extractor">JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor</parameter>
         <parameter key="jms_translation.extractor.file.form_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\FormExtractor</parameter>
         <parameter key="jms_translation.extractor.file.validation_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor</parameter>
         <parameter key="jms_translation.extractor.file.authentication_message_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\AuthenticationMessagesExtractor</parameter>

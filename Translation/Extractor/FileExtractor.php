@@ -19,7 +19,6 @@
 namespace JMS\TranslationBundle\Translation\Extractor;
 
 use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
-use JMS\TranslationBundle\Twig2\DefaultApplyingNodeVisitor as Twig2DefaultApplyingNodeVisitor;
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use PhpParser\Error;
 use PhpParser\Lexer;
@@ -28,7 +27,6 @@ use PhpParser\ParserFactory;
 use Psr\Log\LoggerInterface;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
-use JMS\TranslationBundle\Twig2\RemovingNodeVisitor as Twig2RemovingNodeVisitor;
 use JMS\TranslationBundle\Translation\ExtractorInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Finder\Finder;
@@ -110,10 +108,10 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         }
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
-            if ($visitor instanceof RemovingNodeVisitor || $visitor instanceof Twig2RemovingNodeVisitor) {
+            if ($visitor instanceof RemovingNodeVisitor) {
                 $this->removingTwigVisitor = $visitor;
             }
-            if ($visitor instanceof DefaultApplyingNodeVisitor || $visitor instanceof Twig2DefaultApplyingNodeVisitor) {
+            if ($visitor instanceof DefaultApplyingNodeVisitor) {
                 $this->defaultApplyingTwigVisitor = $visitor;
             }
         }
