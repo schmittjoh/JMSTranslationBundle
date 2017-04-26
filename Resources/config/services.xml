@@ -70,6 +70,9 @@
             <call method="setAddReference">
                 <argument>%jms_translation.dumper.add_references%</argument>
             </call>
+            <call method="setAddReferencePosition">
+                <argument>%jms_translation.dumper.add_reference_position%</argument>
+            </call>
             <tag name="jms_translation.dumper" format="xliff" />
         </service>
         <service id="jms_translation.dumper.xlf_dumper" class="%jms_translation.dumper.xliff_dumper.class%" public="false">
@@ -81,6 +84,9 @@
             </call>
             <call method="setAddReference">
                 <argument>%jms_translation.dumper.add_references%</argument>
+            </call>
+            <call method="setAddReferencePosition">
+                <argument>%jms_translation.dumper.add_reference_position%</argument>
             </call>
             <tag name="jms_translation.dumper" format="xlf" />
         </service>

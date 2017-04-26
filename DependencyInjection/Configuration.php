@@ -48,6 +48,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->booleanNode('add_date')->defaultTrue()->end()
                             ->booleanNode('add_references')->defaultTrue()->end()
+                            ->booleanNode('add_reference_position')->defaultTrue()->end()
                         ->end()
                     ->end()
                     ->scalarNode('source_language')->defaultValue('en')->end()
