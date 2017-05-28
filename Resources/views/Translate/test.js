@@ -69,7 +69,6 @@
  *
  *  @function writable: attaches translation field handlers if isWritable is true
  */
-
 function JMSTranslationManager(updateMessagePath, isWritable, isXliff) {
     if (!window.jQuery) {
         console.error('JMSTranslationManager requires JQuery.');
@@ -127,7 +126,6 @@ function JMSTranslationManager(updateMessagePath, isWritable, isXliff) {
             translation.blur();
         },
         copyClick: function (event) {
-            var JMS = event.data.JMS;
             event.preventDefault();
             var alt_translation = $(this).closest('p').next('pre');
             alt_translation.each(JMS.copier.copy);
@@ -137,7 +135,6 @@ function JMSTranslationManager(updateMessagePath, isWritable, isXliff) {
             var elem = $(event.target);
 
             var selectedLocale = elem.val();
-            var closest_div = elem.closest('div');
             var alt_translations = elem.closest('div').find(JMS.copier.selector).filter(
                 function () {
                     return selectedLocale == $(this).data('locale')
@@ -167,7 +164,7 @@ function JMSTranslationManager(updateMessagePath, isWritable, isXliff) {
         addNoteSelector: '.jms-add-note-link',
         columnSelector: '.jms-translation-col-1',
         deleteNoteSelector: '.jms-delete-note-link',
-        deleteNoteLinkContent: '<a href="#" class="jms-delete-note-link" alt="Delete Note">Delete</a>',
+        noteDeleteLinkContent: '<a href="#" class="jms-delete-note-link" alt="Delete Note">Delete</a>',
         noteLabel: '<h6>Note</h6>',
         noteSelector: '.jms-translation-note',
         addNote: function (event) {
@@ -183,7 +180,7 @@ function JMSTranslationManager(updateMessagePath, isWritable, isXliff) {
                 'data-type': 'note',
                 'data-index': prev.length > 0 ? (prev.data('index') + 1) : 0,
                 'class': 'jms-translation-note'
-            }).on('blur', null, {"JMS": JMS}, JMS.notes.checkEmpty);
+            });
 
             JMS.writable(JMS, newNote);
 
@@ -205,7 +202,7 @@ function JMSTranslationManager(updateMessagePath, isWritable, isXliff) {
         elements: function (JMS) {
             if (JMS.isXliff) {
                 $(JMS.notes.columnSelector).append(JMS.notes.addNoteLinkContent);
-                $(JMS.notes.noteSelector).prev('h6').append(JMS.notes.deleteNoteLinkContent);
+                $(JMS.notes.noteSelector).prev('h6').append(JMS.notes.noteDeleteLinkContent);
             }
         },
         handlers: function (JMS) {
@@ -215,32 +212,33 @@ function JMSTranslationManager(updateMessagePath, isWritable, isXliff) {
         }
     },
 
-    this.truncator = {
-        selector: '.truncate-left',
-        side: 'left',
-        fill: '<a href="#" class="untruncate">&hellip;</a>',
-        untruncateSelector: '.untruncate',
-        truncate: function (JMS) {
-            if (jQuery().trunk8) {
-                $(JMS.truncator.selector).trunk8({
-                    side: JMS.truncator.side,
-                    fill: JMS.truncator.fill
-                });
+        this.truncator = {
+            selector: '.truncate-left',
+            side: 'left',
+            fill: '<a href="#" class="untruncate">&hellip;</a>',
+            untruncateSelector: '.untruncate',
+            truncate: function (JMS) {
+                if (jQuery().trunk8) {
+                    $(JMS.truncator.selector).trunk8({
+                        side: JMS.truncator.side,
+                        fill: JMS.truncator.fill
+                    });
 
-                $(document).on('click', JMS.truncator.untruncateSelector, function (event) {
-                    var elem = $(this);
-                    elem.parent().trunk8('revert');
-                    event.preventDefault();
-                });
+                    $(document).on('click', JMS.truncator.untruncateSelector, function (event) {
+                        var elem = $(this);
+                        elem.parent().trunk8('revert');
+                        event.preventDefault();
+                    });
+                }
+                else {
+                    console.error('Truncator requires jQuery Trunk8 plugin.');
+                }
             }
-            else {
-                console.error('Truncator requires jQuery Trunk8 plugin.');
-            }
-        }
-    };
+        };
 
     this.translation = {
         abbrSelector: 'abbr',
+        alertSelector: '.alert-message',
         selector: 'textarea',
         ajax: {
             type: 'POST',
@@ -323,7 +321,7 @@ function JMSTranslationManager(updateMessagePath, isWritable, isXliff) {
             .blur(function (event) {
                 JMS.translation.blur(event, JMS);
             })
-            .focus(function (event) {
+            .focus(function () {
                 JMS.translation.focus(event, JMS);
             })
         ;
