@@ -25,7 +25,7 @@
                         <h6>Alternative Translations</h6>
                         {% for locale, altMessage in alternativeMessages[id] %}
                         <p>
-                            <strong>{{ locale }}:</strong> <pre>{{ altMessage.localeString }}</pre>
+                            <strong>{{ locale }}:</strong> <pre class="jms-alt-message" data-locale="{{ locale }}" data-id="{{ id }}">{{ altMessage.localeString }}</pre>
                         </p>
                         {% endfor %}
                     {% endif %}

@@ -53,12 +53,17 @@
     <h2>Available Messages</h2>
 
     {% if newMessages is not empty %}
-    <h3>New Messages</h3>
+    <div id="jms-trans-new-messages" class="jms-trans-header">
+        <h3>New Messages</h3>
+    </div>
+
     {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": newMessages} %}
     {% endif %}
 
     {% if existingMessages is not empty %}
-    <h3>Existing Messages</h3>
+    <div id="jms-existing-messages" class="jms-trans-header">
+        <h3>Existing Messages</h3>
+    </div>
     {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": existingMessages} %}
     {% endif %}
 

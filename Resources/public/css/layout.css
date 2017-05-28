@@ -10,3 +10,20 @@ body > .container {
 .jms-sources-list-item {
 	word-break: break-all;
 }
+
+.jms-copy-link {
+	float: right;
+	color: #ccc;
+	padding-right: 2px;
+}
+
+.jms-copy-link:hover {
+	color: #666;
+	text-decoration: none;
+}
+
+.jms-copy-all {
+	float: right;
+	/* 8.5 margin from bootstrap + 2 1px borders */
+	margin-right: 10.5px;
+}
