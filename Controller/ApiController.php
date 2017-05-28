@@ -124,7 +124,7 @@ class ApiController
             );
 
             $responseData['status'] = self::STATUS_SUCCESS;
-            $responseData['message'] = (null == $message) ? 'Note was deleted.' : 'Note was saved.';
+            $responseData['message'] = (null === $message) ? 'Note was deleted.' : 'Note was saved.';
         }
 
         return new JsonResponse($responseData);
