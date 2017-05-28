@@ -4,15 +4,15 @@
     {{ parent() }}
     <script language="javascript" type="text/javascript">
         var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
+        var isXliff           = {{ "xliff" == format ? 'true' : 'false' }};
         var isWritable        = {{ isWriteable is same as(true) ? 'true' : 'false' }};
-        var JMS               = new JMSTranslationManager(updateMessagePath, isWritable);
+        var JMS               = new JMSTranslationManager(updateMessagePath, isWritable, isXliff);
 
         JMS.ready();
     </script>
 {% endblock %}
 
 {% block body %}
-
     <form id="config" action="{{ path("jms_translation_index") }}" method="get">
         <select name="config" class="span3">
             {% for config in configs %}
@@ -53,13 +53,19 @@
     <h2>Available Messages</h2>
 
     {% if newMessages is not empty %}
-    <h3>New Messages</h3>
-    {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": newMessages} %}
+    <div id="jms-trans-new-messages" class="jms-trans-header">
+        <h3>New Messages</h3>
+
+        {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": newMessages} %}
+    </div>
     {% endif %}
 
     {% if existingMessages is not empty %}
-    <h3>Existing Messages</h3>
-    {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": existingMessages} %}
+    <div id="jms-existing-messages" class="jms-trans-header">
+        <h3>Existing Messages</h3>
+
+        {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": existingMessages} %}
+    </div>
     {% endif %}
 
 {% endblock %}

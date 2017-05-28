@@ -9,12 +9,19 @@
         <tbody>
             {% for id, message in messages %}
             <tr>
-                <td>
-                    <a class="jms-translation-anchor" id="{{ id }}" />
+                <td class="jms-translation-col-1">
+                    <a class="jms-translation-anchor" id="{{ id }}" href="#"></a>
                     <p><abbr title="{{ id }}">{{ id|slice(0, 25) }}{% if id|length > 25 %}...{% endif %}</abbr></p>
+
+                    {% if message.notes is defined and message.notes is not empty %}
+                        {% for note in message.notes %}
+                            <h6>Note:</h6>
+                            <textarea data-id="{{ id }}" data-type="note" data-index="{{ loop.index0 }}" class="jms-translation-note"{% if isWriteable is same as(false) %} readonly="readonly"{% endif %}>{{ note.text }}</textarea>
+                        {% endfor %}
+                    {% endif %}
                 </td>
                 <td>
-                    <textarea data-id="{{ id }}" class="span6"{% if isWriteable is same as(false) %} readonly="readonly"{% endif %}>{{ message.localeString }}</textarea></td>
+                    <textarea data-id="{{ id }}" data-type="message" class="span6"{% if isWriteable is same as(false) %} readonly="readonly"{% endif %}>{{ message.localeString }}</textarea></td>
                 <td>
                     {% if message.meaning is not empty %}
                         <h6>Meaning</h6>
@@ -25,8 +32,9 @@
                         <h6>Alternative Translations</h6>
                         {% for locale, altMessage in alternativeMessages[id] %}
                         <p>
-                            <strong>{{ locale }}:</strong> <pre>{{ altMessage.localeString }}</pre>
+                            <strong>{{ locale }}:</strong>
                         </p>
+                        <pre class="jms-alt-message" data-locale="{{ locale }}" data-id="{{ id }}">{{ altMessage.localeString }}</pre>
                         {% endfor %}
                     {% endif %}
 

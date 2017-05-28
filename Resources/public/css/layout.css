@@ -10,3 +10,50 @@ body > .container {
 .jms-sources-list-item {
 	word-break: break-all;
 }
+
+.jms-copy-link, .jms-delete-note-link {
+	vertical-align: middle;
+	float: right;
+	padding-right: 2px;
+
+}
+
+.jms-copy-link, .jms-delete-note-link, .jms-add-note-link {
+    color: #ccc;
+    color: #ddd;
+    font-weight: 200;
+    text-transform: none;
+}
+
+.jms-copy-link:hover, .jms-delete-note-link:hover, .jms-add-note-link:hover {
+	color: #666;
+	text-decoration: none;
+}
+
+.jms-copy-all {
+	float: right;
+	/* 8.5 margin from bootstrap + 2 1px borders */
+	margin-right: 10.5px;
+}
+
+.jms-add-note-link {
+	display: block;
+	text-align: center;
+	margin-top: 4px;
+}
+
+.jms-translation-note {
+	border: 1px solid #ccc;
+	resize: none;
+	background-color: white;
+}
+
+.jms-translation-active {
+	background-color: white;
+}
+
+.container abbr, span.label {
+	display: block;
+	margin-bottom: 4px;
+	clear: both;
+}

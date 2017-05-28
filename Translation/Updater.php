@@ -18,6 +18,8 @@
 
 namespace JMS\TranslationBundle\Translation;
 
+use JMS\TranslationBundle\Exception\InvalidArgumentException;
+use JMS\TranslationBundle\Model\Message\XliffMessage;
 use JMS\TranslationBundle\Translation\Comparison\ChangeSet;
 use JMS\TranslationBundle\Util\FileUtils;
 use JMS\TranslationBundle\Exception\RuntimeException;
@@ -73,6 +75,16 @@ class Updater
     private $writer;
 
     /**
+     * @var integer An attempt has been made to use a feature not supported by this message type
+     */
+    const ERROR_INVALID_MESSAGE_TYPE = 1;
+
+    /**
+     * @var integer An attempt has been made to pass an invalid index
+     */
+    const ERROR_INVALID_INDEX = 2;
+
+    /**
      * @param LoaderManager $loader
      * @param ExtractorManager $extractor
      * @param LoggerInterface $logger
@@ -108,6 +120,51 @@ class Updater
         $comparator->setDomains($this->config->getDomains());
 
         return $comparator->compare($this->existingCatalogue, $this->scannedCatalogue);
+    }
+
+    /**
+     * @param string  $file
+     * @param string  $format
+     * @param string  $domain
+     * @param string  $locale
+     * @param string  $id
+     * @param integer $index Index of the message (zero-indexed)
+     * @param string  $note   Text of the note
+     */
+    public function updateNote($file, $format, $domain, $locale, $id, $index, $note)
+    {
+        $catalogue = $this->loader->loadFile($file, $format, $locale, $domain);
+
+        /**
+         * @var $message XliffMessage
+         */
+        $message = $catalogue->get($id, $domain);
+        if (!$message instanceof XliffMessage) {
+            // Only XLiff formats support notes
+            throw new \InvalidArgumentException('Xliff Format Required', self::ERROR_INVALID_MESSAGE_TYPE);
+        } else if (!is_int ($index)) {
+            throw new \InvalidArgumentException('Invalid index specified', self::ERROR_INVALID_INDEX);
+        }
+
+        // Ensure the index is valid
+        $notes = $message->getNotes();
+        $index = (int)$index;
+        if ($index < 0) {
+            $index = 0;
+        } else if ($index > count ($notes)) {
+            $index = count ($notes);
+        }
+
+        // Write the note
+        if (null == $note) {
+            unset ($notes[$index]);
+        } else {
+            $notes[$index] = array('text' => $note);
+        }
+
+        $message->setNotes($notes);
+
+        $this->writer->write($catalogue, $domain, $file, $format);
     }
 
     /**
