@@ -43,7 +43,7 @@ class RemovingNodeVisitor extends \Twig_BaseNodeVisitor
      * @param \Twig_Environment $env
      * @return \Twig_Node
      */
-    public function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         if ($this->enabled && $node instanceof \Twig_Node_Expression_Filter) {
             $name = $node->getNode('filter')->getAttribute('value');
@@ -61,7 +61,7 @@ class RemovingNodeVisitor extends \Twig_BaseNodeVisitor
      * @param \Twig_Environment $env
      * @return \Twig_Node
      */
-    public function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         return $node;
     }

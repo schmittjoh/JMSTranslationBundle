@@ -68,7 +68,7 @@ class TwigFileExtractor extends \Twig_BaseNodeVisitor implements FileVisitorInte
      * @param \Twig_Environment $env
      * @return \Twig_Node
      */
-    public function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         $this->stack[] = $node;
 
@@ -187,7 +187,7 @@ class TwigFileExtractor extends \Twig_BaseNodeVisitor implements FileVisitorInte
      * @param \Twig_Environment $env
      * @return \Twig_Node
      */
-    public function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         array_pop($this->stack);
 

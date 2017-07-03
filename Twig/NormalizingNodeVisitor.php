@@ -33,7 +33,7 @@ class NormalizingNodeVisitor extends \Twig_BaseNodeVisitor
      * @param \Twig_Environment $env
      * @return \Twig_Node
      */
-    public function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         return $node;
     }
@@ -43,7 +43,7 @@ class NormalizingNodeVisitor extends \Twig_BaseNodeVisitor
      * @param \Twig_Environment $env
      * @return \Twig_Node_Expression_Constant|\Twig_Node
      */
-    public function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         if ($node instanceof \Twig_Node_Expression_Binary_Concat
             && ($left = $node->getNode('left')) instanceof \Twig_Node_Expression_Constant
