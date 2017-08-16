@@ -107,7 +107,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             }
 
             $name = strtolower($node->name);
-            if ('setdefaults' === $name || 'replacedefaults' === $name) {
+            if ('setdefaults' === $name || 'replacedefaults' === $name || 'setdefault' === $name) {
                 $this->parseDefaultsCall($node);
                 return;
             }
@@ -307,6 +307,15 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
 
         // check if options were passed
         if (!isset($node->args[0])) {
+            return;
+        }
+
+        if (isset($node->args[1])
+            && $node->args[0]->value instanceof Node\Scalar\String_
+            && $node->args[1]->value instanceof Node\Scalar\String_
+            && 'translation_domain' === $node->args[0]->value->value
+        ) {
+            $this->defaultDomain =  $node->args[1]->value->value;
             return;
         }
 
