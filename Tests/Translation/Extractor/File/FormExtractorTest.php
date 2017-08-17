@@ -196,15 +196,11 @@ class FormExtractorTest extends BasePhpFileExtractorTest
         $this->assertEquals($expected, $this->extract('MyFormTypeWithInterface.php'));
     }
 
-    /**
-     * This test is used to check if the default 'translation_domain' option
-     * set for the entire form is extracted correctly
-     */
-    public function testExtractWithDefaultDomain()
+    protected function getDefaultDomainFixture($fixtureFile)
     {
         $expected = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyFormTypeWithDefaultDomain.php');
+        $fixtureSplInfo = new \SplFileInfo($fixtureFile);
 
         $message = new Message('form.label.lastname', 'person');
         $message->setDesc('Lastname');
@@ -220,7 +216,25 @@ class FormExtractorTest extends BasePhpFileExtractorTest
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 37));
         $expected->add($message);
 
-        $this->assertEquals($expected, $this->extract('MyFormTypeWithDefaultDomain.php'));
+        return $expected;
+    }
+
+    /**
+     * This test is used to check if the default 'translation_domain' option
+     * set for the entire form is extracted correctly
+     */
+    public function testExtractWithDefaultDomain()
+    {
+        $this->assertEquals($this->getDefaultDomainFixture(__DIR__.'/Fixture/MyFormTypeWithDefaultDomain.php'), $this->extract('MyFormTypeWithDefaultDomain.php'));
+    }
+
+    /**
+     * This test is used to check if the default 'translation_domain' option
+     * set for the entire form is extracted correctly when set via setDefault
+     */
+    public function testExtractWithDefaultDomainSetDefault()
+    {
+        $this->assertEquals($this->getDefaultDomainFixture(__DIR__.'/Fixture/MyFormTypeWithDefaultDomainSetDefault.php'), $this->extract('MyFormTypeWithDefaultDomainSetDefault.php'));
     }
 
     /**
