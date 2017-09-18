@@ -1,13 +1,12 @@
 language: php
-
 sudo: false
+dist: trusty
 
 cache:
     directories:
         - $HOME/.composer/cache
 
 php:
-  - 5.3
   - 5.4
   - 5.5
   - 5.6
@@ -27,8 +26,6 @@ matrix:
         - php: hhvm
 
     include:
-        - php: 5.3
-          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_VERSION=2.3.0 COVERAGE=true TEST_COMMAND="./vendor/bin/phpunit --coverage-text --coverage-clover=build/coverage.xml"
         - php: 5.6
           env: SYMFONY_VERSION=2.3.*
         - php: 5.6
