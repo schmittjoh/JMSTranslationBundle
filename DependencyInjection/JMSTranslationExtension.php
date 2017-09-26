@@ -33,6 +33,10 @@ class JMSTranslationExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
+        if (!class_exists('Symfony\Component\ClassLoader\ClassLoader')) {
+            $loader->load('console.xml');
+        }
+
         $container->setParameter('jms_translation.source_language', $config['source_language']);
         $container->setParameter('jms_translation.locales', $config['locales']);
 

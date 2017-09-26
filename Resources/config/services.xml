@@ -51,7 +51,7 @@
         </service>
 
 
-        <service id="jms_translation.updater" class="%jms_translation.updater.class%">
+        <service id="jms_translation.updater" class="%jms_translation.updater.class%" public="true">
             <argument type="service" id="jms_translation.loader_manager" />
             <argument type="service" id="jms_translation.extractor_manager" />
             <argument type="service" id="logger" />
