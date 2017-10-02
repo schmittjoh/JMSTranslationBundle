@@ -8,7 +8,7 @@
         </thead>
         <tbody>
             {% for id, message in messages %}
-            <tr>
+            <tr class="messageRow" id="row-{{ id }}">
                 <td>
                     <a class="jms-translation-anchor" id="{{ id }}" />
                     <p><abbr title="{{ id }}">{{ id|slice(0, 25) }}{% if id|length > 25 %}...{% endif %}</abbr></p>
