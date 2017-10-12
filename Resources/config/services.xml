@@ -54,6 +54,7 @@
         <service id="jms_translation.loader_manager" class="%jms_translation.loader_manager.class%" /><!-- public as needed by the TranslateController -->
         <service id="jms_translation.loader.xliff_loader" class="%jms_translation.loader.xliff_loader.class%" public="false">
             <tag name="jms_translation.loader" format="xliff" />
+            <tag name="jms_translation.loader" format="xlf" />
         </service>
 
         <!-- Dumpers -->
