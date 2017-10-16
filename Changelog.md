@@ -1,6 +1,7 @@
 # Changelog
 
 ### 1.3.2 to UNRELEASED
+* Remove dependencies on JMSDiExtraBundle and JMSAopBundle. If you do not use these bundles elsewhere in your application you will need to remove the reference to them in `registerBundles` of your `AppKernel` 
 
 ### 1.3.1 to 1.3.2
 * Added configuration options to disable date/sources in xliff dump
