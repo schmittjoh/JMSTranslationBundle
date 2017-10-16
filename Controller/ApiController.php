@@ -28,7 +28,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("/api")
+ * @Route("/api", service="jms_translation.controller.api_controller")
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
