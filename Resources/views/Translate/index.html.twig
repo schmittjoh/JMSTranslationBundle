@@ -51,6 +51,10 @@
     {% endif %}
 
     <h2>Available Messages</h2>
+	<h3>
+		Filter messages by Id
+		<input id="filter" placeholder="Enter a key to filter the entries." title="A wildcard/regexp-search for '*your_key*' will be done. You can also use the '.' as 1-char wildcard, '.*' as wildcard for 0-n chars. Search the web for 'JS Regex Documentation' for more information about regular expressions."/>
+	</h3>
 
     {% if newMessages is not empty %}
     <h3>New Messages</h3>
