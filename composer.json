@@ -4,7 +4,7 @@
     "keywords":     ["translation", "multilanguage", "extract", "webinterface", "ui", "i18n", "extraction", "interface"],
     "homepage":     "http://jmsyst.com/bundles/JMSTranslationBundle",
     "type":         "symfony-bundle",
-    "license":      "Apache2",
+    "license":      "Apache-2.0",
     "authors": [
         {
             "name":   "Johannes M. Schmitt",
