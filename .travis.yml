@@ -14,7 +14,7 @@ php:
 
 env:
     global:
-        - TEST_COMMAND="./vendor/bin/phpunit"
+        - TEST_COMMAND="./vendor/bin/simple-phpunit"
     matrix:
         - SYMFONY_VERSION=2.8.*
 
