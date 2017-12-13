@@ -61,7 +61,7 @@ class ConfigFactory
     /**
      * @param $name
      * @param $locale
-     * @return ConfigBuilder
+     * @return Config
      */
     public function getConfig($name, $locale)
     {

@@ -67,7 +67,7 @@ class ExtractorManagerTest extends \PHPUnit_Framework_TestCase
         $foo = $this->getMock('JMS\TranslationBundle\Translation\ExtractorInterface');
         $logger = new NullLogger();
 
-        $extractor = new FileExtractor(new \Twig_Environment(), $logger, array());
+        $extractor = new FileExtractor(new \Twig_Environment(new \Twig_Loader_Array(array())), $logger, array());
         $extractor->setExcludedNames(array('foo', 'bar'));
         $extractor->setExcludedDirs(array('baz'));
 
@@ -110,7 +110,7 @@ class ExtractorManagerTest extends \PHPUnit_Framework_TestCase
         $logger = new NullLogger();
 
         if (null === $extractor) {
-            $extractor = new FileExtractor(new \Twig_Environment(), $logger, array());
+            $extractor = new FileExtractor(new \Twig_Environment(new \Twig_Loader_Array(array())), $logger, array());
         }
 
         return new ExtractorManager($extractor, $logger, $extractors);

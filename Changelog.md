@@ -1,6 +1,12 @@
 # Changelog
 
-### 1.3.1 to UNRELEASED
+### 1.3.2 to UNRELEASED
+
+### 1.3.1 to 1.3.2
+* Added configuration options to disable date/sources in xliff dump
+* Fixed trim bug with @XBundle notation
+* Added support for php 7.1
+* Added Twig 2 support
 
 ### 1.3.0 to 1.3.1
 

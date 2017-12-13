@@ -151,7 +151,7 @@ class TranslationExtension extends \Twig_Extension
             }
         } catch (\InvalidArgumentException $e) {
         }
-        
+
         return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
     }
 }

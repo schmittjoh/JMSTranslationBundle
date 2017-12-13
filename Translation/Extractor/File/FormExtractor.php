@@ -107,7 +107,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             }
 
             $name = strtolower($node->name);
-            if ('setdefaults' === $name || 'replacedefaults' === $name) {
+            if ('setdefaults' === $name || 'replacedefaults' === $name || 'setdefault' === $name) {
                 $this->parseDefaultsCall($node);
                 return;
             }
@@ -310,6 +310,15 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             return;
         }
 
+        if (isset($node->args[1])
+            && $node->args[0]->value instanceof Node\Scalar\String_
+            && $node->args[1]->value instanceof Node\Scalar\String_
+            && 'translation_domain' === $node->args[0]->value->value
+        ) {
+            $this->defaultDomain =  $node->args[1]->value->value;
+            return;
+        }
+
         // ignore everything except an array
         if (!$node->args[0]->value instanceof Node\Expr\Array_) {
             return;
@@ -346,7 +355,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             $docComment = $item->key->getDocComment();
         }
 
-        if (!$docComment) {
+        if (!$docComment && $item->value) {
             $docComment = $item->value->getDocComment();
         }
 

@@ -28,7 +28,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
+class DefaultApplyingNodeVisitor extends \Twig_BaseNodeVisitor
 {
     /**
      * @var bool
@@ -44,11 +44,11 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         if (!$this->enabled) {
             return $node;
@@ -75,16 +75,14 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
             // so that we can catch a possible exception when the default translation has not yet
             // been extracted
             if ('transchoice' === $transNode->getNode('filter')->getAttribute('value')) {
-                $transchoiceArguments = new \Twig_Node_Expression_Array(array(), $transNode->getLine());
+                $transchoiceArguments = new \Twig_Node_Expression_Array(array(), $transNode->getTemplateLine());
                 $transchoiceArguments->addElement($wrappingNode->getNode('node'));
                 $transchoiceArguments->addElement($defaultNode);
                 foreach ($wrappingNode->getNode('arguments') as $arg) {
                     $transchoiceArguments->addElement($arg);
                 }
 
-                $transchoiceNode = new \Twig_Node_Expression_MethodCall(
-                    new \Twig_Node_Expression_ExtensionReference('jms_translation', $transNode->getLine()),
-                    'transchoiceWithDefault', $transchoiceArguments, $transNode->getLine());
+                $transchoiceNode = new Node\Transchoice($transchoiceArguments, $transNode->getTemplateLine());
                 $node->setNode('node', $transchoiceNode);
 
                 return $node;
@@ -93,7 +91,7 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
             // if the |trans filter has replacements parameters
             // (e.g. |trans({'%foo%': 'bar'}))
             if ($wrappingNode->getNode('arguments')->hasNode(0)) {
-                $lineno =  $wrappingNode->getLine();
+                $lineno =  $wrappingNode->getTemplateLine();
 
                 // remove the replacements from the test node
                 $testNode->setNode('arguments', clone $testNode->getNode('arguments'));
@@ -111,10 +109,10 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
             }
 
             $condition = new \Twig_Node_Expression_Conditional(
-                new \Twig_Node_Expression_Binary_Equal($testNode, $transNode->getNode('node'), $wrappingNode->getLine()),
+                new \Twig_Node_Expression_Binary_Equal($testNode, $transNode->getNode('node'), $wrappingNode->getTemplateLine()),
                 $defaultNode,
                 clone $wrappingNode,
-                $wrappingNode->getLine()
+                $wrappingNode->getTemplateLine()
             );
             $node->setNode('node', $condition);
         }
@@ -123,11 +121,11 @@ class DefaultApplyingNodeVisitor implements \Twig_NodeVisitorInterface
     }
 
     /**
-     * @param \Twig_NodeInterface $node
+     * @param \Twig_Node $node
      * @param \Twig_Environment $env
-     * @return \Twig_NodeInterface
+     * @return \Twig_Node
      */
-    public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    public function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         return $node;
     }
