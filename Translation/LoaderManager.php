@@ -79,7 +79,7 @@ class LoaderManager
      * @return bool
      */
     public function supportLoader($format) {
-        return isset($this->loaders[$format];
+        return isset($this->loaders[$format]);
     }
 
     /**
