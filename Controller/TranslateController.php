@@ -86,12 +86,15 @@ class TranslateController
             $locale = reset($locales);
         }
 
-        $catalogue = $this->loader->loadFile(
-            $files[$domain][$locale][1]->getPathName(),
-            $files[$domain][$locale][0],
-            $locale,
-            $domain
-        );
+        $catalogue = null;
+        if ($this->loader->supportLoader($files[$domain][$locale][0])) {
+            $catalogue = $this->loader->loadFile(
+                $files[$domain][$locale][1]->getPathName(),
+                $files[$domain][$locale][0],
+                $locale,
+                $domain
+            );
+        }
 
         // create alternative messages
         // TODO: We should probably also add these to the XLIFF file for external translators,
@@ -102,25 +105,31 @@ class TranslateController
                 continue;
             }
 
-            $altCatalogue = $this->loader->loadFile(
-                $files[$domain][$otherLocale][1]->getPathName(),
-                $files[$domain][$otherLocale][0],
-                $otherLocale,
-                $domain
-            );
-            foreach ($altCatalogue->getDomain($domain)->all() as $id => $message) {
-                $alternativeMessages[$id][$otherLocale] = $message;
+            if ($this->loader->supportLoader($files[$domain][$otherLocale][0])) {
+                $altCatalogue = $this->loader->loadFile(
+                    $files[$domain][$otherLocale][1]->getPathName(),
+                    $files[$domain][$otherLocale][0],
+                    $otherLocale,
+                    $domain
+                );
+
+                foreach ($altCatalogue->getDomain($domain)->all() as $id => $message) {
+                    $alternativeMessages[$id][$otherLocale] = $message;
+                }
             }
         }
 
         $newMessages = $existingMessages = array();
-        foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
-            if ($message->isNew()) {
-                $newMessages[$id] = $message;
-                continue;
-            }
 
-            $existingMessages[$id] = $message;
+        if (null !== $catalogue) {
+            foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
+                if ($message->isNew()) {
+                    $newMessages[$id] = $message;
+                    continue;
+                }
+
+                $existingMessages[$id] = $message;
+            }
         }
 
         return array(

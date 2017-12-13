@@ -75,6 +75,15 @@ class LoaderManager
 
     /**
      * @param $format
+     *
+     * @return bool
+     */
+    public function supportLoader($format) {
+        return isset($this->loaders[$format];
+    }
+
+    /**
+     * @param $format
      * @return mixed
      * @throws \InvalidArgumentException
      * @return \JMS\TranslationBundle\Translation\Loader\LoaderInterface
