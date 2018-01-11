@@ -127,6 +127,12 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                     case 'label':
                         $this->parseItem($item, $domain);
                         break;
+                    case 'labels':
+                        if ($this->parseLabelsNode($item, $node, $domain)) {
+                            continue 2;
+                        }
+                        $this->parseItem($item, $domain);
+                        break;
                     case 'invalid_message':
                         $this->parseItem($item, 'validators');
                         break;
@@ -179,6 +185,32 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         return $domain;
     }
 
+    /**
+     * This parses any Node of type labels.
+     *
+     * Returning true means either that regardless of whether
+     * parsing has occurred or not, the enterNode function should move on to the next node item.
+     *
+     * @param Node $item
+     * @param Node $node
+     * @param      $domain
+     * @return bool
+     * @internal
+     */
+    protected function parseLabelsNode(Node $item, Node $node, $domain)
+    {
+        // Skip any labels that aren't arrays
+        if (!$item->value instanceof Node\Expr\Array_) {
+            return true;
+        }
+
+        foreach ($item->value->items as $subItem) {
+            $this->parseItem($subItem, $domain);
+        }
+
+        return true;
+    }
+    
     /**
      * This parses any Node of type empty_value.
      *
