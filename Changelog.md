@@ -1,7 +1,8 @@
 # Changelog
 
 ### 1.3.2 to UNRELEASED
-
+ * Allow extraction of DateIntervalType labels option
+  
 ### 1.3.1 to 1.3.2
 * Added configuration options to disable date/sources in xliff dump
 * Fixed trim bug with @XBundle notation
