@@ -51,8 +51,6 @@ class AppKernel extends Kernel
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \JMS\TranslationBundle\JMSTranslationBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new \JMS\DiExtraBundle\JMSDiExtraBundle($this),
-            new \JMS\AopBundle\JMSAopBundle(),
         );
     }
 
