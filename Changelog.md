@@ -1,6 +1,7 @@
 # Changelog
 
 ### 1.3.2 to UNRELEASED
+* Fixed "Unable to find template @JMSTranslation/translate/index.html.twig"
 
 ### 1.3.1 to 1.3.2
 * Added configuration options to disable date/sources in xliff dump
