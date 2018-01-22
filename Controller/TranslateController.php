@@ -55,7 +55,7 @@ class TranslateController
 
     /**
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
-     * @Template
+     * @Template("JMSTranslationBundle:Translate:index.html.twig")
      * @param Request $request
      * @return array
      */
