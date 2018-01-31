@@ -19,9 +19,6 @@ that you need to have the SensioFrameworkExtraBundle_ installed)::
         type:     annotation
         prefix:   /_trans
 
-This bundle also requires the JMSDiExtraBundle_ for annotation-based
-dependency injection for controllers.
-
 Usage
 -----
 If you have followed the instructions above, you can now access the interface

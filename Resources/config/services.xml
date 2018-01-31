@@ -7,6 +7,9 @@
     <parameters>
         <parameter key="jms_translation.twig_extension.class">JMS\TranslationBundle\Twig\TranslationExtension</parameter>
 
+        <parameter key="jms_translation.controller.translate_controller.class">JMS\TranslationBundle\Controller\TranslateController</parameter>
+        <parameter key="jms_translation.controller.api_controller.class">JMS\TranslationBundle\Controller\ApiController</parameter>
+
         <parameter key="jms_translation.extractor_manager.class">JMS\TranslationBundle\Translation\ExtractorManager</parameter>
         <parameter key="jms_translation.extractor.file_extractor.class">JMS\TranslationBundle\Translation\Extractor\FileExtractor</parameter>
         <parameter key="jms_translation.extractor.file.default_php_extractor">JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor</parameter>
@@ -34,6 +37,20 @@
     </parameters>
 
     <services>
+        <!-- Controllers -->
+        <service id="jms_translation.controller.translate_controller" class="%jms_translation.controller.translate_controller.class%">
+            <argument type="service" id="jms_translation.config_factory"/>
+            <argument type="service" id="jms_translation.loader_manager"/>
+            <call method="setSourceLanguage">
+                <argument>%jms_translation.source_language%</argument>
+            </call>
+        </service>
+        <service id="jms_translation.controller.api_controller" class="%jms_translation.controller.api_controller.class%">
+            <argument id="jms_translation.config_factory" type="service"/>
+            <argument id="jms_translation.updater" type="service"/>
+        </service>
+
+
         <service id="jms_translation.updater" class="%jms_translation.updater.class%">
             <argument type="service" id="jms_translation.loader_manager" />
             <argument type="service" id="jms_translation.extractor_manager" />
