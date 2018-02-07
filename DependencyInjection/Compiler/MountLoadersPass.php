@@ -44,6 +44,9 @@ class MountLoadersPass implements CompilerPassInterface
             $container->setDefinition($id = 'jms_translation.loader.wrapped_symfony_loader.'.($i++), $def);
 
             $loaders[$attr[0]['alias']] = new Reference($id);
+            if (isset($attr[0]['legacy_alias'])) {
+                $loaders[$attr[0]['legacy_alias']] = new Reference($id);
+            }
         }
 
         foreach ($container->findTaggedServiceIds('jms_translation.loader') as $id => $attr) {
