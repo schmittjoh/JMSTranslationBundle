@@ -13,7 +13,7 @@ class ApiControllerTest extends BaseTestCase
     public function testUpdateAction()
     {
         // Add a file
-        $file = __DIR__.'/../Fixture/TestBundle/Resources/translations/navigation.en.yml';
+        $file = __DIR__.'/../Fixture/TestBundle/Resources/translations/navigation.en.yaml';
         file_put_contents($file, 'main.home: Home');
 
         // Start application
@@ -23,9 +23,8 @@ class ApiControllerTest extends BaseTestCase
 
         // Verify that the file has new content
         $array = Yaml::parse(file_get_contents($file));
-        $this->assertTrue(isset($array['main']));
-        $this->assertTrue(isset($array['main']['home']));
-        $this->assertEquals('Away', $array['main']['home']);
+        $this->assertTrue(isset($array['main.home']));
+        $this->assertEquals('Away', $array['main.home']);
 
         // Remove the file
         unlink($file);
