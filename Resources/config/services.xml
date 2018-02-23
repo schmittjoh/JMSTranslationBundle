@@ -166,11 +166,12 @@
         </service>
         
         <!-- Command -->
-        <service id="JMS\TranslationBundle\Command\ExtractTranslationCommand">
+        <!-- Command -->
+        <service id="JMS\TranslationBundle\Command\ExtractTranslationCommand" class="JMS\TranslationBundle\Command\ExtractTranslationCommand">
             <tag name="console.command" command="translation:extract" />
         </service>
         
-        <service id="JMS\TranslationBundle\Command\ResourcesListCommand">
+        <service id="JMS\TranslationBundle\Command\ResourcesListCommand" class="JMS\TranslationBundle\Command\ResourcesListCommand">
             <tag name="console.command" command="translation:list-resources" />
         </service>
         
