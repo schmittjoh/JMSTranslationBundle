@@ -164,5 +164,15 @@
             <argument>%kernel.debug%</argument>
             <tag name="twig.extension" />
         </service>
+        
+        <!-- Command -->
+        <service id="JMS\TranslationBundle\Command\ExtractTranslationCommand">
+            <tag name="console.command" command="translation:extract" />
+        </service>
+        
+        <service id="JMS\TranslationBundle\Command\ResourcesListCommand">
+            <tag name="console.command" command="translation:list-resources" />
+        </service>
+        
     </services>
 </container>
