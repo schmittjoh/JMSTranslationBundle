@@ -30,9 +30,8 @@
         "matthiasnoback/symfony-dependency-injection-test": "^0.7.6"
     },
     "autoload": {
-        "psr-0": { "JMS\\TranslationBundle": "" }
+        "psr-4": { "JMS\\TranslationBundle\\": "" }
     },
-    "target-dir": "JMS/TranslationBundle",
     "extra": {
         "branch-alias": {
             "dev-master": "1.4-dev"
