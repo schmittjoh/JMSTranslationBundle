@@ -56,7 +56,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     /**
      * @var array
      */
-    private $pattern;
+    private $patterns = array();
 
     /**
      * @var string
@@ -168,11 +168,20 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     }
 
     /**
+     * @param array $patterns
+     */
+    public function setPatterns(array $patterns)
+    {
+        $this->patterns = $patterns;
+    }
+
+    /**
      * @param array $pattern
+     * @deprecated Use setPatterns method
      */
     public function setPattern(array $pattern)
     {
-        $this->pattern = $pattern;
+        $this->patterns = $pattern;
     }
 
     /**
@@ -198,8 +207,8 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
             $finder->notName($name);
         }
 
-        if ($this->pattern) {
-            $finder->name($this->pattern);
+        foreach ($this->patterns as $pattern) {
+            $finder->name($pattern);
         }
 
         $curTwigLoader = $this->twig->getLoader();
