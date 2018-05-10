@@ -16,7 +16,7 @@
         "php": "^5.3.3 || ^7.0",
         "twig/twig": "^1.27 || ^2.0",
         "symfony/framework-bundle": "^2.3 || ^3.0",
-        "nikic/php-parser": "^1.4 || ^2.0 || ^3.0 || ^4.0",
+        "nikic/php-parser": "^1.4 || ^2.0 || ^3.0",
         "symfony/console": "^2.3 || ^3.0",
         "symfony/validator": "^2.3 || ^3.0"
     },
