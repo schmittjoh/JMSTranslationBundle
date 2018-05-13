@@ -102,11 +102,11 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         }
 
         if ($node instanceof Node\Expr\MethodCall) {
-            if (!is_string($node->name)) {
+            if (!$node->name instanceof Node\Identifier) {
                 return;
             }
 
-            $name = strtolower($node->name);
+            $name = $node->name->toLowerString();
             if ('setdefaults' === $name || 'replacedefaults' === $name || 'setdefault' === $name) {
                 $this->parseDefaultsCall($node);
                 return;
