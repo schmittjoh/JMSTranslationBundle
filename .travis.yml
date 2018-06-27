@@ -7,8 +7,6 @@ cache:
         - $HOME/.composer/cache
 
 php:
-  - 5.4
-  - 5.5
   - 5.6
   - 7.0
   - 7.1
@@ -16,7 +14,7 @@ php:
 
 env:
     global:
-        - TEST_COMMAND="./vendor/bin/phpunit"
+        - TEST_COMMAND="./vendor/bin/simple-phpunit"
     matrix:
         - SYMFONY_VERSION=2.8.*
 
@@ -40,7 +38,8 @@ matrix:
           env: SYMFONY_VERSION=^3.0
         - php: 7.1
           env: SYMFONY_VERSION=^3.0
-
+        - php: 7.1
+          env: SYMFONY_VERSION=^4.0
 
 before_install:
     - travis_retry composer self-update

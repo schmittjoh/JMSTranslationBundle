@@ -19,6 +19,7 @@
 namespace JMS\TranslationBundle\DependencyInjection\Compiler;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -39,7 +40,11 @@ class MountLoadersPass implements CompilerPassInterface
                 throw new RuntimeException(sprintf('The attribute "alias" must be defined for tag "translation.loader" for service "%s".', $id));
             }
 
-            $def = new DefinitionDecorator('jms_translation.loader.symfony_adapter');
+            if (class_exists('Symfony\Component\DependencyInjection\ChildDefinition')) {
+                $def = new ChildDefinition('jms_translation.loader.symfony_adapter');
+            } else {
+                $def = new DefinitionDecorator('jms_translation.loader.symfony_adapter');
+            }
             $def->addArgument(new Reference($id));
             $container->setDefinition($id = 'jms_translation.loader.wrapped_symfony_loader.'.($i++), $def);
 
