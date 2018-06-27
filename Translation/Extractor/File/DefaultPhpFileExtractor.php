@@ -116,9 +116,12 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
      */
     public function enterNode(Node $node)
     {
-        if (!$node instanceof Node\Expr\MethodCall
-            || !is_string($node->name)
-            || !in_array(strtolower($node->name), array_map('strtolower', array_keys($this->methodsToExtractFrom)))) {
+        $methodCallNodeName = null;
+        if ($node instanceof Node\Expr\MethodCall) {
+            $methodCallNodeName = $node->name instanceof Node\Identifier ? $node->name->name : $node->name;
+        }
+        if (!is_string($methodCallNodeName)
+            || !in_array(strtolower($methodCallNodeName), array_map('strtolower', array_keys($this->methodsToExtractFrom)))) {
             $this->previousNode = $node;
             return;
         }
@@ -157,7 +160,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
 
         $id = $node->args[0]->value->value;
 
-        $index = $this->methodsToExtractFrom[strtolower($node->name)];
+        $index = $this->methodsToExtractFrom[strtolower($methodCallNodeName)];
         if (isset($node->args[$index])) {
             if (!$node->args[$index]->value instanceof String_) {
                 if ($ignore) {
