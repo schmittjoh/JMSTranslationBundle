@@ -20,11 +20,12 @@ namespace JMS\TranslationBundle\Tests\Translation;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Tests\BaseTestCase;
 use Psr\Log\NullLogger;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Translation\ExtractorManager;
 
-class ExtractorManagerTest extends \PHPUnit_Framework_TestCase
+class ExtractorManagerTest extends BaseTestCase
 {
     /**
      * @expectedException \InvalidArgumentException

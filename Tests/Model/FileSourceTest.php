@@ -19,8 +19,9 @@
 namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
+use JMS\TranslationBundle\Tests\BaseTestCase;
 
-class FileSourceTest extends \PHPUnit_Framework_TestCase
+class FileSourceTest extends BaseTestCase
 {
     public function testGetPath()
     {

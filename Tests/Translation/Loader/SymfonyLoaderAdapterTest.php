@@ -18,10 +18,11 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Loader;
 
+use JMS\TranslationBundle\Tests\BaseTestCase;
 use JMS\TranslationBundle\Translation\Loader\SymfonyLoaderAdapter;
 use Symfony\Component\Translation\MessageCatalogue;
 
-class SymfonyLoaderAdapterTest extends \PHPUnit_Framework_TestCase
+class SymfonyLoaderAdapterTest extends BaseTestCase
 {
     public function testLoad()
     {

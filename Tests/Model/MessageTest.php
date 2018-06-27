@@ -20,8 +20,9 @@ namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Tests\BaseTestCase;
 
-class MessageTest extends \PHPUnit_Framework_TestCase
+class MessageTest extends BaseTestCase
 {
     public function testCreate()
     {

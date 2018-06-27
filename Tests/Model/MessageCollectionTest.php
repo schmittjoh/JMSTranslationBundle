@@ -21,8 +21,9 @@ namespace JMS\TranslationBundle\Tests\Model;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCollection;
 use JMS\TranslationBundle\Model\FileSource;
+use JMS\TranslationBundle\Tests\BaseTestCase;
 
-class MessageCollectionTest extends \PHPUnit_Framework_TestCase
+class MessageCollectionTest extends BaseTestCase
 {
     public function testAdd()
     {
