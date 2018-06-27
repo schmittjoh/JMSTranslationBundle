@@ -28,7 +28,7 @@ class SymfonyLoaderAdapterTest extends \PHPUnit_Framework_TestCase
         $symfonyCatalogue = new MessageCatalogue('en');
         $symfonyCatalogue->add(array('foo' => 'bar'));
         
-        $symfonyLoader = $this->getMock('Symfony\Component\Translation\Loader\LoaderInterface');
+        $symfonyLoader = $this->createMock('Symfony\Component\Translation\Loader\LoaderInterface');
         $symfonyLoader->expects($this->once())
             ->method('load')
             ->with('foo', 'en', 'messages')

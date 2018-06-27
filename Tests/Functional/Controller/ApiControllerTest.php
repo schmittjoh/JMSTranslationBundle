@@ -14,7 +14,8 @@ class ApiControllerTest extends BaseTestCase
     {
         // Add a file
         $file = __DIR__.'/../Fixture/TestBundle/Resources/translations/navigation.en.yaml';
-        file_put_contents($file, 'main.home: Home');
+        $written = file_put_contents($file, 'main.home: Home');
+        $this->assertTrue($written !== false && $written > 0);
 
         // Start application
         $client = static::createClient();

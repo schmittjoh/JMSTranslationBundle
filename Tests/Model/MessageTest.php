@@ -79,9 +79,9 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $message = new Message('foo');
         $this->assertEquals(array(), $message->getSources());
 
-        $this->assertSame($message, $message->addSource($source = $this->getMock('JMS\TranslationBundle\Model\SourceInterface')));
+        $this->assertSame($message, $message->addSource($source = $this->createMock('JMS\TranslationBundle\Model\SourceInterface')));
         $this->assertSame(array($source), $message->getSources());
-        $this->assertSame($message, $message->setSources(array($source2 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'))));
+        $this->assertSame($message, $message->setSources(array($source2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'))));
         $this->assertSame(array($source2), $message->getSources());
     }
 
@@ -90,11 +90,11 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $message = new Message('foo');
         $message->setDesc('foo');
         $message->setMeaning('foo');
-        $message->addSource($s1 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $message->addSource($s1 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
 
         $message2 = new Message('foo');
         $message2->setDesc('bar');
-        $message2->addSource($s2 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $message2->addSource($s2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
 
         $message->merge($message2);
 
@@ -108,11 +108,11 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $message = new Message('foo_id');
         $message->setDesc('foo_desc');
         $message->setMeaning('foo_meaning');
-        $message->addSource($s1 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $message->addSource($s1 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
 
         $message2 = new Message('foo_id');
         $message2->setMeaning('bar_meaning');
-        $message2->addSource($s2 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $message2->addSource($s2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
 
         $message->merge($message2);
 
@@ -176,9 +176,9 @@ class MessageTest extends \PHPUnit_Framework_TestCase
     {
         $message = new Message('foo');
 
-        $s2 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface');
+        $s2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface');
 
-        $s1 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface');
+        $s1 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface');
         $s1
             ->expects($this->once())
             ->method('equals')

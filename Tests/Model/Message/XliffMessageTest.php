@@ -106,13 +106,13 @@ class XliffMessageTest extends MessageTest
         $messageWrite = new XliffMessage('foo');
         $messageWrite->setDesc('foo');
         $messageWrite->setMeaning('foo');
-        $messageWrite->addSource($s1 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $messageWrite->addSource($s1 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
 
         $messageRead = new XliffMessage('foo');
         $messageRead->setDesc('bar');
         $messageRead->setApproved(true);
         $messageRead->setState(XliffMessage::STATE_TRANSLATED);
-        $messageRead->addSource($s2 = $this->getMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $messageRead->addSource($s2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
 
         $messageRead2 = new Message('foo');
         $messageRead2->setDesc('bar');

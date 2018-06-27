@@ -26,7 +26,7 @@ class FileWriterTest extends \PHPUnit_Framework_TestCase
 {
     public function testCatalogueIsSortedBeforeBeingDumped()
     {
-        $dumper = $this->getMock('JMS\TranslationBundle\Translation\Dumper\DumperInterface');
+        $dumper = $this->createMock('JMS\TranslationBundle\Translation\Dumper\DumperInterface');
 
         $self = $this;
         $dumper

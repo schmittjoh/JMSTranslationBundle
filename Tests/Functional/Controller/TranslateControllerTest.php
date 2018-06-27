@@ -13,6 +13,9 @@ class TranslateControllerTest extends BaseTestCase
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/_trans/');
+if($client->getResponse()->getStatusCode() !== 200) {
+file_put_contents('/tmp/test-index.html',$client->getResponse());
+}
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $this->assertGreaterThan(

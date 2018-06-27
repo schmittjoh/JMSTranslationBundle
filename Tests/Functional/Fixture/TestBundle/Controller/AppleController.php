@@ -13,7 +13,7 @@ class AppleController
 {
     /**
      * @Route("/view")
-     * @Template
+     * @Template("@Test/Apple/view.html.twig")
      */
     public function viewAction()
     {

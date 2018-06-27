@@ -38,14 +38,14 @@
 
     <services>
         <!-- Controllers -->
-        <service id="jms_translation.controller.translate_controller" class="%jms_translation.controller.translate_controller.class%">
+        <service id="jms_translation.controller.translate_controller" class="%jms_translation.controller.translate_controller.class%" public="true">
             <argument type="service" id="jms_translation.config_factory"/>
             <argument type="service" id="jms_translation.loader_manager"/>
             <call method="setSourceLanguage">
                 <argument>%jms_translation.source_language%</argument>
             </call>
         </service>
-        <service id="jms_translation.controller.api_controller" class="%jms_translation.controller.api_controller.class%">
+        <service id="jms_translation.controller.api_controller" class="%jms_translation.controller.api_controller.class%" public="true">
             <argument id="jms_translation.config_factory" type="service"/>
             <argument id="jms_translation.updater" type="service"/>
         </service>
@@ -58,7 +58,7 @@
             <argument type="service" id="jms_translation.file_writer" />
         </service>
 
-        <service id="jms_translation.config_factory" class="%jms_translation.config_factory.class%" />
+        <service id="jms_translation.config_factory" class="%jms_translation.config_factory.class%" public="true"/>
 
         <service id="jms_translation.file_source_factory" class="%jms_translation.file_source_factory.class%">
             <argument>%kernel.root_dir%</argument>
@@ -159,7 +159,7 @@
             </call>
         </service>
 
-        <service id="jms_translation.twig_extension" class="%jms_translation.twig_extension.class%">
+        <service id="jms_translation.twig_extension" class="%jms_translation.twig_extension.class%" public="true">
             <argument type="service" id="translator" />
             <argument>%kernel.debug%</argument>
             <tag name="twig.extension" />

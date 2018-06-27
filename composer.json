@@ -21,13 +21,13 @@
         "symfony/validator": "^2.3 || ^3.0 || ^4.0"
     },
     "require-dev": {
-        "matthiasnoback/symfony-dependency-injection-test": "^1.2",
-        "nyholm/nsa": "^1.0.1",
+        "phpunit/phpunit": "^4.8 || ^5.0",
         "psr/log": "^1.0",
-        "sensio/framework-extra-bundle": "^2.3 || ^3.0 || ^4.0",
+        "symfony/symfony": "^2.3 || ^3.0 || ^4.0",
         "symfony/expression-language": "^2.6 || ^3.0 || ^4.0",
-        "symfony/symfony": "^2.6 || ^3.0 || ^4.0",
-        "symfony/phpunit-bridge": "^4.0"
+        "sensio/framework-extra-bundle": "^2.3 || ^3.0 || ^4.0",
+        "matthiasnoback/symfony-dependency-injection-test": "^1.2",
+        "nyholm/nsa": "^1.0.1"
     },
     "autoload": {
         "psr-0": { "JMS\\TranslationBundle": "" }
