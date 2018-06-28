@@ -21,8 +21,9 @@ namespace JMS\TranslationBundle\Tests\Model;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCollection;
 use JMS\TranslationBundle\Model\FileSource;
+use JMS\TranslationBundle\Tests\BaseTestCase;
 
-class MessageCollectionTest extends \PHPUnit_Framework_TestCase
+class MessageCollectionTest extends BaseTestCase
 {
     public function testAdd()
     {
@@ -34,13 +35,9 @@ class MessageCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testAddMerges()
     {
-        $m2 = $this->getMockBuilder('JMS\TranslationBundle\Model\Message')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $m2 = $this->createMock('JMS\TranslationBundle\Model\Message');
 
-        $m1 = $this->getMockBuilder('JMS\TranslationBundle\Model\Message')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $m1 = $this->createMock('JMS\TranslationBundle\Model\Message');
         $m1->expects($this->once())
             ->method('merge')
             ->with($m2);
@@ -79,16 +76,12 @@ class MessageCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testSetDoesNotMerge()
     {
-        $m2 = $this->getMockBuilder('JMS\TranslationBundle\Model\Message')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $m2 = $this->createMock('JMS\TranslationBundle\Model\Message');
         $m2->expects($this->any())
             ->method('getId')
             ->will($this->returnValue('foo'));
 
-        $m1 = $this->getMockBuilder('JMS\TranslationBundle\Model\Message')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $m1 = $this->createMock('JMS\TranslationBundle\Model\Message');
         $m1->expects($this->never())
             ->method('merge');
         $m1->expects($this->any())

@@ -18,24 +18,26 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
-use JMS\TranslationBundle\Translation\FileSourceFactory;
-use Symfony\Bridge\Twig\Form\TwigRendererEngine;
-use Symfony\Bridge\Twig\Form\TwigRenderer;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Bridge\Twig\Extension\RoutingExtension;
-use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
-use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
 use JMS\TranslationBundle\Exception\RuntimeException;
-use Symfony\Component\Translation\MessageSelector;
-use Symfony\Component\Translation\IdentityTranslator;
-use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Twig\TranslationExtension;
 use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
+use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
+use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
+use JMS\TranslationBundle\Twig\TranslationExtension;
 use Symfony\Bridge\Twig\Extension\FormExtension;
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
+use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
+use Symfony\Bridge\Twig\Form\TwigRenderer;
+use Symfony\Bridge\Twig\Form\TwigRendererEngine;
+use Symfony\Component\Form\FormRenderer;
+use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Translation\IdentityTranslator;
+use Symfony\Component\Translation\MessageSelector;
+use Twig\Environment;
 
 class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
 {
@@ -147,7 +149,11 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new TranslationExtension($translator, true));
         $env->addExtension(new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext())));
-        $env->addExtension(new FormExtension(new TwigRenderer(new TwigRendererEngine())));
+        $env->addExtension(new FormExtension(
+            class_exists('Symfony\Bridge\Twig\Form\TwigRenderer') ?
+            new TwigRenderer(new TwigRendererEngine()) :
+            new FormRenderer(new TwigRendererEngine([], $env))
+        ));
 
         foreach ($env->getNodeVisitors() as $visitor) {
             if ($visitor instanceof DefaultApplyingNodeVisitor) {

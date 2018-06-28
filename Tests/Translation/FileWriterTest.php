@@ -20,13 +20,14 @@ namespace JMS\TranslationBundle\Tests\Translation;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Tests\BaseTestCase;
 use JMS\TranslationBundle\Translation\FileWriter;
 
-class FileWriterTest extends \PHPUnit_Framework_TestCase
+class FileWriterTest extends BaseTestCase
 {
     public function testCatalogueIsSortedBeforeBeingDumped()
     {
-        $dumper = $this->getMock('JMS\TranslationBundle\Translation\Dumper\DumperInterface');
+        $dumper = $this->createMock('JMS\TranslationBundle\Translation\Dumper\DumperInterface');
 
         $self = $this;
         $dumper
