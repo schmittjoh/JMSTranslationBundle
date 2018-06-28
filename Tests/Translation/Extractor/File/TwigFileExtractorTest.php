@@ -150,7 +150,7 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $env->addExtension(new TranslationExtension($translator, true));
         $env->addExtension(new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext())));
         $env->addExtension(new FormExtension(
-            class_exists(TwigRenderer::class) ?
+            class_exists('Symfony\Bridge\Twig\Form\TwigRenderer') ?
             new TwigRenderer(new TwigRendererEngine()) :
             new FormRenderer(new TwigRendererEngine([], $env))
         ));
