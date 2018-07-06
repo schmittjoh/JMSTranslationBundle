@@ -30,7 +30,7 @@ class IntegrationPass implements CompilerPassInterface
         }
 
         $def = $container->getDefinition('translation.loader.xliff');
-        if ('%translation.loader.xliff.class%' !== $def->getClass()) {
+        if ('%translation.loader.xliff.class%' !== $def->getClass() && 'Symfony\Component\Translation\Loader\XliffFileLoader' !== $def->getClass()) {
             // user needs to manually integrate as desired
             return;
         }

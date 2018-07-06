@@ -1,10 +1,10 @@
 {
     "name":         "jms/translation-bundle",
-    "description":  "Puts the Symfony2 Translation Component on steroids",
+    "description":  "Puts the Symfony Translation Component on steroids",
     "keywords":     ["translation", "multilanguage", "extract", "webinterface", "ui", "i18n", "extraction", "interface"],
     "homepage":     "http://jmsyst.com/bundles/JMSTranslationBundle",
     "type":         "symfony-bundle",
-    "license":      "Apache2",
+    "license":      "Apache-2.0",
     "authors": [
         {
             "name":   "Johannes M. Schmitt",
@@ -13,35 +13,32 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "symfony/framework-bundle": "~2.1",
-        "nikic/php-parser": "2.0.x@dev",
-        "symfony/console": "*"
-    },
-    "conflict": {
-        "twig/twig": "<1.12"
+        "php": "^5.3.3 || ^7.0",
+        "twig/twig": "^1.27 || ^2.0",
+        "symfony/framework-bundle": "^2.3 || ^3.0 || ^4.0",
+        "nikic/php-parser": "^1.4 || ^2.0 || ^3.0 || ^4.0",
+        "symfony/console": "^2.3 || ^3.0 || ^4.0",
+        "symfony/validator": "^2.3 || ^3.0 || ^4.0"
     },
     "require-dev": {
-        "symfony/expression-language": "~2.6",
-        "symfony/twig-bundle": "*",
-        "symfony/browser-kit": "*",
-        "symfony/class-loader": "*",
-        "symfony/css-selector": "*",
-        "symfony/finder": "*",
-        "symfony/form": "*",
-        "symfony/validator": "*",
-        "symfony/security": "*",
-        "symfony/process": "*",
-        "symfony/yaml": "*",
-        "sensio/framework-extra-bundle": "*",
-        "jms/di-extra-bundle": ">=1.1"
+        "phpunit/phpunit": "^4.8 || ^5.0",
+        "psr/log": "^1.0",
+        "symfony/symfony": "^2.3 || ^3.0 || ^4.0",
+        "symfony/expression-language": "^2.6 || ^3.0 || ^4.0",
+        "sensio/framework-extra-bundle": "^2.3 || ^3.0 || ^4.0",
+        "matthiasnoback/symfony-dependency-injection-test": "^1.2",
+        "nyholm/nsa": "^1.0.1"
     },
     "autoload": {
         "psr-0": { "JMS\\TranslationBundle": "" }
     },
+    "config": {
+        "sort-packages": true
+    },
     "target-dir": "JMS/TranslationBundle",
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1-dev"
+            "dev-master": "1.4-dev"
         }
     }
 }

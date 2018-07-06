@@ -21,6 +21,7 @@ namespace JMS\TranslationBundle\Translation\Dumper;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\JMSTranslationBundle;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\Message\XliffMessage;
 
 /**
  * XLIFF dumper.
@@ -32,15 +33,32 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class XliffDumper implements DumperInterface
 {
+    /**
+     * @var string
+     */
     private $sourceLanguage = 'en';
+
+    /**
+     * @var bool
+     */
     private $addDate = true;
+
+    /**
+     * @var bool
+     */
+    private $addReference = true;
+
+    /**
+     * @var bool
+     */
+    private $addReferencePosition = true;
 
     /**
      * @param $bool
      */
     public function setAddDate($bool)
     {
-        $this->addDate = (Boolean) $bool;
+        $this->addDate = (bool) $bool;
     }
 
     /**
@@ -52,7 +70,24 @@ class XliffDumper implements DumperInterface
     }
 
     /**
-     * @param \JMS\TranslationBundle\Model\MessageCatalogue $domain
+     * @param $bool
+     */
+    public function setAddReference($bool)
+    {
+        $this->addReference = $bool;
+    }
+
+    /**
+     * @param $bool
+     */
+    public function setAddReferencePosition($bool)
+    {
+        $this->addReferencePosition = $bool;
+    }
+
+    /**
+     * @param MessageCatalogue $catalogue
+     * @param MessageCatalogue|string $domain
      * @return string
      */
     public function dump(MessageCatalogue $catalogue, $domain = 'messages')
@@ -94,12 +129,19 @@ class XliffDumper implements DumperInterface
             $body->appendChild($unit = $doc->createElement('trans-unit'));
             $unit->setAttribute('id', hash('sha1', $id));
             $unit->setAttribute('resname', $id);
+            if ($message instanceof XliffMessage && $message->isApproved()) {
+                $unit->setAttribute('approved', 'yes');
+            }
 
             $unit->appendChild($source = $doc->createElement('source'));
             if (preg_match('/[<>&]/', $message->getSourceString())) {
                 $source->appendChild($doc->createCDATASection($message->getSourceString()));
             } else {
                 $source->appendChild($doc->createTextNode($message->getSourceString()));
+
+                if (preg_match("/\r\n|\n|\r|\t/", $message->getSourceString())) {
+                    $source->setAttribute('xml:space', 'preserve');
+                }
             }
 
             $unit->appendChild($target = $doc->createElement('target'));
@@ -107,39 +149,96 @@ class XliffDumper implements DumperInterface
                 $target->appendChild($doc->createCDATASection($message->getLocaleString()));
             } else {
                 $target->appendChild($doc->createTextNode($message->getLocaleString()));
+
+                if (preg_match("/\r\n|\n|\r|\t/", $message->getLocaleString())) {
+                    $target->setAttribute('xml:space', 'preserve');
+                }
             }
 
-            if ($message->isNew()) {
-                $target->setAttribute('state', 'new');
-            }
-
-            // As per the OASIS XLIFF 1.2 non-XLIFF elements must be at the end of the <trans-unit>
-            if ($sources = $message->getSources()) {
-                foreach ($sources as $source) {
-                    if ($source instanceof FileSource) {
-                        $unit->appendChild($refFile = $doc->createElement('jms:reference-file', $source->getPath()));
-
-                        if ($source->getLine()) {
-                            $refFile->setAttribute('line', $source->getLine());
+            if ($message instanceof XliffMessage) {
+                if ($message->hasState()) {
+                    $target->setAttribute('state', $message->getState());
+                }
+                
+                if ($message->hasNotes()) {
+                    foreach ($message->getNotes() as $note) {
+                        $noteNode = $unit->appendChild($doc->createElement('note', $note['text']));
+                        if (isset($note['from'])) {
+                        	$noteNode->setAttribute('from', $note['from']);
                         }
-
-                        if ($source->getColumn()) {
-                            $refFile->setAttribute('column', $source->getColumn());
-                        }
-
-                        continue;
                     }
+                }
+            } elseif ($message->isNew()) {
+                $target->setAttribute('state', XliffMessage::STATE_NEW);
+            }
 
-                    $unit->appendChild($doc->createElementNS('jms:reference', (string) $source));
+            if ($this->addReference) {
+                // As per the OASIS XLIFF 1.2 non-XLIFF elements must be at the end of the <trans-unit>
+                if ($sources = $message->getSources()) {
+                    $sortedSources = $this->getSortedSources($sources);
+                    foreach ($sortedSources as $source) {
+                        if ($source instanceof FileSource) {
+                            $unit->appendChild($refFile = $doc->createElement('jms:reference-file', $source->getPath()));
+
+                            if ($this->addReferencePosition) {
+                                if ($source->getLine()) {
+                                    $refFile->setAttribute('line', $source->getLine());
+                                }
+
+                                if ($source->getColumn()) {
+                                    $refFile->setAttribute('column', $source->getColumn());
+                                }
+                            }
+
+                            continue;
+                        }
+
+                        $unit->appendChild($doc->createElementNS('jms:reference', (string) $source));
+                    }
                 }
             }
 
             if ($meaning = $message->getMeaning()) {
                 $unit->setAttribute('extradata', 'Meaning: '.$meaning);
             }
-
         }
 
         return $doc->saveXML();
+    }
+
+    /**
+     * Sort the sources by path-line-column
+     * If the reference position are not used, the reference file will be write once
+     *
+     * @param array $sources
+     * @return FileSource
+     */
+    protected function getSortedSources(array $sources)
+    {
+        $indexedSources = array();
+        foreach ($sources as $source) {
+            if ($source instanceof FileSource) {
+                $index = $source->getPath();
+
+                if ($this->addReferencePosition) {
+                    $index .= '-';
+                    if ($source->getLine()) {
+                        $index .= $source->getLine();
+                    }
+                    $index .= '-';
+                    if ($source->getColumn()) {
+                        $index .= $source->getColumn();
+                    }
+                }
+            } else {
+                $index = (string) $source;
+            }
+
+            $indexedSources[$index] = $source;
+        }
+
+        ksort($indexedSources);
+
+        return $indexedSources;
     }
 }

@@ -8,10 +8,10 @@
         </thead>
         <tbody>
             {% for id, message in messages %}
-            <tr>
+            <tr class="messageRow" id="row-{{ id }}">
                 <td>
                     <a class="jms-translation-anchor" id="{{ id }}" />
-                    <p><abbr title="{{ id }}">{{ id|truncate(20) }}</abbr></p>
+                    <p><abbr title="{{ id }}">{{ id|slice(0, 25) }}{% if id|length > 25 %}...{% endif %}</abbr></p>
                 </td>
                 <td>
                     <textarea data-id="{{ id }}" class="span6"{% if isWriteable is same as(false) %} readonly="readonly"{% endif %}>{{ message.localeString }}</textarea></td>
@@ -20,7 +20,7 @@
                         <h6>Meaning</h6>
                         <p>{{ message.meaning }}</p>
                     {% endif %}
-                
+
                     {% if alternativeMessages[id] is defined %}
                         <h6>Alternative Translations</h6>
                         {% for locale, altMessage in alternativeMessages[id] %}
@@ -29,17 +29,20 @@
                         </p>
                         {% endfor %}
                     {% endif %}
-                    
+
                     {% if message.sources|length > 0 %}
                         <h6>Sources</h6>
                         <ul>
                         {% for source in message.sources %}
-                            <li>{{ source }}</li>
+                            {%- set link = source.path|file_link(source.line) %}
+                            {%- if link %}<a href="{{ link }}" title="{{ source }}">{% else %}<span>{% endif %}
+                                <li class="jms-sources-list-item truncate-left">{{ source }}</li>
+                            {%- if link %}</a>{% else %}</span>{% endif %}
                         {% endfor %}
                         </ul>
                     {% endif %}
 
-                    {% if message.desc is not empty 
+                    {% if message.desc is not empty
                             and message.localeString != message.desc
                             and id != message.desc
                             and (alternativeMessages[id][sourceLanguage] is not defined

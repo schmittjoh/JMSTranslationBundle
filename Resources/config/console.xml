@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="jms_translation.command.extract" class="JMS\TranslationBundle\Command\ExtractTranslationCommand" public="false">
+            <tag name="console.command" command="translation:extract" />
+        </service>
+
+        <service id="jms_translation.command.list_resources" class="JMS\TranslationBundle\Command\ResourcesListCommand" public="false">
+            <tag name="console.command" command="translation:list-resources" />
+        </service>
+    </services>
+</container>

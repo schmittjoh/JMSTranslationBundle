@@ -46,13 +46,11 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         return array(
-            new \JMS\TranslationBundle\Tests\Functional\TestBundle\TestBundle(),
+            new \JMS\TranslationBundle\Tests\Functional\Fixture\TestBundle\TestBundle(),
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \JMS\TranslationBundle\JMSTranslationBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new \JMS\DiExtraBundle\JMSDiExtraBundle($this),
-            new \JMS\AopBundle\JMSAopBundle(),
         );
     }
 

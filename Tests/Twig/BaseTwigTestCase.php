@@ -25,15 +25,14 @@ use JMS\TranslationBundle\Twig\TranslationExtension;
 
 abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
 {
-    protected final function parse($file, $debug = false)
+    final protected function parse($file, $debug = false)
     {
         $content = file_get_contents(__DIR__.'/Fixture/'.$file);
 
-        $env = new \Twig_Environment();
+        $env = new \Twig_Environment(new \Twig_Loader_Array(array()));
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new TranslationExtension($translator, $debug));
-        $env->setLoader(new \Twig_Loader_String());
 
-        return $env->parse($env->tokenize($content));
+        return $env->parse($env->tokenize(new \Twig_Source($content, null)))->getNode('body');
     }
 }
