@@ -22,8 +22,8 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Translation\ConfigFactory;
 use JMS\TranslationBundle\Translation\LoaderManager;
 use JMS\TranslationBundle\Util\FileUtils;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

@@ -22,10 +22,9 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Translation\ConfigFactory;
 use JMS\TranslationBundle\Translation\Updater;
 use JMS\TranslationBundle\Util\FileUtils;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Method;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/api", service="jms_translation.controller.api_controller")
@@ -57,11 +56,14 @@ class ApiController
     }
 
     /**
-     * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages",
-     *            name="jms_translation_update_message",
-     *            defaults = {"id" = null},
-     *            options = {"i18n" = false})
-     * @Method("PUT")
+     * @Route(
+     *     "/configs/{config}/domains/{domain}/locales/{locale}/messages",
+     *     name="jms_translation_update_message",
+     *     methods = {"PUT"},
+     *     defaults = {"id" = null},
+     *     options = {"i18n" = false}
+     * )
+     *
      * @param Request $request
      * @param string $config
      * @param string $domain
