@@ -21,11 +21,11 @@ namespace JMS\TranslationBundle\Controller;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Translation\ConfigFactory;
 use JMS\TranslationBundle\Translation\Updater;
-use Symfony\Component\HttpFoundation\Response;
 use JMS\TranslationBundle\Util\FileUtils;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Method;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/api", service="jms_translation.controller.api_controller")
