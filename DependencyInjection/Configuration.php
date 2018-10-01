@@ -116,6 +116,7 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                                 ->scalarNode('output_dir')->isRequired()->cannotBeEmpty()->end()
                                 ->scalarNode('keep')->defaultValue(false)->end()
+                                ->scalarNode('recursive')->defaultValue(false)->end()
                             ->end()
                         ->end()
                     ->end()

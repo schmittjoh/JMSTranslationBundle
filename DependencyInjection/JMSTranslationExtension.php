@@ -101,6 +101,10 @@ class JMSTranslationExtension extends Extension
                 $def->addMethodCall('setLoadResources', array($extractConfig['external_translations_dirs']));
             }
 
+            if (isset($extractConfig['recursive'])) {
+                $def->addMethodCall('setRecursive', array($extractConfig['recursive']));
+            }
+
             $requests[$name] = $def;
         }
 

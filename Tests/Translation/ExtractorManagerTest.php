@@ -106,6 +106,39 @@ class ExtractorManagerTest extends BaseTestCase
         $this->assertEquals(array(), $excludedDirsProperty->getValue($extractor));
     }
 
+    public function testRecursive()
+    {
+        $foo = $this->getMock('JMS\TranslationBundle\Translation\ExtractorInterface');
+        $logger = new NullLogger();
+
+        $extractor = new FileExtractor(new \Twig_Environment(), $logger, array());
+        $extractor->setExcludedNames(array('foo', 'bar'));
+        $extractor->setExcludedDirs(array('baz'));
+
+        $manager = $this->getManager($extractor, array(
+            'foo' => $foo,
+        ));
+        $manager->setEnabledExtractors(array('foo' => true));
+        $manager->setDirectories(array(__DIR__.'/../Functional/Fixture/TestBundle/Resources/views'));
+
+        $managerReflection   = new \ReflectionClass($manager);
+
+        $enabledExtractorsProperty = $managerReflection->getProperty('enabledExtractors');
+        $enabledExtractorsProperty->setAccessible(true);
+
+        $directoriesProperty = $managerReflection->getProperty('directories');
+        $directoriesProperty->setAccessible(true);
+
+        $this->assertEquals(array(__DIR__.'/../Functional/Fixture/TestBundle/Resources/views'),
+                $directoriesProperty->getValue($manager));
+
+        $manager->setDirectories(array(__DIR__.'/../Functional/Fixture/TestBundle/Resources/views'), true);
+        $this->assertEquals(
+                array(__DIR__.'/../Functional/Fixture/TestBundle/Resources/views', 
+                      __DIR__.'/../Functional/Fixture/TestBundle/Resources/views/Apple'),
+                $directoriesProperty->getValue($manager));
+    }
+
     private function getManager(FileExtractor $extractor = null, array $extractors = array())
     {
         $logger = new NullLogger();
