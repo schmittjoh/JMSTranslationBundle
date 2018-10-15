@@ -37,17 +37,17 @@ class TranslateController
     /**
      * @var ConfigFactory
      */
-    private $configFactory;
+    protected $configFactory;
 
     /**
      * @var LoaderManager
      */
-    private $loader;
+    protected $loader;
 
     /**
      * @var string
      */
-    private $sourceLanguage;
+    protected $sourceLanguage;
 
     /**
      * TranslateController constructor.
