@@ -1,4 +1,4 @@
-{% extends "JMSTranslationBundle::base.html.twig" %}
+{% extends "@JMSTranslation/base.html.twig" %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -58,12 +58,12 @@
 
     {% if newMessages is not empty %}
     <h3>New Messages</h3>
-    {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": newMessages} %}
+    {% include "@JMSTranslation/Translate/messages.html.twig" with {"messages": newMessages} %}
     {% endif %}
 
     {% if existingMessages is not empty %}
     <h3>Existing Messages</h3>
-    {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": existingMessages} %}
+    {% include "@JMSTranslation/Translate/messages.html.twig" with {"messages": existingMessages} %}
     {% endif %}
 
 {% endblock %}
