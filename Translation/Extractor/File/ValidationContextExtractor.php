@@ -43,7 +43,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     /**
      * @var array
      */
-    private $messages = [];
+    private $messages = array();
     /**
      * @var MessageCatalogue
      */
@@ -55,7 +55,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     /**
      * @var array
      */
-    private $aliases = [];
+    private $aliases = array();
     /**
      * @var string
      */
@@ -100,7 +100,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     {
         $this->file = $file;
         $this->catalogue = $catalogue;
-        $this->messages = [];
+        $this->messages = array();
         $this->traverser->traverse($ast);
 
         foreach ($this->messages as $message) {
@@ -128,7 +128,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     public function enterNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Namespace_) {
-            $this->aliases = [];
+            $this->aliases = array();
 
             return;
         }
@@ -193,11 +193,11 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
             }
         } elseif ($node->name === 'addViolation') {
             if ($this->id and $this->source) {
-                $this->messages[] = [
+                $this->messages[] = array(
                     'id' => $this->id,
                     'source' => $this->source,
                     'domain' => $this->domain,
-                ];
+                );
             }
 
             $this->id = null;
