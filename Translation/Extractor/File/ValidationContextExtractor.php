@@ -135,7 +135,8 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
 
         if ($node instanceof Node\Stmt\Use_) {
             foreach ($node->uses as $use) {
-                $this->aliases[$use->alias] = (string) $use->name;
+                $alias = $use->alias ?: $use->getAlias()->name;
+                $this->aliases[$alias] = (string) $use->name;
             }
 
             return;
@@ -149,7 +150,9 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
             $param1 = $params[0];
             $paramClass = $this->resolveAlias((string) $param1->type);
             if (is_subclass_of($paramClass, '\Symfony\Component\Validator\Context\ExecutionContextInterface')) {
-                $this->contextVariable = $param1->name;
+                // For BC, we try first $name property and then newer $var->name prop
+                // This can be changed to just $param1->var->name when we support only php-parser:^4
+                $this->contextVariable = !empty($param1->name) ? $param1->name : $param1->var->name;
             }
 
             return;
@@ -173,7 +176,10 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
             $this->parseMethodCall($node->var);
         }
 
-        if ($node->name === 'buildViolation') {
+        // Cast to string to make compatible with both pre-v4 and post-v4 php-parser
+        $name = (string) $node->name;
+
+        if ($name === 'buildViolation') {
             $this->id = null;
             $this->domain = null;
 
@@ -184,14 +190,14 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
                     $this->source = $this->fileSourceFactory->create($this->file, $arg1->value->getLine());
                 }
             }
-        } elseif ($node->name === 'setTranslationDomain') {
+        } elseif ($name === 'setTranslationDomain') {
             if ($node->args) {
                 $arg1 = $node->args[0];
                 if ($arg1->value instanceof Node\Scalar\String_) {
                     $this->domain = $arg1->value->value;
                 }
             }
-        } elseif ($node->name === 'addViolation') {
+        } elseif ($name === 'addViolation') {
             if ($this->id and $this->source) {
                 $this->messages[] = array(
                     'id' => $this->id,

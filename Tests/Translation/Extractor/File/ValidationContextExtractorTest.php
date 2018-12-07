@@ -20,8 +20,12 @@ class ValidationContextExtractorTest extends BasePhpFileExtractorTest
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 15));
         $expected->add($message);
 
-        $message = new Message('entity.custom-domain', 'custom-domain');
+        $message = new Message('entity.fully-qualified');
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 22));
+        $expected->add($message);
+
+        $message = new Message('entity.custom-domain', 'custom-domain');
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 29));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyEntity.php'));
