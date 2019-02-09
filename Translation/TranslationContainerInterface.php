@@ -18,6 +18,8 @@
 
 namespace JMS\TranslationBundle\Translation;
 
+use JMS\TranslationBundle\Model\Message;
+
 /**
  * Translation Container Interface.
  *
