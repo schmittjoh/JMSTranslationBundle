@@ -211,11 +211,22 @@ function JMSTranslationManager(updateMessagePath, isWritable)
             $(JMS.messageFilter.selector).val(window.location.hash.substr(1));
         },
         filter: function () {
-            var filterString = $(JMS.messageFilter.selector).val().trim().replace(/[-[\]{}()+?,\\^$|#\s]/g, "\\$&");
+            var filter = $(JMS.messageFilter.selector);
+            var messageRow = $(".messageRow");
+
+            if (filter.length === 0) {
+                messageRow.each(function () {
+                    $(this).show();
+                });
+
+                return;
+            }
+
+            var filterString = filter.val().trim().replace(/[-[\]{}()+?,\\^$|#\s]/g, "\\$&");
             var regExp = new RegExp(".*" + filterString + ".*", "i");
             window.location.hash = filterString;
             if (filterString !== "") {
-                $(".messageRow").each(function () {
+                messageRow.each(function () {
                     var id = this.id.substr(4);
                     if (id.match(regExp)) {
                         $(this).show();
@@ -223,12 +234,12 @@ function JMSTranslationManager(updateMessagePath, isWritable)
                         $(this).hide();
                     }
                 });
-
-            } else {
-                $(".messageRow").each(function () {
-                    $(this).show();
-                });
+                return ;
             }
+
+            messageRow.each(function () {
+                $(this).show();
+            });
         }
     };
 };
