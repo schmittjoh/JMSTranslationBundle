@@ -27,15 +27,30 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class TranslationExtension extends \Twig_Extension
 {
+    /**
+     * @var TranslatorInterface
+     */
     private $translator;
+
+    /**
+     * @var bool
+     */
     private $debug;
 
+    /**
+     * TranslationExtension constructor.
+     * @param TranslatorInterface $translator
+     * @param bool $debug
+     */
     public function __construct(TranslatorInterface $translator, $debug = false)
     {
         $this->translator = $translator;
         $this->debug = $debug;
     }
 
+    /**
+     * @return array
+     */
     public function getNodeVisitors()
     {
         $visitors = array(
@@ -50,6 +65,9 @@ class TranslationExtension extends \Twig_Extension
         return $visitors;
     }
 
+    /**
+     * @return array
+     */
     public function getFilters()
     {
         return array(
@@ -58,10 +76,24 @@ class TranslationExtension extends \Twig_Extension
         );
     }
 
+    /**
+     * @param string $message
+     * @param string $defaultMessage
+     * @param int $count
+     * @param array $arguments
+     * @param null|string $domain
+     * @param null|string $locale
+     * @return string
+     */
     public function transchoiceWithDefault($message, $defaultMessage, $count, array $arguments = array(), $domain = null, $locale = null)
     {
         if (null === $domain) {
             $domain = 'messages';
+        }
+
+        // If < sf2.6
+        if (!method_exists($this->translator, 'getCatalogue')) {
+            return $this->transchoiceWithDefaultLegacy($message, $defaultMessage, $count, $arguments, $domain, $locale);
         }
 
         if (false == $this->translator->getCatalogue($locale)->defines($message, $domain)) {
@@ -71,18 +103,55 @@ class TranslationExtension extends \Twig_Extension
         return $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
     }
 
+    /**
+     * @param $v
+     * @return mixed
+     */
     public function desc($v)
     {
         return $v;
     }
 
+    /**
+     * @param $v
+     * @return mixed
+     */
     public function meaning($v)
     {
         return $v;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'jms_translation';
+    }
+
+    /**
+     * This function exists to support Symfony 2.3
+     *
+     * @param string $message
+     * @param string $defaultMessage
+     * @param int $count
+     * @param array $arguments
+     * @param string $domain
+     * @param string $locale
+     *
+     * @return string
+     */
+    private function transchoiceWithDefaultLegacy($message, $defaultMessage, $count, array $arguments, $domain, $locale)
+    {
+        try {
+            $translatedMessage = $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+
+            if ($translatedMessage !== $message) {
+                return $translatedMessage;
+            }
+        } catch (\InvalidArgumentException $e) {
+        }
+
+        return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
     }
 }

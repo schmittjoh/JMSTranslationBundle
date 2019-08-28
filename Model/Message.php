@@ -27,33 +27,64 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 class Message
 {
-    /** Unique ID of this message (same across the same domain) */
+    /**
+     * Unique ID of this message (same across the same domain).
+     *
+     * @var string
+     */
     private $id;
 
+    /**
+     * @var bool
+     */
     private $new = true;
 
+    /**
+     * @var string
+     */
     private $domain;
 
+    /**
+     * This is the translated string.
+     *
+     * @var string
+     */
     private $localeString;
 
-    /** Additional information about the intended meaning */
+    /**
+     * Additional information about the intended meaning.
+     *
+     * @var string
+     */
     private $meaning;
 
-    /** The description/sample for translators */
+    /**
+     * The description/sample for translators.
+     *
+     * @var string
+     */
     private $desc;
 
-    /** The sources where this message occurs */
+    /**
+     * The sources where this message occurs.
+     *
+     * @var array
+     */
     private $sources = array();
 
     /**
      * @static
+     *
      * @param $id
      * @param string $domain
+     *
      * @return Message
+     *
+     * @deprecated Will be removed in 2.0. Use the FileSourceFactory
      */
     public static function forThisFile($id, $domain = 'messages')
     {
-        $message = new self($id, $domain);
+        $message = new static($id, $domain);
 
         $trace = debug_backtrace(false);
         if (isset($trace[0]['file'])) {
@@ -65,27 +96,30 @@ class Message
 
     /**
      * @static
+     *
      * @param $id
      * @param string $domain
+     *
      * @return Message
      */
     public static function create($id, $domain = 'messages')
     {
-        return new self($id, $domain);
+        return new static($id, $domain);
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @param string $domain
      */
     public function __construct($id, $domain = 'messages')
     {
-        $this->id = $id;
+        $this->id = (string) $id;
         $this->domain = $domain;
     }
 
     /**
      * @param SourceInterface $source
+     *
      * @return Message
      */
     public function addSource(SourceInterface $source)
@@ -99,21 +133,39 @@ class Message
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getDomain()
     {
         return $this->domain;
     }
 
+    /**
+     * @return bool
+     */
     public function isNew()
     {
         return $this->new;
     }
 
+    /**
+     * This will return:
+     * 1) the localeString, ie the translated string
+     * 2) description (if new)
+     * 3) id (if new)
+     * 4) empty string.
+     *
+     * @return string
+     */
     public function getLocaleString()
     {
         return $this->localeString !== null ? $this->localeString : ($this->new ? ($this->desc !== null ? $this->desc : $this->id) : '');
@@ -132,21 +184,35 @@ class Message
         return $this->desc ?: $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getMeaning()
     {
         return $this->meaning;
     }
 
+    /**
+     * @return string
+     */
     public function getDesc()
     {
         return $this->desc;
     }
 
+    /**
+     * @return array
+     */
     public function getSources()
     {
         return $this->sources;
     }
 
+    /**
+     * @param string $meaning
+     *
+     * @return $this
+     */
     public function setMeaning($meaning)
     {
         $this->meaning = $meaning;
@@ -154,13 +220,23 @@ class Message
         return $this;
     }
 
+    /**
+     * @param bool $bool
+     *
+     * @return $this
+     */
     public function setNew($bool)
     {
-        $this->new = (Boolean) $bool;
+        $this->new = (bool) $bool;
 
         return $this;
     }
 
+    /**
+     * @param string $desc
+     *
+     * @return $this
+     */
     public function setDesc($desc)
     {
         $this->desc = $desc;
@@ -168,11 +244,37 @@ class Message
         return $this;
     }
 
+    /**
+     * @param string $str
+     *
+     * @return $this
+     */
     public function setLocaleString($str)
     {
         $this->localeString = $str;
 
         return $this;
+    }
+
+    public function setSources(array $sources = array())
+    {
+        $this->sources = $sources;
+
+        return $this;
+    }
+
+    /**
+     * Return true if we have a translated string. This is not the same as running:
+     *   $str = $message->getLocaleString();
+     *   $bool = !empty($str);.
+     *
+     * The $message->getLocaleString() will return a description or an id if the localeString does not exist.
+     *
+     * @return bool
+     */
+    public function hasLocaleString()
+    {
+        return !empty($this->localeString);
     }
 
     /**
@@ -182,6 +284,7 @@ class Message
      * In these cases, use mergeExisting() instead.
      *
      * @param Message $message
+     *
      * @throws RuntimeException
      */
     public function merge(Message $message)
@@ -197,8 +300,8 @@ class Message
         if (null !== $desc = $message->getDesc()) {
             $this->desc = $desc;
             $this->localeString = null;
-            if ($localeString = $message->getLocaleString()) {
-                $this->localeString = $localeString;
+            if ($message->hasLocaleString()) {
+                $this->localeString = $message->getLocaleString();
             }
         }
 
@@ -206,7 +309,7 @@ class Message
             $this->addSource($source);
         }
 
-        $this->new = $message->isNew();
+        $this->setNew($message->isNew());
     }
 
     /**
@@ -216,6 +319,8 @@ class Message
      * In these cases, use merge() instead.
      *
      * @param Message $message
+     *
+     * @deprecated not in use atm
      */
     public function mergeExisting(Message $message)
     {
@@ -231,12 +336,54 @@ class Message
             $this->desc = $desc;
         }
 
-        $this->new = $message->isNew();
+        $this->setNew($message->isNew());
         if ($localeString = $message->getLocaleString()) {
             $this->localeString = $localeString;
         }
     }
 
+    /**
+     * Merge a scanned message into an extising message.
+     *
+     * This method does essentially the same as {@link mergeExisting()} but with reversed operands.
+     * Whereas {@link mergeExisting()} is used to merge an existing message into a scanned message (this),
+     * {@link mergeScanned()} is used to merge a scanned message into an existing message (this).
+     * The result of both methods is the same, except that the result will end up in the existing message,
+     * instead of the scanned message, so extra information read from the existing message is not discarded.
+     *
+     * @param Message $message
+     *
+     * @author Dieter Peeters <peetersdiet@gmail.com>
+     */
+    public function mergeScanned(Message $message)
+    {
+        if ($this->id !== $message->getId()) {
+            throw new RuntimeException(sprintf('You can only merge messages with the same id. Expected id "%s", but got "%s".', $this->id, $message->getId()));
+        }
+
+        if (null === $this->getMeaning()) {
+            $this->meaning = $message->getMeaning();
+        }
+
+        if (null === $this->getDesc()) {
+            $this->desc = $message->getDesc();
+        }
+
+        $this->sources = array();
+        foreach ($message->getSources() as $source) {
+            $this->addSource($source);
+        }
+
+        if (!$this->getLocaleString()) {
+            $this->localeString = $message->getLocaleString();
+        }
+    }
+
+    /**
+     * @param SourceInterface $source
+     *
+     * @return bool
+     */
     public function hasSource(SourceInterface $source)
     {
         foreach ($this->sources as $cSource) {

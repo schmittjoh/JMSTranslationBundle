@@ -43,6 +43,13 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('locales')
                         ->prototype('scalar')->end()
                     ->end()
+                    ->arrayNode('dumper')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->booleanNode('add_date')->defaultTrue()->end()
+                            ->booleanNode('add_references')->defaultTrue()->end()
+                        ->end()
+                    ->end()
                     ->scalarNode('source_language')->defaultValue('en')->end()
                     ->arrayNode('configs')
                         ->useAttributeAsKey('name')
@@ -62,19 +69,19 @@ class Configuration implements ConfigurationInterface
                                     ->requiresAtLeastOneElement()
                                     ->prototype('scalar')
                                         ->validate()
-                                            ->always(function($v) use ($c) {
+                                            ->always(function ($v) use ($c) {
                                                 $v = str_replace(DIRECTORY_SEPARATOR, '/', $v);
 
                                                 if ('@' === $v[0]) {
                                                     if (false === $pos = strpos($v, '/')) {
                                                         $bundleName = substr($v, 1);
                                                     } else {
-                                                        $bundleName = substr($v, 1, $pos - 2);
+                                                        $bundleName = substr($v, 1, $pos - 1);
                                                     }
 
                                                     $bundles = $c->getParameter('kernel.bundles');
                                                     if (!isset($bundles[$bundleName])) {
-                                                        throw new \Exception(sprintf('The bundle "%s" does not exist. Available bundles: %s', $bundleName, array_keys($bundles)));
+                                                        throw new \Exception(sprintf('The bundle "%s" does not exist. Available bundles: %s', $bundleName, implode(', ', array_keys($bundles))));
                                                     }
 
                                                     $ref = new \ReflectionClass($bundles[$bundleName]);

@@ -18,10 +18,9 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
+use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
-
 use JMS\TranslationBundle\Model\MessageCatalogue;
-
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 
@@ -52,6 +51,92 @@ class XliffDumperTest extends BaseDumperTest
 
 EOF;
         $this->assertEquals($expected, $dumper->dump($catalogue, 'messages'));
+    }
+
+    public function testPreserveWhitespaceOutput()
+    {
+        $dumper = $this->getDumper();
+
+        $catalogue = new MessageCatalogue();
+        $catalogue->add(Message::create('foo')->setLocaleString("multi-line\ntranslation")->setDesc("Multi-line\ndescription\nwith spaces at the end   "));
+        $expected = <<<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+  <file source-language="en" target-language="" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit id="0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33" resname="foo">
+        <source xml:space="preserve">Multi-line
+description
+with spaces at the end   </source>
+        <target xml:space="preserve" state="new">multi-line
+translation</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+
+EOF;
+        $this->assertEquals($expected, $dumper->dump($catalogue, 'messages'));
+    }
+
+    public function testDumpStructureFullPaths()
+    {
+        $dumper = $this->getDumper();
+
+        $catalogue = $this->getStructureCatalogue();
+
+        $this->assertEquals($this->getOutput('structure_full_path'), $dumper->dump($catalogue, 'messages'));
+    }
+
+    /**
+     * * Test the fact that the references positions are not in the dumped xliff
+     */
+    public function testDumpStructureWithoutReferencePosition()
+    {
+        $dumper = $this->getDumper();
+        $dumper->setAddReferencePosition(false);
+
+        $catalogue = $this->getStructureCatalogue();
+
+        $this->assertEquals($this->getOutput('structure_without_reference_position'), $dumper->dump($catalogue, 'messages'));
+    }
+
+    /**
+     * Test the fact that the references are not in the dumped xliff
+     */
+    public function testDumpStructureWithoutReference()
+    {
+        $dumper = $this->getDumper();
+        $dumper->setAddReference(false);
+
+        $catalogue = $this->getStructureCatalogue();
+
+        $this->assertEquals($this->getOutput('structure_without_reference'), $dumper->dump($catalogue, 'messages'));
+    }
+
+    /**
+     * Get the catalogue used for the structure tests
+     *
+     * @return MessageCatalogue
+     */
+    protected function getStructureCatalogue()
+    {
+        $catalogue = new MessageCatalogue();
+        $catalogue->setLocale('en');
+
+        $message = new Message('foo.bar.baz');
+        $message->addSource(new FileSource('/z/order/test', 1, 2));
+        $message->addSource(new FileSource('bar/baz', 1, 2));
+        $message->addSource(new FileSource('bar/baz', 1, 5));
+        $message->addSource(new FileSource('/a/b/c/foo/bar', 1, 2));
+
+        $catalogue->add($message);
+
+        return $catalogue;
     }
 
     protected function getDumper()

@@ -26,24 +26,37 @@ namespace JMS\TranslationBundle\Twig;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class NormalizingNodeVisitor implements \Twig_NodeVisitorInterface
+class NormalizingNodeVisitor extends \Twig_BaseNodeVisitor
 {
-    public function enterNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    /**
+     * @param \Twig_Node $node
+     * @param \Twig_Environment $env
+     * @return \Twig_Node
+     */
+    protected function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
     {
         return $node;
     }
 
-    public function leaveNode(\Twig_NodeInterface $node, \Twig_Environment $env)
+    /**
+     * @param \Twig_Node $node
+     * @param \Twig_Environment $env
+     * @return \Twig_Node_Expression_Constant|\Twig_Node
+     */
+    protected function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
     {
         if ($node instanceof \Twig_Node_Expression_Binary_Concat
             && ($left = $node->getNode('left')) instanceof \Twig_Node_Expression_Constant
             && ($right = $node->getNode('right')) instanceof \Twig_Node_Expression_Constant) {
-            return new \Twig_Node_Expression_Constant($left->getAttribute('value').$right->getAttribute('value'), $left->getLine());
+            return new \Twig_Node_Expression_Constant($left->getAttribute('value').$right->getAttribute('value'), $left->getTemplateLine());
         }
 
         return $node;
     }
 
+    /**
+     * @return int
+     */
     public function getPriority()
     {
         return -3;

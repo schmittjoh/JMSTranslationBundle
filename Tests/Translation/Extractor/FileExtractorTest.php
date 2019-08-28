@@ -18,7 +18,10 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor;
 
-use Symfony\Component\HttpKernel\Log\NullLogger;
+use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
+use JMS\TranslationBundle\Twig\TranslationExtension;
+use Psr\Log\NullLogger;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -28,13 +31,11 @@ use JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\TranslationContainerExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
-use JMS\TranslationBundle\Twig\TranslationExtension;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 
 class FileExtractorTest extends \PHPUnit_Framework_TestCase
@@ -43,10 +44,11 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
     {
         $expected = array();
         $basePath = __DIR__.'/Fixture/SimpleTest/';
+        $fileSourceFactory = new FileSourceFactory('faux');
 
         // Controller
         $message = new Message('controller.foo');
-        $message->addSource(new FileSource($basePath.'Controller/DefaultController.php', 27));
+        $message->addSource($fileSourceFactory->create(new \SplFileInfo($basePath.'Controller/DefaultController.php'), 27));
         $message->setDesc('Foo');
         $expected['controller.foo'] = $message;
 
@@ -57,27 +59,33 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
         // Templates
         foreach (array('php', 'twig') as $engine) {
             $message = new Message($engine.'.foo');
-            $message->addSource(new FileSource($basePath.'Resources/views/'.$engine.'_template.html.'.$engine, 1));
+            $message->addSource($fileSourceFactory->create(new \SplFileInfo($basePath.'Resources/views/'.$engine.'_template.html.'.$engine), 1));
             $expected[$engine.'.foo'] = $message;
 
             $message = new Message($engine.'.bar');
             $message->setDesc('Bar');
-            $message->addSource(new FileSource($basePath.'Resources/views/'.$engine.'_template.html.'.$engine, 3));
+            $message->addSource($fileSourceFactory->create(new \SplFileInfo($basePath.'Resources/views/'.$engine.'_template.html.'.$engine), 3));
             $expected[$engine.'.bar'] = $message;
 
             $message = new Message($engine.'.baz');
             $message->setMeaning('Baz');
-            $message->addSource(new FileSource($basePath.'Resources/views/'.$engine.'_template.html.'.$engine, 5));
+            $message->addSource($fileSourceFactory->create(new \SplFileInfo($basePath.'Resources/views/'.$engine.'_template.html.'.$engine), 5));
             $expected[$engine.'.baz'] = $message;
 
             $message = new Message($engine.'.foo_bar');
             $message->setDesc('Foo');
             $message->setMeaning('Bar');
-            $message->addSource(new FileSource($basePath.'Resources/views/'.$engine.'_template.html.'.$engine, 7));
+            $message->addSource($fileSourceFactory->create(new \SplFileInfo($basePath.'Resources/views/'.$engine.'_template.html.'.$engine), 7));
             $expected[$engine.'.foo_bar'] = $message;
         }
 
-        $actual = $this->extract(__DIR__.'/Fixture/SimpleTest/')->getDomain('messages')->all();
+        // File with global namespace.
+        $message = new Message('globalnamespace.foo');
+        $message->addSource($fileSourceFactory->create(new \SplFileInfo($basePath.'GlobalNamespace.php'), 27));
+        $message->setDesc('Bar');
+        $expected['globalnamespace.foo'] = $message;
+
+        $actual = $this->extract(__DIR__.'/Fixture/SimpleTest')->getDomain('messages')->all();
 
         asort($expected);
         asort($actual);
@@ -87,7 +95,7 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
 
     private function extract($directory)
     {
-        $twig = new \Twig_Environment();
+        $twig = new \Twig_Environment(new \Twig_Loader_Array(array()));
         $twig->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $twig->addExtension(new TranslationExtension($translator));
         $loader=new \Twig_Loader_Filesystem(realpath(__DIR__."/Fixture/SimpleTest/Resources/views/"));
@@ -101,14 +109,23 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
         ));
         $docParser->setIgnoreNotImportedAnnotations(true);
 
-        $factory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        //use correct factory class depending on whether using Symfony 2 or 3
+        if (class_exists('Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory')) {
+            $metadataFactoryClass = 'Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory';
+        } else {
+            $metadataFactoryClass = 'Symfony\Component\Validator\Mapping\ClassMetadataFactory';
+        }
+
+        $factory = new $metadataFactoryClass(new AnnotationLoader(new AnnotationReader()));
+
+        $dummyFileSourceFactory = new FileSourceFactory('faux');
 
         $extractor = new FileExtractor($twig, new NullLogger(), array(
-            new DefaultPhpFileExtractor($docParser),
+            new DefaultPhpFileExtractor($docParser, $dummyFileSourceFactory),
             new TranslationContainerExtractor(),
-            new TwigFileExtractor($twig),
+            new TwigFileExtractor($twig, $dummyFileSourceFactory),
             new ValidationExtractor($factory),
-            new FormExtractor($docParser),
+            new FormExtractor($docParser, $dummyFileSourceFactory),
         ));
         $extractor->setDirectory($directory);
 

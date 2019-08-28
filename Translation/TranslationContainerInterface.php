@@ -38,5 +38,5 @@ interface TranslationContainerInterface
      *
      * @return array<Message>
      */
-    static function getTranslationMessages();
+    public static function getTranslationMessages();
 }
