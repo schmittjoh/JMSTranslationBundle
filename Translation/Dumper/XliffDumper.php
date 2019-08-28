@@ -159,7 +159,7 @@ class XliffDumper implements DumperInterface
                 if ($message->hasState()) {
                     $target->setAttribute('state', $message->getState());
                 }
-                
+
                 if ($message->hasNotes()) {
                     foreach ($message->getNotes() as $note) {
                         $noteNode = $unit->appendChild($doc->createElement('note', $note['text']));
