@@ -22,6 +22,7 @@ use JMS\TranslationBundle\Translation\ConfigBuilder;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Translation\Config;
 use JMS\TranslationBundle\Logger\OutputLogger;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,8 +35,25 @@ use JMS\TranslationBundle\Util\FileUtils;
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class ResourcesListCommand extends ContainerAwareCommand
+class ResourcesListCommand extends Command
 {
+    /**
+     * @var string
+     */
+    private $kernelRootDir;
+
+    /**
+     * @var array
+     */
+    private $kernelBundles;
+
+    public function __construct($kernelRootDir, $kernelBundles)
+    {
+        parent::__construct();
+        $this->kernelRootDir = $kernelRootDir;
+        $this->kernelBundles = $kernelBundles;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -55,8 +73,8 @@ class ResourcesListCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $rootPath = realpath($this->getContainer()->getParameter('kernel.root_dir'));
-        $basePath = realpath($this->getContainer()->getParameter('kernel.root_dir').'/..');
+        $rootPath = realpath($this->kernelRootDir);
+        $basePath = realpath($this->kernelRootDir.'/..');
 
         $dirs = $this->retrieveDirs();
 
@@ -113,14 +131,14 @@ class ResourcesListCommand extends ContainerAwareCommand
     {
         // Discover translation directories
         $dirs = array();
-        foreach ($this->getContainer()->getParameter('kernel.bundles') as $bundle) {
+        foreach ($this->kernelBundles as $bundle) {
             $reflection = new \ReflectionClass($bundle);
             if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/translations')) {
                 $dirs[] = $dir;
             }
         }
 
-        if (is_dir($dir = $this->getContainer()->getParameter('kernel.root_dir').'/Resources/translations')) {
+        if (is_dir($dir = $this->kernelRootDir.'/Resources/translations')) {
             $dirs[] = $dir;
         }
 
