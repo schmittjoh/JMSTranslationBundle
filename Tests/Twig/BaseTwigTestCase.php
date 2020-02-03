@@ -33,6 +33,6 @@ abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new TranslationExtension($translator, $debug));
 
-        return $env->parse($env->tokenize(new \Twig_Source($content, null)))->getNode('body');
+        return $env->compile($env->parse($env->tokenize(new \Twig_Source($content, 'whatever')))->getNode('body'));
     }
 }
