@@ -24,6 +24,8 @@ use JMS\TranslationBundle\Tests\BaseTestCase;
 use Psr\Log\NullLogger;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Translation\ExtractorManager;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
 
 class ExtractorManagerTest extends BaseTestCase
 {
@@ -68,7 +70,7 @@ class ExtractorManagerTest extends BaseTestCase
         $foo = $this->createMock('JMS\TranslationBundle\Translation\ExtractorInterface');
         $logger = new NullLogger();
 
-        $extractor = new FileExtractor(new \Twig_Environment(new \Twig_Loader_Array(array())), $logger, array());
+        $extractor = new FileExtractor(new Environment(new ArrayLoader(array())), $logger, array());
         $extractor->setExcludedNames(array('foo', 'bar'));
         $extractor->setExcludedDirs(array('baz'));
 
@@ -111,7 +113,7 @@ class ExtractorManagerTest extends BaseTestCase
         $logger = new NullLogger();
 
         if (null === $extractor) {
-            $extractor = new FileExtractor(new \Twig_Environment(new \Twig_Loader_Array(array())), $logger, array());
+            $extractor = new FileExtractor(new Environment(new ArrayLoader(array())), $logger, array());
         }
 
         return new ExtractorManager($extractor, $logger, $extractors);
