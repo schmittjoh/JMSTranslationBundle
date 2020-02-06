@@ -26,6 +26,10 @@ class MyAuthException extends AuthenticationException
 
     public function getMessageKey()
     {
+
+        /** @Ignore */
+        $ignored = 'security.authentication_error.ignored';
+
         if (!empty($this->foo)) {
             /** @Desc("%foo% is invalid.") */
             return 'security.authentication_error.foo';

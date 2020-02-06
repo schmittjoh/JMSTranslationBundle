@@ -143,10 +143,12 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
             }
         }
 
+        if ($ignore) {
+            return;
+        }
+
         if (!$node->args[0]->value instanceof String_) {
-            if ($ignore) {
-                return;
-            }
+
 
             $message = sprintf('Can only extract the translation id from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[0]->value), $this->file, $node->args[0]->value->getLine());
 
@@ -162,10 +164,8 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
 
         $index = $this->methodsToExtractFrom[strtolower($methodCallNodeName)];
         if (isset($node->args[$index])) {
+
             if (!$node->args[$index]->value instanceof String_) {
-                if ($ignore) {
-                    return;
-                }
 
                 $message = sprintf('Can only extract the translation domain from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[$index]->value), $this->file, $node->args[$index]->value->getLine());
 

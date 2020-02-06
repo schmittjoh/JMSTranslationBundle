@@ -78,6 +78,30 @@ translations in PHP code, the ``@Desc`` annotation:
 You can place the doc comment anywhere in the method call chain or directly 
 before the key.
 
+Ignoring messages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You might have some messages that you would like to ignore in your Forms or Controllers.
+You can use the @Ignore annotation for this:
+
+.. code-block :: php
+
+    <?php
+
+    // Controller.php
+    /** @Ignore */
+    $this->translator->trans('text.ignore_me')
+
+.. code-block :: php
+
+    <?php
+
+    // FormType.php
+    $builder->add('field_with_ignored_label', 'text', array(
+        'label' => /** @Ignore */ 'form.ignored'
+    ));
+
+
 Extracting Translation Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This bundle automatically supports extracting messages from the following 
