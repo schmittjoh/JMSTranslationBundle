@@ -76,6 +76,11 @@ final class ConfigBuilder
     private $keepOldTranslations = false;
 
     /**
+     * @var bool
+     */
+    private $keepOldTranslationMessages  = false;
+
+    /**
      * @var array
      */
     private $loadResources = array();
@@ -286,6 +291,17 @@ final class ConfigBuilder
     }
 
     /**
+     * @param bool $value
+     * @return $this
+     */
+    public function setKeepOldTranslationMessages($value)
+    {
+        $this->keepOldTranslationMessages = $value;
+
+        return $this;
+    }
+
+    /**
      * @return Config
      */
     public function getConfig()
@@ -302,6 +318,7 @@ final class ConfigBuilder
             $this->excludedNames,
             $this->enabledExtractors,
             $this->keepOldTranslations,
+            $this->keepOldTranslationMessages,
             $this->loadResources
         );
     }

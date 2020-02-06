@@ -47,3 +47,7 @@ On this page you will find all available configuration options and their meaning
                 # If true, we will never remove messages from the translation files.
                 # If false, the translation files are up to date with the source.
                 keep: false
+
+                # If true, new messages (keys with no values) will get their values from being translated by the translator, instead of the key value
+                # If false, new messages will be set the same as the key
+                keeptm: false                

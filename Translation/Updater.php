@@ -24,6 +24,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -73,17 +74,23 @@ class Updater
     private $writer;
 
     /**
+     * @var Translator
+     */
+    private $translator;
+
+    /**
      * @param LoaderManager $loader
      * @param ExtractorManager $extractor
      * @param LoggerInterface $logger
      * @param FileWriter $writer
      */
-    public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer)
+    public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer, Translator $translator)
     {
         $this->loader = $loader;
         $this->extractor = $extractor;
         $this->logger = $logger;
         $this->writer = $writer;
+        $this->translator = $translator;
     }
 
     /**
@@ -277,5 +284,23 @@ class Updater
                 }
             }
         }
+
+        //keep old translations translated
+        if ($this->config->isKeepOldTranslationMessages()) {
+
+            $locale = $this->scannedCatalogue->getLocale();
+            /** @var MessageCatalogue $domainCatalogue */
+            foreach ($this->scannedCatalogue->getDomains() as $domainCatalogue) {
+
+                /** @var Message $message */
+                foreach ($domainCatalogue->all() as $message) {
+
+                    $translated = $this->translator->trans($message->getId(), array(), $message->getDomain(), $locale);
+                    $message->setLocaleString($translated);
+                    $message->setNew(false);
+                }
+            }
+        }
+
     }
 }
