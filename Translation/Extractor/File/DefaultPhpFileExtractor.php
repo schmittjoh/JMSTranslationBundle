@@ -90,6 +90,11 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
     );
 
     /**
+     * @var string
+     */
+    protected $defaultDomain = 'messages';
+
+    /**
      * DefaultPhpFileExtractor constructor.
      * @param DocParser $docParser
      * @param FileSourceFactory $fileSourceFactory
@@ -179,7 +184,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
 
             $domain = $node->args[$index]->value->value;
         } else {
-            $domain = 'messages';
+            $domain = $this->defaultDomain;
         }
 
         $message = new Message($id, $domain);
