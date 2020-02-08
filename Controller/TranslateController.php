@@ -22,14 +22,13 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Translation\ConfigFactory;
 use JMS\TranslationBundle\Translation\LoaderManager;
 use JMS\TranslationBundle\Util\FileUtils;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Translate Controller.
  *
- * @Route(service="jms_translation.controller.translate_controller")
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 class TranslateController

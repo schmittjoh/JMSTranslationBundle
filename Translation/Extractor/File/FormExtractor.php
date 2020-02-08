@@ -42,7 +42,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      * @var FileSourceFactory
      */
     private $fileSourceFactory;
-    
+
     /**
      * @var DocParser
      */
@@ -212,7 +212,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     }
 
     /**
-     * This parses any Node of type choices. 
+     * This parses any Node of type choices.
      *
      * Returning true means either that regardless of whether
      * parsing has occurred or not, the enterNode function should move on to the next node item.
@@ -230,23 +230,11 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             return true;
         }
 
-        //Checking for the choice_as_values in the same form item
-        $choicesAsValues = false;
-        foreach ($node->items as $choiceItem) {
-            if ($choiceItem->key !== null && 'choices_as_values' === $choiceItem->key->value) {
-                $choicesAsValues = ($choiceItem->value->name->parts[0] === 'true');
-            }
-        }
-
         foreach ($item->value->items as $subItem) {
-            // If we have a choice as value that differ from the Symfony default strategy
-            // we should invert the key and the value
-            if (Kernel::VERSION_ID < 30000 && $choicesAsValues === true || Kernel::VERSION_ID >= 30000) {
-                $newItem = clone $subItem;
-                $newItem->key = $subItem->value;
-                $newItem->value = $subItem->key;
-                $subItem = $newItem;
-            }
+            $newItem = clone $subItem;
+            $newItem->key = $subItem->value;
+            $newItem->value = $subItem->key;
+            $subItem = $newItem;
             $this->parseItem($subItem, $domain);
         }
 
@@ -254,7 +242,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     }
 
     /**
-     * This parses any Node of type attr 
+     * This parses any Node of type attr
      *
      * Returning true means either that regardless of whether
      * parsing has occurred or not, the enterNode function should move on to the next node item.

@@ -34,7 +34,7 @@ class Transchoice extends AbstractExpression
         $compiler->raw(
             sprintf(
                 '$this->env->getExtension(\'%s\')->%s(',
-                'JMS\TranslationBundle\Twig\TranslationExtension',
+                TranslationExtension::class,
                 'transchoiceWithDefault'
             )
         );

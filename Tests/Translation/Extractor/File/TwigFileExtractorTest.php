@@ -29,9 +29,6 @@ use JMS\TranslationBundle\Twig\TranslationExtension;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
-use Symfony\Bridge\Twig\Form\TwigRenderer;
-use Symfony\Bridge\Twig\Form\TwigRendererEngine;
-use Symfony\Component\Form\FormRenderer;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
@@ -151,11 +148,7 @@ class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new TranslationExtension($translator, true));
         $env->addExtension(new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext())));
-        $env->addExtension(new FormExtension(
-            class_exists('Symfony\Bridge\Twig\Form\TwigRenderer') ?
-            new TwigRenderer(new TwigRendererEngine()) :
-            new FormRenderer(new TwigRendererEngine([], $env))
-        ));
+        $env->addExtension(new FormExtension());
 
         foreach ($env->getNodeVisitors() as $visitor) {
             if ($visitor instanceof DefaultApplyingNodeVisitor) {

@@ -18,12 +18,12 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File\Fixture;
 
-use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class MyFormType extends AbstractType
 {
-    public function buildForm(FormBuilder $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('firstname', 'text', array(
@@ -62,13 +62,6 @@ class MyFormType extends AbstractType
             ->add('field_without_label', 'text', array(
                 'label' => false,
                 'attr' => array('placeholder' => /** @Desc("Field with a placeholder but no label") */ 'form.placeholder.text.but.no.label')
-            ))
-            ->add('field_with_choice_as_values', 'choice', array(
-                'choices' => array(
-                    'form.choice.choice_as_values.label.foo' => 'form.choice.choice_as_values.value.foo',
-                    'form.choice.choice_as_values.label.bar' => 'form.choice.choice_as_values.value.bar'
-                ),
-                'choices_as_values' => true,
             ))
         ;
         $child = $builder->create('created', 'text', array(

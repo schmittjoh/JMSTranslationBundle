@@ -93,11 +93,6 @@ class TranslationExtension extends AbstractExtension
             $domain = 'messages';
         }
 
-        // If < sf2.6
-        if (!method_exists($this->translator, 'getCatalogue')) {
-            return $this->transchoiceWithDefaultLegacy($message, $defaultMessage, $count, $arguments, $domain, $locale);
-        }
-
         if (false == $this->translator->getCatalogue($locale)->defines($message, $domain)) {
             return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
         }
@@ -129,31 +124,5 @@ class TranslationExtension extends AbstractExtension
     public function getName()
     {
         return 'jms_translation';
-    }
-
-    /**
-     * This function exists to support Symfony 2.3
-     *
-     * @param string $message
-     * @param string $defaultMessage
-     * @param int $count
-     * @param array $arguments
-     * @param string $domain
-     * @param string $locale
-     *
-     * @return string
-     */
-    private function transchoiceWithDefaultLegacy($message, $defaultMessage, $count, array $arguments, $domain, $locale)
-    {
-        try {
-            $translatedMessage = $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
-
-            if ($translatedMessage !== $message) {
-                return $translatedMessage;
-            }
-        } catch (\InvalidArgumentException $e) {
-        }
-
-        return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
     }
 }

@@ -64,7 +64,7 @@ class LoaderManager
                     continue;
                 }
 
-                list($format, $file) = $data;
+                [$format, $file] = $data;
 
                 $catalogue->merge($this->getLoader($format)->load($file, $locale, $domain));
             }
