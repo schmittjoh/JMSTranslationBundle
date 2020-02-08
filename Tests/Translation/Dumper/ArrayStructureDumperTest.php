@@ -20,8 +20,9 @@ namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use PHPUnit\Framework\TestCase;
 
-class ArrayStructureDumperTest extends \PHPUnit_Framework_TestCase
+class ArrayStructureDumperTest extends TestCase
 {
     public function testPathWithSubPath()
     {

@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class MountDumpersPassTest extends AbstractCompilerPassTestCase
 {
-    protected function registerCompilerPass(ContainerBuilder $container)
+    protected function registerCompilerPass(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new MountDumpersPass());
     }

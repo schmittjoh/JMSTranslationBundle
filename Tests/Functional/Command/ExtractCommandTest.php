@@ -58,7 +58,7 @@ class ExtractCommandTest extends BaseCommandTestCase
         $files = FileUtils::findTranslationFiles($outputDir);
         $this->assertTrue(isset($files['messages']['en']));
     }
-    
+
     public function testExtractDryRun()
     {
         $input = new ArgvInput(array(
@@ -86,9 +86,9 @@ class ExtractCommandTest extends BaseCommandTestCase
         );
 
         $this->getApp()->run($input, $output = new Output());
-        
+
         foreach ($expectedOutput as $transID) {
-            $this->assertContains($transID, $output->getContent());
+            $this->assertStringContainsString($transID, $output->getContent());
         }
     }
 }

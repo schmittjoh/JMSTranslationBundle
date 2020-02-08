@@ -21,8 +21,9 @@ namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
+use PHPUnit\Framework\TestCase;
 
-abstract class BaseDumperTest extends \PHPUnit_Framework_TestCase
+abstract class BaseDumperTest extends TestCase
 {
     public function testSimpleDump()
     {

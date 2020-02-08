@@ -26,6 +26,7 @@ use JMS\TranslationBundle\Translation\FileSourceFactory;
 use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
 use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
 use JMS\TranslationBundle\Twig\TranslationExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
@@ -38,7 +39,7 @@ use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Source;
 
-class TwigFileExtractorTest extends \PHPUnit_Framework_TestCase
+class TwigFileExtractorTest extends TestCase
 {
     public function testExtractSimpleTemplate()
     {

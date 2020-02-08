@@ -22,8 +22,9 @@ use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
 use JMS\TranslationBundle\Translation\Comparison\ChangeSet;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use PHPUnit\Framework\TestCase;
 
-class CatalogueComparatorTest extends \PHPUnit_Framework_TestCase
+class CatalogueComparatorTest extends TestCase
 {
     public function testCompareWithMultipleDomains()
     {

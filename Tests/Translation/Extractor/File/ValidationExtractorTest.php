@@ -23,6 +23,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Validator\Mapping\ClassMetadataFactory;
 use JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor;
@@ -33,7 +34,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 
-class ValidationExtractorTest extends \PHPUnit_Framework_TestCase
+class ValidationExtractorTest extends TestCase
 {
     public function testExtractConstraints()
     {

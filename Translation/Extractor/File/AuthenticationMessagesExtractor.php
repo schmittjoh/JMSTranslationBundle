@@ -137,7 +137,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
             }
             $ref = new \ReflectionClass($name);
 
-            if (!$ref->isSubclassOf(AuthenticationException::class)
+            if (!$ref->isSubclassOf('Symfony\Component\Security\Core\Exception\AuthenticationException')
                 && $ref->name !== 'Symfony\Component\Security\Core\Exception\AuthenticationException') {
                 return;
             }

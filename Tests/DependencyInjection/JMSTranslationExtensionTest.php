@@ -10,7 +10,7 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
  */
 class JMSTranslationExtensionTest extends AbstractExtensionTestCase
 {
-    protected function getContainerExtensions()
+    protected function getContainerExtensions(): array
     {
         return array(
             new JMSTranslationExtension(),

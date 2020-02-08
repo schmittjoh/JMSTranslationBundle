@@ -18,6 +18,7 @@
 
 namespace JMS\TranslationBundle\Tests\Twig;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
@@ -26,7 +27,7 @@ use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Source;
 
-abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
+abstract class BaseTwigTestCase extends TestCase
 {
     final protected function parse($file, $debug = false)
     {
