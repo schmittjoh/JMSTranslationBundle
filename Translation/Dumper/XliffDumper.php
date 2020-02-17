@@ -20,6 +20,7 @@ namespace JMS\TranslationBundle\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\JMSTranslationBundle;
+use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\Message\XliffMessage;
 
@@ -155,18 +156,34 @@ class XliffDumper implements DumperInterface
                 }
             }
 
+            $notes = array();
+            // Collect the differnt sources of notes
+            if ($message instanceof XliffMessage) {
+                if ($message->hasNotes()) {
+                    foreach ($message->getNotes() as $note) {
+                        $notes[] = array(
+                            'note' => $note['text'],
+                            'from' => isset($note['from']) ? $note['from'] : false
+                        );
+                    }
+                }
+            } elseif ($message instanceof Message && $message->getMeaning()) {
+                $notes[] = array(
+                    'note' => $message->getMeaning(),
+                    'from' => false
+                );
+            }
+
+            foreach ($notes as $note) {
+                $noteNode = $unit->appendChild($doc->createElement('note', $note['note']));
+                if ($note['from']) {
+                    $noteNode->setAttribute('from', $note['from']);
+                }
+            }
+
             if ($message instanceof XliffMessage) {
                 if ($message->hasState()) {
                     $target->setAttribute('state', $message->getState());
-                }
-                
-                if ($message->hasNotes()) {
-                    foreach ($message->getNotes() as $note) {
-                        $noteNode = $unit->appendChild($doc->createElement('note', $note['text']));
-                        if (isset($note['from'])) {
-                        	$noteNode->setAttribute('from', $note['from']);
-                        }
-                    }
                 }
             } elseif ($message->isNew()) {
                 $target->setAttribute('state', XliffMessage::STATE_NEW);
@@ -196,10 +213,6 @@ class XliffDumper implements DumperInterface
                         $unit->appendChild($doc->createElementNS('jms:reference', (string) $source));
                     }
                 }
-            }
-
-            if ($meaning = $message->getMeaning()) {
-                $unit->setAttribute('extradata', 'Meaning: '.$meaning);
             }
         }
 
