@@ -24,8 +24,10 @@ namespace JMS\TranslationBundle\Twig;
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
-class TranslationExtension extends \Twig_Extension
+class TranslationExtension extends AbstractExtension
 {
     /**
      * @var TranslatorInterface
@@ -71,8 +73,8 @@ class TranslationExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('desc', array($this, 'desc')),
-            new \Twig_SimpleFilter('meaning', array($this, 'meaning')),
+            new TwigFilter('desc', array($this, 'desc')),
+            new TwigFilter('meaning', array($this, 'meaning')),
         );
     }
 

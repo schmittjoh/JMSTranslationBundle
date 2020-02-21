@@ -19,6 +19,15 @@
 namespace JMS\TranslationBundle\Twig;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
+use JMS\TranslationBundle\Twig\Node\Transchoice;
+use Twig\Environment;
+use Twig\NodeVisitor\AbstractNodeVisitor;
+use Twig\Node\Expression\ArrayExpression;
+use Twig\Node\Expression\Binary\EqualBinary;
+use Twig\Node\Expression\ConditionalExpression;
+use Twig\Node\Expression\ConstantExpression;
+use Twig\Node\Expression\FilterExpression;
+use Twig\Node\Node;
 
 /**
  * Applies the value of the "desc" filter if the "trans" filter has no
@@ -28,7 +37,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class DefaultApplyingNodeVisitor extends \Twig_BaseNodeVisitor
+class DefaultApplyingNodeVisitor extends AbstractNodeVisitor
 {
     /**
      * @var bool
@@ -44,26 +53,24 @@ class DefaultApplyingNodeVisitor extends \Twig_BaseNodeVisitor
     }
 
     /**
-     * @param \Twig_Node $node
-     * @param \Twig_Environment $env
-     * @return \Twig_Node
+     * @return Node
      */
-    public function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
+    public function doEnterNode(Node $node, Environment $env)
     {
         if (!$this->enabled) {
             return $node;
         }
 
-        if ($node instanceof \Twig_Node_Expression_Filter
+        if ($node instanceof FilterExpression
                 && 'desc' === $node->getNode('filter')->getAttribute('value')) {
             $transNode = $node->getNode('node');
-            while ($transNode instanceof \Twig_Node_Expression_Filter
+            while ($transNode instanceof FilterExpression
                        && 'trans' !== $transNode->getNode('filter')->getAttribute('value')
                        && 'transchoice' !== $transNode->getNode('filter')->getAttribute('value')) {
                 $transNode = $transNode->getNode('node');
             }
 
-            if (!$transNode instanceof \Twig_Node_Expression_Filter) {
+            if (!$transNode instanceof FilterExpression) {
                 throw new RuntimeException(sprintf('The "desc" filter must be applied after a "trans", or "transchoice" filter.'));
             }
 
@@ -75,14 +82,14 @@ class DefaultApplyingNodeVisitor extends \Twig_BaseNodeVisitor
             // so that we can catch a possible exception when the default translation has not yet
             // been extracted
             if ('transchoice' === $transNode->getNode('filter')->getAttribute('value')) {
-                $transchoiceArguments = new \Twig_Node_Expression_Array(array(), $transNode->getTemplateLine());
+                $transchoiceArguments = new ArrayExpression(array(), $transNode->getTemplateLine());
                 $transchoiceArguments->addElement($wrappingNode->getNode('node'));
                 $transchoiceArguments->addElement($defaultNode);
                 foreach ($wrappingNode->getNode('arguments') as $arg) {
                     $transchoiceArguments->addElement($arg);
                 }
 
-                $transchoiceNode = new Node\Transchoice($transchoiceArguments, $transNode->getTemplateLine());
+                $transchoiceNode = new Transchoice($transchoiceArguments, $transNode->getTemplateLine());
                 $node->setNode('node', $transchoiceNode);
 
                 return $node;
@@ -95,21 +102,21 @@ class DefaultApplyingNodeVisitor extends \Twig_BaseNodeVisitor
 
                 // remove the replacements from the test node
                 $testNode->setNode('arguments', clone $testNode->getNode('arguments'));
-                $testNode->getNode('arguments')->setNode(0, new \Twig_Node_Expression_Array(array(), $lineno));
+                $testNode->getNode('arguments')->setNode(0, new ArrayExpression(array(), $lineno));
 
                 // wrap the default node in a |replace filter
-                $defaultNode = new \Twig_Node_Expression_Filter(
+                $defaultNode = new FilterExpression(
                     clone $node->getNode('arguments')->getNode(0),
-                    new \Twig_Node_Expression_Constant('replace', $lineno),
-                    new \Twig_Node(array(
+                    new ConstantExpression('replace', $lineno),
+                    new Node(array(
                         clone $wrappingNode->getNode('arguments')->getNode(0)
                     )),
                     $lineno
                 );
             }
 
-            $condition = new \Twig_Node_Expression_Conditional(
-                new \Twig_Node_Expression_Binary_Equal($testNode, $transNode->getNode('node'), $wrappingNode->getTemplateLine()),
+            $condition = new ConditionalExpression(
+                new EqualBinary($testNode, $transNode->getNode('node'), $wrappingNode->getTemplateLine()),
                 $defaultNode,
                 clone $wrappingNode,
                 $wrappingNode->getTemplateLine()
@@ -121,11 +128,9 @@ class DefaultApplyingNodeVisitor extends \Twig_BaseNodeVisitor
     }
 
     /**
-     * @param \Twig_Node $node
-     * @param \Twig_Environment $env
-     * @return \Twig_Node
+     * @return Node
      */
-    public function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
+    public function doLeaveNode(Node $node, Environment $env)
     {
         return $node;
     }

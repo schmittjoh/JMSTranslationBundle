@@ -22,6 +22,9 @@ use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
 use JMS\TranslationBundle\Twig\TranslationExtension;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
+use Twig\Source;
 
 abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
 {
@@ -29,10 +32,10 @@ abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
     {
         $content = file_get_contents(__DIR__.'/Fixture/'.$file);
 
-        $env = new \Twig_Environment(new \Twig_Loader_Array(array()));
+        $env = new Environment(new ArrayLoader(array()));
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
         $env->addExtension(new TranslationExtension($translator, $debug));
 
-        return $env->compile($env->parse($env->tokenize(new \Twig_Source($content, 'whatever')))->getNode('body'));
+        return $env->compile($env->parse($env->tokenize(new Source($content, 'whatever')))->getNode('body'));
     }
 }

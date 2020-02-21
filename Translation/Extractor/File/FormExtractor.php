@@ -34,6 +34,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Kernel;
+use Twig\Node\Node as TwigNode;
 
 class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeVisitor
 {
@@ -491,9 +492,9 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     /**
      * @param \SplFileInfo $file
      * @param MessageCatalogue $catalogue
-     * @param \Twig_Node $ast
+     * @param TwigNode $ast
      */
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, TwigNode $ast)
     {
     }
 

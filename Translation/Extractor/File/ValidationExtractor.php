@@ -27,6 +27,7 @@ use Symfony\Component\Validator\MetadataFactoryInterface as LegacyMetadataFactor
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use Twig\Node\Node as TwigNode;
 
 /**
  * Extracts translations validation constraints.
@@ -164,9 +165,8 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
     /**
      * @param \SplFileInfo $file
      * @param MessageCatalogue $catalogue
-     * @param \Twig_Node $ast
      */
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, TwigNode $ast)
     {
     }
 

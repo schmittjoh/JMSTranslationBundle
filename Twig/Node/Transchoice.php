@@ -18,14 +18,18 @@
 
 namespace JMS\TranslationBundle\Twig\Node;
 
-class Transchoice extends \Twig_Node_Expression
+use Twig\Compiler;
+use Twig\Node\Expression\AbstractExpression;
+use Twig\Node\Expression\ArrayExpression;
+
+class Transchoice extends AbstractExpression
 {
-    public function __construct(\Twig_Node_Expression_Array $arguments, $lineno)
+    public function __construct(ArrayExpression $arguments, $lineno)
     {
         parent::__construct(array('arguments' => $arguments), array(), $lineno);
     }
 
-    public function compile(\Twig_Compiler $compiler)
+    public function compile(Compiler $compiler)
     {
         $compiler->raw(
             sprintf(
