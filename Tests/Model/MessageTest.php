@@ -20,9 +20,9 @@ namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Tests\BaseTestCase;
+use PHPUnit\Framework\TestCase;
 
-class MessageTest extends BaseTestCase
+class MessageTest extends TestCase
 {
     public function testCreate()
     {

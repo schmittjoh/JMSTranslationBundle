@@ -26,8 +26,9 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use PHPUnit\Framework\TestCase;
 
-class TranslationContainerExtractorTest extends \PHPUnit_Framework_TestCase
+class TranslationContainerExtractorTest extends TestCase
 {
     public function testExtractFormModel()
     {

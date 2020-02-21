@@ -70,13 +70,7 @@ class FormExtractorTest extends BasePhpFileExtractorTest
         $fileSourceFactory = $this->getFileSourceFactory();
         $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyFormType.php');
 
-        // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
-        // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
-        if (Kernel::VERSION_ID >= 30000) {
-            $message = new Message('foo');
-        } else {
-            $message = new Message('bar');
-        }
+        $message = new Message('foo');
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 36));
         $expected->add($message);
 
@@ -119,7 +113,7 @@ class FormExtractorTest extends BasePhpFileExtractorTest
         $expected->add($message);
 
         $message = new Message('form.label.created');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 75));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 68));
         $expected->add($message);
 
         $message = new Message('field.with.placeholder');
@@ -137,63 +131,18 @@ class FormExtractorTest extends BasePhpFileExtractorTest
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.year');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 79));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 72));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.month');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 79));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 72));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.day');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 79));
-        $expected->add($message);
-
-        $message = new Message('form.choice.choice_as_values.label.foo');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 68));
-        $expected->add($message);
-
-        $message = new Message('form.choice.choice_as_values.label.bar');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 69));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 72));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
-    }
-
-    /**
-     * This test is used to check compatibility with Symfony 2.1
-     * In Symfony 2.1 the AbstractType must use FormBuilderInterface instead of FormBuilder
-     */
-    public function testExtractWithInterface()
-    {
-        $expected = new MessageCatalogue();
-        $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyFormTypeWithInterface.php');
-
-        // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
-        // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
-        if (Kernel::VERSION_ID >= 30000) {
-            $message = new Message('foo');
-        } else {
-            $message = new Message('bar');
-        }
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 36));
-        $expected->add($message);
-
-        $message = new Message('form.states.empty_value');
-        $message->setDesc('Please select a state');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 37));
-        $expected->add($message);
-
-        $message = new Message('form.label.lastname');
-        $message->setDesc('Lastname');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 33));
-        $expected->add($message);
-
-        $message = new Message('form.label.firstname');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 30));
-        $expected->add($message);
-
-        $this->assertEquals($expected, $this->extract('MyFormTypeWithInterface.php'));
     }
 
     protected function getDefaultDomainFixture($fixtureFile)

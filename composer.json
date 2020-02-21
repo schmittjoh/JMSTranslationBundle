@@ -1,44 +1,64 @@
 {
-    "name":         "jms/translation-bundle",
-    "description":  "Puts the Symfony Translation Component on steroids",
-    "keywords":     ["translation", "multilanguage", "extract", "webinterface", "ui", "i18n", "extraction", "interface"],
-    "homepage":     "http://jmsyst.com/bundles/JMSTranslationBundle",
-    "type":         "symfony-bundle",
-    "license":      "Apache-2.0",
+    "name": "jms/translation-bundle",
+    "type": "symfony-bundle",
+    "description": "Puts the Symfony Translation Component on steroids",
+    "keywords": [
+        "translation",
+        "multilanguage",
+        "extract",
+        "webinterface",
+        "ui",
+        "i18n",
+        "extraction",
+        "interface"
+    ],
+    "homepage": "http://jmsyst.com/bundles/JMSTranslationBundle",
+    "license": "Apache-2.0",
     "authors": [
         {
-            "name":   "Johannes M. Schmitt",
-            "email":  "schmittjoh@gmail.com"
+            "name": "Johannes M. Schmitt",
+            "email": "schmittjoh@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
     "require": {
-        "php": "^5.3.3 || ^7.0",
+        "php": "^7.2",
         "twig/twig": "^1.38 || ^2.7",
-        "symfony/framework-bundle": "^2.3 || ^3.0 || ^4.0",
+        "symfony/framework-bundle": "^3.4.31 || ^4.3",
         "nikic/php-parser": "^1.4 || ^2.0 || ^3.0 || ^4.0",
-        "symfony/console": "^2.3 || ^3.0 || ^4.0",
-        "symfony/validator": "^2.3 || ^3.0 || ^4.0"
+        "symfony/console": "^3.4 || ^4.3",
+        "symfony/framework-bundle": "^3.4.31 || ^4.3",
+        "symfony/validator": "^3.4 || ^4.3",
+        "twig/twig": "^1.27 || ^2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8 || ^5.0",
+        "doctrine/annotations": "^1.8",
+        "matthiasnoback/symfony-dependency-injection-test": "^4.1",
+        "nyholm/nsa": "^1.0.1",
+        "phpunit/phpunit": "^8.3",
         "psr/log": "^1.0",
-        "symfony/symfony": "^2.3 || ^3.0 || ^4.0",
-        "symfony/expression-language": "^2.6 || ^3.0 || ^4.0",
-        "sensio/framework-extra-bundle": "^2.3 || ^3.0 || ^4.0",
-        "matthiasnoback/symfony-dependency-injection-test": "^1.2",
-        "nyholm/nsa": "^1.0.1"
-    },
-    "autoload": {
-        "psr-0": { "JMS\\TranslationBundle": "" }
+        "sensio/framework-extra-bundle": "^5.4",
+        "symfony/asset": "^3.4 || ^4.3",
+        "symfony/browser-kit": "^3.4 || ^4.3",
+        "symfony/css-selector": "^3.4 || ^4.3",
+        "symfony/expression-language": "^3.4 || ^4.3",
+        "symfony/form": "^3.4 || ^4.3",
+        "symfony/security-csrf": "^3.4 || ^4.3",
+        "symfony/templating": "^3.4 || ^4.3",
+        "symfony/translation": "^3.4 || ^4.3",
+        "symfony/twig-bundle": "^3.4 || ^4.3"
     },
     "config": {
         "sort-packages": true
     },
-    "target-dir": "JMS/TranslationBundle",
     "extra": {
         "branch-alias": {
             "dev-master": "1.4-dev"
         }
-    }
+    },
+    "autoload": {
+        "psr-4": {
+            "JMS\\TranslationBundle\\": ""
+        }
+    },
+    "minimum-stability": "stable"
 }

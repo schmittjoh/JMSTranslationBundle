@@ -20,8 +20,9 @@ namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use PHPUnit\Framework\TestCase;
 
-class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
+class MessageCatalogueTest extends TestCase
 {
     public function testAdd()
     {
@@ -41,11 +42,10 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($message, $catalogue->get('foo'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetThrowsExceptionWhenMessageDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $catalogue = new MessageCatalogue();
         $catalogue->getDomain('foo');
     }
@@ -78,11 +78,10 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('foo'), array_keys($col->all()));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetDomainWhenDomainDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $catalogue = new MessageCatalogue();
         $catalogue->getDomain('messages');
     }

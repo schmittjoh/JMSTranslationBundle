@@ -4,8 +4,9 @@ namespace JMS\TranslationBundle\Tests\Translation;
 
 use JMS\TranslationBundle\Translation\FileSourceFactory;
 use Nyholm\NSA;
+use PHPUnit\Framework\TestCase;
 
-class FileSourceFactoryTest extends \PHPUnit_Framework_TestCase
+class FileSourceFactoryTest extends TestCase
 {
     /**
      * Test many different path to make sure we find the relative one.

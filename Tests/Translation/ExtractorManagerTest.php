@@ -20,21 +20,21 @@ namespace JMS\TranslationBundle\Tests\Translation;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Tests\BaseTestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Translation\ExtractorManager;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
+use JMS\TranslationBundle\Translation\ExtractorInterface;
 
-class ExtractorManagerTest extends BaseTestCase
+class ExtractorManagerTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage There is no extractor with alias "foo". Available extractors: # none #
-     */
     public function testSetEnabledCustomExtractorsThrowsExceptionWhenAliasInvalid()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('There is no extractor with alias "foo". Available extractors: # none #');
+
         $manager = $this->getManager();
         $manager->setEnabledExtractors(array('foo' => true));
     }

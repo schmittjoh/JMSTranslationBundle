@@ -18,14 +18,14 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File\Fixture;
 
-use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
 
 class MyFormTypeWithSubscriberAndListener extends AbstractType
 {
-    public function buildForm(FormBuilder $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $formFactory = $builder->getFormFactory();
         $builder
@@ -55,7 +55,7 @@ class MyFormTypeWithSubscriberAndListener extends AbstractType
             })
         ;
     }
-    
+
     public function getName()
     {
         return 'my_form_with_subscriber_and_listener';

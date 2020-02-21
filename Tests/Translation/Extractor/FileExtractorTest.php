@@ -21,6 +21,7 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor;
 use JMS\TranslationBundle\Translation\Extractor\File\TwigFileExtractor;
 use JMS\TranslationBundle\Translation\FileSourceFactory;
 use JMS\TranslationBundle\Twig\TranslationExtension;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
@@ -35,13 +36,14 @@ use JMS\TranslationBundle\Translation\Extractor\File\TranslationContainerExtract
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
+use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
 
-class FileExtractorTest extends \PHPUnit_Framework_TestCase
+class FileExtractorTest extends TestCase
 {
     public function testExtractWithSimpleTestFixtures()
     {
@@ -112,12 +114,7 @@ class FileExtractorTest extends \PHPUnit_Framework_TestCase
         ));
         $docParser->setIgnoreNotImportedAnnotations(true);
 
-        //use correct factory class depending on whether using Symfony 2 or 3
-        if (class_exists('Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory')) {
-            $metadataFactoryClass = 'Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory';
-        } else {
-            $metadataFactoryClass = 'Symfony\Component\Validator\Mapping\ClassMetadataFactory';
-        }
+        $metadataFactoryClass = LazyLoadingMetadataFactory::class;
 
         $factory = new $metadataFactoryClass(new AnnotationLoader(new AnnotationReader()));
 

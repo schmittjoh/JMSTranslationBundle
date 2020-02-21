@@ -23,6 +23,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use JMS\TranslationBundle\Translation\ConfigBuilder;
 
 class JMSTranslationExtension extends Extension
 {
@@ -32,10 +33,7 @@ class JMSTranslationExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
-
-        if (!class_exists('Symfony\Component\ClassLoader\ClassLoader')) {
-            $loader->load('console.xml');
-        }
+        $loader->load('console.xml');
 
         $container->setParameter('jms_translation.source_language', $config['source_language']);
         $container->setParameter('jms_translation.locales', $config['locales']);
@@ -46,7 +44,7 @@ class JMSTranslationExtension extends Extension
 
         $requests = array();
         foreach ($config['configs'] as $name => $extractConfig) {
-            $def = new Definition('JMS\TranslationBundle\Translation\ConfigBuilder');
+            $def = new Definition(ConfigBuilder::class);
             $def->addMethodCall('setTranslationsDir', array($extractConfig['output_dir']));
             $def->addMethodCall('setScanDirs', array($extractConfig['dirs']));
 

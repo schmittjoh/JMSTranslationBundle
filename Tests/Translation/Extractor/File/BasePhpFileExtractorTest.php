@@ -25,8 +25,9 @@ use JMS\TranslationBundle\Translation\FileSourceFactory;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use PHPUnit\Framework\TestCase;
 
-abstract class BasePhpFileExtractorTest extends \PHPUnit_Framework_TestCase
+abstract class BasePhpFileExtractorTest extends TestCase
 {
     final protected function extract($file, FileVisitorInterface $extractor = null)
     {

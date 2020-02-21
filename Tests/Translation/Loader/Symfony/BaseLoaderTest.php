@@ -18,10 +18,11 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Loader\Symfony;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Translation\MessageCatalogue;
 
-abstract class BaseLoaderTest extends \PHPUnit_Framework_TestCase
+abstract class BaseLoaderTest extends TestCase
 {
     public function testLoadSimple()
     {
