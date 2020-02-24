@@ -14,10 +14,10 @@ On this page you will find all available configuration options and their meaning
             # Create a configuration named "app"
             app:
                 # List of directories we should extract translations keys from
-                dirs: ["%kernel.root_dir%", "%kernel.root_dir%/../src"]
+                dirs: ["%kernel.project_dir%/src", "%kernel.project_dir%/templates"]
 
                 # Where to write the translation files
-                output_dir: "%kernel.root_dir%/Resources/translations"
+                output_dir: "%kernel.project_dir%/translations"
 
                 # Whitelist domains
                 domains: ["messages"]

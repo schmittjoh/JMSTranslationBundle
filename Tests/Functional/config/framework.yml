@@ -5,10 +5,10 @@ framework:
         storage_id: session.storage.mock_file
     form:            true
     csrf_protection: true
-    validation:       
+    validation:
         enabled: true
         enable_annotations: true
     translator:
         enabled: true
     router:
-        resource: "%kernel.root_dir%/config/routing.yml"
+        resource: "%kernel.project_dir%/config/routing.yml"

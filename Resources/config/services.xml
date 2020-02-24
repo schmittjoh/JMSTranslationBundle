@@ -65,7 +65,8 @@
         <service id="jms_translation.config_factory" class="%jms_translation.config_factory.class%" public="true"/>
 
         <service id="jms_translation.file_source_factory" class="%jms_translation.file_source_factory.class%">
-            <argument>%kernel.root_dir%</argument>
+            <argument type="expression">container.hasParameter('kernel.root_dir') ? parameter('kernel.root_dir') : parameter('kernel.project_dir')</argument>
+            <argument>%kernel.project_dir%</argument>
         </service>
 
         <service id="jms_translation.file_writer" class="%jms_translation.file_writer.class%" public="false" />

@@ -55,16 +55,23 @@ class ResourcesListCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $rootPath = realpath($this->getContainer()->getParameter('kernel.root_dir'));
-        $basePath = realpath($this->getContainer()->getParameter('kernel.root_dir').'/..');
+        $directoriesToSearch = [];
+
+        // TODO: Remove this block when dropping support of Symfony 4 as it will always be false
+        if ($this->getContainer()->hasParameter('kernel.root_dir')) {
+            $directoriesToSearch[] = realpath($this->getContainer()->getParameter('kernel.root_dir'));
+        }
+
+        $basePath = realpath($this->getContainer()->getParameter('kernel.project_dir'));
+
+        $directoriesToSearch[] = $basePath;
 
         $dirs = $this->retrieveDirs();
 
         if (!$input->hasParameterOption('--files')) {
             $output->writeln('<info>Directories list :</info>');
             foreach ($dirs as $dir) {
-                $path = str_replace($rootPath, '%kernel.root_dir%', $dir);
-                $path = str_replace($basePath, '%kernel.root_dir%/..', $path);
+                $path = str_replace($directoriesToSearch, ['%kernel.root_dir%', '%kernel.project_dir%'], $dir);
                 $output->writeln(sprintf('    - %s', $path));
             }
 
@@ -78,8 +85,8 @@ class ResourcesListCommand extends ContainerAwareCommand
         $files = $this->retrieveFiles($dirs);
 
         foreach ($files as $file) {
-            $path = str_replace($basePath, '%kernel.root_dir%', $file);
-            $output->writeln(sprintf(' - %s', $path));
+            $path = str_replace($basePath, '%kernel.project_dir%', $file);
+            $output->writeln(sprintf('    - %s', $path));
         }
 
         $output->writeln('done!');
@@ -120,7 +127,13 @@ class ResourcesListCommand extends ContainerAwareCommand
             }
         }
 
-        if (is_dir($dir = $this->getContainer()->getParameter('kernel.root_dir').'/Resources/translations')) {
+        // TODO: Remove this block when dropping support of Symfony 4
+        if ($this->getContainer()->hasParameter('kernel.root_dir') &&
+            is_dir($dir = $this->getContainer()->getParameter('kernel.root_dir').'/Resources/translations')) {
+            $dirs[] = $dir;
+        }
+
+        if (is_dir($dir = $this->getContainer()->getParameter('kernel.project_dir').'/translations')) {
             $dirs[] = $dir;
         }
 

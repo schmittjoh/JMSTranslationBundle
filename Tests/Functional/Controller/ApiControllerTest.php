@@ -23,9 +23,6 @@ class ApiControllerTest extends BaseTestCase
         // Start application
         $client = static::createClient();
         $client->request('POST', '/_trans/api/configs/app/domains/navigation/locales/en/messages?id=main.home', array('_method'=>'PUT', 'message'=>'Away'));
-if($client->getResponse()->getStatusCode() !== 200) {
-  file_put_contents('/tmp/test-update.html',$client->getResponse());
-}
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         // Verify that the file has new content
