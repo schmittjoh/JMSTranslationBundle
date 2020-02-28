@@ -33,9 +33,9 @@ class FileWriterTest extends TestCase
         $dumper
             ->expects($this->once())
             ->method('dump')
-            ->will($this->returnCallback(function ($v) use ($self) {
+            ->willReturnCallback(function ($v) use ($self) {
                 $self->assertEquals(array('foo.bar', 'foo.bar.baz'), array_keys($v->getDomain('messages')->all()));
-            }))
+            })
         ;
 
         $writer = new FileWriter(array(

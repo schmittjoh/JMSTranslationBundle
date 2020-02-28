@@ -33,7 +33,7 @@ class SymfonyLoaderAdapterTest extends TestCase
         $symfonyLoader->expects($this->once())
             ->method('load')
             ->with('foo', 'en', 'messages')
-            ->will($this->returnValue($symfonyCatalogue));
+            ->willReturn($symfonyCatalogue);
 
         $adapter = new SymfonyLoaderAdapter($symfonyLoader);
         $bundleCatalogue = $adapter->load('foo', 'en', 'messages');

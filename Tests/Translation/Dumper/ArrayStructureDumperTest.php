@@ -41,7 +41,7 @@ class ArrayStructureDumperTest extends TestCase
                     'bar.baz' => new Message('foo.bar.baz'),
                 ),
             ))
-            ->will($this->returnValue('foo'))
+            ->willReturn('foo')
         ;
 
         $this->assertEquals('foo', $dumper->dump($catalogue, 'messages'));

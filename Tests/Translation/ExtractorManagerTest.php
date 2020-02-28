@@ -53,7 +53,7 @@ class ExtractorManagerTest extends TestCase
         $bar
             ->expects($this->once())
             ->method('extract')
-            ->will($this->returnValue($catalogue))
+            ->willReturn($catalogue)
         ;
 
         $manager = $this->getManager(null, array(
