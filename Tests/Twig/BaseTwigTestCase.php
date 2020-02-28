@@ -19,7 +19,6 @@
 namespace JMS\TranslationBundle\Tests\Twig;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
 use JMS\TranslationBundle\Twig\TranslationExtension;
@@ -34,7 +33,7 @@ abstract class BaseTwigTestCase extends TestCase
         $content = file_get_contents(__DIR__.'/Fixture/'.$file);
 
         $env = new Environment(new ArrayLoader(array()));
-        $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
+        $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator()));
         $env->addExtension(new TranslationExtension($translator, $debug));
 
         return $env->compile($env->parse($env->tokenize(new Source($content, 'whatever')))->getNode('body'));

@@ -34,7 +34,6 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Translation\IdentityTranslator;
-use Symfony\Component\Translation\MessageSelector;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Source;
@@ -146,7 +145,7 @@ class TwigFileExtractorTest extends TestCase
         }
 
         $env = new Environment(new ArrayLoader(array()));
-        $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
+        $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator()));
         $env->addExtension(new TranslationExtension($translator, true));
         $env->addExtension(new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext())));
         $env->addExtension(new FormExtension());
