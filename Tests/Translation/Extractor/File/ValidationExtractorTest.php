@@ -52,7 +52,6 @@ class ValidationExtractorTest extends TestCase
         if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
             throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
         }
-        $file = new \SplFileInfo($file);
 
         $metadataFactoryClass = LazyLoadingMetadataFactory::class;
 
@@ -72,7 +71,7 @@ class ValidationExtractorTest extends TestCase
         $ast = $parser->parse(file_get_contents($file));
 
         $catalogue = new MessageCatalogue();
-        $extractor->visitPhpFile($file, $catalogue, $ast);
+        $extractor->visitPhpFile(new \SplFileInfo($file), $catalogue, $ast);
 
         return $catalogue;
     }
