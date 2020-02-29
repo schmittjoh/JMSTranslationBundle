@@ -156,7 +156,7 @@ class Updater
 
             // delete translation files of other formats
             foreach (Finder::create()->name('/^'.$name.'\.'.$this->config->getLocale().'\.[^\.]+$/')->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
-                if ('.'.$format === substr($file, -1 * strlen('.'.$format))) {
+                if ('.'.$format === substr((string) $file, -1 * strlen('.'.$format))) {
                     continue;
                 }
 
