@@ -24,17 +24,25 @@ class FileSourceFactory
 {
     /**
      * @var string
+     *
+     * @deprecated Will be removed in 2.0. Use $baseDir instead.
      */
     protected $kernelRoot;
+
+    /**
+     * @var string
+     */
+    protected $baseDir;
 
     /**
      * FileSourceFactory constructor.
      *
      * @param string $kernelRoot
      */
-    public function __construct($kernelRoot)
+    public function __construct($kernelRoot, string $baseDir = null)
     {
         $this->kernelRoot = $kernelRoot;
+        $this->baseDir = $baseDir ?? $kernelRoot;
     }
 
     /**
@@ -58,15 +66,15 @@ class FileSourceFactory
      */
     private function getRelativePath($path)
     {
-        if (0 === strpos($path, $this->kernelRoot)) {
-            return substr($path, strlen($this->kernelRoot));
+        if (0 === strpos($path, $this->baseDir)) {
+            return substr($path, strlen($this->baseDir));
         }
 
         $relativePath = $ds = DIRECTORY_SEPARATOR;
-        $rootArray = explode($ds, $this->kernelRoot);
+        $rootArray = explode($ds, $this->baseDir);
         $pathArray = explode($ds, $path);
 
-        // Take the first directory in the kernelRoot tree
+        // Take the first directory in the baseDir tree
         foreach ($rootArray as $rootCurrentDirectory) {
             // Take the first directory from the path tree
             $pathCurrentDirectory = array_shift($pathArray);

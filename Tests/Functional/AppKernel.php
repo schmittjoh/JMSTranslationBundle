@@ -59,7 +59,22 @@ class AppKernel extends Kernel
         $loader->load($this->config);
     }
 
-    public function getCacheDir()
+    public function getCacheDir(): string
+    {
+        return $this->getBaseDir().'/cache';
+    }
+
+    public function getLogDir(): string
+    {
+        return $this->getBaseDir().'/logs';
+    }
+
+    public function getProjectDir()
+    {
+        return __DIR__;
+    }
+
+    private function getBaseDir(): string
     {
         return sys_get_temp_dir().'/JMSTranslationBundle';
     }
