@@ -184,7 +184,7 @@ class MessageTest extends TestCase
             ->expects($this->once())
             ->method('equals')
             ->with($s2)
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $message->addSource($s1);

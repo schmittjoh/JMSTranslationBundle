@@ -34,7 +34,6 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\TranslationContainerExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
-use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
@@ -101,7 +100,7 @@ class FileExtractorTest extends TestCase
     private function extract($directory)
     {
         $twig = new Environment(new ArrayLoader(array()));
-        $twig->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
+        $twig->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator()));
         $twig->addExtension(new TranslationExtension($translator));
         $loader=new FilesystemLoader(realpath(__DIR__."/Fixture/SimpleTest/Resources/views/"));
         $twig->setLoader($loader);

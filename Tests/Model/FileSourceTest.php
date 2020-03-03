@@ -106,7 +106,7 @@ class FileSourceTest extends TestCase
         $source
             ->expects($this->once())
             ->method('equals')
-            ->will($this->returnValue(false))
+            ->willReturn(false)
         ;
         $tests[] = array(
             new FileSource('foo'),
