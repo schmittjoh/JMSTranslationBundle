@@ -49,12 +49,14 @@ class MountLoadersPass implements CompilerPassInterface
             }
         }
 
-        foreach ($container->findTaggedServiceIds('jms_translation.loader') as $id => $attr) {
-            if (!isset($attr[0]['format'])) {
-                throw new RuntimeException(sprintf('The attribute "format" must be defined for tag "jms_translation.loader" for service "%s".', $id));
-            }
+        foreach ($container->findTaggedServiceIds('jms_translation.loader') as $id => $tags) {
+            foreach ($tags as $tag) {
+                if (!isset($tag['format'])) {
+                    throw new RuntimeException(sprintf('The attribute "format" must be defined for tag "jms_translation.loader" for service "%s".', $id));
+                }
 
-            $loaders[$attr[0]['format']] = new Reference($id);
+                $loaders[$tag['format']] = new Reference($id);
+            }
         }
 
         $container
