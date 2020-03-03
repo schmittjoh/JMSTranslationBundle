@@ -1,0 +1,6 @@
+imports:
+    - { resource: default.yml }
+
+parameters:
+    translation_output_dir: "%kernel.cache_dir%/translations"
+

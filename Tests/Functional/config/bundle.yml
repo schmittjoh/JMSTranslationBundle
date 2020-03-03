@@ -4,7 +4,7 @@ jms_translation:
             dirs:
                 - "%kernel.project_dir%"
                 - "%kernel.project_dir%/Fixture/TestBundle"
-            output_dir: "%kernel.project_dir%/Fixture/TestBundle/Resources/translations"
+            output_dir: "%translation_output_dir%"
             ignored_domains: [routes]
             excluded_names: ["*TestCase.php", "*Test.php"]
             excluded_dirs: [cache, data, logs]
