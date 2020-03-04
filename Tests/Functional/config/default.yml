@@ -3,6 +3,9 @@ imports:
     - { resource: twig.yml }
     - { resource: bundle.yml }
 
+parameters:
+    translation_output_dir: "%kernel.root_dir%/Fixture/TestBundle/Resources/translations"
+
 services:
     logger:
         class: Psr\Log\NullLogger

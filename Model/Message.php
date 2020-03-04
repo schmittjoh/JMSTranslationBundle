@@ -86,7 +86,7 @@ class Message
     {
         $message = new static($id, $domain);
 
-        $trace = debug_backtrace(false);
+        $trace = debug_backtrace(0);
         if (isset($trace[0]['file'])) {
             $message->addSource(new FileSource($trace[0]['file']));
         }

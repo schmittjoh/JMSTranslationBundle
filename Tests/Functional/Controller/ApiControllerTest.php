@@ -13,15 +13,19 @@ class ApiControllerTest extends BaseTestCase
 {
     public function testUpdateAction()
     {
+        // Start application
+        $client = static::createClient([
+            'config' => 'test_updating_translations.yml',
+        ]);
+        $outputDir = $client->getContainer()->getParameter('translation_output_dir');
+
         $isSf4 = version_compare(Kernel::VERSION,'4.0.0') >= 0;
 
         // Add a file
-        $file = $isSf4 ? __DIR__.'/../Fixture/TestBundle/Resources/translations/navigation.en.yaml' : __DIR__.'/../Fixture/TestBundle/Resources/translations/navigation.en.yml';
+        $file = $isSf4 ? $outputDir.'/navigation.en.yaml' : $outputDir.'/navigation.en.yml';
         $written = file_put_contents($file, 'main.home: Home');
         $this->assertTrue($written !== false && $written > 0);
 
-        // Start application
-        $client = static::createClient();
         $client->request('POST', '/_trans/api/configs/app/domains/navigation/locales/en/messages?id=main.home', array('_method'=>'PUT', 'message'=>'Away'));
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 

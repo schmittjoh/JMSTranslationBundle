@@ -108,7 +108,7 @@ class XliffDumper implements DumperInterface
         }
 
         $file->setAttribute('source-language', $this->sourceLanguage);
-        $file->setAttribute('target-language', $catalogue->getLocale());
+        $file->setAttribute('target-language', (string) $catalogue->getLocale());
         $file->setAttribute('datatype', 'plaintext');
         $file->setAttribute('original', 'not.available');
 
@@ -128,7 +128,7 @@ class XliffDumper implements DumperInterface
         foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
             $body->appendChild($unit = $doc->createElement('trans-unit'));
             $unit->setAttribute('id', hash('sha1', $id));
-            $unit->setAttribute('resname', $id);
+            $unit->setAttribute('resname', (string) $id);
             if ($message instanceof XliffMessage && $message->isApproved()) {
                 $unit->setAttribute('approved', 'yes');
             }
@@ -157,9 +157,9 @@ class XliffDumper implements DumperInterface
 
             if ($message instanceof XliffMessage) {
                 if ($message->hasState()) {
-                    $target->setAttribute('state', $message->getState());
+                    $target->setAttribute('state', (string) $message->getState());
                 }
-                
+
                 if ($message->hasNotes()) {
                     foreach ($message->getNotes() as $note) {
                         $noteNode = $unit->appendChild($doc->createElement('note', $note['text']));
@@ -182,11 +182,11 @@ class XliffDumper implements DumperInterface
 
                             if ($this->addReferencePosition) {
                                 if ($source->getLine()) {
-                                    $refFile->setAttribute('line', $source->getLine());
+                                    $refFile->setAttribute('line', (string) $source->getLine());
                                 }
 
                                 if ($source->getColumn()) {
-                                    $refFile->setAttribute('column', $source->getColumn());
+                                    $refFile->setAttribute('column', (string) $source->getColumn());
                                 }
                             }
 
