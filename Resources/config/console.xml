@@ -7,10 +7,21 @@
     <services>
         <service id="jms_translation.command.extract" class="JMS\TranslationBundle\Command\ExtractTranslationCommand" public="false">
             <tag name="console.command" command="translation:extract" />
+            <argument type="service" id="jms_translation.config_factory"/>
+            <argument type="service" id="jms_translation.updater"/>
+            <argument>%jms_translation.locales%</argument>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="jms_translation.command.list_resources" class="JMS\TranslationBundle\Command\ResourcesListCommand" public="false">
             <tag name="console.command" command="translation:list-resources" />
+            <argument>%kernel.project_dir%</argument>
+            <argument>%kernel.bundles%</argument>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
     </services>
 </container>

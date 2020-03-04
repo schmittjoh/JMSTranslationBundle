@@ -18,24 +18,42 @@
 
 namespace JMS\TranslationBundle\Command;
 
-use JMS\TranslationBundle\Translation\ConfigBuilder;
-use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Translation\Config;
-use JMS\TranslationBundle\Logger\OutputLogger;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use JMS\TranslationBundle\Util\FileUtils;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class ResourcesListCommand extends ContainerAwareCommand
+class ResourcesListCommand extends Command
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @var string
+     */
+    private $projectDir;
+
+    /**
+     * @var array
+     */
+    private $bundles;
+
+    public function __construct(string $projectDir = null, array $bundles = [])
+    {
+        $this->projectDir = $projectDir;
+        $this->bundles = $bundles;
+
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -62,7 +80,7 @@ class ResourcesListCommand extends ContainerAwareCommand
             $directoriesToSearch[] = realpath($this->getContainer()->getParameter('kernel.root_dir'));
         }
 
-        $basePath = realpath($this->getContainer()->getParameter('kernel.project_dir'));
+        $basePath = realpath($this->getProjectDir());
 
         $directoriesToSearch[] = $basePath;
 
@@ -120,7 +138,7 @@ class ResourcesListCommand extends ContainerAwareCommand
     {
         // Discover translation directories
         $dirs = array();
-        foreach ($this->getContainer()->getParameter('kernel.bundles') as $bundle) {
+        foreach ($this->getBundles() as $bundle) {
             $reflection = new \ReflectionClass($bundle);
             if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/translations')) {
                 $dirs[] = $dir;
@@ -133,10 +151,30 @@ class ResourcesListCommand extends ContainerAwareCommand
             $dirs[] = $dir;
         }
 
-        if (is_dir($dir = $this->getContainer()->getParameter('kernel.project_dir').'/translations')) {
+        if (is_dir($dir = $this->getProjectDir().'/translations')) {
             $dirs[] = $dir;
         }
 
         return $dirs;
+    }
+
+    protected function getContainer()
+    {
+        return $this->container;
+    }
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    private function getProjectDir(): string
+    {
+        return $this->projectDir ?? $this->getContainer()->getParameter('kernel.project_dir');
+    }
+
+    private function getBundles(): array
+    {
+        return $this->bundles ?? $this->getContainer()->getParameter('kernel.bundles');
     }
 }
