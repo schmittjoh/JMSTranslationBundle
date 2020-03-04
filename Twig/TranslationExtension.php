@@ -23,14 +23,15 @@ namespace JMS\TranslationBundle\Twig;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Translation\TranslatorInterface as ComponentTranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 class TranslationExtension extends AbstractExtension
 {
     /**
-     * @var TranslatorInterface
+     * @var TranslatorInterface|ComponentTranslatorInterface
      */
     private $translator;
 
@@ -41,11 +42,21 @@ class TranslationExtension extends AbstractExtension
 
     /**
      * TranslationExtension constructor.
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface|ComponentTranslatorInterface $translator
      * @param bool $debug
      */
-    public function __construct(TranslatorInterface $translator, $debug = false)
+    public function __construct($translator, $debug = false)
     {
+        if (!$translator instanceof ComponentTranslatorInterface && !$translator instanceof TranslatorInterface) {
+            throw new \InvalidArgumentException(sprintf(
+                'Argument 1 must be an instance of %s or %s, instance of %s given'
+                ,
+                TranslatorInterface::class,
+                ComponentTranslatorInterface::class,
+                get_class($translator)
+            ));
+        }
+
         $this->translator = $translator;
         $this->debug = $debug;
     }
@@ -94,10 +105,19 @@ class TranslationExtension extends AbstractExtension
         }
 
         if (false == $this->translator->getCatalogue($locale)->defines($message, $domain)) {
-            return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+            return $this->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
         }
 
-        return $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+        return $this->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+    }
+
+    private function transChoice($message, $count, array $arguments, $domain, $locale)
+    {
+        if (method_exists($this->translator, 'transChoice')) {
+            return $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+        }
+
+        return $this->translator->trans($message, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
     }
 
     /**
