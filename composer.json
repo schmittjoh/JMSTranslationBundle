@@ -25,6 +25,8 @@
         "nikic/php-parser": "^1.4 || ^2.0 || ^3.0 || ^4.0",
         "symfony/console": "^3.4 || ^4.3",
         "symfony/framework-bundle": "^3.4.31 || ^4.3",
+        "symfony/translation": "^3.4 || ^4.3",
+        "symfony/translation-contracts": "^1.1 || ^2.0",
         "symfony/validator": "^3.4 || ^4.3",
         "twig/twig": "^1.42.4 || ^2.12.5"
     },
@@ -42,7 +44,6 @@
         "symfony/form": "^3.4 || ^4.3",
         "symfony/security-csrf": "^3.4 || ^4.3",
         "symfony/templating": "^3.4 || ^4.3",
-        "symfony/translation": "^3.4 || ^4.3",
         "symfony/twig-bundle": "^3.4.37 || ^4.3.11"
     },
     "config": {
