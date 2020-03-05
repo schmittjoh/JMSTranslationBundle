@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,28 +20,24 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
-use JMS\TranslationBundle\Exception\RuntimeException;
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\TranslationBundle\Exception\RuntimeException;
+use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Validator\Mapping\ClassMetadataFactory;
-use JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor;
-use Doctrine\Common\Annotations\DocParser;
-use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
-use JMS\TranslationBundle\Model\FileSource;
-use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
+use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
 
 class ValidationExtractorTest extends TestCase
 {
     public function testExtractConstraints()
     {
         $expected = new MessageCatalogue();
-        $path = __DIR__.'/Fixture/MyFormModel.php';
+        $path     = __DIR__ . '/Fixture/MyFormModel.php';
 
         $message = new Message('form.error.name_required', 'validators');
         $expected->add($message);
@@ -47,31 +45,32 @@ class ValidationExtractorTest extends TestCase
         $this->assertEquals($expected, $this->extract('MyFormModel.php'));
     }
 
-    private function extract($file, ValidationExtractor $extractor = null)
+    private function extract($file, ?ValidationExtractor $extractor = null)
     {
-        if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
-            throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
+        $fileRealPath = __DIR__ . '/Fixture/' . $file;
+        if (! is_file($fileRealPath)) {
+            throw new RuntimeException(sprintf('The file "%s" does not exist.', $fileRealPath));
         }
 
         $metadataFactoryClass = LazyLoadingMetadataFactory::class;
 
-        if (null === $extractor) {
-            $factory = new $metadataFactoryClass(new AnnotationLoader(new AnnotationReader()));
+        if ($extractor === null) {
+            $factory   = new $metadataFactoryClass(new AnnotationLoader(new AnnotationReader()));
             $extractor = new ValidationExtractor($factory);
         }
 
         $lexer = new Lexer();
         if (class_exists('PhpParser\ParserFactory')) {
             $factory = new ParserFactory();
-            $parser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
+            $parser  = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
         } else {
             $parser = new Parser($lexer);
         }
 
-        $ast = $parser->parse(file_get_contents($file));
+        $ast = $parser->parse(file_get_contents($fileRealPath));
 
         $catalogue = new MessageCatalogue();
-        $extractor->visitPhpFile(new \SplFileInfo($file), $catalogue, $ast);
+        $extractor->visitPhpFile(new \SplFileInfo($fileRealPath), $catalogue, $ast);
 
         return $catalogue;
     }

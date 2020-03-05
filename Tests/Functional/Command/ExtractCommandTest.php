@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,39 +20,36 @@
 
 namespace JMS\TranslationBundle\Tests\Functional\Command;
 
-use JMS\TranslationBundle\Command\ExtractTranslationCommand;
 use JMS\TranslationBundle\Util\FileUtils;
-use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Input\ArgvInput;
 
 class ExtractCommandTest extends BaseCommandTestCase
 {
     public function testExtract()
     {
-        $input = new ArgvInput(array(
+        $input = new ArgvInput([
             'app/console',
             'translation:extract',
             'en',
-            '--dir='.($inputDir = __DIR__.'/../../Translation/Extractor/Fixture/SimpleTest'),
-            '--output-dir='.($outputDir = sys_get_temp_dir().'/'.uniqid('extract'))
-        ));
+            '--dir=' . $inputDir = __DIR__ . '/../../Translation/Extractor/Fixture/SimpleTest',
+            '--output-dir=' . ($outputDir = sys_get_temp_dir() . '/' . uniqid('extract')),
+        ]);
 
         $expectedOutput =
-            'Extracting Translations for locale en'."\n"
-           .'Keep old translations: No'."\n"
-           .'Output-Path: '.$outputDir."\n"
-           .'Directories: '.$inputDir."\n"
-           .'Excluded Directories: Tests'."\n"
-           .'Excluded Names: *Test.php, *TestCase.php'."\n"
-           .'Output-Format: # whatever is present, if nothing then xlf #'."\n"
-           .'Custom Extractors: # none #'."\n"
-           .'============================================================'."\n"
-           .'Loading catalogues from "'.$outputDir.'"'."\n"
-           .'Extracting translation keys'."\n"
-           .'Extracting messages from directory : '.$inputDir."\n"
-           .'Writing translation file "'.$outputDir.'/messages.en.xlf".'."\n"
-           .'done!'."\n"
-        ;
+            'Extracting Translations for locale en' . "\n"
+           . 'Keep old translations: No' . "\n"
+           . 'Output-Path: ' . $outputDir . "\n"
+           . 'Directories: ' . $inputDir . "\n"
+           . 'Excluded Directories: Tests' . "\n"
+           . 'Excluded Names: *Test.php, *TestCase.php' . "\n"
+           . 'Output-Format: # whatever is present, if nothing then xlf #' . "\n"
+           . 'Custom Extractors: # none #' . "\n"
+           . '============================================================' . "\n"
+           . 'Loading catalogues from "' . $outputDir . '"' . "\n"
+           . 'Extracting translation keys' . "\n"
+           . 'Extracting messages from directory : ' . $inputDir . "\n"
+           . 'Writing translation file "' . $outputDir . '/messages.en.xlf".' . "\n"
+           . 'done!' . "\n";
 
         $this->getApp()->run($input, $output = new Output());
         $this->assertEquals($expectedOutput, $output->getContent());
@@ -61,17 +60,17 @@ class ExtractCommandTest extends BaseCommandTestCase
 
     public function testExtractDryRun()
     {
-        $input = new ArgvInput(array(
+        $input = new ArgvInput([
             'app/console',
             'translation:extract',
             'en',
-            '--dir='.($inputDir = __DIR__.'/../../Translation/Extractor/Fixture/SimpleTest'),
-            '--output-dir='.($outputDir = sys_get_temp_dir().'/'.uniqid('extract')),
+            '--dir=' . $inputDir = __DIR__ . '/../../Translation/Extractor/Fixture/SimpleTest',
+            '--output-dir=' . ($outputDir = sys_get_temp_dir() . '/' . uniqid('extract')),
             '--dry-run',
-            '--verbose'
-        ));
+            '--verbose',
+        ]);
 
-        $expectedOutput = array(
+        $expectedOutput = [
             'php.foo->',
             'php.bar-> Bar',
             'php.baz->',
@@ -83,7 +82,7 @@ class ExtractCommandTest extends BaseCommandTestCase
             'form.foo->',
             'form.bar->',
             'controller.foo-> Foo',
-        );
+        ];
 
         $this->getApp()->run($input, $output = new Output());
 

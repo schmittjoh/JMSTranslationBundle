@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -26,7 +28,7 @@ class MyAuthException extends AuthenticationException
 
     public function getMessageKey()
     {
-        if (!empty($this->foo)) {
+        if (! empty($this->foo)) {
             /** @Desc("%foo% is invalid.") */
             return 'security.authentication_error.foo';
         }
@@ -37,6 +39,6 @@ class MyAuthException extends AuthenticationException
 
     public function getMessageParameters()
     {
-        return array('foo' => $foo);
+        return ['foo' => $foo];
     }
 }

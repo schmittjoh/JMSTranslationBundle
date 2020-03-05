@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\TranslationBundle\Tests\DependencyInjection\Compiler;
 
 use JMS\TranslationBundle\DependencyInjection\Compiler\MountFileVisitorsPass;
@@ -21,7 +23,7 @@ class MountFileVisitorsPassTest extends AbstractCompilerPassTestCase
     /**
      * @test
      */
-    public function if_compiler_pass_collects_services_by_argument_these_will_exist()
+    public function ifCompilerPassCollectsServicesByArgumentTheseWillExist()
     {
         $collectingService = new Definition();
         $this->setDefinition('jms_translation.extractor.file_extractor', $collectingService);
@@ -35,7 +37,7 @@ class MountFileVisitorsPassTest extends AbstractCompilerPassTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'jms_translation.extractor.file_extractor',
             0,
-            array(new Reference('service0'))
+            [new Reference('service0')]
         );
     }
 }

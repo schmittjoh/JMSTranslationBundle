@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -25,20 +28,15 @@ class MyPlaceholderFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('field_with_attr_placeholder', 'text', array(
+            ->add('field_with_attr_placeholder', 'text', [
                 'label' => 'field.with.placeholder',
-                'attr' => array('placeholder' => /** @Desc("Field with a placeholder value") */ 'form.placeholder.text')
-            ))
-            ->add('field_without_label_with_attr_placeholder', 'text', array(
+                'attr' => ['placeholder' => /** @Desc("Field with a placeholder value") */ 'form.placeholder.text'],
+            ])
+            ->add('field_without_label_with_attr_placeholder', 'text', [
                 'label' => false,
-                'attr' => array('placeholder' => /** @Desc("Field with a placeholder but no label") */ 'form.placeholder.text.but.no.label')
-            ))
-            ->add('field_placeholder', 'choice', array(
-                'placeholder' => /** @Desc("Choice field with a placeholder") */ 'form.choice_placeholder'
-            ))
-            ->add('field_empty_value', 'choice', array(
-                'empty_value' => /** @Desc("Choice field with an empty_value") */ 'form.choice_empty_value'
-            ))
-        ;
+                'attr' => ['placeholder' => /** @Desc("Field with a placeholder but no label") */ 'form.placeholder.text.but.no.label'],
+            ])
+            ->add('field_placeholder', 'choice', ['placeholder' => /** @Desc("Choice field with a placeholder") */ 'form.choice_placeholder'])
+            ->add('field_empty_value', 'choice', ['empty_value' => /** @Desc("Choice field with an empty_value") */ 'form.choice_empty_value']);
     }
 }

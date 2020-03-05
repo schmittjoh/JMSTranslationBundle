@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\TranslationBundle\Tests\Functional;
 
-use JMS\TranslationBundle\Twig\TranslationExtension;
 use JMS\TranslationBundle\Translation\ConfigFactory;
 use JMS\TranslationBundle\Translation\Updater;
+use JMS\TranslationBundle\Twig\TranslationExtension;
 
 /**
  * Make sure we instantiate services.
@@ -20,11 +22,11 @@ class ServiceInstantiationTest extends BaseTestCase
 
     public function provider()
     {
-        return array(
-            array('jms_translation.updater', Updater::class),
-            array('jms_translation.config_factory', ConfigFactory::class),
-            array('jms_translation.twig_extension', TranslationExtension::class),
-        );
+        return [
+            ['jms_translation.updater', Updater::class],
+            ['jms_translation.config_factory', ConfigFactory::class],
+            ['jms_translation.twig_extension', TranslationExtension::class],
+        ];
     }
 
     /**

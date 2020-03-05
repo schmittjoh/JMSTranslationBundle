@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,10 +20,10 @@
 
 namespace JMS\TranslationBundle\Tests\Twig;
 
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Translation\IdentityTranslator;
-use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
 use JMS\TranslationBundle\Twig\TranslationExtension;
+use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
+use Symfony\Component\Translation\IdentityTranslator;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Source;
@@ -30,9 +32,9 @@ abstract class BaseTwigTestCase extends TestCase
 {
     final protected function parse($file, $debug = false)
     {
-        $content = file_get_contents(__DIR__.'/Fixture/'.$file);
+        $content = file_get_contents(__DIR__ . '/Fixture/' . $file);
 
-        $env = new Environment(new ArrayLoader(array()));
+        $env = new Environment(new ArrayLoader([]));
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator()));
         $env->addExtension(new TranslationExtension($translator, $debug));
 

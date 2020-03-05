@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\TranslationBundle\Tests\Functional\Fixture\TestBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -17,6 +19,6 @@ class AppleController
      */
     public function viewAction()
     {
-        return array('nbApples' => 5);
+        return ['nbApples' => 5];
     }
 }

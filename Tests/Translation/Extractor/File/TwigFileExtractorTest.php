@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -42,9 +44,9 @@ class TwigFileExtractorTest extends TestCase
 {
     public function testExtractSimpleTemplate()
     {
-        $expected = new MessageCatalogue();
+        $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/simple_template.html.twig');
+        $fixtureSplInfo    = new \SplFileInfo(__DIR__ . '/Fixture/simple_template.html.twig');
 
         $message = new Message('text.foo');
         $message->setDesc('Foo Bar');
@@ -99,15 +101,15 @@ class TwigFileExtractorTest extends TestCase
 
     public function testExtractEdit()
     {
-        $expected = new MessageCatalogue();
+        $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/edit.html.twig');
+        $fixtureSplInfo    = new \SplFileInfo(__DIR__ . '/Fixture/edit.html.twig');
 
         $message = new Message('header.edit_profile');
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 10));
         $expected->add($message);
 
-        $message = new Message("text.archive");
+        $message = new Message('text.archive');
         $message->setDesc('Archive');
         $message->setMeaning('The verb');
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 13));
@@ -127,9 +129,9 @@ class TwigFileExtractorTest extends TestCase
 
     public function testEmbeddedTemplate()
     {
-        $expected = new MessageCatalogue();
+        $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/embedded_template.html.twig');
+        $fixtureSplInfo    = new \SplFileInfo(__DIR__ . '/Fixture/embedded_template.html.twig');
 
         $message = new Message('foo');
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 3));
@@ -138,13 +140,14 @@ class TwigFileExtractorTest extends TestCase
         $this->assertEquals($expected, $this->extract('embedded_template.html.twig'));
     }
 
-    private function extract($file, TwigFileExtractor $extractor = null)
+    private function extract($file, ?TwigFileExtractor $extractor = null)
     {
-        if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
-            throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
+        $fileRealPath = __DIR__ . '/Fixture/' . $file;
+        if (! is_file($fileRealPath)) {
+            throw new RuntimeException(sprintf('The file "%s" does not exist.', $fileRealPath));
         }
 
-        $env = new Environment(new ArrayLoader(array()));
+        $env = new Environment(new ArrayLoader([]));
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator()));
         $env->addExtension(new TranslationExtension($translator, true));
         $env->addExtension(new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext())));
@@ -154,19 +157,22 @@ class TwigFileExtractorTest extends TestCase
             if ($visitor instanceof DefaultApplyingNodeVisitor) {
                 $visitor->setEnabled(false);
             }
-            if ($visitor instanceof RemovingNodeVisitor) {
-                $visitor->setEnabled(false);
+
+            if (! ($visitor instanceof RemovingNodeVisitor)) {
+                continue;
             }
+
+            $visitor->setEnabled(false);
         }
 
-        if (null === $extractor) {
+        if ($extractor === null) {
             $extractor = new TwigFileExtractor($env, new FileSourceFactory('faux'));
         }
 
-        $ast = $env->parse($env->tokenize(new Source(file_get_contents($file), $file)));
+        $ast = $env->parse($env->tokenize(new Source(file_get_contents($fileRealPath), $fileRealPath)));
 
         $catalogue = new MessageCatalogue();
-        $extractor->visitTwigFile(new \SplFileInfo($file), $catalogue, $ast);
+        $extractor->visitTwigFile(new \SplFileInfo($fileRealPath), $catalogue, $ast);
 
         return $catalogue;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -27,7 +29,7 @@ class SymfonyLoaderAdapterTest extends TestCase
     public function testLoad()
     {
         $symfonyCatalogue = new MessageCatalogue('en');
-        $symfonyCatalogue->add(array('foo' => 'bar'));
+        $symfonyCatalogue->add(['foo' => 'bar']);
 
         $symfonyLoader = $this->createMock('Symfony\Component\Translation\Loader\LoaderInterface');
         $symfonyLoader->expects($this->once())
@@ -35,7 +37,7 @@ class SymfonyLoaderAdapterTest extends TestCase
             ->with('foo', 'en', 'messages')
             ->willReturn($symfonyCatalogue);
 
-        $adapter = new SymfonyLoaderAdapter($symfonyLoader);
+        $adapter         = new SymfonyLoaderAdapter($symfonyLoader);
         $bundleCatalogue = $adapter->load('foo', 'en', 'messages');
         $this->assertInstanceOf('JMS\TranslationBundle\Model\MessageCatalogue', $bundleCatalogue);
         $this->assertEquals('en', $bundleCatalogue->getLocale());

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,8 +20,8 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
-use JMS\TranslationBundle\Model\MessageCatalogue;
 use Doctrine\Common\Annotations\DocParser;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Translation\FileSourceFactory;
 use PhpParser\Lexer;
@@ -29,28 +31,29 @@ use PHPUnit\Framework\TestCase;
 
 abstract class BasePhpFileExtractorTest extends TestCase
 {
-    final protected function extract($file, FileVisitorInterface $extractor = null)
+    final protected function extract($file, ?FileVisitorInterface $extractor = null)
     {
-        if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
-            throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
+        $fileRealPath = __DIR__ . '/Fixture/' . $file;
+        if (! is_file($fileRealPath)) {
+            throw new RuntimeException(sprintf('The file "%s" does not exist.', $fileRealPath));
         }
 
-        if (null === $extractor) {
+        if ($extractor === null) {
             $extractor = $this->getDefaultExtractor();
         }
 
         $lexer = new Lexer();
         if (class_exists('PhpParser\ParserFactory')) {
             $factory = new ParserFactory();
-            $parser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
+            $parser  = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
         } else {
             $parser = new Parser($lexer);
         }
 
-        $ast = $parser->parse(file_get_contents($file));
+        $ast = $parser->parse(file_get_contents($fileRealPath));
 
         $catalogue = new MessageCatalogue();
-        $extractor->visitPhpFile(new \SplFileInfo($file), $catalogue, $ast);
+        $extractor->visitPhpFile(new \SplFileInfo($fileRealPath), $catalogue, $ast);
 
         return $catalogue;
     }
@@ -60,11 +63,11 @@ abstract class BasePhpFileExtractorTest extends TestCase
     final protected function getDocParser()
     {
         $docParser = new DocParser();
-        $docParser->setImports(array(
+        $docParser->setImports([
             'desc' => 'JMS\TranslationBundle\Annotation\Desc',
             'meaning' => 'JMS\TranslationBundle\Annotation\Meaning',
             'ignore' => 'JMS\TranslationBundle\Annotation\Ignore',
-        ));
+        ]);
         $docParser->setIgnoreNotImportedAnnotations(true);
 
         return $docParser;

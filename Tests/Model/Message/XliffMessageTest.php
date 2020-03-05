@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2013 Dieter Peeters <schmittjoh@gmail.com>
  *
@@ -92,12 +94,12 @@ class XliffMessageTest extends MessageTest
     public function testGetNotes()
     {
         $message = new XliffMessage('foo');
-        $this->assertEquals(array(), $message->getNotes());
+        $this->assertEquals([], $message->getNotes());
         $this->assertSame($message, $message->addNote('foo'));
-        $this->assertSame(array(array('text' => 'foo')), $message->getNotes());
+        $this->assertSame([['text' => 'foo']], $message->getNotes());
         $this->assertSame($message, $message->addNote('bar', 'foo'));
-        $this->assertSame(array(array('text' => 'foo'), array('text' => 'bar', 'from' => 'foo')), $message->getNotes());
-        $this->assertSame($message, $message->setNotes($notes = array(array('text' => 'foo', 'from' => 'bar'))));
+        $this->assertSame([['text' => 'foo'], ['text' => 'bar', 'from' => 'foo']], $message->getNotes());
+        $this->assertSame($message, $message->setNotes($notes = [['text' => 'foo', 'from' => 'bar']]));
         $this->assertSame($notes, $message->getNotes());
     }
 
@@ -123,7 +125,7 @@ class XliffMessageTest extends MessageTest
         $message1->merge($message2);
         $this->assertEquals('bar', $message1->getDesc());
         $this->assertEquals('foo', $message1->getMeaning());
-        $this->assertSame(array($s1, $s2), $message1->getSources());
+        $this->assertSame([$s1, $s2], $message1->getSources());
         $this->assertTrue($message1->isApproved());
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $message1->getState());
 
@@ -143,7 +145,7 @@ class XliffMessageTest extends MessageTest
         $message5->merge($message6);
         $this->assertEquals('bar', $message5->getDesc());
         $this->assertEquals('foo', $message5->getMeaning());
-        $this->assertSame(array($s1, $s2), $message5->getSources());
+        $this->assertSame([$s1, $s2], $message5->getSources());
         $this->assertFalse($message5->isApproved());
         $this->assertEquals(XliffMessage::STATE_NEW, $message5->getState());
 
@@ -173,13 +175,13 @@ class XliffMessageTest extends MessageTest
         $existingMessage2->setNew(false);
         $existingMessage2->addSource(new FileSource('bar'));
 
-        $scannedMessage1 = clone $scannedMessage;
+        $scannedMessage1  = clone $scannedMessage;
         $existingMessage1 = clone $existingMessage;
         $scannedMessage1->mergeExisting($existingMessage1);
         $this->assertEquals('foo', $scannedMessage1->getDesc());
         $this->assertEquals('bar', $scannedMessage1->getLocaleString());
         $this->assertFalse($scannedMessage1->isNew());
-        $this->assertEquals(array(), $scannedMessage1->getSources());
+        $this->assertEquals([], $scannedMessage1->getSources());
         $this->assertFalse($scannedMessage1->isApproved());
         $this->assertEquals(XliffMessage::STATE_NONE, $scannedMessage1->getState());
 
@@ -195,13 +197,13 @@ class XliffMessageTest extends MessageTest
         $this->assertTrue($scannedMessage2->isApproved());
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $scannedMessage2->getState());
 
-        $scannedMessage3 = clone $scannedMessage;
+        $scannedMessage3  = clone $scannedMessage;
         $existingMessage3 = clone $existingMessage1;
         $scannedMessage3->mergeExisting($existingMessage3);
         $this->assertEquals('foo', $scannedMessage3->getDesc());
         $this->assertEquals('bar', $scannedMessage3->getLocaleString());
         $this->assertFalse($scannedMessage3->isNew());
-        $this->assertEquals(array(), $scannedMessage3->getSources());
+        $this->assertEquals([], $scannedMessage3->getSources());
         $this->assertFalse($scannedMessage3->isApproved());
         $this->assertEquals(XliffMessage::STATE_NONE, $scannedMessage3->getState());
 
@@ -233,12 +235,12 @@ class XliffMessageTest extends MessageTest
         $scannedMessage1->setDesc('foo');
 
         $existingMessage1 = clone $existingMessage;
-        $scannedMessage1 = clone $scannedMessage;
+        $scannedMessage1  = clone $scannedMessage;
         $existingMessage1->mergeScanned($scannedMessage1);
         $this->assertEquals('foo', $existingMessage1->getDesc());
         $this->assertEquals('bar', $existingMessage1->getLocaleString());
         $this->assertFalse($existingMessage1->isNew());
-        $this->assertEquals(array(), $existingMessage1->getSources());
+        $this->assertEquals([], $existingMessage1->getSources());
         $this->assertTrue($existingMessage1->isApproved());
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $existingMessage1->getState());
 
@@ -253,17 +255,17 @@ class XliffMessageTest extends MessageTest
         $existingMessage2->mergeScanned($scannedMessage2);
         $this->assertEquals('bar', $existingMessage2->getDesc());
         $this->assertFalse($existingMessage2->isNew());
-        $this->assertEquals(array(), $existingMessage2->getSources());
+        $this->assertEquals([], $existingMessage2->getSources());
         $this->assertTrue($existingMessage2->isApproved());
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $existingMessage2->getState());
 
         $existingMessage3 = clone $existingMessage;
-        $scannedMessage3 = clone $scannedMessage1;
+        $scannedMessage3  = clone $scannedMessage1;
         $existingMessage3->mergeScanned($scannedMessage3);
         $this->assertEquals('foo', $existingMessage3->getDesc());
         $this->assertEquals('bar', $existingMessage3->getLocaleString());
         $this->assertFalse($existingMessage3->isNew());
-        $this->assertEquals(array(), $existingMessage3->getSources());
+        $this->assertEquals([], $existingMessage3->getSources());
         $this->assertTrue($existingMessage3->isApproved());
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $existingMessage3->getState());
 
@@ -275,7 +277,7 @@ class XliffMessageTest extends MessageTest
         $scannedMessage4->setDesc('foo');
         $existingMessage4->mergeScanned($scannedMessage4);
         $this->assertEquals('bar', $existingMessage4->getDesc());
-        $this->assertEquals(array(), $existingMessage4->getSources());
+        $this->assertEquals([], $existingMessage4->getSources());
         $this->assertTrue($existingMessage4->isApproved());
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $existingMessage4->getState());
     }

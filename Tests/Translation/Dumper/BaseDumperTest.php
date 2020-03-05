@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,9 +20,9 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
-use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 use PHPUnit\Framework\TestCase;
 
 abstract class BaseDumperTest extends TestCase
@@ -82,6 +84,7 @@ abstract class BaseDumperTest extends TestCase
     }
 
     abstract protected function getDumper();
+
     abstract protected function getOutput($key);
 
     private function dump(MessageCatalogue $catalogue, $domain)

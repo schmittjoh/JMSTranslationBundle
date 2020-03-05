@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -24,16 +26,15 @@ final class ResourcesListCommandTest extends BaseCommandTestCase
 {
     public function testList(): void
     {
-        $input = new ArgvInput(array(
+        $input = new ArgvInput([
             'app/console',
             'translation:list-resources',
-        ));
+        ]);
 
         $expectedOutput =
-            'Directories list :'."\n"
-           .'    - %kernel.root_dir%/Fixture/TestBundle/Resources/translations'."\n"
-           .'done!'."\n"
-        ;
+            'Directories list :' . "\n"
+           . '    - %kernel.root_dir%/Fixture/TestBundle/Resources/translations' . "\n"
+           . 'done!' . "\n";
 
         $this->getApp()->run($input, $output = new Output());
         $this->assertEquals($expectedOutput, $output->getContent());
@@ -41,17 +42,16 @@ final class ResourcesListCommandTest extends BaseCommandTestCase
 
     public function testListFiles(): void
     {
-        $input = new ArgvInput(array(
+        $input = new ArgvInput([
             'app/console',
             'translation:list-resources',
-            '--files'
-        ));
+            '--files',
+        ]);
 
         $expectedOutput =
-            'Resources list :'."\n"
-            .'    - %kernel.project_dir%/Fixture/TestBundle/Resources/translations/messages.en.php'."\n"
-            .'done!'."\n"
-        ;
+            'Resources list :' . "\n"
+            . '    - %kernel.project_dir%/Fixture/TestBundle/Resources/translations/messages.en.php' . "\n"
+            . 'done!' . "\n";
 
         $this->getApp()->run($input, $output = new Output());
         $this->assertEquals($expectedOutput, $output->getContent());

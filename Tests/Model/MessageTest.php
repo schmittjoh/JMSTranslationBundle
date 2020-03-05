@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -78,12 +80,12 @@ class MessageTest extends TestCase
     public function testGetSources()
     {
         $message = new Message('foo');
-        $this->assertEquals(array(), $message->getSources());
+        $this->assertEquals([], $message->getSources());
 
         $this->assertSame($message, $message->addSource($source = $this->createMock('JMS\TranslationBundle\Model\SourceInterface')));
-        $this->assertSame(array($source), $message->getSources());
-        $this->assertSame($message, $message->setSources(array($source2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'))));
-        $this->assertSame(array($source2), $message->getSources());
+        $this->assertSame([$source], $message->getSources());
+        $this->assertSame($message, $message->setSources([$source2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface')]));
+        $this->assertSame([$source2], $message->getSources());
     }
 
     public function testMerge()
@@ -101,7 +103,7 @@ class MessageTest extends TestCase
 
         $this->assertEquals('bar', $message->getDesc());
         $this->assertEquals('foo', $message->getMeaning());
-        $this->assertSame(array($s1, $s2), $message->getSources());
+        $this->assertSame([$s1, $s2], $message->getSources());
     }
 
     public function testMergeRememberDesc()
@@ -119,7 +121,7 @@ class MessageTest extends TestCase
 
         $this->assertEquals('foo_desc', $message->getDesc());
         $this->assertEquals('bar_meaning', $message->getMeaning());
-        $this->assertSame(array($s1, $s2), $message->getSources());
+        $this->assertSame([$s1, $s2], $message->getSources());
     }
 
     public function testMergeExisting()
@@ -137,7 +139,7 @@ class MessageTest extends TestCase
         $this->assertEquals('bar', $message->getDesc());
         $this->assertEquals('foobar', $message->getLocaleString());
         $this->assertFalse($message->isNew());
-        $this->assertEquals(array(), $message->getSources());
+        $this->assertEquals([], $message->getSources());
     }
 
     public function testMergeScanned()
@@ -155,7 +157,7 @@ class MessageTest extends TestCase
         $this->assertEquals('foobar', $message->getDesc());
         $this->assertEquals('foobar', $message->getLocaleString());
         $this->assertFalse($message->isNew());
-        $this->assertEquals(array(), $message->getSources());
+        $this->assertEquals([], $message->getSources());
     }
 
     public function testGetIsNew()
@@ -184,8 +186,7 @@ class MessageTest extends TestCase
             ->expects($this->once())
             ->method('equals')
             ->with($s2)
-            ->willReturn(true)
-        ;
+            ->willReturn(true);
 
         $message->addSource($s1);
         $this->assertTrue($message->hasSource($s2));

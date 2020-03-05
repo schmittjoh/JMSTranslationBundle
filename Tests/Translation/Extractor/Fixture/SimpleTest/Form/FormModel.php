@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -25,9 +27,9 @@ class FormModel implements TranslationContainerInterface
 {
     public static function getTranslationMessages()
     {
-        return array(
+        return [
             new Message('form.foo'),
             new Message('form.bar'),
-        );
+        ];
     }
 }

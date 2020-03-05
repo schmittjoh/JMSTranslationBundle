@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,9 +20,9 @@
 
 namespace JMS\TranslationBundle\Tests\Model;
 
+use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCollection;
-use JMS\TranslationBundle\Model\FileSource;
 use PHPUnit\Framework\TestCase;
 
 class MessageCollectionTest extends TestCase
@@ -30,7 +32,7 @@ class MessageCollectionTest extends TestCase
         $domain = new MessageCollection();
         $domain->add($m = new Message('foo'));
 
-        $this->assertSame(array('foo' => $m), $domain->all());
+        $this->assertSame(['foo' => $m], $domain->all());
     }
 
     public function testAddMerges()
@@ -101,10 +103,10 @@ class MessageCollectionTest extends TestCase
         $col->add(new Message('c'));
         $col->add(new Message('a'));
 
-        $this->assertEquals(array('b', 'c', 'a'), array_keys($col->all()));
+        $this->assertEquals(['b', 'c', 'a'], array_keys($col->all()));
 
         $col->sort('strcasecmp');
-        $this->assertEquals(array('a', 'b', 'c'), array_keys($col->all()));
+        $this->assertEquals(['a', 'b', 'c'], array_keys($col->all()));
     }
 
     public function testFilter()
@@ -113,9 +115,11 @@ class MessageCollectionTest extends TestCase
         $col->add($m = new Message('a'));
         $col->add(new Message('b'));
         $col->add(new Message('c'));
-        $col->filter(function ($v) { return 'a' === $v->getId(); });
+        $col->filter(static function ($v) {
+            return $v->getId() === 'a';
+        });
 
-        $this->assertEquals(array('a'), array_keys($col->all()));
+        $this->assertEquals(['a'], array_keys($col->all()));
         $this->assertSame($m, $col->get('a'));
     }
 
@@ -128,7 +132,7 @@ class MessageCollectionTest extends TestCase
         $col2->add(new Message('b'));
 
         $col->merge($col2);
-        $this->assertEquals(array('a', 'b'), array_keys($col->all()));
+        $this->assertEquals(['a', 'b'], array_keys($col->all()));
     }
 
     public function testAddChecksConsistency()
@@ -159,7 +163,7 @@ class MessageCollectionTest extends TestCase
 
         // both message have not desc
 
-        $msg = new Message('a');
+        $msg  = new Message('a');
         $msg2 = new Message('a');
 
         $col->add($msg);
@@ -225,7 +229,7 @@ class MessageCollectionTest extends TestCase
 
         // both message have not desc
 
-        $msg = new Message('a');
+        $msg  = new Message('a');
         $msg2 = new Message('a');
 
         $col->set($msg);

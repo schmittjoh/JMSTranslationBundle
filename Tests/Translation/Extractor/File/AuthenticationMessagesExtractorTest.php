@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -29,16 +31,16 @@ class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
         $expected = new MessageCatalogue();
 
         $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyAuthException.php');
+        $fixtureSplInfo    = new \SplFileInfo(__DIR__ . '/Fixture/MyAuthException.php');
 
         $message = new Message('security.authentication_error.foo', 'authentication');
         $message->setDesc('%foo% is invalid.');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 31));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 33));
         $expected->add($message);
 
         $message = new Message('security.authentication_error.bar', 'authentication');
         $message->setDesc('An authentication error occurred.');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 35));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 37));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyAuthException.php'));
