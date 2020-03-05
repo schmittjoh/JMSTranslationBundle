@@ -1,4 +1,8 @@
 # Changelog
+### 1.4.3 to UNRELEASED
+* Added support for SF5
+* Dropped support for SF < 3.4
+
 ### 1.4.2 to 1.4.3
 * Added support for SF4
 * Fixed jms.js error

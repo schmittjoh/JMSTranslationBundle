@@ -21,4 +21,13 @@ class AppleController
     {
         return ['nbApples' => 5];
     }
+
+    /**
+     * @Route("/view_sf5")
+     * @Template("@Test/Apple/view_sf5.html.twig")
+     */
+    public function viewsf5Action()
+    {
+        return ['nbApples' => 5];
+    }
 }

@@ -69,9 +69,8 @@ class ResourcesListCommand extends Command
     /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $directoriesToSearch = [];
 
@@ -95,7 +94,7 @@ class ResourcesListCommand extends Command
 
             $output->writeln('done!');
 
-            return;
+            return 0;
         }
 
         $output->writeln('<info>Resources list :</info>');
@@ -108,6 +107,8 @@ class ResourcesListCommand extends Command
         }
 
         $output->writeln('done!');
+
+        return 0;
     }
 
     /**

@@ -89,9 +89,8 @@ class ExtractTranslationCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $builder = $input->getOption('config') ?
                        $this->configFactory->getBuilder($input->getOption('config'))
@@ -148,13 +147,15 @@ class ExtractTranslationCommand extends Command
                     }
                 }
 
-                return;
+                return 0;
             }
 
             $this->updater->process($config);
         }
 
         $output->writeln('done!');
+
+        return 0;
     }
 
     /**
