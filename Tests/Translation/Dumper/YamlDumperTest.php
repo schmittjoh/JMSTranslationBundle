@@ -44,10 +44,11 @@ class YamlDumperTest extends BaseDumperTest
 
     protected function getOutput($key)
     {
-        if (!is_file($file = __DIR__.'/yml/'.$key.'.yml')) {
+        $fileRealPath = __DIR__.'/yml/'.$key.'.yml';
+        if (!is_file($fileRealPath)) {
             throw new InvalidArgumentException(sprintf('There is no output for key "%s".', $key));
         }
 
-        return file_get_contents($file);
+        return file_get_contents($fileRealPath);
     }
 }

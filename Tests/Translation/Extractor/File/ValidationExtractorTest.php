@@ -49,8 +49,9 @@ class ValidationExtractorTest extends TestCase
 
     private function extract($file, ValidationExtractor $extractor = null)
     {
-        if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
-            throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
+        $fileRealPath = __DIR__.'/Fixture/'.$file;
+        if (!is_file($fileRealPath)) {
+            throw new RuntimeException(sprintf('The file "%s" does not exist.', $fileRealPath));
         }
 
         $metadataFactoryClass = LazyLoadingMetadataFactory::class;
@@ -68,10 +69,10 @@ class ValidationExtractorTest extends TestCase
             $parser = new Parser($lexer);
         }
 
-        $ast = $parser->parse(file_get_contents($file));
+        $ast = $parser->parse(file_get_contents($fileRealPath));
 
         $catalogue = new MessageCatalogue();
-        $extractor->visitPhpFile(new \SplFileInfo($file), $catalogue, $ast);
+        $extractor->visitPhpFile(new \SplFileInfo($fileRealPath), $catalogue, $ast);
 
         return $catalogue;
     }

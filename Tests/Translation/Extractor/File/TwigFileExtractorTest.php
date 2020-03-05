@@ -140,8 +140,9 @@ class TwigFileExtractorTest extends TestCase
 
     private function extract($file, TwigFileExtractor $extractor = null)
     {
-        if (!is_file($file = __DIR__.'/Fixture/'.$file)) {
-            throw new RuntimeException(sprintf('The file "%s" does not exist.', $file));
+        $fileRealPath = __DIR__.'/Fixture/'.$file;
+        if (!is_file($fileRealPath)) {
+            throw new RuntimeException(sprintf('The file "%s" does not exist.', $fileRealPath));
         }
 
         $env = new Environment(new ArrayLoader(array()));
@@ -163,10 +164,10 @@ class TwigFileExtractorTest extends TestCase
             $extractor = new TwigFileExtractor($env, new FileSourceFactory('faux'));
         }
 
-        $ast = $env->parse($env->tokenize(new Source(file_get_contents($file), $file)));
+        $ast = $env->parse($env->tokenize(new Source(file_get_contents($fileRealPath), $fileRealPath)));
 
         $catalogue = new MessageCatalogue();
-        $extractor->visitTwigFile(new \SplFileInfo($file), $catalogue, $ast);
+        $extractor->visitTwigFile(new \SplFileInfo($fileRealPath), $catalogue, $ast);
 
         return $catalogue;
     }

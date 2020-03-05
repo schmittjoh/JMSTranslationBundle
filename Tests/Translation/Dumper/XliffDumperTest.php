@@ -149,7 +149,8 @@ EOF;
 
     protected function getOutput($key)
     {
-        if (!is_file($file = __DIR__.'/xliff/'.$key.'.xml')) {
+        $fileRealPath = __DIR__.'/xliff/'.$key.'.xml';
+        if (!is_file($fileRealPath)) {
             throw new InvalidArgumentException(sprintf('There is no output for key "%s".', $key));
         }
 
@@ -157,6 +158,6 @@ EOF;
 //         $doc = \DOMDocument::load($file);
 //         $this->assertTrue($doc->schemaValidate(__DIR__.'/../../../Resources/schema/xliff-core-1.2-strict.xsd'));
 
-        return file_get_contents($file);
+        return file_get_contents($fileRealPath);
     }
 }

@@ -43,11 +43,12 @@ class XliffLoaderTest extends BaseLoaderTest
 
     protected function getInputFile($key)
     {
-        if (!is_file($file = __DIR__.'/../../Dumper/xliff/'.$key.'.xml')) {
+        $fileRealPath =  __DIR__.'/../../Dumper/xliff/'.$key.'.xml';
+        if (!is_file($fileRealPath)) {
             throw new InvalidArgumentException(sprintf('The input file for key "%s" does not exist.', $key));
         }
 
-        return $file;
+        return $fileRealPath;
     }
 
     protected function getLoader()
