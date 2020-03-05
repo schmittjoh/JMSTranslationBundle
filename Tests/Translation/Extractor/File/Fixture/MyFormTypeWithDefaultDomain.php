@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -27,23 +29,16 @@ class MyFormTypeWithDefaultDomain extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('firstname', 'text', array(
-                'label' => 'form.label.firstname',
-            ))
-            ->add('lastname', 'text', array(
-                'label' => /** @Desc("Lastname") */ 'form.label.lastname',
-            ))
-            ->add('street', 'text', array(
+            ->add('firstname', 'text', ['label' => 'form.label.firstname'])
+            ->add('lastname', 'text', ['label' => /** @Desc("Lastname") */ 'form.label.lastname'])
+            ->add('street', 'text', [
                 'label' => /** @Desc("Street") */ 'form.label.street',
-                'translation_domain' => 'address'
-            ))
-        ;
+                'translation_domain' => 'address',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translation_domain' => 'person'
-        ));
+        $resolver->setDefaults(['translation_domain' => 'person']);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -35,14 +37,13 @@ class ArrayStructureDumperTest extends TestCase
         $dumper
             ->expects($this->once())
             ->method('dumpStructure')
-            ->with(array(
-                'foo' => array(
+            ->with([
+                'foo' => [
                     'bar' => new Message('foo.bar'),
                     'bar.baz' => new Message('foo.bar.baz'),
-                ),
-            ))
-            ->willReturn('foo')
-        ;
+                ],
+            ])
+            ->willReturn('foo');
 
         $this->assertEquals('foo', $dumper->dump($catalogue, 'messages'));
     }

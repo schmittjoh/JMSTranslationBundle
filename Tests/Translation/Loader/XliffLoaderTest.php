@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -31,7 +33,7 @@ class XliffLoaderTest extends TestCase
      */
     public function testLoadIntegration($file)
     {
-        $loader = new XliffLoader();
+        $loader    = new XliffLoader();
         $catalogue = $loader->load($file, 'en');
 
         $dumper = new XliffDumper();
@@ -57,17 +59,17 @@ class XliffLoaderTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            $loader->load(__DIR__.'/Symfony/xliff/old_format.xml', 'en')
+            $loader->load(__DIR__ . '/Symfony/xliff/old_format.xml', 'en')
         );
     }
 
     public function getTestFiles()
     {
-        $files = array();
-        $files[] = array(__DIR__.'/../Dumper/xliff/simple.xml');
-        $files[] = array(__DIR__.'/../Dumper/xliff/structure_with_metadata.xml');
-        $files[] = array(__DIR__.'/../Dumper/xliff/structure.xml');
-        $files[] = array(__DIR__.'/../Dumper/xliff/with_metadata.xml');
+        $files   = [];
+        $files[] = [__DIR__ . '/../Dumper/xliff/simple.xml'];
+        $files[] = [__DIR__ . '/../Dumper/xliff/structure_with_metadata.xml'];
+        $files[] = [__DIR__ . '/../Dumper/xliff/structure.xml'];
+        $files[] = [__DIR__ . '/../Dumper/xliff/with_metadata.xml'];
 
         return $files;
     }

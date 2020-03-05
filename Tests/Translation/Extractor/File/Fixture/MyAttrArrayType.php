@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -24,15 +27,10 @@ class MyAttrArrayType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $attr = array('something'=>'whatever');
+        $attr = ['something' => 'whatever'];
 
         $builder
-            ->add('firstname', 'text', array(
-                'label' => 'form.label.firstname',
-            ))
-            ->add('field_with_attr_as_array','text',array(
-            'attr'=>$attr
-        ));
+            ->add('firstname', 'text', ['label' => 'form.label.firstname'])
+            ->add('field_with_attr_as_array', 'text', ['attr' => $attr]);
     }
-
 }

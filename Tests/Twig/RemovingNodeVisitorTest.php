@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -23,7 +25,7 @@ class RemovingNodeVisitorTest extends BaseTwigTestCase
     public function testRemovalWithSimpleTemplate()
     {
         $expected = $this->parse('simple_template_compiled.html.twig');
-        $actual = $this->parse('simple_template.html.twig');
+        $actual   = $this->parse('simple_template.html.twig');
 
         $this->assertEquals($expected, $actual);
     }

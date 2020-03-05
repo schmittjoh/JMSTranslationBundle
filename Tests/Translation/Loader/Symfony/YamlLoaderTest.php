@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -30,8 +32,8 @@ class YamlLoaderTest extends BaseLoaderTest
 
     protected function getInputFile($key)
     {
-        $fileRealPath =  __DIR__.'/../../Dumper/yml/'.$key.'.yml';
-        if (!is_file($fileRealPath)) {
+        $fileRealPath =  __DIR__ . '/../../Dumper/yml/' . $key . '.yml';
+        if (! is_file($fileRealPath)) {
             throw new InvalidArgumentException(sprintf('The input file for key "%s" does not exist.', $key));
         }
 

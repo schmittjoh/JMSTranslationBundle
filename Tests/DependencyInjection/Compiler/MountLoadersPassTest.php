@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\TranslationBundle\Tests\DependencyInjection\Compiler;
 
 use JMS\TranslationBundle\DependencyInjection\Compiler\MountLoadersPass;
@@ -27,7 +29,7 @@ class MountLoadersPassTest extends AbstractCompilerPassTestCase
         $this->setDefinition('jms_translation.loader_manager', $collectingService);
 
         $collectedService = new Definition();
-        $collectedService->addTag('jms_translation.loader', array('format' => 'foo'));
+        $collectedService->addTag('jms_translation.loader', ['format' => 'foo']);
         $this->setDefinition('service0', $collectedService);
 
         $this->compile();
@@ -35,7 +37,7 @@ class MountLoadersPassTest extends AbstractCompilerPassTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'jms_translation.loader_manager',
             0,
-            array('foo' => new Reference('service0'))
+            ['foo' => new Reference('service0')]
         );
     }
 }

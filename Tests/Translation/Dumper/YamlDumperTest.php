@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -44,8 +46,8 @@ class YamlDumperTest extends BaseDumperTest
 
     protected function getOutput($key)
     {
-        $fileRealPath = __DIR__.'/yml/'.$key.'.yml';
-        if (!is_file($fileRealPath)) {
+        $fileRealPath = __DIR__ . '/yml/' . $key . '.yml';
+        if (! is_file($fileRealPath)) {
             throw new InvalidArgumentException(sprintf('There is no output for key "%s".', $key));
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\TranslationBundle\Tests\DependencyInjection;
 
 use JMS\TranslationBundle\DependencyInjection\JMSTranslationExtension;
@@ -12,9 +14,9 @@ class JMSTranslationExtensionTest extends AbstractExtensionTestCase
 {
     protected function getContainerExtensions(): array
     {
-        return array(
+        return [
             new JMSTranslationExtension(),
-        );
+        ];
     }
 
     /**
@@ -32,8 +34,8 @@ class JMSTranslationExtensionTest extends AbstractExtensionTestCase
      */
     public function basicParametersAfterLoading()
     {
-        $locales = array('en', 'fr', 'es');
-        $this->load(array('source_language' => 'fr', 'locales' => $locales));
+        $locales = ['en', 'fr', 'es'];
+        $this->load(['source_language' => 'fr', 'locales' => $locales]);
 
         $this->assertContainerBuilderHasParameter('jms_translation.source_language', 'fr');
         $this->assertContainerBuilderHasParameter('jms_translation.locales', $locales);

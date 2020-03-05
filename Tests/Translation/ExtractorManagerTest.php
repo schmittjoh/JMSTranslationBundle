@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -20,13 +22,12 @@ namespace JMS\TranslationBundle\Tests\Translation;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
 use JMS\TranslationBundle\Translation\ExtractorManager;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
-use JMS\TranslationBundle\Translation\ExtractorInterface;
 
 class ExtractorManagerTest extends TestCase
 {
@@ -36,7 +37,7 @@ class ExtractorManagerTest extends TestCase
         $this->expectExceptionMessage('There is no extractor with alias "foo". Available extractors: # none #');
 
         $manager = $this->getManager();
-        $manager->setEnabledExtractors(array('foo' => true));
+        $manager->setEnabledExtractors(['foo' => true]);
     }
 
     public function testOnlySomeExtractorsEnabled()
@@ -44,8 +45,7 @@ class ExtractorManagerTest extends TestCase
         $foo = $this->createMock('JMS\TranslationBundle\Translation\ExtractorInterface');
         $foo
             ->expects($this->never())
-            ->method('extract')
-        ;
+            ->method('extract');
 
         $catalogue = new MessageCatalogue();
         $catalogue->add(new Message('foo'));
@@ -53,32 +53,29 @@ class ExtractorManagerTest extends TestCase
         $bar
             ->expects($this->once())
             ->method('extract')
-            ->willReturn($catalogue)
-        ;
+            ->willReturn($catalogue);
 
-        $manager = $this->getManager(null, array(
+        $manager = $this->getManager(null, [
             'foo' => $foo,
             'bar' => $bar,
-        ));
-        $manager->setEnabledExtractors(array('bar' => true));
+        ]);
+        $manager->setEnabledExtractors(['bar' => true]);
 
         $this->assertEquals($catalogue, $manager->extract());
     }
 
     public function testReset()
     {
-        $foo = $this->createMock('JMS\TranslationBundle\Translation\ExtractorInterface');
+        $foo    = $this->createMock('JMS\TranslationBundle\Translation\ExtractorInterface');
         $logger = new NullLogger();
 
-        $extractor = new FileExtractor(new Environment(new ArrayLoader(array())), $logger, array());
-        $extractor->setExcludedNames(array('foo', 'bar'));
-        $extractor->setExcludedDirs(array('baz'));
+        $extractor = new FileExtractor(new Environment(new ArrayLoader([])), $logger, []);
+        $extractor->setExcludedNames(['foo', 'bar']);
+        $extractor->setExcludedDirs(['baz']);
 
-        $manager = $this->getManager($extractor, array(
-            'foo' => $foo,
-        ));
-        $manager->setEnabledExtractors(array('foo' => true));
-        $manager->setDirectories(array('/'));
+        $manager = $this->getManager($extractor, ['foo' => $foo]);
+        $manager->setEnabledExtractors(['foo' => true]);
+        $manager->setDirectories(['/']);
 
         $managerReflection   = new \ReflectionClass($manager);
         $extractorReflection = new \ReflectionClass($extractor);
@@ -95,25 +92,25 @@ class ExtractorManagerTest extends TestCase
         $excludedDirsProperty = $extractorReflection->getProperty('excludedDirs');
         $excludedDirsProperty->setAccessible(true);
 
-        $this->assertEquals(array('foo' => true), $enabledExtractorsProperty->getValue($manager));
-        $this->assertEquals(array('/'), $directoriesProperty->getValue($manager));
-        $this->assertEquals(array('foo', 'bar'), $excludedNamesProperty->getValue($extractor));
-        $this->assertEquals(array('baz'), $excludedDirsProperty->getValue($extractor));
+        $this->assertEquals(['foo' => true], $enabledExtractorsProperty->getValue($manager));
+        $this->assertEquals(['/'], $directoriesProperty->getValue($manager));
+        $this->assertEquals(['foo', 'bar'], $excludedNamesProperty->getValue($extractor));
+        $this->assertEquals(['baz'], $excludedDirsProperty->getValue($extractor));
 
         $manager->reset();
 
-        $this->assertEquals(array(), $enabledExtractorsProperty->getValue($manager));
-        $this->assertEquals(array(), $directoriesProperty->getValue($manager));
-        $this->assertEquals(array(), $excludedNamesProperty->getValue($extractor));
-        $this->assertEquals(array(), $excludedDirsProperty->getValue($extractor));
+        $this->assertEquals([], $enabledExtractorsProperty->getValue($manager));
+        $this->assertEquals([], $directoriesProperty->getValue($manager));
+        $this->assertEquals([], $excludedNamesProperty->getValue($extractor));
+        $this->assertEquals([], $excludedDirsProperty->getValue($extractor));
     }
 
-    private function getManager(FileExtractor $extractor = null, array $extractors = array())
+    private function getManager(?FileExtractor $extractor = null, array $extractors = [])
     {
         $logger = new NullLogger();
 
-        if (null === $extractor) {
-            $extractor = new FileExtractor(new Environment(new ArrayLoader(array())), $logger, array());
+        if ($extractor === null) {
+            $extractor = new FileExtractor(new Environment(new ArrayLoader([])), $logger, []);
         }
 
         return new ExtractorManager($extractor, $logger, $extractors);

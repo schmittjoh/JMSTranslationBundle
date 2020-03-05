@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -21,8 +23,8 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Translation\Extractor\File\TranslationContainerExtractor;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Extractor\File\TranslationContainerExtractor;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -33,7 +35,7 @@ class TranslationContainerExtractorTest extends TestCase
     public function testExtractFormModel()
     {
         $expected = new MessageCatalogue();
-        $path = __DIR__.'/Fixture/MyFormModel.php';
+        $path     = __DIR__ . '/Fixture/MyFormModel.php';
 
         $message = new Message('form.label.choice.foo');
         $message->addSource(new FileSource($path, 13));
@@ -46,21 +48,21 @@ class TranslationContainerExtractorTest extends TestCase
         $this->assertEquals($expected, $this->extract('MyFormModel.php'));
     }
 
-    private function extract($file, TranslationContainerExtractor $extractor = null)
+    private function extract($file, ?TranslationContainerExtractor $extractor = null)
     {
-        $fileRealPath = __DIR__.'/Fixture/'.$file;
-        if (!is_file($fileRealPath)) {
+        $fileRealPath = __DIR__ . '/Fixture/' . $file;
+        if (! is_file($fileRealPath)) {
             throw new RuntimeException(sprintf('The file "%s" does not exist.', $fileRealPath));
         }
 
-        if (null === $extractor) {
+        if ($extractor === null) {
             $extractor = new TranslationContainerExtractor();
         }
 
         $lexer = new Lexer();
         if (class_exists('PhpParser\ParserFactory')) {
             $factory = new ParserFactory();
-            $parser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
+            $parser  = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
         } else {
             $parser = new Parser($lexer);
         }

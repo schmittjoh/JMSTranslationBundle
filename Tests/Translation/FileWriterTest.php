@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -33,14 +35,11 @@ class FileWriterTest extends TestCase
         $dumper
             ->expects($this->once())
             ->method('dump')
-            ->willReturnCallback(function ($v) use ($self) {
-                $self->assertEquals(array('foo.bar', 'foo.bar.baz'), array_keys($v->getDomain('messages')->all()));
-            })
-        ;
+            ->willReturnCallback(static function ($v) use ($self) {
+                $self->assertEquals(['foo.bar', 'foo.bar.baz'], array_keys($v->getDomain('messages')->all()));
+            });
 
-        $writer = new FileWriter(array(
-            'test' => $dumper,
-        ));
+        $writer = new FileWriter(['test' => $dumper]);
 
         $catalogue = new MessageCatalogue();
         $catalogue->setLocale('fr');
