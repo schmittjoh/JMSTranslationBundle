@@ -27,7 +27,6 @@ use JMS\TranslationBundle\Logger\OutputLogger;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Command for extracting translations.
@@ -36,11 +35,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ExtractTranslationCommand extends Command
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
     /**
      * @var ConfigFactory
      */
@@ -56,7 +50,7 @@ class ExtractTranslationCommand extends Command
      */
     private $locales;
 
-    public function __construct(ConfigFactory $configFactory = null, Updater $updater = null, array $locales = [])
+    public function __construct(ConfigFactory $configFactory, Updater $updater, array $locales)
     {
         $this->configFactory = $configFactory;
         $this->updater = $updater;
@@ -100,14 +94,14 @@ class ExtractTranslationCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $builder = $input->getOption('config') ?
-                       $this->getConfigFactory()->getBuilder($input->getOption('config'))
+                       $this->configFactory->getBuilder($input->getOption('config'))
                        : new ConfigBuilder();
 
         $this->updateWithInput($input, $builder);
 
         $locales = $input->getArgument('locales');
         if (empty($locales)) {
-            $locales = $this->getLocales();
+            $locales = $this->locales;
         }
 
         if (empty($locales)) {
@@ -127,15 +121,14 @@ class ExtractTranslationCommand extends Command
             $output->writeln(sprintf('Custom Extractors: <info>%s</info>', $config->getEnabledExtractors() ? implode(', ', array_keys($config->getEnabledExtractors())) : '# none #'));
             $output->writeln('============================================================');
 
-            $updater = $this->getUpdater();
-            $updater->setLogger($logger = new OutputLogger($output));
+            $this->updater->setLogger($logger = new OutputLogger($output));
 
             if (!$input->getOption('verbose')) {
                 $logger->setLevel(OutputLogger::ALL ^ OutputLogger::DEBUG);
             }
 
             if ($input->getOption('dry-run')) {
-                $changeSet = $updater->getChangeSet($config);
+                $changeSet = $this->updater->getChangeSet($config);
 
                 $output->writeln('Added Messages: '.count($changeSet->getAddedMessages()));
                 if ($input->hasParameterOption('--verbose')) {
@@ -158,7 +151,7 @@ class ExtractTranslationCommand extends Command
                 return;
             }
 
-            $updater->process($config);
+            $this->updater->process($config);
         }
 
         $output->writeln('done!');
@@ -237,30 +230,5 @@ class ExtractTranslationCommand extends Command
         if ($loadResource = $input->getOption('external-translations-dir')) {
             $builder->setLoadResources($loadResource);
         }
-    }
-
-    protected function getContainer()
-    {
-        return $this->container;
-    }
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    private function getConfigFactory(): ConfigFactory
-    {
-        return $this->configFactory ?? $this->getContainer()->get('jms_translation.config_factory');
-    }
-
-    private function getLocales(): array
-    {
-        return $this->locales ?? $this->getContainer()->getParameter('jms_translation.locales');
-    }
-
-    private function getUpdater(): Updater
-    {
-        return $this->updater ?? $this->getContainer()->get('jms_translation.updater');
     }
 }

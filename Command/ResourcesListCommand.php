@@ -22,7 +22,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use JMS\TranslationBundle\Util\FileUtils;
 
 /**
@@ -32,24 +31,25 @@ use JMS\TranslationBundle\Util\FileUtils;
 class ResourcesListCommand extends Command
 {
     /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
      * @var string
      */
     private $projectDir;
+
+    /**
+     * @var string|null
+     */
+    private $rootDir;
 
     /**
      * @var array
      */
     private $bundles;
 
-    public function __construct(string $projectDir = null, array $bundles = [])
+    public function __construct(string $projectDir, array $bundles, ?string $rootDir)
     {
         $this->projectDir = $projectDir;
         $this->bundles = $bundles;
+        $this->rootDir = $rootDir;
 
         parent::__construct();
     }
@@ -76,11 +76,11 @@ class ResourcesListCommand extends Command
         $directoriesToSearch = [];
 
         // TODO: Remove this block when dropping support of Symfony 4 as it will always be false
-        if ($this->getContainer()->hasParameter('kernel.root_dir')) {
-            $directoriesToSearch[] = realpath($this->getContainer()->getParameter('kernel.root_dir'));
+        if ($this->rootDir !== null) {
+            $directoriesToSearch[] = realpath($this->rootDir);
         }
 
-        $basePath = realpath($this->getProjectDir());
+        $basePath = realpath($this->projectDir);
 
         $directoriesToSearch[] = $basePath;
 
@@ -138,7 +138,7 @@ class ResourcesListCommand extends Command
     {
         // Discover translation directories
         $dirs = array();
-        foreach ($this->getBundles() as $bundle) {
+        foreach ($this->bundles as $bundle) {
             $reflection = new \ReflectionClass($bundle);
             if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/translations')) {
                 $dirs[] = $dir;
@@ -146,35 +146,15 @@ class ResourcesListCommand extends Command
         }
 
         // TODO: Remove this block when dropping support of Symfony 4
-        if ($this->getContainer()->hasParameter('kernel.root_dir') &&
-            is_dir($dir = $this->getContainer()->getParameter('kernel.root_dir').'/Resources/translations')) {
+        if ($this->rootDir !== null &&
+            is_dir($dir = $this->rootDir.'/Resources/translations')) {
             $dirs[] = $dir;
         }
 
-        if (is_dir($dir = $this->getProjectDir().'/translations')) {
+        if (is_dir($dir = $this->projectDir.'/translations')) {
             $dirs[] = $dir;
         }
 
         return $dirs;
-    }
-
-    protected function getContainer()
-    {
-        return $this->container;
-    }
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    private function getProjectDir(): string
-    {
-        return $this->projectDir ?? $this->getContainer()->getParameter('kernel.project_dir');
-    }
-
-    private function getBundles(): array
-    {
-        return $this->bundles ?? $this->getContainer()->getParameter('kernel.bundles');
     }
 }
