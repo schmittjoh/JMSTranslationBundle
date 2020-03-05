@@ -21,7 +21,7 @@ class MountExtractorsPassTest extends AbstractCompilerPassTestCase
     /**
      * @test
      */
-    public function if_compiler_pass_collects_services_by_argument_these_will_exist()
+    public function ifCompilerPassCollectsServicesByArgumentTheseWillExist()
     {
         $collectingService = new Definition();
         $this->setDefinition('jms_translation.extractor_manager', $collectingService);
