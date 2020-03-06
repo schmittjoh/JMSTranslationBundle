@@ -19,22 +19,46 @@
 namespace JMS\TranslationBundle\Command;
 
 use JMS\TranslationBundle\Translation\ConfigBuilder;
-use JMS\TranslationBundle\Exception\RuntimeException;
+use JMS\TranslationBundle\Translation\ConfigFactory;
+use JMS\TranslationBundle\Translation\Updater;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use JMS\TranslationBundle\Translation\Config;
 use JMS\TranslationBundle\Logger\OutputLogger;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 /**
  * Command for extracting translations.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class ExtractTranslationCommand extends ContainerAwareCommand
+class ExtractTranslationCommand extends Command
 {
+    /**
+     * @var ConfigFactory
+     */
+    private $configFactory;
+
+    /**
+     * @var Updater
+     */
+    private $updater;
+
+    /**
+     * @var array
+     */
+    private $locales;
+
+    public function __construct(ConfigFactory $configFactory, Updater $updater, array $locales)
+    {
+        $this->configFactory = $configFactory;
+        $this->updater = $updater;
+        $this->locales = $locales;
+
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -70,14 +94,14 @@ class ExtractTranslationCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $builder = $input->getOption('config') ?
-                       $this->getContainer()->get('jms_translation.config_factory')->getBuilder($input->getOption('config'))
+                       $this->configFactory->getBuilder($input->getOption('config'))
                        : new ConfigBuilder();
 
         $this->updateWithInput($input, $builder);
 
         $locales = $input->getArgument('locales');
         if (empty($locales)) {
-            $locales = $this->getContainer()->getParameter('jms_translation.locales');
+            $locales = $this->locales;
         }
 
         if (empty($locales)) {
@@ -97,15 +121,14 @@ class ExtractTranslationCommand extends ContainerAwareCommand
             $output->writeln(sprintf('Custom Extractors: <info>%s</info>', $config->getEnabledExtractors() ? implode(', ', array_keys($config->getEnabledExtractors())) : '# none #'));
             $output->writeln('============================================================');
 
-            $updater = $this->getContainer()->get('jms_translation.updater');
-            $updater->setLogger($logger = new OutputLogger($output));
+            $this->updater->setLogger($logger = new OutputLogger($output));
 
             if (!$input->getOption('verbose')) {
                 $logger->setLevel(OutputLogger::ALL ^ OutputLogger::DEBUG);
             }
 
             if ($input->getOption('dry-run')) {
-                $changeSet = $updater->getChangeSet($config);
+                $changeSet = $this->updater->getChangeSet($config);
 
                 $output->writeln('Added Messages: '.count($changeSet->getAddedMessages()));
                 if ($input->hasParameterOption('--verbose')) {
@@ -128,7 +151,7 @@ class ExtractTranslationCommand extends ContainerAwareCommand
                 return;
             }
 
-            $updater->process($config);
+            $this->updater->process($config);
         }
 
         $output->writeln('done!');

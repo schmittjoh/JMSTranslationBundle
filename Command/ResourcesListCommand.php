@@ -18,24 +18,42 @@
 
 namespace JMS\TranslationBundle\Command;
 
-use JMS\TranslationBundle\Translation\ConfigBuilder;
-use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Translation\Config;
-use JMS\TranslationBundle\Logger\OutputLogger;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Finder\Finder;
 use JMS\TranslationBundle\Util\FileUtils;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class ResourcesListCommand extends ContainerAwareCommand
+class ResourcesListCommand extends Command
 {
+    /**
+     * @var string
+     */
+    private $projectDir;
+
+    /**
+     * @var string|null
+     */
+    private $rootDir;
+
+    /**
+     * @var array
+     */
+    private $bundles;
+
+    public function __construct(string $projectDir, array $bundles, ?string $rootDir)
+    {
+        $this->projectDir = $projectDir;
+        $this->bundles = $bundles;
+        $this->rootDir = $rootDir;
+
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -58,11 +76,11 @@ class ResourcesListCommand extends ContainerAwareCommand
         $directoriesToSearch = [];
 
         // TODO: Remove this block when dropping support of Symfony 4 as it will always be false
-        if ($this->getContainer()->hasParameter('kernel.root_dir')) {
-            $directoriesToSearch[] = realpath($this->getContainer()->getParameter('kernel.root_dir'));
+        if ($this->rootDir !== null) {
+            $directoriesToSearch[] = realpath($this->rootDir);
         }
 
-        $basePath = realpath($this->getContainer()->getParameter('kernel.project_dir'));
+        $basePath = realpath($this->projectDir);
 
         $directoriesToSearch[] = $basePath;
 
@@ -120,7 +138,7 @@ class ResourcesListCommand extends ContainerAwareCommand
     {
         // Discover translation directories
         $dirs = array();
-        foreach ($this->getContainer()->getParameter('kernel.bundles') as $bundle) {
+        foreach ($this->bundles as $bundle) {
             $reflection = new \ReflectionClass($bundle);
             if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/translations')) {
                 $dirs[] = $dir;
@@ -128,12 +146,12 @@ class ResourcesListCommand extends ContainerAwareCommand
         }
 
         // TODO: Remove this block when dropping support of Symfony 4
-        if ($this->getContainer()->hasParameter('kernel.root_dir') &&
-            is_dir($dir = $this->getContainer()->getParameter('kernel.root_dir').'/Resources/translations')) {
+        if ($this->rootDir !== null &&
+            is_dir($dir = $this->rootDir.'/Resources/translations')) {
             $dirs[] = $dir;
         }
 
-        if (is_dir($dir = $this->getContainer()->getParameter('kernel.project_dir').'/translations')) {
+        if (is_dir($dir = $this->projectDir.'/translations')) {
             $dirs[] = $dir;
         }
 
