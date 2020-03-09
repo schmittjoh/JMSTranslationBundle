@@ -3,10 +3,6 @@ imports:
     - { resource: twig.yml }
     - { resource: bundle.yml }
 
-framework:
-    templating:
-        engines: [twig, php]
-
 parameters:
     translation_output_dir: "%kernel.project_dir%/Fixture/TestBundle/Resources/translations"
 

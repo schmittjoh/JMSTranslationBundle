@@ -21,13 +21,18 @@ declare(strict_types=1);
 namespace JMS\TranslationBundle\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpKernel\Kernel;
 
 class BaseTestCase extends WebTestCase
 {
     protected static function createKernel(array $options = [])
     {
+        $isSf5 = version_compare(Kernel::VERSION, '5.0.0') >= 0;
+
+        $default = $isSf5 ? 'default_sf5.yml' : 'default.yml';
+
         return new AppKernel(
-            $options['config'] ?? 'default.yml'
+            $options['config'] ?? $default
         );
     }
 }

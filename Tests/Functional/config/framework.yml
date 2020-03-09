@@ -1,6 +1,7 @@
 framework:
     secret: test
     test: ~
+    assets: ~
     session:
         storage_id: session.storage.mock_file
     form:            true
