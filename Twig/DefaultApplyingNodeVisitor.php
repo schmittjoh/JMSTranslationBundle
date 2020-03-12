@@ -75,8 +75,10 @@ class DefaultApplyingNodeVisitor extends AbstractNodeVisitor
             }
 
             $wrappingNode = $node->getNode('node');
-            $testNode = clone $wrappingNode;
-            $defaultNode = $node->getNode('arguments')->getNode(0);
+
+            $testNode     = clone $wrappingNode;
+            $arguments    = iterator_to_array($node->getNode('arguments'));
+            $defaultNode  = $arguments[0];
 
             // if the |transchoice filter is used, delegate the call to the TranslationExtension
             // so that we can catch a possible exception when the default translation has not yet
@@ -95,22 +97,23 @@ class DefaultApplyingNodeVisitor extends AbstractNodeVisitor
                 return $node;
             }
 
+            $wrappingNodeArguments = iterator_to_array($wrappingNode->getNode('arguments'));
+
             // if the |trans filter has replacements parameters
             // (e.g. |trans({'%foo%': 'bar'}))
-            if ($wrappingNode->getNode('arguments')->hasNode(0)) {
+            if (isset($wrappingNodeArguments[0])) {
                 $lineno =  $wrappingNode->getTemplateLine();
 
                 // remove the replacements from the test node
-                $testNode->setNode('arguments', clone $testNode->getNode('arguments'));
-                $testNode->getNode('arguments')->setNode(0, new ArrayExpression(array(), $lineno));
+                $testNodeArguments    = iterator_to_array($testNode->getNode('arguments'));
+                $testNodeArguments[0] = new ArrayExpression([], $lineno);
+                $testNode->setNode('arguments', new Node($testNodeArguments));
 
                 // wrap the default node in a |replace filter
                 $defaultNode = new FilterExpression(
-                    clone $node->getNode('arguments')->getNode(0),
+                    $arguments[0],
                     new ConstantExpression('replace', $lineno),
-                    new Node(array(
-                        clone $wrappingNode->getNode('arguments')->getNode(0)
-                    )),
+                    new Node([$wrappingNodeArguments[0]]),
                     $lineno
                 );
             }

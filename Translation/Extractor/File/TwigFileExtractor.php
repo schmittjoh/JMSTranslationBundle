@@ -99,12 +99,12 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
                 }
                 $id = $idNode->getAttribute('value');
 
-                $index = 'trans' === $name ? 1 : 2;
-                $domain = 'messages';
-                $arguments = $node->getNode('arguments');
-                if ($arguments->hasNode($index)) {
-                    $argument = $arguments->getNode($index);
-                    if (!$argument instanceof ConstantExpression) {
+                $index     = $name === 'trans' ? 1 : 2;
+                $domain    = 'messages';
+                $arguments = iterator_to_array($node->getNode('arguments'));
+                if (isset($arguments[$index])) {
+                    $argument = $arguments[$index];
+                    if (! $argument instanceof ConstantExpression) {
                         return $node;
                         // FIXME: Throw exception if there is some way for the user to turn this off
                         //        on a case-by-case basis, similar to @Ignore in PHP
@@ -122,14 +122,14 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
                     }
 
                     $name = $this->stack[$i]->getNode('filter')->getAttribute('value');
-                    if ('desc' === $name || 'meaning' === $name) {
-                        $arguments = $this->stack[$i]->getNode('arguments');
-                        if (!$arguments->hasNode(0)) {
+                    if ($name === 'desc' || $name === 'meaning') {
+                        $arguments = iterator_to_array($this->stack[$i]->getNode('arguments'));
+                        if (! isset($arguments[0])) {
                             throw new RuntimeException(sprintf('The "%s" filter requires exactly one argument, the description text.', $name));
                         }
 
-                        $text = $arguments->getNode(0);
-                        if (!$text instanceof ConstantExpression) {
+                        $text = $arguments[0];
+                        if (! $text instanceof ConstantExpression) {
                             throw new RuntimeException(sprintf('The first argument of the "%s" filter must be a constant expression, such as a string.', $name));
                         }
 
