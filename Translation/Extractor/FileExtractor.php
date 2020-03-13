@@ -104,7 +104,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->visitors = $visitors;
         $this->setLogger($logger);
         $lexer = new Lexer();
-        if (class_exists('PhpParser\ParserFactory')) {
+        if (class_exists(ParserFactory::class)) {
             $factory = new ParserFactory();
             $this->phpParser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
         } else {

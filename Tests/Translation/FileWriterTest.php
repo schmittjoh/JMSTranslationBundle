@@ -24,12 +24,13 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\FileWriter;
 use PHPUnit\Framework\TestCase;
+use JMS\TranslationBundle\Translation\Dumper\DumperInterface;
 
 class FileWriterTest extends TestCase
 {
     public function testCatalogueIsSortedBeforeBeingDumped()
     {
-        $dumper = $this->createMock('JMS\TranslationBundle\Translation\Dumper\DumperInterface');
+        $dumper = $this->createMock(DumperInterface::class);
 
         $self = $this;
         $dumper

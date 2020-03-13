@@ -28,6 +28,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
+use JMS\TranslationBundle\Translation\ExtractorInterface;
 
 class ExtractorManagerTest extends TestCase
 {
@@ -42,14 +43,14 @@ class ExtractorManagerTest extends TestCase
 
     public function testOnlySomeExtractorsEnabled()
     {
-        $foo = $this->createMock('JMS\TranslationBundle\Translation\ExtractorInterface');
+        $foo = $this->createMock(ExtractorInterface::class);
         $foo
             ->expects($this->never())
             ->method('extract');
 
         $catalogue = new MessageCatalogue();
         $catalogue->add(new Message('foo'));
-        $bar = $this->createMock('JMS\TranslationBundle\Translation\ExtractorInterface');
+        $bar = $this->createMock(ExtractorInterface::class);
         $bar
             ->expects($this->once())
             ->method('extract')
@@ -66,7 +67,7 @@ class ExtractorManagerTest extends TestCase
 
     public function testReset()
     {
-        $foo    = $this->createMock('JMS\TranslationBundle\Translation\ExtractorInterface');
+        $foo    = $this->createMock(ExtractorInterface::class);
         $logger = new NullLogger();
 
         $extractor = new FileExtractor(new Environment(new ArrayLoader([])), $logger, []);

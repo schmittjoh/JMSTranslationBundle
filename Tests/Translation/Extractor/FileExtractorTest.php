@@ -40,6 +40,9 @@ use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
+use JMS\TranslationBundle\Annotation\Ignore;
+use JMS\TranslationBundle\Annotation\Meaning;
+use JMS\TranslationBundle\Annotation\Desc;
 
 class FileExtractorTest extends TestCase
 {
@@ -106,9 +109,9 @@ class FileExtractorTest extends TestCase
 
         $docParser = new DocParser();
         $docParser->setImports([
-            'desc' => 'JMS\TranslationBundle\Annotation\Desc',
-            'meaning' => 'JMS\TranslationBundle\Annotation\Meaning',
-            'ignore' => 'JMS\TranslationBundle\Annotation\Ignore',
+            'desc' => Desc::class,
+            'meaning' => Meaning::class,
+            'ignore' => Ignore::class,
         ]);
         $docParser->setIgnoreNotImportedAnnotations(true);
 

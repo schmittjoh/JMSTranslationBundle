@@ -37,9 +37,9 @@ class MessageCollectionTest extends TestCase
 
     public function testAddMerges()
     {
-        $m2 = $this->createMock('JMS\TranslationBundle\Model\Message');
+        $m2 = $this->createMock(Message::class);
 
-        $m1 = $this->createMock('JMS\TranslationBundle\Model\Message');
+        $m1 = $this->createMock(Message::class);
         $m1->expects($this->once())
             ->method('merge')
             ->with($m2);
@@ -77,12 +77,12 @@ class MessageCollectionTest extends TestCase
 
     public function testSetDoesNotMerge()
     {
-        $m2 = $this->createMock('JMS\TranslationBundle\Model\Message');
+        $m2 = $this->createMock(Message::class);
         $m2
             ->method('getId')
             ->willReturn('foo');
 
-        $m1 = $this->createMock('JMS\TranslationBundle\Model\Message');
+        $m1 = $this->createMock(Message::class);
         $m1->expects($this->never())
             ->method('merge');
         $m1

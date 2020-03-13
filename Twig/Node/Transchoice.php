@@ -21,6 +21,7 @@ namespace JMS\TranslationBundle\Twig\Node;
 use Twig\Compiler;
 use Twig\Node\Expression\AbstractExpression;
 use Twig\Node\Expression\ArrayExpression;
+use JMS\TranslationBundle\Twig\TranslationExtension;
 
 class Transchoice extends AbstractExpression
 {
@@ -34,7 +35,7 @@ class Transchoice extends AbstractExpression
         $compiler->raw(
             sprintf(
                 '$this->env->getExtension(\'%s\')->%s(',
-                'JMS\TranslationBundle\Twig\TranslationExtension',
+                TranslationExtension::class,
                 'transchoiceWithDefault'
             )
         );

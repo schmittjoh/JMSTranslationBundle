@@ -33,6 +33,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use Psr\Log\LoggerInterface;
 use Twig\Node\Node as TwigNode;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
@@ -137,7 +138,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
             }
             $ref = new \ReflectionClass($name);
 
-            if (!$ref->isSubclassOf('Symfony\Component\Security\Core\Exception\AuthenticationException')
+            if (!$ref->isSubclassOf(AuthenticationException::class)
                 && $ref->name !== 'Symfony\Component\Security\Core\Exception\AuthenticationException') {
                 return;
             }
