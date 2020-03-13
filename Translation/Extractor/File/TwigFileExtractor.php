@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,17 +21,17 @@
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Translation\FileSourceFactory;
-use Symfony\Bridge\Twig\Node\TransNode;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
+use Symfony\Bridge\Twig\Node\TransNode;
 use Twig\Environment;
-use Twig\NodeTraverser;
-use Twig\NodeVisitor\AbstractNodeVisitor;
 use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Expression\FilterExpression;
 use Twig\Node\Node;
+use Twig\NodeTraverser;
+use Twig\NodeVisitor\AbstractNodeVisitor;
 
 class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterface
 {
@@ -56,17 +58,12 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
     /**
      * @var array
      */
-    private $stack = array();
+    private $stack = [];
 
-    /**
-     * TwigFileExtractor constructor.
-     * @param Environment $env
-     * @param FileSourceFactory $fileSourceFactory
-     */
     public function __construct(Environment $env, FileSourceFactory $fileSourceFactory)
     {
         $this->fileSourceFactory = $fileSourceFactory;
-        $this->traverser = new NodeTraverser($env, array($this));
+        $this->traverser = new NodeTraverser($env, [$this]);
     }
 
     /**
@@ -94,6 +91,7 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
                 $idNode = $node->getNode('node');
                 if (!$idNode instanceof ConstantExpression) {
                     return $node;
+
                     // FIXME: see below
 //                     throw new \RuntimeException(sprintf('Cannot infer translation id from node "%s". Please refactor to only translate constants.', get_class($idNode)));
                 }
@@ -106,6 +104,7 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
                     $argument = $arguments[$index];
                     if (! $argument instanceof ConstantExpression) {
                         return $node;
+
                         // FIXME: Throw exception if there is some way for the user to turn this off
                         //        on a case-by-case basis, similar to @Ignore in PHP
                     }
@@ -133,7 +132,7 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
                             throw new RuntimeException(sprintf('The first argument of the "%s" filter must be a constant expression, such as a string.', $name));
                         }
 
-                        $message->{'set'.$name}($text->getAttribute('value'));
+                        $message->{'set' . $name}($text->getAttribute('value'));
                     } elseif ('trans' === $name) {
                         break;
                     }
@@ -154,10 +153,6 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
         return 0;
     }
 
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     */
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, Node $ast)
     {
         $this->file = $file;
@@ -193,10 +188,6 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
         return $node;
     }
 
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     */
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
     {
     }

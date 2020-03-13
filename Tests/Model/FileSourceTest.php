@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
+use JMS\TranslationBundle\Model\SourceInterface;
 use PHPUnit\Framework\TestCase;
 
 class FileSourceTest extends TestCase
@@ -104,7 +105,7 @@ class FileSourceTest extends TestCase
             false,
         ];
 
-        $source = $this->createMock('JMS\TranslationBundle\Model\SourceInterface');
+        $source = $this->createMock(SourceInterface::class);
         $source
             ->expects($this->once())
             ->method('equals')

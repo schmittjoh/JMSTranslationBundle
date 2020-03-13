@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -42,11 +44,8 @@ class MessageCatalogue
     /**
      * @var array
      */
-    private $domains = array();
+    private $domains = [];
 
-    /**
-     * @param $locale
-     */
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -60,33 +59,27 @@ class MessageCatalogue
         return $this->locale;
     }
 
-    /**
-     * @param Message $message
-     */
     public function add(Message $message)
     {
         $this
             ->getOrCreateDomain($message->getDomain())
-            ->add($message)
-        ;
+            ->add($message);
     }
 
-    /**
-     * @param Message $message
-     */
     public function set(Message $message, $force = false)
     {
         $this
             ->getOrCreateDomain($message->getDomain())
-            ->set($message, $force)
-        ;
+            ->set($message, $force);
     }
 
     /**
-     * @param $id
-     * @param $domain
-     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     * @param string $id
+     * @param string $domain
+     *
      * @return Message
+     *
+     * @throws InvalidArgumentException
      */
     public function get($id, $domain = 'messages')
     {
@@ -95,6 +88,7 @@ class MessageCatalogue
 
     /**
      * @param Message $message
+     *
      * @return bool
      */
     public function has(Message $message)
@@ -106,9 +100,6 @@ class MessageCatalogue
         return $this->getDomain($message->getDomain())->has($message->getId());
     }
 
-    /**
-     * @param MessageCatalogue $catalogue
-     */
     public function merge(MessageCatalogue $catalogue)
     {
         foreach ($catalogue->getDomains() as $name => $domainCatalogue) {
@@ -118,6 +109,7 @@ class MessageCatalogue
 
     /**
      * @param string $domain
+     *
      * @return bool
      */
     public function hasDomain($domain)
@@ -127,6 +119,7 @@ class MessageCatalogue
 
     /**
      * @param string $domain
+     *
      * @return MessageCollection
      */
     public function getDomain($domain)
@@ -148,6 +141,7 @@ class MessageCatalogue
 
     /**
      * @param string $domain
+     *
      * @return MessageCollection
      */
     private function getOrCreateDomain($domain)

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -41,7 +43,6 @@ class TranslationExtension extends AbstractExtension
     private $debug;
 
     /**
-     * TranslationExtension constructor.
      * @param TranslatorInterface|LegacyTranslatorInterface $translator
      * @param bool $debug
      */
@@ -49,8 +50,7 @@ class TranslationExtension extends AbstractExtension
     {
         if (!$translator instanceof LegacyTranslatorInterface && !$translator instanceof TranslatorInterface) {
             throw new \InvalidArgumentException(sprintf(
-                'Argument 1 must be an instance of %s or %s, instance of %s given'
-                ,
+                'Argument 1 must be an instance of %s or %s, instance of %s given',
                 TranslatorInterface::class,
                 LegacyTranslatorInterface::class,
                 get_class($translator)
@@ -66,10 +66,10 @@ class TranslationExtension extends AbstractExtension
      */
     public function getNodeVisitors()
     {
-        $visitors = array(
+        $visitors = [
             new NormalizingNodeVisitor(),
             new RemovingNodeVisitor(),
-        );
+        ];
 
         if ($this->debug) {
             $visitors[] = new DefaultApplyingNodeVisitor();
@@ -83,10 +83,10 @@ class TranslationExtension extends AbstractExtension
      */
     public function getFilters()
     {
-        return array(
-            new TwigFilter('desc', array($this, 'desc')),
-            new TwigFilter('meaning', array($this, 'meaning')),
-        );
+        return [
+            new TwigFilter('desc', [$this, 'desc']),
+            new TwigFilter('meaning', [$this, 'meaning']),
+        ];
     }
 
     /**
@@ -94,34 +94,36 @@ class TranslationExtension extends AbstractExtension
      * @param string $defaultMessage
      * @param int $count
      * @param array $arguments
-     * @param null|string $domain
-     * @param null|string $locale
+     * @param string|null $domain
+     * @param string|null $locale
+     *
      * @return string
      */
-    public function transchoiceWithDefault($message, $defaultMessage, $count, array $arguments = array(), $domain = null, $locale = null)
+    public function transchoiceWithDefault($message, $defaultMessage, $count, array $arguments = [], $domain = null, $locale = null)
     {
         if (null === $domain) {
             $domain = 'messages';
         }
 
-        if (false == $this->translator->getCatalogue($locale)->defines($message, $domain)) {
-            return $this->doTransChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+        if (false === $this->translator->getCatalogue($locale)->defines($message, $domain)) {
+            return $this->doTransChoice($defaultMessage, $count, array_merge(['%count%' => $count], $arguments), $domain, $locale);
         }
 
-        return $this->doTransChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+        return $this->doTransChoice($message, $count, array_merge(['%count%' => $count], $arguments), $domain, $locale);
     }
 
     private function doTransChoice($message, $count, array $arguments, $domain, $locale)
     {
         if ($this->translator instanceof LegacyTranslatorInterface) {
-            return $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+            return $this->translator->transChoice($message, $count, array_merge(['%count%' => $count], $arguments), $domain, $locale);
         }
 
-        return $this->translator->trans($message, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+        return $this->translator->trans($message, array_merge(['%count%' => $count], $arguments), $domain, $locale);
     }
 
     /**
-     * @param $v
+     * @param mixed $v
+     *
      * @return mixed
      */
     public function desc($v)
@@ -130,7 +132,8 @@ class TranslationExtension extends AbstractExtension
     }
 
     /**
-     * @param $v
+     * @param mixed $v
+     *
      * @return mixed
      */
     public function meaning($v)

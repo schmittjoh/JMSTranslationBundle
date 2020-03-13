@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -21,5 +23,6 @@ namespace JMS\TranslationBundle\Model;
 interface SourceInterface
 {
     public function equals(SourceInterface $source);
+
     public function __toString();
 }

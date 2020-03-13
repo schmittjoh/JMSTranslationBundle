@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -20,8 +22,8 @@ namespace JMS\TranslationBundle\Translation\Loader\Symfony;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Loader\LoaderInterface;
+use Symfony\Component\Translation\MessageCatalogue;
 
 /**
  * XLIFF loader.
@@ -35,8 +37,8 @@ use Symfony\Component\Translation\Loader\LoaderInterface;
 class XliffLoader implements LoaderInterface
 {
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function load($resource, $locale, $domain = 'messages')
     {
         $previous = libxml_use_internal_errors(true);
@@ -53,8 +55,8 @@ class XliffLoader implements LoaderInterface
 
         $catalogue = new MessageCatalogue($locale);
         foreach ($xml->xpath('//xliff:trans-unit') as $translation) {
-            $id = ($resName = (string) $translation->attributes()->resname)
-                       ? $resName : (string) $translation->source;
+            $resName = (string) $translation->attributes()->resname;
+            $id = $resName ?: (string) $translation->source;
 
             $catalogue->set($id, (string) $translation->target, $domain);
         }

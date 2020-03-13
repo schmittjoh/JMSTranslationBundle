@@ -10,7 +10,17 @@
     <arg value="nps"/>
 
     <!-- Directories to be checked -->
-    <file>Tests</file>
+    <file>Annotation/</file>
+    <file>Command/</file>
+    <file>Controller/</file>
+    <file>DependencyInjection/</file>
+    <file>Exception/</file>
+    <file>Logger/</file>
+    <file>Model/</file>
+    <file>Tests/</file>
+    <file>Translation/</file>
+    <file>Twig/</file>
+    <file>Util/</file>
     <exclude-pattern>vendor/*</exclude-pattern>
     <exclude-pattern>messages\.en\.php</exclude-pattern>
     <exclude-pattern>.+\.html\.php$</exclude-pattern>
@@ -18,13 +28,27 @@
 
     <!-- Include full Doctrine Coding Standard -->
     <rule ref="Doctrine">
+        <exclude name="Generic.Formatting.SpaceAfterNot"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
+
+        <exclude name="Squiz.Arrays.ArrayDeclaration.KeySpecified"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
 
+        <exclude name="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison.DisallowedYodaComparison"/>
+        <exclude name="SlevomatCodingStandard.ControlStructures.AssignmentInCondition.AssignmentInCondition"/>
+        <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit"/>
+
+        <exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment"/>
+
         <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint"/>
         <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint"/>
         <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint"/>
+
+        <exclude name="SlevomatCodingStandard.ControlStructures.BlockControlStructureSpacing.IncorrectLinesCountAfterControlStructure"/>
     </rule>
 
     <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
@@ -67,17 +91,32 @@
         </properties>
     </rule>
 
-    <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly">
+    <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing">
         <properties>
-            <property name="allowFallbackGlobalConstants" type="boolean" value="true"/>
-            <property name="allowFallbackGlobalFunctions" type="boolean" value="true"/>
-            <property name="allowFullyQualifiedGlobalClasses" type="boolean" value="true"/>
-            <property name="allowFullyQualifiedGlobalConstants" type="boolean" value="true"/>
-            <property name="allowFullyQualifiedGlobalFunctions" type="boolean" value="true"/>
-            <property name="allowFullyQualifiedNameForCollidingClasses" type="boolean" value="false"/>
-            <property name="allowFullyQualifiedNameForCollidingConstants" type="boolean" value="false"/>
-            <property name="allowFullyQualifiedNameForCollidingFunctions" type="boolean" value="false"/>
-            <property name="searchAnnotations" type="boolean" value="true"/>
+            <property name="annotationsGroups" type="array">
+                <element value="
+                    @Annotation,
+                    @Target,
+                "/>
+                <element value="
+                    @internal,
+                    @deprecated,
+                "/>
+                <element value="@author"/>
+                <element value="
+                    @link,
+                    @see,
+                    @uses,
+                "/>
+                <element value="
+                    @Serializer\,
+                    @ORM\,
+                    @ODM\,
+                "/>
+                <element value="@param"/>
+                <element value="@return"/>
+                <element value="@throws"/>
+            </property>
         </properties>
     </rule>
 </ruleset>

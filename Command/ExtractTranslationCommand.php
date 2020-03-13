@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,14 +20,14 @@
 
 namespace JMS\TranslationBundle\Command;
 
+use JMS\TranslationBundle\Logger\OutputLogger;
 use JMS\TranslationBundle\Translation\ConfigBuilder;
 use JMS\TranslationBundle\Translation\ConfigFactory;
 use JMS\TranslationBundle\Translation\Updater;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use JMS\TranslationBundle\Logger\OutputLogger;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -82,14 +84,9 @@ class ExtractTranslationCommand extends Command
             ->addOption('output-format', null, InputOption::VALUE_REQUIRED, 'The output format that should be used (in most cases, it is better to change only the default-output-format).')
             ->addOption('default-output-format', null, InputOption::VALUE_REQUIRED, 'The default output format (defaults to xlf).')
             ->addOption('keep', null, InputOption::VALUE_NONE, 'Define if the updater service should keep the old translation (defaults to false).')
-            ->addOption('external-translations-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Load external translation resources')
-        ;
+            ->addOption('external-translations-dir', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Load external translation resources');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $builder = $input->getOption('config') ?
@@ -116,7 +113,7 @@ class ExtractTranslationCommand extends Command
             $output->writeln(sprintf('Directories: <info>%s</info>', implode(', ', $config->getScanDirs())));
             $output->writeln(sprintf('Excluded Directories: <info>%s</info>', $config->getExcludedDirs() ? implode(', ', $config->getExcludedDirs()) : '# none #'));
             $output->writeln(sprintf('Excluded Names: <info>%s</info>', $config->getExcludedNames() ? implode(', ', $config->getExcludedNames()) : '# none #'));
-            $output->writeln(sprintf('Output-Format: <info>%s</info>', $config->getOutputFormat() ? $config->getOutputFormat() : '# whatever is present, if nothing then '.$config->getDefaultOutputFormat().' #'));
+            $output->writeln(sprintf('Output-Format: <info>%s</info>', $config->getOutputFormat() ? $config->getOutputFormat() : '# whatever is present, if nothing then ' . $config->getDefaultOutputFormat() . ' #'));
             $output->writeln(sprintf('Custom Extractors: <info>%s</info>', $config->getEnabledExtractors() ? implode(', ', array_keys($config->getEnabledExtractors())) : '# none #'));
             $output->writeln('============================================================');
 
@@ -129,20 +126,20 @@ class ExtractTranslationCommand extends Command
             if ($input->getOption('dry-run')) {
                 $changeSet = $this->updater->getChangeSet($config);
 
-                $output->writeln('Added Messages: '.count($changeSet->getAddedMessages()));
+                $output->writeln('Added Messages: ' . count($changeSet->getAddedMessages()));
                 if ($input->hasParameterOption('--verbose')) {
                     foreach ($changeSet->getAddedMessages() as $message) {
-                        $output->writeln($message->getId(). '-> '.$message->getDesc());
+                        $output->writeln($message->getId() . '-> ' . $message->getDesc());
                     }
                 }
 
                 if ($config->isKeepOldMessages()) {
                     $output->writeln('Deleted Messages: # none as "Keep Old Translations" is true #');
                 } else {
-                    $output->writeln('Deleted Messages: '.count($changeSet->getDeletedMessages()));
+                    $output->writeln('Deleted Messages: ' . count($changeSet->getDeletedMessages()));
                     if ($input->hasParameterOption('--verbose')) {
                         foreach ($changeSet->getDeletedMessages() as $message) {
-                            $output->writeln($message->getId(). '-> '.$message->getDesc());
+                            $output->writeln($message->getId() . '-> ' . $message->getDesc());
                         }
                     }
                 }
@@ -158,10 +155,6 @@ class ExtractTranslationCommand extends Command
         return 0;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param ConfigBuilder $builder
-     */
     private function updateWithInput(InputInterface $input, ConfigBuilder $builder)
     {
         if ($bundle = $input->getOption('bundle')) {
@@ -170,8 +163,8 @@ class ExtractTranslationCommand extends Command
             }
 
             $bundle = $this->getApplication()->getKernel()->getBundle($bundle);
-            $builder->setTranslationsDir($bundle->getPath().'/Resources/translations');
-            $builder->setScanDirs(array($bundle->getPath()));
+            $builder->setTranslationsDir($bundle->getPath() . '/Resources/translations');
+            $builder->setScanDirs([$bundle->getPath()]);
         }
 
         if ($dirs = $input->getOption('dir')) {

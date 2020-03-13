@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,8 +21,8 @@
 namespace JMS\TranslationBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class Configuration implements ConfigurationInterface
 {
@@ -42,7 +44,7 @@ class Configuration implements ConfigurationInterface
         } else {
             $rootNode = $tb->getRootNode();
         }
-        
+
         $rootNode
             ->fixXmlConfig('config')
             ->children()
@@ -75,7 +77,7 @@ class Configuration implements ConfigurationInterface
                                 ->requiresAtLeastOneElement()
                                 ->prototype('scalar')
                                     ->validate()
-                                        ->always(function ($v) use ($c) {
+                                        ->always(static function ($v) use ($c) {
                                             $v = str_replace(DIRECTORY_SEPARATOR, '/', $v);
 
                                             if ('@' === $v[0]) {
@@ -91,7 +93,7 @@ class Configuration implements ConfigurationInterface
                                                 }
 
                                                 $ref = new \ReflectionClass($bundles[$bundleName]);
-                                                $v = false === $pos ? dirname($ref->getFileName()) : dirname($ref->getFileName()).substr($v, $pos);
+                                                $v = false === $pos ? dirname($ref->getFileName()) : dirname($ref->getFileName()) . substr($v, $pos);
                                             }
 
                                             if (!is_dir($v)) {
@@ -125,8 +127,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
 
         return $tb;
     }

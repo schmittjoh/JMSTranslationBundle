@@ -23,6 +23,7 @@ namespace JMS\TranslationBundle\Tests\Translation;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
+use JMS\TranslationBundle\Translation\ExtractorInterface;
 use JMS\TranslationBundle\Translation\ExtractorManager;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -42,14 +43,14 @@ class ExtractorManagerTest extends TestCase
 
     public function testOnlySomeExtractorsEnabled()
     {
-        $foo = $this->createMock('JMS\TranslationBundle\Translation\ExtractorInterface');
+        $foo = $this->createMock(ExtractorInterface::class);
         $foo
             ->expects($this->never())
             ->method('extract');
 
         $catalogue = new MessageCatalogue();
         $catalogue->add(new Message('foo'));
-        $bar = $this->createMock('JMS\TranslationBundle\Translation\ExtractorInterface');
+        $bar = $this->createMock(ExtractorInterface::class);
         $bar
             ->expects($this->once())
             ->method('extract')
@@ -66,7 +67,7 @@ class ExtractorManagerTest extends TestCase
 
     public function testReset()
     {
-        $foo    = $this->createMock('JMS\TranslationBundle\Translation\ExtractorInterface');
+        $foo    = $this->createMock(ExtractorInterface::class);
         $logger = new NullLogger();
 
         $extractor = new FileExtractor(new Environment(new ArrayLoader([])), $logger, []);

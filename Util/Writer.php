@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -52,7 +54,7 @@ class Writer
     /**
      * @var array
      */
-    private $changes = array();
+    private $changes = [];
 
     /**
      * @return $this
@@ -79,12 +81,13 @@ class Writer
     }
 
     /**
-     * @param $content
+     * @param string $content
+     *
      * @return $this
      */
     public function writeln($content)
     {
-        $this->write($content."\n");
+        $this->write($content . "\n");
 
         return $this;
     }
@@ -92,12 +95,13 @@ class Writer
     public function revert()
     {
         $change = array_pop($this->changes);
-        $this->changeCount -=1 ;
+        $this->changeCount -=1;
         $this->content = substr($this->content, 0, -1 * strlen($change));
     }
 
     /**
-     * @param $content
+     * @param string $content
+     *
      * @return $this
      */
     public function write($content)
@@ -129,6 +133,7 @@ class Writer
 
     /**
      * @param bool $preserveNewLines
+     *
      * @return $this
      */
     public function rtrim($preserveNewLines = true)

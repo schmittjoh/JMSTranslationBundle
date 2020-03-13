@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,12 +20,12 @@
 
 namespace JMS\TranslationBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use JMS\TranslationBundle\Translation\ConfigBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class JMSTranslationExtension extends Extension
 {
@@ -31,7 +33,7 @@ class JMSTranslationExtension extends Extension
     {
         $config = $this->processConfiguration(new Configuration($container), $configs);
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
         $loader->load('console.xml');
 
@@ -39,64 +41,64 @@ class JMSTranslationExtension extends Extension
         $container->setParameter('jms_translation.locales', $config['locales']);
 
         foreach ($config['dumper'] as $option => $value) {
-            $container->setParameter("jms_translation.dumper.{$option}", $value);
+            $container->setParameter("jms_translation.dumper.${option}", $value);
         }
 
-        $requests = array();
+        $requests = [];
         foreach ($config['configs'] as $name => $extractConfig) {
             $def = new Definition(ConfigBuilder::class);
-            $def->addMethodCall('setTranslationsDir', array($extractConfig['output_dir']));
-            $def->addMethodCall('setScanDirs', array($extractConfig['dirs']));
+            $def->addMethodCall('setTranslationsDir', [$extractConfig['output_dir']]);
+            $def->addMethodCall('setScanDirs', [$extractConfig['dirs']]);
 
             if (isset($extractConfig['ignored_domains'])) {
-                $ignored = array();
+                $ignored = [];
                 foreach ($extractConfig['ignored_domains'] as $domain) {
                     $ignored[$domain] = true;
                 }
 
-                $def->addMethodCall('setIgnoredDomains', array($ignored));
+                $def->addMethodCall('setIgnoredDomains', [$ignored]);
             }
 
             if (isset($extractConfig['domains'])) {
-                $domains = array();
+                $domains = [];
                 foreach ($extractConfig['domains'] as $domain) {
                     $domains[$domain] = true;
                 }
 
-                $def->addMethodCall('setDomains', array($domains));
+                $def->addMethodCall('setDomains', [$domains]);
             }
 
             if (isset($extractConfig['extractors'])) {
-                $extractors = array();
+                $extractors = [];
                 foreach ($extractConfig['extractors'] as $alias) {
                     $extractors[$alias] = true;
                 }
 
-                $def->addMethodCall('setEnabledExtractors', array($extractors));
+                $def->addMethodCall('setEnabledExtractors', [$extractors]);
             }
 
             if (isset($extractConfig['excluded_dirs'])) {
-                $def->addMethodCall('setExcludedDirs', array($extractConfig['excluded_dirs']));
+                $def->addMethodCall('setExcludedDirs', [$extractConfig['excluded_dirs']]);
             }
 
             if (isset($extractConfig['excluded_names'])) {
-                $def->addMethodCall('setExcludedNames', array($extractConfig['excluded_names']));
+                $def->addMethodCall('setExcludedNames', [$extractConfig['excluded_names']]);
             }
 
             if (isset($extractConfig['output_format'])) {
-                $def->addMethodCall('setOutputFormat', array($extractConfig['output_format']));
+                $def->addMethodCall('setOutputFormat', [$extractConfig['output_format']]);
             }
 
             if (isset($extractConfig['default_output_format'])) {
-                $def->addMethodCall('setDefaultOutputFormat', array($extractConfig['default_output_format']));
+                $def->addMethodCall('setDefaultOutputFormat', [$extractConfig['default_output_format']]);
             }
 
             if (isset($extractConfig['keep'])) {
-                $def->addMethodCall('setKeepOldTranslations', array($extractConfig['keep']));
+                $def->addMethodCall('setKeepOldTranslations', [$extractConfig['keep']]);
             }
 
             if (isset($extractConfig['external_translations_dirs'])) {
-                $def->addMethodCall('setLoadResources', array($extractConfig['external_translations_dirs']));
+                $def->addMethodCall('setLoadResources', [$extractConfig['external_translations_dirs']]);
             }
 
             $requests[$name] = $def;
@@ -104,7 +106,6 @@ class JMSTranslationExtension extends Extension
 
         $container
             ->getDefinition('jms_translation.config_factory')
-            ->addArgument($requests)
-        ;
+            ->addArgument($requests);
     }
 }

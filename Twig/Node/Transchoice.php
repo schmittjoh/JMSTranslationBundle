@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,6 +20,7 @@
 
 namespace JMS\TranslationBundle\Twig\Node;
 
+use JMS\TranslationBundle\Twig\TranslationExtension;
 use Twig\Compiler;
 use Twig\Node\Expression\AbstractExpression;
 use Twig\Node\Expression\ArrayExpression;
@@ -26,7 +29,7 @@ class Transchoice extends AbstractExpression
 {
     public function __construct(ArrayExpression $arguments, $lineno)
     {
-        parent::__construct(array('arguments' => $arguments), array(), $lineno);
+        parent::__construct(['arguments' => $arguments], [], $lineno);
     }
 
     public function compile(Compiler $compiler)
@@ -34,7 +37,7 @@ class Transchoice extends AbstractExpression
         $compiler->raw(
             sprintf(
                 '$this->env->getExtension(\'%s\')->%s(',
-                'JMS\TranslationBundle\Twig\TranslationExtension',
+                TranslationExtension::class,
                 'transchoiceWithDefault'
             )
         );

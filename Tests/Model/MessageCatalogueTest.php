@@ -22,6 +22,7 @@ namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\MessageCollection;
 use PHPUnit\Framework\TestCase;
 
 class MessageCatalogueTest extends TestCase
@@ -76,7 +77,7 @@ class MessageCatalogueTest extends TestCase
         $catalogue->add(new Message('foo'));
 
         $col = $catalogue->getDomain('messages');
-        $this->assertInstanceOf('JMS\TranslationBundle\Model\MessageCollection', $col);
+        $this->assertInstanceOf(MessageCollection::class, $col);
         $this->assertEquals(['foo'], array_keys($col->all()));
     }
 
@@ -95,7 +96,7 @@ class MessageCatalogueTest extends TestCase
         $cat->add(new Message('foo', 'foo'));
 
         $this->assertEquals(['messages', 'foo'], array_keys($domains = $cat->getDomains()));
-        $this->assertInstanceOf('JMS\TranslationBundle\Model\MessageCollection', $domains['foo']);
+        $this->assertInstanceOf(MessageCollection::class, $domains['foo']);
     }
 
     public function testMerge()

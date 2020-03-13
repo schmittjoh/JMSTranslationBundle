@@ -22,6 +22,7 @@ namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Dumper\ArrayStructureDumper;
 use PHPUnit\Framework\TestCase;
 
 class ArrayStructureDumperTest extends TestCase
@@ -50,6 +51,6 @@ class ArrayStructureDumperTest extends TestCase
 
     private function getDumper()
     {
-        return $this->getMockForAbstractClass('JMS\TranslationBundle\Translation\Dumper\ArrayStructureDumper');
+        return $this->getMockForAbstractClass(ArrayStructureDumper::class);
     }
 }

@@ -23,6 +23,7 @@ namespace JMS\TranslationBundle\Tests\Model\Message;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\Message\XliffMessage;
+use JMS\TranslationBundle\Model\SourceInterface;
 use JMS\TranslationBundle\Tests\Model\MessageTest;
 
 class XliffMessageTest extends MessageTest
@@ -108,13 +109,13 @@ class XliffMessageTest extends MessageTest
         $messageWrite = new XliffMessage('foo');
         $messageWrite->setDesc('foo');
         $messageWrite->setMeaning('foo');
-        $messageWrite->addSource($s1 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $messageWrite->addSource($s1 = $this->createMock(SourceInterface::class));
 
         $messageRead = new XliffMessage('foo');
         $messageRead->setDesc('bar');
         $messageRead->setApproved(true);
         $messageRead->setState(XliffMessage::STATE_TRANSLATED);
-        $messageRead->addSource($s2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $messageRead->addSource($s2 = $this->createMock(SourceInterface::class));
 
         $messageRead2 = new Message('foo');
         $messageRead2->setDesc('bar');

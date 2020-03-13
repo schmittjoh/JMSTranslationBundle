@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,9 +21,9 @@
 namespace JMS\TranslationBundle\DependencyInjection\Compiler;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class MountExtractorsPass implements CompilerPassInterface
 {
@@ -32,7 +34,7 @@ class MountExtractorsPass implements CompilerPassInterface
         }
 
         $def = $container->getDefinition('jms_translation.extractor_manager');
-        $extractors = array();
+        $extractors = [];
         foreach ($container->findTaggedServiceIds('jms_translation.extractor') as $id => $attr) {
             if (!isset($attr[0]['alias'])) {
                 throw new RuntimeException(sprintf('The "alias" attribute must be set for tag "jms_translation.extractor" of service "%s".', $id));

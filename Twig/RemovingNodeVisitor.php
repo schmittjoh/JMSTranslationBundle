@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,9 +21,9 @@
 namespace JMS\TranslationBundle\Twig;
 
 use Twig\Environment;
-use Twig\NodeVisitor\AbstractNodeVisitor;
 use Twig\Node\Expression\FilterExpression;
 use Twig\Node\Node;
+use Twig\NodeVisitor\AbstractNodeVisitor;
 
 /**
  * Removes translation metadata filters from the AST.
@@ -35,9 +37,6 @@ class RemovingNodeVisitor extends AbstractNodeVisitor
      */
     private $enabled = true;
 
-    /**
-     * @param $bool
-     */
     public function setEnabled($bool)
     {
         $this->enabled = (bool) $bool;

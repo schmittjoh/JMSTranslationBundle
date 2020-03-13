@@ -22,6 +22,9 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\DocParser;
+use JMS\TranslationBundle\Annotation\Desc;
+use JMS\TranslationBundle\Annotation\Ignore;
+use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
@@ -106,9 +109,9 @@ class FileExtractorTest extends TestCase
 
         $docParser = new DocParser();
         $docParser->setImports([
-            'desc' => 'JMS\TranslationBundle\Annotation\Desc',
-            'meaning' => 'JMS\TranslationBundle\Annotation\Meaning',
-            'ignore' => 'JMS\TranslationBundle\Annotation\Ignore',
+            'desc' => Desc::class,
+            'meaning' => Meaning::class,
+            'ignore' => Ignore::class,
         ]);
         $docParser->setIgnoreNotImportedAnnotations(true);
 

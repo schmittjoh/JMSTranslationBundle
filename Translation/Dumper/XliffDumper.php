@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,18 +20,19 @@
 
 namespace JMS\TranslationBundle\Translation\Dumper;
 
-use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\JMSTranslationBundle;
-use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message\XliffMessage;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 
 /**
  * XLIFF dumper.
  *
  * This dumper uses version 1.2 of the specification.
  *
- * @see http://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ *
+ * @see http://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html
  */
 class XliffDumper implements DumperInterface
 {
@@ -53,33 +56,21 @@ class XliffDumper implements DumperInterface
      */
     private $addReferencePosition = true;
 
-    /**
-     * @param $bool
-     */
     public function setAddDate($bool)
     {
         $this->addDate = (bool) $bool;
     }
 
-    /**
-     * @param $lang
-     */
     public function setSourceLanguage($lang)
     {
         $this->sourceLanguage = $lang;
     }
 
-    /**
-     * @param $bool
-     */
     public function setAddReference($bool)
     {
         $this->addReference = $bool;
     }
 
-    /**
-     * @param $bool
-     */
     public function setAddReferencePosition($bool)
     {
         $this->addReferencePosition = $bool;
@@ -88,6 +79,7 @@ class XliffDumper implements DumperInterface
     /**
      * @param MessageCatalogue $catalogue
      * @param MessageCatalogue|string $domain
+     *
      * @return string
      */
     public function dump(MessageCatalogue $catalogue, $domain = 'messages')
@@ -118,7 +110,6 @@ class XliffDumper implements DumperInterface
         $tool->setAttribute('tool-id', 'JMSTranslationBundle');
         $tool->setAttribute('tool-name', 'JMSTranslationBundle');
         $tool->setAttribute('tool-version', JMSTranslationBundle::VERSION);
-
 
         $header->appendChild($note = $doc->createElement('note'));
         $note->appendChild($doc->createTextNode('The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.'));
@@ -164,7 +155,7 @@ class XliffDumper implements DumperInterface
                     foreach ($message->getNotes() as $note) {
                         $noteNode = $unit->appendChild($doc->createElement('note', $note['text']));
                         if (isset($note['from'])) {
-                        	$noteNode->setAttribute('from', $note['from']);
+                            $noteNode->setAttribute('from', $note['from']);
                         }
                     }
                 }
@@ -199,7 +190,7 @@ class XliffDumper implements DumperInterface
             }
 
             if ($meaning = $message->getMeaning()) {
-                $unit->setAttribute('extradata', 'Meaning: '.$meaning);
+                $unit->setAttribute('extradata', 'Meaning: ' . $meaning);
             }
         }
 
@@ -211,11 +202,12 @@ class XliffDumper implements DumperInterface
      * If the reference position are not used, the reference file will be write once
      *
      * @param array $sources
+     *
      * @return FileSource
      */
     protected function getSortedSources(array $sources)
     {
-        $indexedSources = array();
+        $indexedSources = [];
         foreach ($sources as $source) {
             if ($source instanceof FileSource) {
                 $index = $source->getPath();

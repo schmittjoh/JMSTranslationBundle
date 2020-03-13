@@ -21,6 +21,9 @@ declare(strict_types=1);
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
 use Doctrine\Common\Annotations\DocParser;
+use JMS\TranslationBundle\Annotation\Desc;
+use JMS\TranslationBundle\Annotation\Ignore;
+use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Translation\FileSourceFactory;
@@ -43,7 +46,7 @@ abstract class BasePhpFileExtractorTest extends TestCase
         }
 
         $lexer = new Lexer();
-        if (class_exists('PhpParser\ParserFactory')) {
+        if (class_exists(ParserFactory::class)) {
             $factory = new ParserFactory();
             $parser  = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
         } else {
@@ -64,9 +67,9 @@ abstract class BasePhpFileExtractorTest extends TestCase
     {
         $docParser = new DocParser();
         $docParser->setImports([
-            'desc' => 'JMS\TranslationBundle\Annotation\Desc',
-            'meaning' => 'JMS\TranslationBundle\Annotation\Meaning',
-            'ignore' => 'JMS\TranslationBundle\Annotation\Ignore',
+            'desc' => Desc::class,
+            'meaning' => Meaning::class,
+            'ignore' => Ignore::class,
         ]);
         $docParser->setIgnoreNotImportedAnnotations(true);
 

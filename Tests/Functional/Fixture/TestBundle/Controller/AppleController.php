@@ -8,8 +8,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/apples")
  * @author Johannes
+ *
+ * @Route("/apples")
  */
 class AppleController
 {

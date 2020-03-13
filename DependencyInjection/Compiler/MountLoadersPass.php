@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -20,19 +22,19 @@ namespace JMS\TranslationBundle\DependencyInjection\Compiler;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ChildDefinition;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class MountLoadersPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(('jms_translation.loader_manager'))) {
+        if (!$container->hasDefinition('jms_translation.loader_manager')) {
             return;
         }
 
-        $loaders = array();
+        $loaders = [];
         $i = 0;
         foreach ($container->findTaggedServiceIds('translation.loader') as $id => $attr) {
             if (!isset($attr[0]['alias'])) {
@@ -41,7 +43,7 @@ class MountLoadersPass implements CompilerPassInterface
 
             $def = new ChildDefinition('jms_translation.loader.symfony_adapter');
             $def->addArgument(new Reference($id));
-            $container->setDefinition($id = 'jms_translation.loader.wrapped_symfony_loader.'.($i++), $def);
+            $container->setDefinition($id = 'jms_translation.loader.wrapped_symfony_loader.' . ($i++), $def);
 
             $loaders[$attr[0]['alias']] = new Reference($id);
             if (isset($attr[0]['legacy_alias'])) {
@@ -59,7 +61,6 @@ class MountLoadersPass implements CompilerPassInterface
 
         $container
             ->getDefinition('jms_translation.loader_manager')
-            ->addArgument($loaders)
-        ;
+            ->addArgument($loaders);
     }
 }
