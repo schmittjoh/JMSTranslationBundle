@@ -22,8 +22,8 @@ namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
-use PHPUnit\Framework\TestCase;
 use JMS\TranslationBundle\Model\SourceInterface;
+use PHPUnit\Framework\TestCase;
 
 class MessageTest extends TestCase
 {

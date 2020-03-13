@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -91,13 +93,12 @@ final class Config
     private $loadResources;
 
     /**
-     * Config constructor.
-     * @param $translationsDir
-     * @param $locale
+     * @param string $translationsDir
+     * @param string $locale
      * @param array $ignoredDomains
      * @param array $domains
-     * @param $outputFormat
-     * @param $defaultOutputFormat
+     * @param string $outputFormat
+     * @param string $defaultOutputFormat
      * @param array $scanDirs
      * @param array $excludedDirs
      * @param array $excludedNames
@@ -156,7 +157,8 @@ final class Config
     }
 
     /**
-     * @param $domain
+     * @param string $domain
+     *
      * @return bool
      */
     public function isIgnoredDomain($domain)
@@ -173,7 +175,8 @@ final class Config
     }
 
     /**
-     * @param $domain
+     * @param string $domain
+     *
      * @return bool
      */
     public function hasDomain($domain)

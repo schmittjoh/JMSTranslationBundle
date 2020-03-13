@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -21,15 +23,15 @@ namespace JMS\TranslationBundle\Controller;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Translation\ConfigFactory;
 use JMS\TranslationBundle\Translation\Updater;
-use Symfony\Component\HttpFoundation\Response;
 use JMS\TranslationBundle\Util\FileUtils;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/api")
- *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ *
+ * @Route("/api")
  */
 class ApiController
 {
@@ -43,12 +45,6 @@ class ApiController
      */
     private $updater;
 
-    /**
-     * ApiController constructor.
-     *
-     * @param ConfigFactory $configFactory
-     * @param Updater       $updater
-     */
     public function __construct(ConfigFactory $configFactory, Updater $updater)
     {
         $this->configFactory = $configFactory;
@@ -56,17 +52,18 @@ class ApiController
     }
 
     /**
-     * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages",
-     *            methods={"PUT"},
-     *            name="jms_translation_update_message",
-     *            defaults = {"id" = null},
-     *            options = {"i18n" = false})
      * @param Request $request
      * @param string $config
      * @param string $domain
      * @param string $locale
      *
      * @return Response
+     *
+     * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages",
+     *            methods={"PUT"},
+     *            name="jms_translation_update_message",
+     *            defaults = {"id" = null},
+     *            options = {"i18n" = false})
      */
     public function updateMessageAction(Request $request, $config, $domain, $locale)
     {
@@ -86,7 +83,11 @@ class ApiController
         [$format, $file] = $files[$domain][$locale];
 
         $this->updater->updateTranslation(
-            $file, $format, $domain, $locale, $id,
+            $file->getPathname(),
+            $format,
+            $domain,
+            $locale,
+            $id,
             $request->request->get('message')
         );
 

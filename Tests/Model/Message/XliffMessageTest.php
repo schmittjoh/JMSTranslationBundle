@@ -23,8 +23,8 @@ namespace JMS\TranslationBundle\Tests\Model\Message;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\Message\XliffMessage;
-use JMS\TranslationBundle\Tests\Model\MessageTest;
 use JMS\TranslationBundle\Model\SourceInterface;
+use JMS\TranslationBundle\Tests\Model\MessageTest;
 
 class XliffMessageTest extends MessageTest
 {

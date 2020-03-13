@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -39,11 +41,8 @@ class MessageCollection
     /**
      * @var array
      */
-    private $messages = array();
+    private $messages = [];
 
-    /**
-     * @param MessageCatalogue $catalogue
-     */
     public function setCatalogue(MessageCatalogue $catalogue)
     {
         $this->catalogue = $catalogue;
@@ -57,9 +56,6 @@ class MessageCollection
         return $this->catalogue;
     }
 
-    /**
-     * @param Message $message
-     */
     public function add(Message $message)
     {
         if (isset($this->messages[$id = $message->getId()])) {
@@ -72,9 +68,6 @@ class MessageCollection
         $this->messages[$id] = $message;
     }
 
-    /**
-     * @param Message $message
-     */
     public function set(Message $message, $force = false)
     {
         $id = $message->getId();
@@ -86,9 +79,11 @@ class MessageCollection
     }
 
     /**
-     * @param $id
+     * @param string $id
+     *
      * @return mixed
-     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     *
+     * @throws InvalidArgumentException
      */
     public function get($id)
     {
@@ -100,8 +95,9 @@ class MessageCollection
     }
 
     /**
-     * @param $id
-     * @return Boolean
+     * @param string $id
+     *
+     * @return bool
      */
     public function has($id)
     {
@@ -109,8 +105,9 @@ class MessageCollection
     }
 
     /**
-     * @param $callback
-     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     * @param callable $callback
+     *
+     * @throws InvalidArgumentException
      */
     public function sort($callback)
     {
@@ -122,8 +119,9 @@ class MessageCollection
     }
 
     /**
-     * @param $callback
-     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     * @param callable $callback
+     *
+     * @throws InvalidArgumentException
      */
     public function filter($callback)
     {
@@ -150,9 +148,6 @@ class MessageCollection
         return $this->messages;
     }
 
-    /**
-     * @param MessageCollection $domain
-     */
     public function merge(MessageCollection $domain)
     {
         foreach ($domain->all() as $id => $message) {
@@ -160,16 +155,12 @@ class MessageCollection
         }
     }
 
-    /**
-     * @param Message $oldMessage
-     * @param Message $newMessage
-     */
     private function checkConsistency(Message $oldMessage, Message $newMessage)
     {
         $oldDesc = $oldMessage->getDesc();
         $newDesc = $newMessage->getDesc();
 
-        if (0 < strlen($oldDesc) && 0 < strlen($newDesc) && $oldDesc != $newDesc) {
+        if (0 < strlen((string) $oldDesc) && 0 < strlen((string) $newDesc) && $oldDesc !== $newDesc) {
             throw new \RuntimeException(sprintf("The message '%s' exists with two different descs: '%s' in %s, and '%s' in %s", $oldMessage->getId(), $oldMessage->getDesc(), current($oldMessage->getSources()), $newMessage->getDesc(), current($newMessage->getSources())));
         }
     }

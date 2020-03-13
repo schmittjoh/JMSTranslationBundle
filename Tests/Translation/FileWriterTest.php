@@ -22,9 +22,9 @@ namespace JMS\TranslationBundle\Tests\Translation;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Dumper\DumperInterface;
 use JMS\TranslationBundle\Translation\FileWriter;
 use PHPUnit\Framework\TestCase;
-use JMS\TranslationBundle\Translation\Dumper\DumperInterface;
 
 class FileWriterTest extends TestCase
 {

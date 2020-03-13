@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -35,22 +37,22 @@ abstract class FileUtils
      *        )
      *    )
      *
-     * @throws \RuntimeException
-     *
      * @return array
+     *
+     * @throws \RuntimeException
      */
     public static function findTranslationFiles($directory)
     {
-        $files = array();
+        $files = [];
         foreach (Finder::create()->in($directory)->depth('< 1')->files() as $file) {
             if (!preg_match('/^([^\.]+)\.([^\.]+)\.([^\.]+)$/', basename((string) $file), $match)) {
                 continue;
             }
 
-            $files[$match[1]][$match[2]] = array(
+            $files[$match[1]][$match[2]] = [
                 $match[3],
-                $file
-            );
+                $file,
+            ];
         }
 
         uksort($files, 'strcasecmp');

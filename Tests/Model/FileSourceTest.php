@@ -21,8 +21,8 @@ declare(strict_types=1);
 namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
-use PHPUnit\Framework\TestCase;
 use JMS\TranslationBundle\Model\SourceInterface;
+use PHPUnit\Framework\TestCase;
 
 class FileSourceTest extends TestCase
 {

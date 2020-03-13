@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -36,10 +38,9 @@ class FileSource implements SourceInterface
     private $column;
 
     /**
-     * FileSource constructor.
-     * @param $path string
-     * @param null|int $line
-     * @param null|int $column
+     * @param string $path
+     * @param int|null $line
+     * @param int|null $column
      */
     public function __construct($path, $line = null, $column = null)
     {
@@ -57,7 +58,7 @@ class FileSource implements SourceInterface
     }
 
     /**
-     * @return null|int
+     * @return int|null
      */
     public function getLine()
     {
@@ -65,7 +66,7 @@ class FileSource implements SourceInterface
     }
 
     /**
-     * @return null|int
+     * @return int|null
      */
     public function getColumn()
     {
@@ -74,6 +75,7 @@ class FileSource implements SourceInterface
 
     /**
      * @param SourceInterface $source
+     *
      * @return bool
      */
     public function equals(SourceInterface $source)
@@ -90,11 +92,7 @@ class FileSource implements SourceInterface
             return false;
         }
 
-        if ($this->column !== $source->getColumn()) {
-            return false;
-        }
-
-        return true;
+        return $this->column === $source->getColumn();
     }
 
     /**
@@ -105,10 +103,10 @@ class FileSource implements SourceInterface
         $str = $this->path;
 
         if (null !== $this->line) {
-            $str .= ' on line '.$this->line;
+            $str .= ' on line ' . $this->line;
 
             if (null !== $this->column) {
-                $str .= ' at column '.$this->column;
+                $str .= ' at column ' . $this->column;
             }
         }
 

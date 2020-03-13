@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -28,10 +30,9 @@ class ConfigFactory
     private $builders;
 
     /**
-     * ConfigFactory constructor.
      * @param array $builders ConfigBuilder
      */
-    public function __construct(array $builders = array())
+    public function __construct(array $builders = [])
     {
         $this->builders = $builders;
     }
@@ -45,8 +46,10 @@ class ConfigFactory
     }
 
     /**
-     * @param $name
+     * @param string $name
+     *
      * @return ConfigBuilder
+     *
      * @throws InvalidArgumentException
      */
     public function getBuilder($name)
@@ -59,8 +62,9 @@ class ConfigFactory
     }
 
     /**
-     * @param $name
-     * @param $locale
+     * @param string $name
+     * @param string $locale
+     *
      * @return Config
      */
     public function getConfig($name, $locale)

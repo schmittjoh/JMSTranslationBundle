@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -70,17 +72,17 @@ class Message
      *
      * @var array
      */
-    private $sources = array();
+    private $sources = [];
 
     /**
-     * @static
+     * @deprecated Will be removed in 2.0. Use the FileSourceFactory
      *
-     * @param $id
+     * @param string $id
      * @param string $domain
      *
      * @return Message
      *
-     * @deprecated Will be removed in 2.0. Use the FileSourceFactory
+     * @static
      */
     public static function forThisFile($id, $domain = 'messages')
     {
@@ -95,12 +97,12 @@ class Message
     }
 
     /**
-     * @static
-     *
-     * @param $id
+     * @param string $id
      * @param string $domain
      *
      * @return Message
+     *
+     * @static
      */
     public static function create($id, $domain = 'messages')
     {
@@ -168,7 +170,7 @@ class Message
      */
     public function getLocaleString()
     {
-        return $this->localeString !== null ? $this->localeString : ($this->new ? ($this->desc !== null ? $this->desc : $this->id) : '');
+        return $this->localeString ?? ($this->new ? ($this->desc ?? $this->id) : '');
     }
 
     /**
@@ -256,7 +258,7 @@ class Message
         return $this;
     }
 
-    public function setSources(array $sources = array())
+    public function setSources(array $sources = [])
     {
         $this->sources = $sources;
 
@@ -318,9 +320,9 @@ class Message
      * Do not use this if you want to merge a message from an extracted catalogue.
      * In these cases, use merge() instead.
      *
-     * @param Message $message
-     *
      * @deprecated not in use atm
+     *
+     * @param Message $message
      */
     public function mergeExisting(Message $message)
     {
@@ -351,9 +353,9 @@ class Message
      * The result of both methods is the same, except that the result will end up in the existing message,
      * instead of the scanned message, so extra information read from the existing message is not discarded.
      *
-     * @param Message $message
-     *
      * @author Dieter Peeters <peetersdiet@gmail.com>
+     *
+     * @param Message $message
      */
     public function mergeScanned(Message $message)
     {
@@ -369,7 +371,7 @@ class Message
             $this->desc = $message->getDesc();
         }
 
-        $this->sources = array();
+        $this->sources = [];
         foreach ($message->getSources() as $source) {
             $this->addSource($source);
         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -33,12 +35,12 @@ final class ConfigBuilder
     /**
      * @var array
      */
-    private $ignoredDomains = array();
+    private $ignoredDomains = [];
 
     /**
      * @var array
      */
-    private $domains = array();
+    private $domains = [];
 
     /**
      * @var string
@@ -53,22 +55,22 @@ final class ConfigBuilder
     /**
      * @var array
      */
-    private $scanDirs = array();
+    private $scanDirs = [];
 
     /**
      * @var array
      */
-    private $excludedDirs = array('Tests');
+    private $excludedDirs = ['Tests'];
 
     /**
      * @var array
      */
-    private $excludedNames = array('*Test.php', '*TestCase.php');
+    private $excludedNames = ['*Test.php', '*TestCase.php'];
 
     /**
      * @var array
      */
-    private $enabledExtractors = array();
+    private $enabledExtractors = [];
 
     /**
      * @var bool
@@ -78,12 +80,14 @@ final class ConfigBuilder
     /**
      * @var array
      */
-    private $loadResources = array();
+    private $loadResources = [];
 
     /**
-     * @static
      * @param Config $config
+     *
      * @return ConfigBuilder
+     *
+     * @static
      */
     public static function fromConfig(Config $config)
     {
@@ -111,6 +115,7 @@ final class ConfigBuilder
      *   - you haven't forced a format
      *
      * @param string $format
+     *
      * @return $this
      */
     public function setDefaultOutputFormat($format)
@@ -128,6 +133,7 @@ final class ConfigBuilder
      * another format to be deleted.
      *
      * @param string $format
+     *
      * @return $this
      */
     public function setOutputFormat($format)
@@ -144,6 +150,7 @@ final class ConfigBuilder
      * appear in the change set calculated by getChangeSet().
      *
      * @param array $domains an array of the form array('domain' => true, 'another_domain' => true)
+     *
      * @return $this
      */
     public function setIgnoredDomains(array $domains)
@@ -155,6 +162,7 @@ final class ConfigBuilder
 
     /**
      * @param string $domain
+     *
      * @return $this
      */
     public function addIgnoredDomain($domain)
@@ -166,6 +174,7 @@ final class ConfigBuilder
 
     /**
      * @param array $domains
+     *
      * @return $this
      */
     public function setDomains(array $domains)
@@ -177,6 +186,7 @@ final class ConfigBuilder
 
     /**
      * @param string $domain
+     *
      * @return $this
      */
     public function addDomain($domain)
@@ -188,6 +198,7 @@ final class ConfigBuilder
 
     /**
      * @param string $locale
+     *
      * @return $this
      */
     public function setLocale($locale)
@@ -199,6 +210,7 @@ final class ConfigBuilder
 
     /**
      * @param string $dir
+     *
      * @return $this
      */
     public function setTranslationsDir($dir)
@@ -210,6 +222,7 @@ final class ConfigBuilder
 
     /**
      * @param array $dirs
+     *
      * @return $this
      */
     public function setScanDirs(array $dirs)
@@ -221,6 +234,7 @@ final class ConfigBuilder
 
     /**
      * @param array $dirs
+     *
      * @return $this
      */
     public function setExcludedDirs(array $dirs)
@@ -232,6 +246,7 @@ final class ConfigBuilder
 
     /**
      * @param array $names
+     *
      * @return $this
      */
     public function setExcludedNames(array $names)
@@ -243,6 +258,7 @@ final class ConfigBuilder
 
     /**
      * @param array $aliases
+     *
      * @return $this
      */
     public function setEnabledExtractors(array $aliases)
@@ -254,6 +270,7 @@ final class ConfigBuilder
 
     /**
      * @param string $alias
+     *
      * @return $this
      */
     public function enableExtractor($alias)
@@ -265,6 +282,7 @@ final class ConfigBuilder
 
     /**
      * @param string $alias
+     *
      * @return $this
      */
     public function disableExtractor($alias)
@@ -276,6 +294,7 @@ final class ConfigBuilder
 
     /**
      * @param bool $value
+     *
      * @return $this
      */
     public function setKeepOldTranslations($value)
@@ -308,6 +327,7 @@ final class ConfigBuilder
 
     /**
      * @param array $loadResources
+     *
      * @return $this
      */
     public function setLoadResources(array $loadResources)

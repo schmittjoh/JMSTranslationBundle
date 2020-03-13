@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,11 +20,11 @@
 
 namespace JMS\TranslationBundle\Command;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use JMS\TranslationBundle\Util\FileUtils;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
@@ -62,14 +64,9 @@ class ResourcesListCommand extends Command
         $this
             ->setName('translation:list-resources')
             ->setDescription('List translation resources available.')
-            ->addOption('files', null, InputOption::VALUE_OPTIONAL, 'Display only files')
-        ;
+            ->addOption('files', null, InputOption::VALUE_OPTIONAL, 'Display only files');
     }
 
-    /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $directoriesToSearch = [];
@@ -113,11 +110,12 @@ class ResourcesListCommand extends Command
 
     /**
      * @param array $dirs
+     *
      * @return array
      */
     private function retrieveFiles(array $dirs)
     {
-        $files = array();
+        $files = [];
         // Register translation resources
         foreach ($dirs as $dir) {
             foreach (FileUtils::findTranslationFiles($dir) as $catalogue => $locales) {
@@ -138,21 +136,21 @@ class ResourcesListCommand extends Command
     private function retrieveDirs()
     {
         // Discover translation directories
-        $dirs = array();
+        $dirs = [];
         foreach ($this->bundles as $bundle) {
             $reflection = new \ReflectionClass($bundle);
-            if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/translations')) {
+            if (is_dir($dir = dirname($reflection->getFilename()) . '/Resources/translations')) {
                 $dirs[] = $dir;
             }
         }
 
         // TODO: Remove this block when dropping support of Symfony 4
         if ($this->rootDir !== null &&
-            is_dir($dir = $this->rootDir.'/Resources/translations')) {
+            is_dir($dir = $this->rootDir . '/Resources/translations')) {
             $dirs[] = $dir;
         }
 
-        if (is_dir($dir = $this->projectDir.'/translations')) {
+        if (is_dir($dir = $this->projectDir . '/translations')) {
             $dirs[] = $dir;
         }
 

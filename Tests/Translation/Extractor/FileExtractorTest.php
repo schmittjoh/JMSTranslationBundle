@@ -22,6 +22,9 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\DocParser;
+use JMS\TranslationBundle\Annotation\Desc;
+use JMS\TranslationBundle\Annotation\Ignore;
+use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
@@ -40,9 +43,6 @@ use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
-use JMS\TranslationBundle\Annotation\Ignore;
-use JMS\TranslationBundle\Annotation\Meaning;
-use JMS\TranslationBundle\Annotation\Desc;
 
 class FileExtractorTest extends TestCase
 {

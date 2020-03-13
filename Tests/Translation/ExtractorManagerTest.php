@@ -23,12 +23,12 @@ namespace JMS\TranslationBundle\Tests\Translation;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
+use JMS\TranslationBundle\Translation\ExtractorInterface;
 use JMS\TranslationBundle\Translation\ExtractorManager;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
-use JMS\TranslationBundle\Translation\ExtractorInterface;
 
 class ExtractorManagerTest extends TestCase
 {

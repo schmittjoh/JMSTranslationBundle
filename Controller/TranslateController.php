@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -48,12 +50,6 @@ class TranslateController
      */
     private $sourceLanguage;
 
-    /**
-     * TranslateController constructor.
-     *
-     * @param ConfigFactory $configFactory
-     * @param LoaderManager $loader
-     */
     public function __construct(ConfigFactory $configFactory, LoaderManager $loader)
     {
         $this->configFactory = $configFactory;
@@ -69,10 +65,12 @@ class TranslateController
     }
 
     /**
+     * @param Request $request
+     *
+     * @return array
+     *
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
      * @Template("@JMSTranslation/Translate/index.html.twig")
-     * @param Request $request
-     * @return array
      */
     public function indexAction(Request $request)
     {
@@ -111,7 +109,7 @@ class TranslateController
         // create alternative messages
         // TODO: We should probably also add these to the XLIFF file for external translators,
         //       and the specification already supports it
-        $alternativeMessages = array();
+        $alternativeMessages = [];
         foreach ($locales as $otherLocale) {
             if ($locale === $otherLocale) {
                 continue;
@@ -128,7 +126,7 @@ class TranslateController
             }
         }
 
-        $newMessages = $existingMessages = array();
+        $newMessages = $existingMessages = [];
         foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
             if ($message->isNew()) {
                 $newMessages[$id] = $message;
@@ -138,7 +136,7 @@ class TranslateController
             $existingMessages[$id] = $message;
         }
 
-        return array(
+        return [
             'selectedConfig' => $config,
             'configs' => $configs,
             'selectedDomain' => $domain,
@@ -149,9 +147,9 @@ class TranslateController
             'newMessages' => $newMessages,
             'existingMessages' => $existingMessages,
             'alternativeMessages' => $alternativeMessages,
-            'isWriteable' => is_writeable($files[$domain][$locale][1]),
+            'isWriteable' => is_writable((string) $files[$domain][$locale][1]),
             'file' => (string) $files[$domain][$locale][1],
             'sourceLanguage' => $this->sourceLanguage,
-        );
+        ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,10 +21,10 @@
 namespace JMS\TranslationBundle\Twig;
 
 use Twig\Environment;
-use Twig\NodeVisitor\AbstractNodeVisitor;
 use Twig\Node\Expression\Binary\ConcatBinary;
 use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Node;
+use Twig\NodeVisitor\AbstractNodeVisitor;
 
 /**
  * Performs equivalence transformations on the AST to ensure that
@@ -50,7 +52,7 @@ class NormalizingNodeVisitor extends AbstractNodeVisitor
         if ($node instanceof ConcatBinary
             && ($left = $node->getNode('left')) instanceof ConstantExpression
             && ($right = $node->getNode('right')) instanceof ConstantExpression) {
-            return new ConstantExpression($left->getAttribute('value').$right->getAttribute('value'), $left->getTemplateLine());
+            return new ConstantExpression($left->getAttribute('value') . $right->getAttribute('value'), $left->getTemplateLine());
         }
 
         return $node;

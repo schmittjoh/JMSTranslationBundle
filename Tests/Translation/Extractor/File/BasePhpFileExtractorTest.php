@@ -21,6 +21,9 @@ declare(strict_types=1);
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
 use Doctrine\Common\Annotations\DocParser;
+use JMS\TranslationBundle\Annotation\Desc;
+use JMS\TranslationBundle\Annotation\Ignore;
+use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Translation\FileSourceFactory;
@@ -28,9 +31,6 @@ use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
-use JMS\TranslationBundle\Annotation\Ignore;
-use JMS\TranslationBundle\Annotation\Meaning;
-use JMS\TranslationBundle\Annotation\Desc;
 
 abstract class BasePhpFileExtractorTest extends TestCase
 {

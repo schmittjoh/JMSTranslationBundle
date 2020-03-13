@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -25,8 +27,5 @@ use Psr\Log\LoggerInterface;
  */
 interface LoggerAwareInterface
 {
-    /**
-     * @param LoggerInterface $logger
-     */
     public function setLogger(LoggerInterface $logger);
 }

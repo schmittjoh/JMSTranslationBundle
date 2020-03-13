@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -43,11 +45,6 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
     private $traverser;
 
     /**
-     * @var string
-     */
-    private $file;
-
-    /**
      * @var MessageCatalogue
      */
     private $catalogue;
@@ -60,11 +57,8 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
     /**
      * @var array
      */
-    private $useStatements = array();
+    private $useStatements = [];
 
-    /**
-     * TranslationContainerExtractor constructor.
-     */
     public function __construct()
     {
         $this->traverser = new NodeTraverser();
@@ -73,7 +67,8 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
 
     /**
      * @param Node $node
-     * @return null|Node|void
+     *
+     * @return Node|void|null
      */
     public function enterNode(Node $node)
     {
@@ -81,7 +76,7 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
             if (isset($node->name)) {
                 $this->namespace = implode('\\', $node->name->parts);
             }
-            $this->useStatements = array();
+            $this->useStatements = [];
 
             return;
         }
@@ -114,14 +109,14 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
             return;
         }
 
-        $messages = call_user_func(array($this->namespace.'\\'.$node->name, 'getTranslationMessages'));
+        $messages = call_user_func([$this->namespace . '\\' . $node->name, 'getTranslationMessages']);
         if (!is_array($messages)) {
-            throw new RuntimeException(sprintf('%s::getTranslationMessages() was expected to return an array of messages, but got %s.', $this->namespace.'\\'.$node->name, gettype($messages)));
+            throw new RuntimeException(sprintf('%s::getTranslationMessages() was expected to return an array of messages, but got %s.', $this->namespace . '\\' . $node->name, gettype($messages)));
         }
 
         foreach ($messages as $message) {
             if (!$message instanceof Message) {
-                throw new RuntimeException(sprintf('%s::getTranslationMessages() was expected to return an array of messages, but got an array which contains an item of type %s.', $this->namespace.'\\'.$node->name, gettype($message)));
+                throw new RuntimeException(sprintf('%s::getTranslationMessages() was expected to return an array of messages, but got an array which contains an item of type %s.', $this->namespace . '\\' . $node->name, gettype($message)));
             }
 
             $this->catalogue->add($message);
@@ -135,13 +130,13 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
      */
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
     {
-        $this->file = $file;
         $this->catalogue = $catalogue;
         $this->traverser->traverse($ast);
     }
 
     /**
      * @param array $nodes
+     *
      * @return void
      */
     public function beforeTraverse(array $nodes)
@@ -150,6 +145,7 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
 
     /**
      * @param Node $node
+     *
      * @return void
      */
     public function leaveNode(Node $node)
@@ -158,24 +154,17 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
 
     /**
      * @param array $nodes
+     *
      * @return void
      */
     public function afterTraverse(array $nodes)
     {
     }
 
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     */
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
     {
     }
 
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     */
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, TwigNode $ast)
     {
     }

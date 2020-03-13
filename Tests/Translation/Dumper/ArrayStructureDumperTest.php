@@ -22,8 +22,8 @@ namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use PHPUnit\Framework\TestCase;
 use JMS\TranslationBundle\Translation\Dumper\ArrayStructureDumper;
+use PHPUnit\Framework\TestCase;
 
 class ArrayStructureDumperTest extends TestCase
 {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -23,9 +25,9 @@ use JMS\TranslationBundle\Model\FileSource;
 class FileSourceFactory
 {
     /**
-     * @var string
-     *
      * @deprecated Will be removed in 2.0. Use $baseDir instead.
+     *
+     * @var string
      */
     protected $kernelRoot;
 
@@ -35,11 +37,9 @@ class FileSourceFactory
     protected $baseDir;
 
     /**
-     * FileSourceFactory constructor.
-     *
      * @param string $kernelRoot
      */
-    public function __construct($kernelRoot, string $baseDir = null)
+    public function __construct($kernelRoot, ?string $baseDir = null)
     {
         $this->kernelRoot = $kernelRoot;
         $this->baseDir = $baseDir ?? $kernelRoot;
@@ -49,8 +49,8 @@ class FileSourceFactory
      * Generate a new FileSource with a relative path.
      *
      * @param \SplFileInfo $file
-     * @param null|int     $line
-     * @param null|int     $column
+     * @param int|null $line
+     * @param int|null $column
      *
      * @return FileSource
      */
@@ -82,16 +82,16 @@ class FileSourceFactory
             // If they are not equal
             if ($pathCurrentDirectory !== $rootCurrentDirectory) {
                 // Prepend $relativePath with "/.."
-                $relativePath = $ds.'..'.$relativePath;
+                $relativePath = $ds . '..' . $relativePath;
 
                 if ($pathCurrentDirectory) {
                     // Append the current directory
-                    $relativePath .= $pathCurrentDirectory.$ds;
+                    $relativePath .= $pathCurrentDirectory . $ds;
                 }
             }
         }
 
         // Add the rest of the $pathArray on the relative directory
-        return rtrim($relativePath.implode($ds, $pathArray), '/');
+        return rtrim($relativePath . implode($ds, $pathArray), '/');
     }
 }

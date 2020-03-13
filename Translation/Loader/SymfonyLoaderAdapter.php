@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,8 +20,8 @@
 
 namespace JMS\TranslationBundle\Translation\Loader;
 
-use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Translation\Loader\LoaderInterface as SymfonyLoader;
 
 /**
@@ -36,10 +38,6 @@ class SymfonyLoaderAdapter implements LoaderInterface
      */
     private $loader;
 
-    /**
-     * SymfonyLoaderAdapter constructor.
-     * @param SymfonyLoader $loader
-     */
     public function __construct(SymfonyLoader $loader)
     {
         $this->loader = $loader;
@@ -52,6 +50,7 @@ class SymfonyLoaderAdapter implements LoaderInterface
      * @param mixed $resource
      * @param string $locale
      * @param string $domain
+     *
      * @return MessageCatalogue
      */
     public function load($resource, $locale, $domain = 'messages')

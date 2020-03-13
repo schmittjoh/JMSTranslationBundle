@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -21,13 +23,13 @@ namespace JMS\TranslationBundle\Twig;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Twig\Node\Transchoice;
 use Twig\Environment;
-use Twig\NodeVisitor\AbstractNodeVisitor;
 use Twig\Node\Expression\ArrayExpression;
 use Twig\Node\Expression\Binary\EqualBinary;
 use Twig\Node\Expression\ConditionalExpression;
 use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Expression\FilterExpression;
 use Twig\Node\Node;
+use Twig\NodeVisitor\AbstractNodeVisitor;
 
 /**
  * Applies the value of the "desc" filter if the "trans" filter has no
@@ -44,9 +46,6 @@ class DefaultApplyingNodeVisitor extends AbstractNodeVisitor
      */
     private $enabled = true;
 
-    /**
-     * @param $bool
-     */
     public function setEnabled($bool)
     {
         $this->enabled = (bool) $bool;
@@ -84,7 +83,7 @@ class DefaultApplyingNodeVisitor extends AbstractNodeVisitor
             // so that we can catch a possible exception when the default translation has not yet
             // been extracted
             if ('transchoice' === $transNode->getNode('filter')->getAttribute('value')) {
-                $transchoiceArguments = new ArrayExpression(array(), $transNode->getTemplateLine());
+                $transchoiceArguments = new ArrayExpression([], $transNode->getTemplateLine());
                 $transchoiceArguments->addElement($wrappingNode->getNode('node'));
                 $transchoiceArguments->addElement($defaultNode);
                 foreach ($wrappingNode->getNode('arguments') as $arg) {
