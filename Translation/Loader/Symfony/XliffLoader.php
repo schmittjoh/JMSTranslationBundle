@@ -61,7 +61,7 @@ class XliffLoader implements LoaderInterface
             $catalogue->set($id, (string) $translation->target, $domain);
         }
 
-        $catalogue->addResource(new FileResource($resource));
+        $catalogue->addResource(new FileResource((string) $resource));
 
         return $catalogue;
     }
