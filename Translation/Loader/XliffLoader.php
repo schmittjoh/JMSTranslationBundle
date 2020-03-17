@@ -37,7 +37,7 @@ class XliffLoader implements LoaderInterface
     public function load($resource, $locale, $domain = 'messages')
     {
         $previous = libxml_use_internal_errors(true);
-        if (false === $doc = simplexml_load_file($resource)) {
+        if (false === $doc = simplexml_load_file((string)$resource)) {
             libxml_use_internal_errors($previous);
             $libxmlError = libxml_get_last_error();
 
