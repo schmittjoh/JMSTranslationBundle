@@ -118,7 +118,7 @@ class XliffDumper implements DumperInterface
 
         foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
             $body->appendChild($unit = $doc->createElement('trans-unit'));
-            $unit->setAttribute('id', hash('sha1', $id));
+            $unit->setAttribute('id', hash('sha1', (string) $id));
             $unit->setAttribute('resname', (string) $id);
             if ($message instanceof XliffMessage && $message->isApproved()) {
                 $unit->setAttribute('approved', 'yes');
@@ -203,7 +203,7 @@ class XliffDumper implements DumperInterface
      *
      * @param array $sources
      *
-     * @return FileSource
+     * @return array
      */
     protected function getSortedSources(array $sources)
     {
