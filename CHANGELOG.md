@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.5.3](https://github.com/schmittjoh/JMSTranslationBundle/tree/1.5.3) (2020-04-19)
+
+**Closed issues:**
+
+- ExtractTranslationCommand unlink\(\) expects parameter 1 to be a valid path, object given [\#537](https://github.com/schmittjoh/JMSTranslationBundle/issues/537)
+- 1.5 =\> simplexml\_load\_file\(\) expects parameter 1 to be a valid path, object given [\#535](https://github.com/schmittjoh/JMSTranslationBundle/issues/535)
+
+**Merged pull requests:**
+
+- Update Updater.php [\#538](https://github.com/schmittjoh/JMSTranslationBundle/pull/538) ([TheRatG](https://github.com/TheRatG))
+- Remove duplicated Changelog [\#534](https://github.com/schmittjoh/JMSTranslationBundle/pull/534) ([franmomu](https://github.com/franmomu))
+
+## [1.5.2](https://github.com/schmittjoh/JMSTranslationBundle/tree/1.5.2) (2020-03-19)
+
+**Merged pull requests:**
+
+- Fix casting int to string [\#536](https://github.com/schmittjoh/JMSTranslationBundle/pull/536) ([franmomu](https://github.com/franmomu))
+
+## [1.5.1](https://github.com/schmittjoh/JMSTranslationBundle/tree/1.5.1) (2020-03-17)
+
+**Merged pull requests:**
+
+- Fixed object instead of string error introduced by strict\_types [\#533](https://github.com/schmittjoh/JMSTranslationBundle/pull/533) ([ViniTou](https://github.com/ViniTou))
+
 ## [1.5.0](https://github.com/schmittjoh/JMSTranslationBundle/tree/1.5.0) (2020-03-15)
 
 **Closed issues:**
