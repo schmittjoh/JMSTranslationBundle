@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace JMS\TranslationBundle\Tests\Translation\Loader;
 
 use JMS\TranslationBundle\Model\Message\XliffMessage;
+use JMS\TranslationBundle\Model\Message\XliffMessageState;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 use JMS\TranslationBundle\Translation\Loader\XliffLoader;
@@ -60,6 +61,24 @@ class XliffLoaderTest extends TestCase
         $this->assertEquals(
             $expected,
             $loader->load(__DIR__ . '/Symfony/xliff/old_format.xml', 'en')
+        );
+    }
+
+    public function testWorkflowAttributes()
+    {
+        $loader = new XliffLoader();
+
+        $expected = new MessageCatalogue();
+        $expected->setLocale('en');
+        $expected->add(XliffMessage::create('foo1')
+            ->setDesc('foo1')
+            ->setLocaleString('bar')
+            ->setState(XliffMessageState::STATE_NEEDS_ADAPTATION)
+            ->setApproved(true));
+
+        $this->assertEquals(
+            $expected,
+            $loader->load(__DIR__ . '/Symfony/xliff/workflow.xml', 'en')
         );
     }
 
