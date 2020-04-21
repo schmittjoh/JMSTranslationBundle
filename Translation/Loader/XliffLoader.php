@@ -64,7 +64,7 @@ class XliffLoader implements LoaderInterface
                     ->setLocaleString((string) $trans->target);
             \assert($m instanceof Message);
 
-            $m->setApproved($trans['approved']==='yes');
+            $m->setApproved((string) $trans['approved']==='yes');
 
             if (isset($trans->target['state'])) {
                 $m->setState((string) $trans->target['state']);

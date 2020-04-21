@@ -100,7 +100,7 @@ class Message
      * @param string $id
      * @param string $domain
      *
-     * @return Message
+     * @return static
      *
      * @static
      */
