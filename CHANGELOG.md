@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.4](https://github.com/schmittjoh/JMSTranslationBundle/tree/1.5.4) (2020-04-21)
+
+**Fixed bugs:**
+
+- test translation state is preserved for xliff [\#540](https://github.com/schmittjoh/JMSTranslationBundle/pull/540) ([goetas](https://github.com/goetas))
+
 ## [1.5.3](https://github.com/schmittjoh/JMSTranslationBundle/tree/1.5.3) (2020-04-19)
 
 **Closed issues:**
