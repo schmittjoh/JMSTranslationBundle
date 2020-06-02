@@ -36,15 +36,18 @@ class XliffLoader implements LoaderInterface
      */
     public function load($resource, $locale, $domain = 'messages')
     {
-        $previous = libxml_use_internal_errors(true);
+        $previousErrors = libxml_use_internal_errors(true);
+        $previousEntities = libxml_disable_entity_loader(false);
         if (false === $doc = simplexml_load_file((string) $resource)) {
-            libxml_use_internal_errors($previous);
+            libxml_use_internal_errors($previousErrors);
+            libxml_disable_entity_loader($previousEntities);
             $libxmlError = libxml_get_last_error();
 
             throw new RuntimeException(sprintf('Could not load XML-file "%s": %s', $resource, $libxmlError->message));
         }
 
-        libxml_use_internal_errors($previous);
+        libxml_use_internal_errors($previousErrors);
+        libxml_disable_entity_loader($previousEntities);
 
         $doc->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
         $doc->registerXPathNamespace('jms', 'urn:jms:translation');
