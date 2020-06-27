@@ -292,7 +292,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
 
         $var = $node->var;
         while ($var instanceof Node\Expr\MethodCall) {
-            if (!isset($returningMethods[strtolower($var->name)])) {
+            if (!isset($returningMethods[strtolower((string) $var->name)])) {
                 return;
             }
 
