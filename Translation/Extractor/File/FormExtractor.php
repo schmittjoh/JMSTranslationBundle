@@ -150,6 +150,12 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                         }
                         $this->parseItem($item, $domain);
                         break;
+                    case 'constraints':
+                        if ($this->parseConstraintNode($item, 'validators')) {
+                            continue 2;
+                        }
+                        $this->parseItem($item, $domain);
+                        break;
                 }
             }
         }
@@ -270,6 +276,41 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             }
             if ('title' === $sitem->key->value) {
                 $this->parseItem($sitem, $domain);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * This parses any Node of type constraints.
+     *
+     * Returning true means either that regardless of whether
+     * parsing has occurred or not, the enterNode function should move on to the next node item.
+     *
+     * @internal
+     *
+     * @param Node $item
+     * @param string $domain
+     *
+     * @return bool
+     */
+    protected function parseConstraintNode(Node $item, $domain)
+    {
+        if (!$item->value instanceof Node\Expr\Array_) {
+            return true;
+        }
+
+        foreach ($item->value->items as $subItem) {
+            if (!$subItem->value instanceof Node\Expr\New_ || !$subItem->value->args) {
+                continue;
+            }
+
+            foreach ($subItem->value->args[0]->value->items as $messageItem) {
+                if (!$messageItem->key instanceof Node\Scalar\String_) {
+                    continue;
+                }
+                $this->parseItem($messageItem, $domain);
             }
         }
 
