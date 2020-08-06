@@ -45,9 +45,7 @@ class MyFormType extends AbstractType
                 'label' => /** @Desc("Street") */ 'form.label.street',
                 'translation_domain' => 'address',
                 'constraints' => [
-                    new NotBlank([
-                        'message' => /** @Desc("You should fill in the street") */ 'form.street.empty_value',
-                    ]),
+                    new NotBlank(['message' => /** @Desc("You should fill in the street") */ 'form.street.empty_value']),
                 ],
             ])
             ->add('zip', 'text', [
