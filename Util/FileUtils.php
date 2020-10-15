@@ -45,13 +45,19 @@ abstract class FileUtils
     {
         $files = [];
         foreach (Finder::create()->in($directory)->depth('< 1')->files() as $file) {
-            if (!preg_match('/^([^\.]+)\.([^\.]+)\.([^\.]+)$/', basename((string) $file), $match)) {
+            $isTranslationFile = preg_match(
+                '/^(?P<domain>[^\.]+?)(?P<icu>\+intl-icu)?\.(?P<locale>[^\.]+)\.(?P<format>[^\.]+)$/',
+                basename((string) $file),
+                $match
+            );
+            if (!$isTranslationFile) {
                 continue;
             }
 
-            $files[$match[1]][$match[2]] = [
-                $match[3],
+            $files[$match['domain']][$match['locale']] = [
+                $match['format'],
                 $file,
+                !empty($match['icu']),
             ];
         }
 

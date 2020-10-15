@@ -148,7 +148,13 @@ class Updater
             $format = $this->detectOutputFormat($name);
 
             // delete translation files of other formats
-            foreach (Finder::create()->name('/^' . $name . '\.' . $this->config->getLocale() . '\.[^\.]+$/')->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
+            $translationFileRegex = sprintf(
+                '/^%s%s\.%s\.[^\.]+$/',
+                $name,
+                $this->config->shouldUseIcuMessageFormat() ? '+intl-icu' : '',
+                $this->config->getLocale()
+            );
+            foreach (Finder::create()->name($translationFileRegex)->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
                 if ('.' . $format === substr((string) $file, -1 * strlen('.' . $format))) {
                     continue;
                 }
@@ -160,7 +166,14 @@ class Updater
                 }
             }
 
-            $outputFile = $this->config->getTranslationsDir() . '/' . $name . '.' . $this->config->getLocale() . '.' . $format;
+            $outputFile = sprintf(
+                '%s/%s%s.%s.%s',
+                $this->config->getTranslationsDir(),
+                $name,
+                $this->config->shouldUseIcuMessageFormat() ? '+intl-icu' : '',
+                $this->config->getLocale(),
+                $format
+            );
             $this->logger->info(sprintf('Writing translation file "%s".', $outputFile));
             $this->writer->write($this->scannedCatalogue, $name, $outputFile, $format);
         }

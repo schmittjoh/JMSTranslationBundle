@@ -44,6 +44,11 @@ On this page you will find all available configuration options and their meaning
                 # The default output format (defaults to xlf)
                 default_output_format: "xlf"
 
+                # Whether or not to use the ICU message format. This causes
+                # translation files to be suffixed with +intl-icu, e.g.
+                # messages+intl-icu.en.yaml
+                intl_icu: false
+
                 # If true, we will never remove messages from the translation files.
                 # If false, the translation files are up to date with the source.
                 keep: false
