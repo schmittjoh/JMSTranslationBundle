@@ -302,7 +302,10 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         }
 
         foreach ($item->value->items as $subItem) {
-            if (!$subItem->value instanceof Node\Expr\New_ || !$subItem->value->args) {
+            if (!$subItem->value instanceof Node\Expr\New_
+                || !$subItem->value->args
+                || !property_exists($subItem->value->args[0]->value, 'items')
+            ) {
                 continue;
             }
 
