@@ -53,6 +53,11 @@ final class ConfigBuilder
     private $defaultOutputFormat = 'xlf';
 
     /**
+     * @var bool
+     */
+    private $useIcuMessageFormat = false;
+
+    /**
      * @var array
      */
     private $scanDirs = [];
@@ -98,6 +103,7 @@ final class ConfigBuilder
         $builder->setDomains($config->getDomains());
         $builder->setOutputFormat($config->getOutputFormat());
         $builder->setDefaultOutputFormat($config->getDefaultOutputFormat());
+        $builder->setUseIcuMessageFormat($config->shouldUseIcuMessageFormat());
         $builder->setScanDirs($config->getScanDirs());
         $builder->setExcludedDirs($config->getExcludedDirs());
         $builder->setExcludedNames($config->getExcludedNames());
@@ -139,6 +145,23 @@ final class ConfigBuilder
     public function setOutputFormat($format)
     {
         $this->outputFormat = $format;
+
+        return $this;
+    }
+
+    /**
+     * Defines whether or not the ICU message format should be used.
+     *
+     * If enabled, translation files will be suffixed with +intl-icu, e.g.:
+     * message+intl-icu.en.xlf
+     *
+     * @param bool $useIcuMessageFormat
+     *
+     * @return $this
+     */
+    public function setUseIcuMessageFormat($useIcuMessageFormat)
+    {
+        $this->useIcuMessageFormat = $useIcuMessageFormat;
 
         return $this;
     }
@@ -316,6 +339,7 @@ final class ConfigBuilder
             $this->domains,
             $this->outputFormat,
             $this->defaultOutputFormat,
+            $this->useIcuMessageFormat,
             $this->scanDirs,
             $this->excludedDirs,
             $this->excludedNames,

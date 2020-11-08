@@ -63,6 +63,11 @@ final class Config
     private $defaultOutputFormat;
 
     /**
+     * @var bool
+     */
+    private $useIcuMessageFormat;
+
+    /**
      * @var array
      */
     private $scanDirs;
@@ -106,7 +111,7 @@ final class Config
      * @param bool $keepOldMessages
      * @param array $loadResources
      */
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, $useIcuMessageFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -139,6 +144,7 @@ final class Config
         $this->domains = $domains;
         $this->outputFormat = $outputFormat;
         $this->defaultOutputFormat = $defaultOutputFormat;
+        $this->useIcuMessageFormat = $useIcuMessageFormat;
         $this->locale = $locale;
         $this->scanDirs = $scanDirs;
         $this->excludedDirs = $excludedDirs;
@@ -214,6 +220,14 @@ final class Config
     public function getDefaultOutputFormat()
     {
         return $this->defaultOutputFormat;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldUseIcuMessageFormat()
+    {
+        return $this->useIcuMessageFormat;
     }
 
     /**

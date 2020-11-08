@@ -116,6 +116,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->scalarNode('output_format')->end()
                             ->scalarNode('default_output_format')->end()
+                            ->scalarNode('intl_icu')->defaultValue(false)->end()
                             ->arrayNode('ignored_domains')
                                 ->prototype('scalar')->end()
                             ->end()

@@ -93,6 +93,10 @@ class JMSTranslationExtension extends Extension
                 $def->addMethodCall('setDefaultOutputFormat', [$extractConfig['default_output_format']]);
             }
 
+            if (isset($extractConfig['intl_icu'])) {
+                $def->addMethodCall('setUseIcuMessageFormat', [$extractConfig['intl_icu']]);
+            }
+
             if (isset($extractConfig['keep'])) {
                 $def->addMethodCall('setKeepOldTranslations', [$extractConfig['keep']]);
             }
