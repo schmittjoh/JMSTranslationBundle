@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,44 +20,38 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File\Fixture;
 
-use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class MyFormTypeWithSubscriberAndListener extends AbstractType
 {
-    public function buildForm(FormBuilder $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $formFactory = $builder->getFormFactory();
         $builder
-            ->add('firstname', 'text', array(
-                'label' => 'form.label.firstname',
-            ))
-            ->add('lastname', 'text', array(
-                'label' => /** @Desc("Lastname") */ 'form.label.lastname',
-            ))
+            ->add('firstname', 'text', ['label' => 'form.label.firstname'])
+            ->add('lastname', 'text', ['label' => /** @Desc("Lastname") */ 'form.label.lastname'])
 
             ->addEventSubscriber(new MyFormSubscriber($formFactory))
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formFactory) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event) use ($formFactory) {
                 $data = $event->getData();
                 $form = $event->getForm();
 
-                if (null === $data) {
+                if ($data === null) {
                     return;
                 }
 
                 $form
-                    ->add($formFactory->createNamed('zip', 'text', null, array(
+                    ->add($formFactory->createNamed('zip', 'text', null, [
                         /** @Desc("ZIP") */
                         'label' => 'form.label.zip',
-                        'translation_domain' => 'address'
-                    )))
-                ;
-            })
-        ;
+                        'translation_domain' => 'address',
+                    ]));
+            });
     }
-    
+
     public function getName()
     {
         return 'my_form_with_subscriber_and_listener';

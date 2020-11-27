@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,10 +21,10 @@
 namespace JMS\TranslationBundle\Translation\Dumper;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Translation\MessageCatalogue as SymfonyCatalogue;
-use Symfony\Component\Translation\Dumper\DumperInterface as SymfonyDumper;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Translation\Dumper\DumperInterface as SymfonyDumper;
+use Symfony\Component\Translation\MessageCatalogue as SymfonyCatalogue;
 
 /**
  * Adapter for Symfony's dumpers.
@@ -46,11 +48,6 @@ class SymfonyDumperAdapter implements DumperInterface
      */
     private $format;
 
-    /**
-     * SymfonyDumperAdapter constructor.
-     * @param SymfonyDumper $dumper
-     * @param $format string
-     */
     public function __construct(SymfonyDumper $dumper, $format)
     {
         $this->dumper = $dumper;
@@ -60,7 +57,9 @@ class SymfonyDumperAdapter implements DumperInterface
     /**
      * @param MessageCatalogue $catalogue
      * @param string $domain
+     *
      * @return string
+     *
      * @throws RuntimeException
      */
     public function dump(MessageCatalogue $catalogue, $domain = 'messages')
@@ -69,21 +68,19 @@ class SymfonyDumperAdapter implements DumperInterface
 
         foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
             $symfonyCatalogue->add(
-                array($id => $message->getLocaleString()),
+                [$id => $message->getLocaleString()],
                 $domain
             );
         }
 
-        $tmpPath = sys_get_temp_dir().'/'.uniqid('translation', false);
+        $tmpPath = sys_get_temp_dir() . '/' . uniqid('translation', false);
         if (!is_dir($tmpPath) && false === @mkdir($tmpPath, 0777, true)) {
             throw new RuntimeException(sprintf('Could not create temporary directory "%s".', $tmpPath));
         }
 
-        $this->dumper->dump($symfonyCatalogue, array(
-            'path' => $tmpPath,
-        ));
+        $this->dumper->dump($symfonyCatalogue, ['path' => $tmpPath]);
 
-        if (!is_file($tmpFile = $tmpPath.'/'.$domain.'.'.$catalogue->getLocale().'.'.$this->format)) {
+        if (!is_file($tmpFile = $tmpPath . '/' . $domain . '.' . $catalogue->getLocale() . '.' . $this->format)) {
             throw new RuntimeException(sprintf('Could not find dumped translation file "%s".', $tmpFile));
         }
 

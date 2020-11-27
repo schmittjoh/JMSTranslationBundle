@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,8 +20,8 @@
 
 namespace JMS\TranslationBundle\Translation\Dumper;
 
-use JMS\TranslationBundle\Util\Writer;
 use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Util\Writer;
 use Symfony\Component\Yaml\Inline;
 
 class YamlDumper extends ArrayStructureDumper
@@ -29,9 +31,6 @@ class YamlDumper extends ArrayStructureDumper
      */
     private $writer;
 
-    /**
-     * YamlDumper constructor.
-     */
     public function __construct()
     {
         $this->writer = new Writer();
@@ -39,6 +38,7 @@ class YamlDumper extends ArrayStructureDumper
 
     /**
      * @param array $structure
+     *
      * @return string
      */
     protected function dumpStructure(array $structure)
@@ -66,11 +66,11 @@ class YamlDumper extends ArrayStructureDumper
                 }
 
                 if ($desc) {
-                    $desc = str_replace(array("\r\n", "\n", "\r", "\t"), array('\r\n', '\n', '\r', '\t'), $desc);
-                    $this->writer->writeln('# Desc: '.$desc);
+                    $desc = str_replace(["\r\n", "\n", "\r", "\t"], ['\r\n', '\n', '\r', '\t'], $desc);
+                    $this->writer->writeln('# Desc: ' . $desc);
                 }
                 if ($meaning) {
-                    $this->writer->writeln('# Meaning: '.$meaning);
+                    $this->writer->writeln('# Meaning: ' . $meaning);
                 }
             } elseif (!$isFirst) {
                 $this->writer->write("\n");
@@ -78,10 +78,10 @@ class YamlDumper extends ArrayStructureDumper
 
             $isFirst = false;
             $precededByMessage = $isMessage;
-            $this->writer->write(Inline::dump($k).':');
+            $this->writer->write(Inline::dump($k) . ':');
 
             if ($isMessage) {
-                $this->writer->write(' '.Inline::dump($v->getLocaleString()));
+                $this->writer->write(' ' . Inline::dump($v->getLocaleString()));
 
                 if ($v->isNew()) {
                     $this->writer->write('   # FIXME');

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,23 +21,23 @@
 namespace JMS\TranslationBundle\Tests\Translation\Loader\Symfony;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
+use JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Translation\MessageCatalogue;
-use JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader;
 
 class XliffLoaderTest extends BaseLoaderTest
 {
     public function testLoadOldFormat()
     {
         $expected = new MessageCatalogue('en');
-        $expected->add(array(
+        $expected->add([
             'foo1' => 'bar',
             'foo2' => 'bar',
             'foo3' => 'bar',
             'foo4' => 'bar',
-        ));
+        ]);
 
-        $file = __DIR__.'/xliff/old_format.xml';
+        $file = __DIR__ . '/xliff/old_format.xml';
         $expected->addResource(new FileResource($file));
 
         $this->assertEquals($expected, $this->getLoader()->load($file, 'en'));
@@ -43,11 +45,12 @@ class XliffLoaderTest extends BaseLoaderTest
 
     protected function getInputFile($key)
     {
-        if (!is_file($file = __DIR__.'/../../Dumper/xliff/'.$key.'.xml')) {
+        $fileRealPath =  __DIR__ . '/../../Dumper/xliff/' . $key . '.xml';
+        if (! is_file($fileRealPath)) {
             throw new InvalidArgumentException(sprintf('The input file for key "%s" does not exist.', $key));
         }
 
-        return $file;
+        return $fileRealPath;
     }
 
     protected function getLoader()

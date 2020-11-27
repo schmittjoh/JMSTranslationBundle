@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -23,12 +25,15 @@ namespace JMS\TranslationBundle\Twig;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
-class TranslationExtension extends \Twig_Extension
+class TranslationExtension extends AbstractExtension
 {
     /**
-     * @var TranslatorInterface
+     * @var TranslatorInterface|LegacyTranslatorInterface
      */
     private $translator;
 
@@ -38,12 +43,20 @@ class TranslationExtension extends \Twig_Extension
     private $debug;
 
     /**
-     * TranslationExtension constructor.
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface|LegacyTranslatorInterface $translator
      * @param bool $debug
      */
-    public function __construct(TranslatorInterface $translator, $debug = false)
+    public function __construct($translator, $debug = false)
     {
+        if (!$translator instanceof LegacyTranslatorInterface && !$translator instanceof TranslatorInterface) {
+            throw new \InvalidArgumentException(sprintf(
+                'Argument 1 must be an instance of %s or %s, instance of %s given',
+                TranslatorInterface::class,
+                LegacyTranslatorInterface::class,
+                get_class($translator)
+            ));
+        }
+
         $this->translator = $translator;
         $this->debug = $debug;
     }
@@ -53,10 +66,10 @@ class TranslationExtension extends \Twig_Extension
      */
     public function getNodeVisitors()
     {
-        $visitors = array(
+        $visitors = [
             new NormalizingNodeVisitor(),
             new RemovingNodeVisitor(),
-        );
+        ];
 
         if ($this->debug) {
             $visitors[] = new DefaultApplyingNodeVisitor();
@@ -70,10 +83,10 @@ class TranslationExtension extends \Twig_Extension
      */
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('desc', array($this, 'desc')),
-            new \Twig_SimpleFilter('meaning', array($this, 'meaning')),
-        );
+        return [
+            new TwigFilter('desc', [$this, 'desc']),
+            new TwigFilter('meaning', [$this, 'meaning']),
+        ];
     }
 
     /**
@@ -81,30 +94,36 @@ class TranslationExtension extends \Twig_Extension
      * @param string $defaultMessage
      * @param int $count
      * @param array $arguments
-     * @param null|string $domain
-     * @param null|string $locale
+     * @param string|null $domain
+     * @param string|null $locale
+     *
      * @return string
      */
-    public function transchoiceWithDefault($message, $defaultMessage, $count, array $arguments = array(), $domain = null, $locale = null)
+    public function transchoiceWithDefault($message, $defaultMessage, $count, array $arguments = [], $domain = null, $locale = null)
     {
         if (null === $domain) {
             $domain = 'messages';
         }
 
-        // If < sf2.6
-        if (!method_exists($this->translator, 'getCatalogue')) {
-            return $this->transchoiceWithDefaultLegacy($message, $defaultMessage, $count, $arguments, $domain, $locale);
+        if (false === $this->translator->getCatalogue($locale)->defines($message, $domain)) {
+            return $this->doTransChoice($defaultMessage, $count, array_merge(['%count%' => $count], $arguments), $domain, $locale);
         }
 
-        if (false == $this->translator->getCatalogue($locale)->defines($message, $domain)) {
-            return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+        return $this->doTransChoice($message, $count, array_merge(['%count%' => $count], $arguments), $domain, $locale);
+    }
+
+    private function doTransChoice($message, $count, array $arguments, $domain, $locale)
+    {
+        if ($this->translator instanceof LegacyTranslatorInterface) {
+            return $this->translator->transChoice($message, $count, array_merge(['%count%' => $count], $arguments), $domain, $locale);
         }
 
-        return $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
+        return $this->translator->trans($message, array_merge(['%count%' => $count], $arguments), $domain, $locale);
     }
 
     /**
-     * @param $v
+     * @param mixed $v
+     *
      * @return mixed
      */
     public function desc($v)
@@ -113,7 +132,8 @@ class TranslationExtension extends \Twig_Extension
     }
 
     /**
-     * @param $v
+     * @param mixed $v
+     *
      * @return mixed
      */
     public function meaning($v)
@@ -127,31 +147,5 @@ class TranslationExtension extends \Twig_Extension
     public function getName()
     {
         return 'jms_translation';
-    }
-
-    /**
-     * This function exists to support Symfony 2.3
-     *
-     * @param string $message
-     * @param string $defaultMessage
-     * @param int $count
-     * @param array $arguments
-     * @param string $domain
-     * @param string $locale
-     *
-     * @return string
-     */
-    private function transchoiceWithDefaultLegacy($message, $defaultMessage, $count, array $arguments, $domain, $locale)
-    {
-        try {
-            $translatedMessage = $this->translator->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
-
-            if ($translatedMessage !== $message) {
-                return $translatedMessage;
-            }
-        } catch (\InvalidArgumentException $e) {
-        }
-
-        return $this->translator->transChoice($defaultMessage, $count, array_merge(array('%count%' => $count), $arguments), $domain, $locale);
     }
 }

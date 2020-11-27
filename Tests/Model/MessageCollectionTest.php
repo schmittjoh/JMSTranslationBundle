@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,26 +20,26 @@
 
 namespace JMS\TranslationBundle\Tests\Model;
 
+use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCollection;
-use JMS\TranslationBundle\Model\FileSource;
-use JMS\TranslationBundle\Tests\BaseTestCase;
+use PHPUnit\Framework\TestCase;
 
-class MessageCollectionTest extends BaseTestCase
+class MessageCollectionTest extends TestCase
 {
     public function testAdd()
     {
         $domain = new MessageCollection();
         $domain->add($m = new Message('foo'));
 
-        $this->assertSame(array('foo' => $m), $domain->all());
+        $this->assertSame(['foo' => $m], $domain->all());
     }
 
     public function testAddMerges()
     {
-        $m2 = $this->createMock('JMS\TranslationBundle\Model\Message');
+        $m2 = $this->createMock(Message::class);
 
-        $m1 = $this->createMock('JMS\TranslationBundle\Model\Message');
+        $m1 = $this->createMock(Message::class);
         $m1->expects($this->once())
             ->method('merge')
             ->with($m2);
@@ -56,11 +58,10 @@ class MessageCollectionTest extends BaseTestCase
         $this->assertSame($message, $domain->get('foo'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetThrowsExceptionWhenMessageDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $catalogue = new MessageCollection();
         $catalogue->get('foo');
     }
@@ -76,17 +77,17 @@ class MessageCollectionTest extends BaseTestCase
 
     public function testSetDoesNotMerge()
     {
-        $m2 = $this->createMock('JMS\TranslationBundle\Model\Message');
-        $m2->expects($this->any())
+        $m2 = $this->createMock(Message::class);
+        $m2
             ->method('getId')
-            ->will($this->returnValue('foo'));
+            ->willReturn('foo');
 
-        $m1 = $this->createMock('JMS\TranslationBundle\Model\Message');
+        $m1 = $this->createMock(Message::class);
         $m1->expects($this->never())
             ->method('merge');
-        $m1->expects($this->any())
+        $m1
             ->method('getId')
-            ->will($this->returnValue('foo'));
+            ->willReturn('foo');
 
         $col = new MessageCollection();
         $col->set($m1);
@@ -102,10 +103,10 @@ class MessageCollectionTest extends BaseTestCase
         $col->add(new Message('c'));
         $col->add(new Message('a'));
 
-        $this->assertEquals(array('b', 'c', 'a'), array_keys($col->all()));
+        $this->assertEquals(['b', 'c', 'a'], array_keys($col->all()));
 
         $col->sort('strcasecmp');
-        $this->assertEquals(array('a', 'b', 'c'), array_keys($col->all()));
+        $this->assertEquals(['a', 'b', 'c'], array_keys($col->all()));
     }
 
     public function testFilter()
@@ -114,9 +115,11 @@ class MessageCollectionTest extends BaseTestCase
         $col->add($m = new Message('a'));
         $col->add(new Message('b'));
         $col->add(new Message('c'));
-        $col->filter(function ($v) { return 'a' === $v->getId(); });
+        $col->filter(static function ($v) {
+            return $v->getId() === 'a';
+        });
 
-        $this->assertEquals(array('a'), array_keys($col->all()));
+        $this->assertEquals(['a'], array_keys($col->all()));
         $this->assertSame($m, $col->get('a'));
     }
 
@@ -129,15 +132,14 @@ class MessageCollectionTest extends BaseTestCase
         $col2->add(new Message('b'));
 
         $col->merge($col2);
-        $this->assertEquals(array('a', 'b'), array_keys($col->all()));
+        $this->assertEquals(['a', 'b'], array_keys($col->all()));
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The message 'a' exists with two different descs: 'a' in foo on line 1, and 'b' in bar on line 2
-     */
     public function testAddChecksConsistency()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('The message \'a\' exists with two different descs: \'a\' in foo on line 1, and \'b\' in bar on line 2');
+
         $col = new MessageCollection();
 
         $msg = new Message('a');
@@ -152,13 +154,16 @@ class MessageCollectionTest extends BaseTestCase
         $col->add($msg2);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testAddChecksConsistencyButAllowsEmptyDescs()
     {
         $col = new MessageCollection();
 
         // both message have not desc
 
-        $msg = new Message('a');
+        $msg  = new Message('a');
         $msg2 = new Message('a');
 
         $col->add($msg);
@@ -196,12 +201,11 @@ class MessageCollectionTest extends BaseTestCase
         $col->add($msg2);
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The message 'a' exists with two different descs: 'a' in foo on line 1, and 'b' in bar on line 2
-     */
     public function testSetChecksConsistency()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('The message \'a\' exists with two different descs: \'a\' in foo on line 1, and \'b\' in bar on line 2');
+
         $col = new MessageCollection();
 
         $msg = new Message('a');
@@ -216,13 +220,16 @@ class MessageCollectionTest extends BaseTestCase
         $col->set($msg2);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testSetChecksConsistencyButAllowsEmptyDescs()
     {
         $col = new MessageCollection();
 
         // both message have not desc
 
-        $msg = new Message('a');
+        $msg  = new Message('a');
         $msg2 = new Message('a');
 
         $col->set($msg);

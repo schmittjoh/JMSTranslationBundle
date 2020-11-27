@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,15 +20,16 @@
 
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
+use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use Symfony\Component\Validator\Mapping\ClassMetadataFactoryInterface;
 use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
 use Symfony\Component\Validator\MetadataFactoryInterface as LegacyMetadataFactoryInterface;
-use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use Twig\Node\Node as TwigNode;
 
 /**
  * Extracts translations validation constraints.
@@ -46,11 +49,6 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
     private $traverser;
 
     /**
-     * @var \SplFileInfo
-     */
-    private $file;
-
-    /**
      * @var MessageCatalogue
      */
     private $catalogue;
@@ -60,10 +58,6 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
      */
     private $namespace = '';
 
-    /**
-     * ValidationExtractor constructor.
-     * @param $metadataFactory
-     */
     public function __construct($metadataFactory)
     {
         if (! (
@@ -71,7 +65,7 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
             || $metadataFactory instanceof LegacyMetadataFactoryInterface
             || $metadataFactory instanceof ClassMetadataFactoryInterface
         )) {
-            throw new \InvalidArgumentException(sprintf('%s expects an instance of MetadataFactoryInterface or ClassMetadataFactoryInterface', get_class($this)));
+            throw new \InvalidArgumentException(sprintf('%s expects an instance of MetadataFactoryInterface or ClassMetadataFactoryInterface', static::class));
         }
         $this->metadataFactory = $metadataFactory;
 
@@ -81,6 +75,7 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
 
     /**
      * @param Node $node
+     *
      * @return void
      */
     public function enterNode(Node $node)
@@ -97,13 +92,13 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
             return;
         }
 
-        $name = '' === $this->namespace ? $node->name : $this->namespace.'\\'.$node->name;
+        $name = '' === $this->namespace ? (string) $node->name : $this->namespace . '\\' . $node->name;
 
         if (!class_exists($name)) {
             return;
         }
 
-        $metadata = ($this->metadataFactory instanceof ClassMetadataFactoryInterface)? $this->metadataFactory->getClassMetadata($name) : $this->metadataFactory->getMetadataFor($name);
+        $metadata = $this->metadataFactory instanceof ClassMetadataFactoryInterface? $this->metadataFactory->getClassMetadata($name) : $this->metadataFactory->getMetadataFor($name);
         if (!$metadata->hasConstraints() && !count($metadata->getConstrainedProperties())) {
             return;
         }
@@ -123,7 +118,6 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
      */
     public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
     {
-        $this->file = $file;
         $this->namespace = '';
         $this->catalogue = $catalogue;
         $this->traverser->traverse($ast);
@@ -131,6 +125,7 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
 
     /**
      * @param array $nodes
+     *
      * @return void
      */
     public function beforeTraverse(array $nodes)
@@ -139,6 +134,7 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
 
     /**
      * @param Node $node
+     *
      * @return void
      */
     public function leaveNode(Node $node)
@@ -147,26 +143,18 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
 
     /**
      * @param array $nodes
+     *
      * @return void
      */
     public function afterTraverse(array $nodes)
     {
     }
 
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     */
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
     {
     }
 
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     * @param \Twig_Node $ast
-     */
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, TwigNode $ast)
     {
     }
 

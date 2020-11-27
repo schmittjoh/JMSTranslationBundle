@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -20,10 +22,9 @@ namespace JMS\TranslationBundle\DependencyInjection\Compiler;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ChildDefinition;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class MountDumpersPass implements CompilerPassInterface
 {
@@ -33,20 +34,16 @@ class MountDumpersPass implements CompilerPassInterface
             return;
         }
 
-        $dumpers = array();
+        $dumpers = [];
         $i = 0;
         foreach ($container->findTaggedServiceIds('translation.dumper') as $id => $attr) {
             if (!isset($attr[0]['alias'])) {
                 throw new RuntimeException(sprintf('The "alias" attribute must be set for tag "translation.dumper" for service "%s".', $id));
             }
 
-            if (class_exists('Symfony\Component\DependencyInjection\ChildDefinition')) {
-                $def = new ChildDefinition('jms_translation.dumper.symfony_adapter');
-            } else {
-                $def = new DefinitionDecorator('jms_translation.dumper.symfony_adapter');
-            }
+            $def = new ChildDefinition('jms_translation.dumper.symfony_adapter');
             $def->addArgument(new Reference($id))->addArgument($attr[0]['alias']);
-            $container->setDefinition($id = 'jms_translation.dumper.wrapped_symfony_dumper.'.($i++), $def);
+            $container->setDefinition($id = 'jms_translation.dumper.wrapped_symfony_dumper.' . ($i++), $def);
 
             $dumpers[$attr[0]['alias']] = new Reference($id);
         }
@@ -61,7 +58,6 @@ class MountDumpersPass implements CompilerPassInterface
 
         $container
             ->getDefinition('jms_translation.file_writer')
-            ->addArgument($dumpers)
-        ;
+            ->addArgument($dumpers);
     }
 }

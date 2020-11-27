@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,8 +21,8 @@
 namespace JMS\TranslationBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class Configuration implements ConfigurationInterface
 {
@@ -35,93 +37,98 @@ class Configuration implements ConfigurationInterface
     {
         $c = $this->container;
 
-        $tb = new TreeBuilder();
-        $tb
-            ->root('jms_translation')
-                ->fixXmlConfig('config')
-                ->children()
-                    ->arrayNode('locales')
-                        ->prototype('scalar')->end()
+        $tb = new TreeBuilder('jms_translation');
+        // Keep compatibility with symfony/config < 4.2
+        if (!method_exists($tb, 'getRootNode')) {
+            $rootNode = $tb->root('jms_translation');
+        } else {
+            $rootNode = $tb->getRootNode();
+        }
+
+        $rootNode
+            ->fixXmlConfig('config')
+            ->children()
+                ->arrayNode('locales')
+                    ->prototype('scalar')->end()
+                ->end()
+                ->arrayNode('dumper')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('add_date')->defaultTrue()->end()
+                        ->booleanNode('add_references')->defaultTrue()->end()
                     ->end()
-                    ->arrayNode('dumper')
-                        ->addDefaultsIfNotSet()
+                ->end()
+                ->scalarNode('source_language')->defaultValue('en')->end()
+                ->arrayNode('configs')
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                        ->fixXmlConfig('dir', 'dirs')
+                        ->fixXmlConfig('excluded_dir')
+                        ->fixXmlConfig('excluded_name')
+                        ->fixXmlConfig('ignore_domain')
+                        ->fixXmlConfig('external_translations_dir')
+                        ->fixXmlConfig('domain')
+                        ->fixXmlConfig('extractor')
                         ->children()
-                            ->booleanNode('add_date')->defaultTrue()->end()
-                            ->booleanNode('add_references')->defaultTrue()->end()
-                        ->end()
-                    ->end()
-                    ->scalarNode('source_language')->defaultValue('en')->end()
-                    ->arrayNode('configs')
-                        ->useAttributeAsKey('name')
-                        ->prototype('array')
-                            ->fixXmlConfig('dir', 'dirs')
-                            ->fixXmlConfig('excluded_dir')
-                            ->fixXmlConfig('excluded_name')
-                            ->fixXmlConfig('ignore_domain')
-                            ->fixXmlConfig('external_translations_dir')
-                            ->fixXmlConfig('domain')
-                            ->fixXmlConfig('extractor')
-                            ->children()
-                                ->arrayNode('extractors')
-                                    ->prototype('scalar')->end()
-                                ->end()
-                                ->arrayNode('dirs')
-                                    ->requiresAtLeastOneElement()
-                                    ->prototype('scalar')
-                                        ->validate()
-                                            ->always(function ($v) use ($c) {
-                                                $v = str_replace(DIRECTORY_SEPARATOR, '/', $v);
+                            ->arrayNode('extractors')
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->arrayNode('dirs')
+                                ->requiresAtLeastOneElement()
+                                ->prototype('scalar')
+                                    ->validate()
+                                        ->always(static function ($v) use ($c) {
+                                            $v = str_replace(DIRECTORY_SEPARATOR, '/', $v);
 
-                                                if ('@' === $v[0]) {
-                                                    if (false === $pos = strpos($v, '/')) {
-                                                        $bundleName = substr($v, 1);
-                                                    } else {
-                                                        $bundleName = substr($v, 1, $pos - 1);
-                                                    }
-
-                                                    $bundles = $c->getParameter('kernel.bundles');
-                                                    if (!isset($bundles[$bundleName])) {
-                                                        throw new \Exception(sprintf('The bundle "%s" does not exist. Available bundles: %s', $bundleName, implode(', ', array_keys($bundles))));
-                                                    }
-
-                                                    $ref = new \ReflectionClass($bundles[$bundleName]);
-                                                    $v = false === $pos ? dirname($ref->getFileName()) : dirname($ref->getFileName()).substr($v, $pos);
+                                            if ('@' === $v[0]) {
+                                                if (false === $pos = strpos($v, '/')) {
+                                                    $bundleName = substr($v, 1);
+                                                } else {
+                                                    $bundleName = substr($v, 1, $pos - 1);
                                                 }
 
-                                                if (!is_dir($v)) {
-                                                    throw new \Exception(sprintf('The directory "%s" does not exist.', $v));
+                                                $bundles = $c->getParameter('kernel.bundles');
+                                                if (!isset($bundles[$bundleName])) {
+                                                    throw new \Exception(sprintf('The bundle "%s" does not exist. Available bundles: %s', $bundleName, implode(', ', array_keys($bundles))));
                                                 }
 
-                                                return $v;
-                                            })
-                                        ->end()
+                                                $ref = new \ReflectionClass($bundles[$bundleName]);
+                                                $v = false === $pos ? dirname($ref->getFileName()) : dirname($ref->getFileName()) . substr($v, $pos);
+                                            }
+
+                                            if (!is_dir($v)) {
+                                                throw new \Exception(sprintf('The directory "%s" does not exist.', $v));
+                                            }
+
+                                            return $v;
+                                        })
                                     ->end()
                                 ->end()
-                                ->arrayNode('excluded_dirs')
-                                    ->prototype('scalar')->end()
-                                ->end()
-                                ->arrayNode('excluded_names')
-                                    ->prototype('scalar')->end()
-                                ->end()
-                                ->arrayNode('external_translations_dirs')
-                                    ->prototype('scalar')->end()
-                                ->end()
-                                ->scalarNode('output_format')->end()
-                                ->scalarNode('default_output_format')->end()
-                                ->arrayNode('ignored_domains')
-                                    ->prototype('scalar')->end()
-                                ->end()
-                                ->arrayNode('domains')
-                                    ->prototype('scalar')->end()
-                                ->end()
-                                ->scalarNode('output_dir')->isRequired()->cannotBeEmpty()->end()
-                                ->scalarNode('keep')->defaultValue(false)->end()
                             ->end()
+                            ->arrayNode('excluded_dirs')
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->arrayNode('excluded_names')
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->arrayNode('external_translations_dirs')
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->scalarNode('output_format')->end()
+                            ->scalarNode('default_output_format')->end()
+                            ->scalarNode('intl_icu')->defaultValue(false)->end()
+                            ->arrayNode('ignored_domains')
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->arrayNode('domains')
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->scalarNode('output_dir')->isRequired()->cannotBeEmpty()->end()
+                            ->scalarNode('keep')->defaultValue(false)->end()
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
 
         return $tb;
     }

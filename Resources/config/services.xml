@@ -45,11 +45,15 @@
                 <argument>%jms_translation.source_language%</argument>
             </call>
         </service>
+
+        <service id="JMS\TranslationBundle\Controller\TranslateController" alias="jms_translation.controller.translate_controller" public="true" />
+
         <service id="jms_translation.controller.api_controller" class="%jms_translation.controller.api_controller.class%" public="true">
             <argument id="jms_translation.config_factory" type="service"/>
             <argument id="jms_translation.updater" type="service"/>
         </service>
 
+        <service id="JMS\TranslationBundle\Controller\ApiController" alias="jms_translation.controller.api_controller" public="true"/>
 
         <service id="jms_translation.updater" class="%jms_translation.updater.class%" public="true">
             <argument type="service" id="jms_translation.loader_manager" />
@@ -61,7 +65,8 @@
         <service id="jms_translation.config_factory" class="%jms_translation.config_factory.class%" public="true"/>
 
         <service id="jms_translation.file_source_factory" class="%jms_translation.file_source_factory.class%">
-            <argument>%kernel.root_dir%</argument>
+            <argument type="expression">container.hasParameter('kernel.root_dir') ? parameter('kernel.root_dir') : parameter('kernel.project_dir')</argument>
+            <argument>%kernel.project_dir%</argument>
         </service>
 
         <service id="jms_translation.file_writer" class="%jms_translation.file_writer.class%" public="false" />

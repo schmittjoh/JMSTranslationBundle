@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,6 +21,7 @@
 namespace JMS\TranslationBundle\Translation\Extractor;
 
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use Twig\Node\Node;
 
 /**
  * File Visitor Interface.
@@ -55,7 +58,7 @@ interface FileVisitorInterface
      *
      * @param \SplFileInfo $file
      * @param MessageCatalogue $catalogue
-     * @param \Twig_Node $ast
+     * @param Node $ast
      */
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast);
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, Node $ast);
 }

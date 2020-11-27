@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -30,9 +32,6 @@ final class Meaning
     /** @var string @Required */
     public $text;
 
-    /**
-     * Meaning constructor.
-     */
     public function __construct()
     {
         if (0 === func_num_args()) {

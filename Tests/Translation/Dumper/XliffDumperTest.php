@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,10 +20,10 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
+use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 
 class XliffDumperTest extends BaseDumperTest
@@ -149,7 +151,8 @@ EOF;
 
     protected function getOutput($key)
     {
-        if (!is_file($file = __DIR__.'/xliff/'.$key.'.xml')) {
+        $fileRealPath = __DIR__ . '/xliff/' . $key . '.xml';
+        if (! is_file($fileRealPath)) {
             throw new InvalidArgumentException(sprintf('There is no output for key "%s".', $key));
         }
 
@@ -157,6 +160,6 @@ EOF;
 //         $doc = \DOMDocument::load($file);
 //         $this->assertTrue($doc->schemaValidate(__DIR__.'/../../../Resources/schema/xliff-core-1.2-strict.xsd'));
 
-        return file_get_contents($file);
+        return file_get_contents($fileRealPath);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -28,9 +30,11 @@ class Output extends AbstractOutput
     {
         $this->content .= $content;
 
-        if ($newline) {
-            $this->content .= "\n";
+        if (! $newline) {
+            return;
         }
+
+        $this->content .= "\n";
     }
 
     public function getContent()

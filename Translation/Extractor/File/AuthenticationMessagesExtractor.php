@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,20 +20,22 @@
 
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
-use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Annotation\Meaning;
+use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Annotation\Desc;
 use JMS\TranslationBundle\Annotation\Ignore;
+use JMS\TranslationBundle\Annotation\Meaning;
+use JMS\TranslationBundle\Exception\RuntimeException;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
-use Doctrine\Common\Annotations\DocParser;
-use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use JMS\TranslationBundle\Translation\FileSourceFactory;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Twig\Node\Node as TwigNode;
 
 class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
@@ -85,11 +89,6 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
      */
     private $logger;
 
-    /**
-     * AuthenticationMessagesExtractor constructor.
-     * @param DocParser $parser
-     * @param FileSourceFactory $fileSourceFactory
-     */
     public function __construct(DocParser $parser, FileSourceFactory $fileSourceFactory)
     {
         $this->docParser = $parser;
@@ -98,17 +97,11 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $this->traverser->addVisitor($this);
     }
 
-    /**
-     * @param LoggerInterface $logger
-     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
-    /**
-     * @param $domain
-     */
     public function setDomain($domain)
     {
         $this->domain = $domain;
@@ -116,6 +109,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
 
     /**
      * @param Node $node
+     *
      * @return void
      */
     public function enterNode(Node $node)
@@ -129,14 +123,14 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         }
 
         if ($node instanceof Node\Stmt\Class_) {
-            $name = '' === $this->namespace ? $node->name : $this->namespace.'\\'.$node->name;
+            $name = '' === $this->namespace ? (string) $node->name : $this->namespace . '\\' . $node->name;
 
             if (!class_exists($name)) {
                 return;
             }
             $ref = new \ReflectionClass($name);
 
-            if (!$ref->isSubclassOf('Symfony\Component\Security\Core\Exception\AuthenticationException')
+            if (!$ref->isSubclassOf(AuthenticationException::class)
                 && $ref->name !== 'Symfony\Component\Security\Core\Exception\AuthenticationException') {
                 return;
             }
@@ -154,7 +148,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         }
 
         if ($node instanceof Node\Stmt\ClassMethod) {
-            if ('getmessagekey' === strtolower($node->name)) {
+            if ('getmessagekey' === strtolower((string) $node->name)) {
                 $this->inGetMessageKey = true;
             }
 
@@ -172,7 +166,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $ignore = false;
         $desc = $meaning = null;
         if ($docComment = $node->getDocComment()) {
-            foreach ($this->docParser->parse($docComment->getText(), 'file '.$this->file.' near line '.$node->getLine()) as $annot) {
+            foreach ($this->docParser->parse($docComment->getText(), 'file ' . $this->file . ' near line ' . $node->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
                 } elseif ($annot instanceof Desc) {
@@ -201,8 +195,7 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
         $message = Message::create($node->expr->value, $this->domain)
             ->setDesc($desc)
             ->setMeaning($meaning)
-            ->addSource($this->fileSourceFactory->create($this->file, $node->expr->getLine()))
-        ;
+            ->addSource($this->fileSourceFactory->create($this->file, $node->expr->getLine()));
 
         $this->catalogue->add($message);
     }
@@ -222,7 +215,8 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
 
     /**
      * @param Node $node
-     * @return false|null|Node|\PhpParser\Node[]|void
+     *
+     * @return false|Node|Node[]|void|null
      */
     public function leaveNode(Node $node)
     {
@@ -241,7 +235,8 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
 
     /**
      * @param array $nodes
-     * @return null|\PhpParser\Node[]|void
+     *
+     * @return Node[]|void|null
      */
     public function beforeTraverse(array $nodes)
     {
@@ -249,26 +244,18 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
 
     /**
      * @param array $nodes
-     * @return null|\PhpParser\Node[]|void
+     *
+     * @return Node[]|void|null
      */
     public function afterTraverse(array $nodes)
     {
     }
 
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     */
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
     {
     }
 
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     * @param \Twig_Node $ast
-     */
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, TwigNode $ast)
     {
     }
 }

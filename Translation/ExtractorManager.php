@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,17 +21,17 @@
 namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
-use Psr\Log\LoggerInterface;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileExtractor;
-use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 class ExtractorManager implements ExtractorInterface
 {
     private $fileExtractor;
     private $customExtractors;
-    private $directories = array();
-    private $enabledExtractors = array();
+    private $directories = [];
+    private $enabledExtractors = [];
     private $logger;
 
     /**
@@ -37,7 +39,7 @@ class ExtractorManager implements ExtractorInterface
      * @param LoggerInterface $logger
      * @param array $customExtractors
      */
-    public function __construct(FileExtractor $extractor, LoggerInterface $logger, array $customExtractors = array())
+    public function __construct(FileExtractor $extractor, LoggerInterface $logger, array $customExtractors = [])
     {
         $this->fileExtractor = $extractor;
         $this->customExtractors = $customExtractors;
@@ -46,14 +48,11 @@ class ExtractorManager implements ExtractorInterface
 
     public function reset()
     {
-        $this->directories       = array();
-        $this->enabledExtractors = array();
+        $this->directories       = [];
+        $this->enabledExtractors = [];
         $this->fileExtractor->reset();
     }
 
-    /**
-     * @param LoggerInterface $logger
-     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -73,16 +72,17 @@ class ExtractorManager implements ExtractorInterface
      */
     public function setDirectories(array $directories)
     {
-        $this->directories = array();
-        
+        $this->directories = [];
+
         foreach ($directories as $dir) {
             $this->addDirectory($dir);
         }
     }
 
     /**
-     * @param $directory
-     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     * @param string $directory
+     *
+     * @throws InvalidArgumentException
      */
     public function addDirectory($directory)
     {
@@ -111,7 +111,8 @@ class ExtractorManager implements ExtractorInterface
 
     /**
      * @param array $aliases
-     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     *
+     * @throws InvalidArgumentException
      */
     public function setEnabledExtractors(array $aliases)
     {
@@ -125,7 +126,7 @@ class ExtractorManager implements ExtractorInterface
     }
 
     /**
-     * @return \JMS\TranslationBundle\Model\MessageCatalogue
+     * @return MessageCatalogue
      */
     public function extract()
     {

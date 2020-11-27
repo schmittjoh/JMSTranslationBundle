@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -44,10 +46,11 @@ class PhpDumperTest extends BaseDumperTest
 
     protected function getOutput($key)
     {
-        if (!is_file($file = __DIR__.'/php/'.$key.'.php')) {
+        $fileRealPath = __DIR__ . '/php/' . $key . '.php';
+        if (! is_file($fileRealPath)) {
             throw new InvalidArgumentException(sprintf('There is no output for key "%s".', $key));
         }
 
-        return file_get_contents($file);
+        return file_get_contents($fileRealPath);
     }
 }

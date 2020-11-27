@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,15 +20,16 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Loader\Symfony;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Translation\MessageCatalogue;
 
-abstract class BaseLoaderTest extends \PHPUnit_Framework_TestCase
+abstract class BaseLoaderTest extends TestCase
 {
     public function testLoadSimple()
     {
         $expected = new MessageCatalogue('en');
-        $expected->add(array('foo' => 'foo'));
+        $expected->add(['foo' => 'foo']);
 
         $file = $this->getInputFile('simple');
         $expected->addResource(new FileResource($file));
@@ -37,11 +40,11 @@ abstract class BaseLoaderTest extends \PHPUnit_Framework_TestCase
     public function testLoadStructureWithMetadata()
     {
         $expected = new MessageCatalogue('en');
-        $expected->add(array(
+        $expected->add([
             'foo.bar.baz' => 'Foo',
             'foo.bar.moo' => 'foo.bar.moo',
             'foo.baz' => 'foo.baz',
-        ));
+        ]);
 
         $file = $this->getInputFile('structure_with_metadata');
         $expected->addResource(new FileResource($file));
@@ -52,9 +55,7 @@ abstract class BaseLoaderTest extends \PHPUnit_Framework_TestCase
     public function testLoadStructure()
     {
         $expected = new MessageCatalogue('en');
-        $expected->add(array(
-            'foo.bar.baz' => 'foo.bar.baz',
-        ));
+        $expected->add(['foo.bar.baz' => 'foo.bar.baz']);
 
         $file = $this->getInputFile('structure');
         $expected->addResource(new FileResource($file));
@@ -65,9 +66,7 @@ abstract class BaseLoaderTest extends \PHPUnit_Framework_TestCase
     public function testLoadWithMetadata()
     {
         $expected = new MessageCatalogue('en');
-        $expected->add(array(
-            'foo' => 'bar',
-        ));
+        $expected->add(['foo' => 'bar']);
 
         $file = $this->getInputFile('with_metadata');
         $expected->addResource(new FileResource($file));
@@ -76,6 +75,7 @@ abstract class BaseLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     abstract protected function getLoader();
+
     abstract protected function getInputFile($key);
 
     private function load($file, $locale = 'en')

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -20,8 +22,10 @@ namespace JMS\TranslationBundle\Tests\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Dumper\ArrayStructureDumper;
+use PHPUnit\Framework\TestCase;
 
-class ArrayStructureDumperTest extends \PHPUnit_Framework_TestCase
+class ArrayStructureDumperTest extends TestCase
 {
     public function testPathWithSubPath()
     {
@@ -34,20 +38,19 @@ class ArrayStructureDumperTest extends \PHPUnit_Framework_TestCase
         $dumper
             ->expects($this->once())
             ->method('dumpStructure')
-            ->with(array(
-                'foo' => array(
+            ->with([
+                'foo' => [
                     'bar' => new Message('foo.bar'),
                     'bar.baz' => new Message('foo.bar.baz'),
-                ),
-            ))
-            ->will($this->returnValue('foo'))
-        ;
+                ],
+            ])
+            ->willReturn('foo');
 
         $this->assertEquals('foo', $dumper->dump($catalogue, 'messages'));
     }
 
     private function getDumper()
     {
-        return $this->getMockForAbstractClass('JMS\TranslationBundle\Translation\Dumper\ArrayStructureDumper');
+        return $this->getMockForAbstractClass(ArrayStructureDumper::class);
     }
 }

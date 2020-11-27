@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,8 +21,13 @@
 namespace JMS\TranslationBundle\Tests\Functional;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use Symfony\Component\Filesystem\Filesystem;
+use JMS\TranslationBundle\JMSTranslationBundle;
+use JMS\TranslationBundle\Tests\Functional\Fixture\TestBundle\TestBundle;
+use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel
@@ -32,11 +39,11 @@ class AppKernel extends Kernel
         parent::__construct('test', true);
 
         $fs = new Filesystem();
-        if (!$fs->isAbsolutePath($config)) {
-            $config = __DIR__.'/config/'.$config;
+        if (! $fs->isAbsolutePath($config)) {
+            $config = __DIR__ . '/config/' . $config;
         }
 
-        if (!file_exists($config)) {
+        if (! file_exists($config)) {
             throw new RuntimeException(sprintf('The config file "%s" does not exist.', $config));
         }
 
@@ -45,13 +52,13 @@ class AppKernel extends Kernel
 
     public function registerBundles()
     {
-        return array(
-            new \JMS\TranslationBundle\Tests\Functional\Fixture\TestBundle\TestBundle(),
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\TwigBundle\TwigBundle(),
-            new \JMS\TranslationBundle\JMSTranslationBundle(),
-            new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-        );
+        return [
+            new TestBundle(),
+            new FrameworkBundle(),
+            new TwigBundle(),
+            new JMSTranslationBundle(),
+            new SensioFrameworkExtraBundle(),
+        ];
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)
@@ -59,9 +66,24 @@ class AppKernel extends Kernel
         $loader->load($this->config);
     }
 
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
-        return sys_get_temp_dir().'/JMSTranslationBundle';
+        return $this->getBaseDir() . '/cache';
+    }
+
+    public function getLogDir(): string
+    {
+        return $this->getBaseDir() . '/logs';
+    }
+
+    public function getProjectDir()
+    {
+        return __DIR__;
+    }
+
+    private function getBaseDir(): string
+    {
+        return sys_get_temp_dir() . '/JMSTranslationBundle';
     }
 
     public function serialize()

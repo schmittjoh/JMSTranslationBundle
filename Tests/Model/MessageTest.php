@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -20,15 +22,16 @@ namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Tests\BaseTestCase;
+use JMS\TranslationBundle\Model\SourceInterface;
+use PHPUnit\Framework\TestCase;
 
-class MessageTest extends BaseTestCase
+class MessageTest extends TestCase
 {
     public function testCreate()
     {
         $message = Message::create('id', 'foo');
 
-        $this->assertInstanceOf('JMS\TranslationBundle\Model\Message', $message);
+        $this->assertInstanceOf(Message::class, $message);
         $this->assertEquals('id', $message->getId());
         $this->assertEquals('foo', $message->getDomain());
     }
@@ -37,7 +40,7 @@ class MessageTest extends BaseTestCase
     {
         $message = Message::forThisFile('foo', 'bar');
 
-        $this->assertInstanceOf('JMS\TranslationBundle\Model\Message', $message);
+        $this->assertInstanceOf(Message::class, $message);
         $this->assertEquals('foo', $message->getId());
         $this->assertEquals('bar', $message->getDomain());
 
@@ -78,12 +81,12 @@ class MessageTest extends BaseTestCase
     public function testGetSources()
     {
         $message = new Message('foo');
-        $this->assertEquals(array(), $message->getSources());
+        $this->assertEquals([], $message->getSources());
 
-        $this->assertSame($message, $message->addSource($source = $this->createMock('JMS\TranslationBundle\Model\SourceInterface')));
-        $this->assertSame(array($source), $message->getSources());
-        $this->assertSame($message, $message->setSources(array($source2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'))));
-        $this->assertSame(array($source2), $message->getSources());
+        $this->assertSame($message, $message->addSource($source = $this->createMock(SourceInterface::class)));
+        $this->assertSame([$source], $message->getSources());
+        $this->assertSame($message, $message->setSources([$source2 = $this->createMock(SourceInterface::class)]));
+        $this->assertSame([$source2], $message->getSources());
     }
 
     public function testMerge()
@@ -91,17 +94,17 @@ class MessageTest extends BaseTestCase
         $message = new Message('foo');
         $message->setDesc('foo');
         $message->setMeaning('foo');
-        $message->addSource($s1 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $message->addSource($s1 = $this->createMock(SourceInterface::class));
 
         $message2 = new Message('foo');
         $message2->setDesc('bar');
-        $message2->addSource($s2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $message2->addSource($s2 = $this->createMock(SourceInterface::class));
 
         $message->merge($message2);
 
         $this->assertEquals('bar', $message->getDesc());
         $this->assertEquals('foo', $message->getMeaning());
-        $this->assertSame(array($s1, $s2), $message->getSources());
+        $this->assertSame([$s1, $s2], $message->getSources());
     }
 
     public function testMergeRememberDesc()
@@ -109,17 +112,17 @@ class MessageTest extends BaseTestCase
         $message = new Message('foo_id');
         $message->setDesc('foo_desc');
         $message->setMeaning('foo_meaning');
-        $message->addSource($s1 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $message->addSource($s1 = $this->createMock(SourceInterface::class));
 
         $message2 = new Message('foo_id');
         $message2->setMeaning('bar_meaning');
-        $message2->addSource($s2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface'));
+        $message2->addSource($s2 = $this->createMock(SourceInterface::class));
 
         $message->merge($message2);
 
         $this->assertEquals('foo_desc', $message->getDesc());
         $this->assertEquals('bar_meaning', $message->getMeaning());
-        $this->assertSame(array($s1, $s2), $message->getSources());
+        $this->assertSame([$s1, $s2], $message->getSources());
     }
 
     public function testMergeExisting()
@@ -137,7 +140,7 @@ class MessageTest extends BaseTestCase
         $this->assertEquals('bar', $message->getDesc());
         $this->assertEquals('foobar', $message->getLocaleString());
         $this->assertFalse($message->isNew());
-        $this->assertEquals(array(), $message->getSources());
+        $this->assertEquals([], $message->getSources());
     }
 
     public function testMergeScanned()
@@ -155,7 +158,7 @@ class MessageTest extends BaseTestCase
         $this->assertEquals('foobar', $message->getDesc());
         $this->assertEquals('foobar', $message->getLocaleString());
         $this->assertFalse($message->isNew());
-        $this->assertEquals(array(), $message->getSources());
+        $this->assertEquals([], $message->getSources());
     }
 
     public function testGetIsNew()
@@ -177,15 +180,14 @@ class MessageTest extends BaseTestCase
     {
         $message = new Message('foo');
 
-        $s2 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface');
+        $s2 = $this->createMock(SourceInterface::class);
 
-        $s1 = $this->createMock('JMS\TranslationBundle\Model\SourceInterface');
+        $s1 = $this->createMock(SourceInterface::class);
         $s1
             ->expects($this->once())
             ->method('equals')
             ->with($s2)
-            ->will($this->returnValue(true))
-        ;
+            ->willReturn(true);
 
         $message->addSource($s1);
         $this->assertTrue($message->hasSource($s2));

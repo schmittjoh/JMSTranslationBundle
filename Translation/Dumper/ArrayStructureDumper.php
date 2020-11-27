@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -28,9 +30,6 @@ abstract class ArrayStructureDumper implements DumperInterface
      */
     private $prettyPrint = true;
 
-    /**
-     * @param $bool
-     */
     public function setPrettyPrint($bool)
     {
         $this->prettyPrint = (bool) $bool;
@@ -39,6 +38,7 @@ abstract class ArrayStructureDumper implements DumperInterface
     /**
      * @param MessageCatalogue $catalogue
      * @param string $domain
+     *
      * @return string
      */
     public function dump(MessageCatalogue $catalogue, $domain = 'messages')
@@ -46,7 +46,7 @@ abstract class ArrayStructureDumper implements DumperInterface
         $structure = $catalogue->getDomain($domain)->all();
 
         if ($this->prettyPrint) {
-            $tmpStructure = array();
+            $tmpStructure = [];
 
             foreach ($structure as $id => $message) {
                 $pointer = &$tmpStructure;
@@ -64,7 +64,7 @@ abstract class ArrayStructureDumper implements DumperInterface
                     }
 
                     if (!isset($pointer[$parts[$i]])) {
-                        $pointer[$parts[$i]] = array();
+                        $pointer[$parts[$i]] = [];
                     }
 
                     if ($pointer[$parts[$i]] instanceof Message) {
@@ -86,6 +86,7 @@ abstract class ArrayStructureDumper implements DumperInterface
 
     /**
      * @param array $structure
+     *
      * @return string
      */
     abstract protected function dumpStructure(array $structure);

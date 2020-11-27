@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -31,7 +33,6 @@ class ChangeSet
     private $deletedMessages;
 
     /**
-     * ChangeSet constructor.
      * @param array $addedMessages
      * @param array $deletedMessages
      */

@@ -10,8 +10,8 @@ also set-up some pre-defined settings via the configuration:
     jms_translation:
         configs:
             app:
-                dirs: ["%kernel.root_dir%", "%kernel.root_dir%/../src"]
-                output_dir: "%kernel.root_dir%/Resources/translations"
+                dirs: ["%kernel.project_dir%/templates", "%kernel.project_dir%/src"]
+                output_dir: "%kernel.project_dir%/translations"
                 ignored_domains: [routes]
                 excluded_names: ["*TestCase.php", "*Test.php"]
                 excluded_dirs: [cache, data, logs]
@@ -26,7 +26,7 @@ You can then run the extraction process with this configuration with the followi
 .. code-block :: bash
 
     php app/console translation:extract de --config=app
-    
+
 The ``--config`` option also supports overriding via command-line options. Let's assume that
 you would like to change the output format that has been defined in the config, but leave all
 other settings the same, you would run:

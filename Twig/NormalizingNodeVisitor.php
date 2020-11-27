@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,6 +20,12 @@
 
 namespace JMS\TranslationBundle\Twig;
 
+use Twig\Environment;
+use Twig\Node\Expression\Binary\ConcatBinary;
+use Twig\Node\Expression\ConstantExpression;
+use Twig\Node\Node;
+use Twig\NodeVisitor\AbstractNodeVisitor;
+
 /**
  * Performs equivalence transformations on the AST to ensure that
  * subsequent visitors do not need to be aware of different syntaxes.
@@ -26,29 +34,25 @@ namespace JMS\TranslationBundle\Twig;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class NormalizingNodeVisitor extends \Twig_BaseNodeVisitor
+class NormalizingNodeVisitor extends AbstractNodeVisitor
 {
     /**
-     * @param \Twig_Node $node
-     * @param \Twig_Environment $env
-     * @return \Twig_Node
+     * @return Node
      */
-    protected function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doEnterNode(Node $node, Environment $env)
     {
         return $node;
     }
 
     /**
-     * @param \Twig_Node $node
-     * @param \Twig_Environment $env
-     * @return \Twig_Node_Expression_Constant|\Twig_Node
+     * @return ConstantExpression|Node
      */
-    protected function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doLeaveNode(Node $node, Environment $env)
     {
-        if ($node instanceof \Twig_Node_Expression_Binary_Concat
-            && ($left = $node->getNode('left')) instanceof \Twig_Node_Expression_Constant
-            && ($right = $node->getNode('right')) instanceof \Twig_Node_Expression_Constant) {
-            return new \Twig_Node_Expression_Constant($left->getAttribute('value').$right->getAttribute('value'), $left->getTemplateLine());
+        if ($node instanceof ConcatBinary
+            && ($left = $node->getNode('left')) instanceof ConstantExpression
+            && ($right = $node->getNode('right')) instanceof ConstantExpression) {
+            return new ConstantExpression($left->getAttribute('value') . $right->getAttribute('value'), $left->getTemplateLine());
         }
 
         return $node;

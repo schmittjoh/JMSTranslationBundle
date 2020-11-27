@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\TranslationBundle\Tests\DependencyInjection\Compiler;
 
 use JMS\TranslationBundle\DependencyInjection\Compiler\MountExtractorsPass;
@@ -13,7 +15,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class MountExtractorsPassTest extends AbstractCompilerPassTestCase
 {
-    protected function registerCompilerPass(ContainerBuilder $container)
+    protected function registerCompilerPass(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new MountExtractorsPass());
     }
@@ -21,13 +23,13 @@ class MountExtractorsPassTest extends AbstractCompilerPassTestCase
     /**
      * @test
      */
-    public function if_compiler_pass_collects_services_by_argument_these_will_exist()
+    public function ifCompilerPassCollectsServicesByArgumentTheseWillExist()
     {
         $collectingService = new Definition();
         $this->setDefinition('jms_translation.extractor_manager', $collectingService);
 
         $collectedService = new Definition();
-        $collectedService->addTag('jms_translation.extractor', array('alias' => 'foo'));
+        $collectedService->addTag('jms_translation.extractor', ['alias' => 'foo']);
         $this->setDefinition('service0', $collectedService);
 
         $this->compile();
@@ -35,7 +37,7 @@ class MountExtractorsPassTest extends AbstractCompilerPassTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'jms_translation.extractor_manager',
             0,
-            array('foo' => new Reference('service0'))
+            ['foo' => new Reference('service0')]
         );
     }
 }

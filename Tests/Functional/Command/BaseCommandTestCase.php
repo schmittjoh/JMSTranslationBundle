@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -23,7 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 abstract class BaseCommandTestCase extends BaseTestCase
 {
-    protected function getApp(array $options = array())
+    protected function getApp(array $options = [])
     {
         $kernel = $this->createKernel($options);
         $kernel->boot();

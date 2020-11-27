@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -20,27 +22,25 @@ namespace JMS\TranslationBundle\Tests\Translation;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Tests\BaseTestCase;
+use JMS\TranslationBundle\Translation\Dumper\DumperInterface;
 use JMS\TranslationBundle\Translation\FileWriter;
+use PHPUnit\Framework\TestCase;
 
-class FileWriterTest extends BaseTestCase
+class FileWriterTest extends TestCase
 {
     public function testCatalogueIsSortedBeforeBeingDumped()
     {
-        $dumper = $this->createMock('JMS\TranslationBundle\Translation\Dumper\DumperInterface');
+        $dumper = $this->createMock(DumperInterface::class);
 
         $self = $this;
         $dumper
             ->expects($this->once())
             ->method('dump')
-            ->will($this->returnCallback(function ($v) use ($self) {
-                $self->assertEquals(array('foo.bar', 'foo.bar.baz'), array_keys($v->getDomain('messages')->all()));
-            }))
-        ;
+            ->willReturnCallback(static function ($v) use ($self) {
+                $self->assertEquals(['foo.bar', 'foo.bar.baz'], array_keys($v->getDomain('messages')->all()));
+            });
 
-        $writer = new FileWriter(array(
-            'test' => $dumper,
-        ));
+        $writer = new FileWriter(['test' => $dumper]);
 
         $catalogue = new MessageCatalogue();
         $catalogue->setLocale('fr');

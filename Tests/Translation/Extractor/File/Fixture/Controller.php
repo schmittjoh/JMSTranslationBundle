@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -37,7 +39,7 @@ class Controller
     public function __construct(TranslatorInterface $translator, Session $session)
     {
         $this->translator = $translator;
-        $this->session = $session;
+        $this->session    = $session;
     }
 
     public function indexAction()
@@ -47,28 +49,32 @@ class Controller
 
     public function welcomeAction()
     {
-        $this->session->setFlash('bar',
+        $this->session->setFlash(
+            'bar',
             /** @Desc("Welcome %name%! Thanks for signing up.") */
-            $this->translator->trans('text.sign_up_successful', array('name' => 'Johannes')));
+            $this->translator->trans('text.sign_up_successful', ['name' => 'Johannes'])
+        );
     }
 
     public function foobarAction()
     {
-        $this->session->setFlash('archive',
+        $this->session->setFlash(
+            'archive',
             /** @Desc("Archive Message") @Meaning("The verb (to archive), describes an action") */
-            $this->translator->trans('button.archive'));
+            $this->translator->trans('button.archive')
+        );
     }
 
     public function nonExtractableButIgnoredAction()
     {
         /** @Ignore */ $this->translator->trans($foo);
         /** Foobar */
-        /** @Ignore */ $this->translator->trans('foo', array(), $baz);
+        /** @Ignore */ $this->translator->trans('foo', [], $baz);
     }
 
     public function irrelevantDocComment()
     {
-        /** @Foo @Bar */ $this->translator->trans('text.irrelevant_doc_comment', array(), 'baz');
+        /** @Foo @Bar */ $this->translator->trans('text.irrelevant_doc_comment', [], 'baz');
     }
 
     public function arrayAccess()
@@ -79,6 +85,6 @@ class Controller
     public function assignToVar()
     {
         /** @Desc("The var %foo% should be assigned.") */
-        return $this->translator->trans('text.var.assign', array('%foo%' => 'fooVar'));
+        return $this->translator->trans('text.var.assign', ['%foo%' => 'fooVar']);
     }
 }

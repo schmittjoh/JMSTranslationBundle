@@ -14,10 +14,10 @@ On this page you will find all available configuration options and their meaning
             # Create a configuration named "app"
             app:
                 # List of directories we should extract translations keys from
-                dirs: ["%kernel.root_dir%", "%kernel.root_dir%/../src"]
+                dirs: ["%kernel.project_dir%/src", "%kernel.project_dir%/templates"]
 
                 # Where to write the translation files
-                output_dir: "%kernel.root_dir%/Resources/translations"
+                output_dir: "%kernel.project_dir%/translations"
 
                 # Whitelist domains
                 domains: ["messages"]
@@ -43,6 +43,11 @@ On this page you will find all available configuration options and their meaning
 
                 # The default output format (defaults to xlf)
                 default_output_format: "xlf"
+
+                # Whether or not to use the ICU message format. This causes
+                # translation files to be suffixed with +intl-icu, e.g.
+                # messages+intl-icu.en.yaml
+                intl_icu: false
 
                 # If true, we will never remove messages from the translation files.
                 # If false, the translation files are up to date with the source.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -27,8 +29,8 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class CatalogueComparator
 {
-    private $domains = array();
-    private $ignoredDomains = array();
+    private $domains = [];
+    private $ignoredDomains = [];
 
     public function setDomains(array $domains)
     {
@@ -48,11 +50,12 @@ class CatalogueComparator
      *
      * @param MessageCatalogue $current
      * @param MessageCatalogue $new
+     *
      * @return ChangeSet
      */
     public function compare(MessageCatalogue $current, MessageCatalogue $new)
     {
-        $newMessages = array();
+        $newMessages = [];
 
         foreach ($new->getDomains() as $name => $domain) {
             if ($this->domains && !isset($this->domains[$name])) {
@@ -74,7 +77,7 @@ class CatalogueComparator
             }
         }
 
-        $deletedMessages = array();
+        $deletedMessages = [];
         foreach ($current->getDomains() as $name => $domain) {
             if ($this->domains && !isset($this->domains[$name])) {
                 continue;
