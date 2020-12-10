@@ -110,7 +110,7 @@ class FormExtractorTest extends BasePhpFileExtractorTest
 
         $message = new Message('form.label.zip', 'address');
         $message->setDesc('ZIP');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 53));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 54));
         $expected->add($message);
 
         $message = new Message('form.error.password_mismatch', 'validators');
@@ -119,33 +119,33 @@ class FormExtractorTest extends BasePhpFileExtractorTest
         $expected->add($message);
 
         $message = new Message('form.label.created');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 64));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 65));
         $expected->add($message);
 
         $message = new Message('field.with.placeholder');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 57));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 58));
         $expected->add($message);
 
         $message = new Message('form.placeholder.text');
         $message->setDesc('Field with a placeholder value');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 58));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 59));
         $expected->add($message);
 
         $message = new Message('form.placeholder.text.but.no.label');
         $message->setDesc('Field with a placeholder but no label');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 62));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 63));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.year');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 66));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 67));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.month');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 66));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 67));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.day');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 66));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 67));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
