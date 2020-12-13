@@ -313,6 +313,9 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                 if (!$messageItem->key instanceof Node\Scalar\String_) {
                     continue;
                 }
+                if (strtolower(substr($messageItem->key->value, -7)) !== 'message') {
+                    continue;
+                }
                 $this->parseItem($messageItem, $domain);
             }
         }
