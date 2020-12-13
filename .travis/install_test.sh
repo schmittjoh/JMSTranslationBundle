@@ -2,7 +2,7 @@
 
 set -ex
 
-composer self-update
+composer self-update --1
 
 if [[ $SYMFONY_VERSION ]]; then composer require symfony/symfony:${SYMFONY_VERSION} --no-update; fi
 
