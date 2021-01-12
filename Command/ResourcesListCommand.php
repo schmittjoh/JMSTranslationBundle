@@ -99,7 +99,7 @@ class ResourcesListCommand extends Command
         $files = $this->retrieveFiles($dirs);
 
         foreach ($files as $file) {
-            $path = str_replace($basePath, '%kernel.project_dir%', $file);
+            $path = str_replace($basePath, '%kernel.project_dir%', (string) $file);
             $output->writeln(sprintf('    - %s', $path));
         }
 
@@ -145,8 +145,10 @@ class ResourcesListCommand extends Command
         }
 
         // TODO: Remove this block when dropping support of Symfony 4
-        if ($this->rootDir !== null &&
-            is_dir($dir = $this->rootDir . '/Resources/translations')) {
+        if (
+            $this->rootDir !== null &&
+            is_dir($dir = $this->rootDir . '/Resources/translations')
+        ) {
             $dirs[] = $dir;
         }
 

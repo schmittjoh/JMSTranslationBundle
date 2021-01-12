@@ -60,12 +60,16 @@ class DefaultApplyingNodeVisitor extends AbstractNodeVisitor
             return $node;
         }
 
-        if ($node instanceof FilterExpression
-                && 'desc' === $node->getNode('filter')->getAttribute('value')) {
+        if (
+            $node instanceof FilterExpression
+                && 'desc' === $node->getNode('filter')->getAttribute('value')
+        ) {
             $transNode = $node->getNode('node');
-            while ($transNode instanceof FilterExpression
+            while (
+                $transNode instanceof FilterExpression
                        && 'trans' !== $transNode->getNode('filter')->getAttribute('value')
-                       && 'transchoice' !== $transNode->getNode('filter')->getAttribute('value')) {
+                       && 'transchoice' !== $transNode->getNode('filter')->getAttribute('value')
+            ) {
                 $transNode = $transNode->getNode('node');
             }
 

@@ -115,7 +115,7 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
                 $message = new Message($id, $domain);
                 $message->addSource($this->fileSourceFactory->create($this->file, $node->getTemplateLine()));
 
-                for ($i=count($this->stack)-2; $i>=0; $i-=1) {
+                for ($i = count($this->stack) - 2; $i >= 0; $i -= 1) {
                     if (!$this->stack[$i] instanceof FilterExpression) {
                         break;
                     }

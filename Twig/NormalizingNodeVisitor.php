@@ -49,9 +49,11 @@ class NormalizingNodeVisitor extends AbstractNodeVisitor
      */
     protected function doLeaveNode(Node $node, Environment $env)
     {
-        if ($node instanceof ConcatBinary
+        if (
+            $node instanceof ConcatBinary
             && ($left = $node->getNode('left')) instanceof ConstantExpression
-            && ($right = $node->getNode('right')) instanceof ConstantExpression) {
+            && ($right = $node->getNode('right')) instanceof ConstantExpression
+        ) {
             return new ConstantExpression($left->getAttribute('value') . $right->getAttribute('value'), $left->getTemplateLine());
         }
 
