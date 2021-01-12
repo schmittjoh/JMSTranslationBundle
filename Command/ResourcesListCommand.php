@@ -145,8 +145,10 @@ class ResourcesListCommand extends Command
         }
 
         // TODO: Remove this block when dropping support of Symfony 4
-        if ($this->rootDir !== null &&
-            is_dir($dir = $this->rootDir . '/Resources/translations')) {
+        if (
+            $this->rootDir !== null &&
+            is_dir($dir = $this->rootDir . '/Resources/translations')
+        ) {
             $dirs[] = $dir;
         }
 

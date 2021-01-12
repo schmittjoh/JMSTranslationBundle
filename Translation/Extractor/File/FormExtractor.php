@@ -302,7 +302,8 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         }
 
         foreach ($item->value->items as $subItem) {
-            if (!$subItem->value instanceof Node\Expr\New_
+            if (
+                !$subItem->value instanceof Node\Expr\New_
                 || !$subItem->value->args
                 || !property_exists($subItem->value->args[0]->value, 'items')
             ) {
@@ -355,7 +356,8 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             return;
         }
 
-        if (isset($node->args[1])
+        if (
+            isset($node->args[1])
             && $node->args[0]->value instanceof Node\Scalar\String_
             && $node->args[1]->value instanceof Node\Scalar\String_
             && 'translation_domain' === $node->args[0]->value->value

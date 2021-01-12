@@ -60,11 +60,13 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
 
     public function __construct($metadataFactory)
     {
-        if (! (
+        if (
+            ! (
             $metadataFactory instanceof MetadataFactoryInterface
             || $metadataFactory instanceof LegacyMetadataFactoryInterface
             || $metadataFactory instanceof ClassMetadataFactoryInterface
-        )) {
+            )
+        ) {
             throw new \InvalidArgumentException(sprintf('%s expects an instance of MetadataFactoryInterface or ClassMetadataFactoryInterface', static::class));
         }
         $this->metadataFactory = $metadataFactory;
@@ -98,7 +100,7 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
             return;
         }
 
-        $metadata = $this->metadataFactory instanceof ClassMetadataFactoryInterface? $this->metadataFactory->getClassMetadata($name) : $this->metadataFactory->getMetadataFor($name);
+        $metadata = $this->metadataFactory instanceof ClassMetadataFactoryInterface ? $this->metadataFactory->getClassMetadata($name) : $this->metadataFactory->getMetadataFor($name);
         if (!$metadata->hasConstraints() && !count($metadata->getConstrainedProperties())) {
             return;
         }
