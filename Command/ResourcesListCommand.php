@@ -99,7 +99,7 @@ class ResourcesListCommand extends Command
         $files = $this->retrieveFiles($dirs);
 
         foreach ($files as $file) {
-            $path = str_replace($basePath, '%kernel.project_dir%', $file);
+            $path = str_replace($basePath, '%kernel.project_dir%', (string) $file);
             $output->writeln(sprintf('    - %s', $path));
         }
 
