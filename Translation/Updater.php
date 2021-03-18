@@ -180,9 +180,9 @@ class Updater
         // Remove file if all translations removed
         $endOfFile = sprintf('.%s.%s', $this->config->getLocale(), $format);
         $translationFilesRegex = sprintf('/%s$/', $endOfFile);
-        foreach(Finder::create()->name($translationFilesRegex)->in($this->config->getTranslationsDir())->files() as $file){
+        foreach (Finder::create()->name($translationFilesRegex)->in($this->config->getTranslationsDir())->files() as $file) {
             $domainName = str_replace($endOfFile, '', $file->getFilename());
-            if($this->scannedCatalogue->hasDomain($domainName)){
+            if ($this->scannedCatalogue->hasDomain($domainName)) {
                 continue;
             }
 
