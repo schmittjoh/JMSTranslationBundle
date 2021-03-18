@@ -177,6 +177,20 @@ class Updater
             $this->logger->info(sprintf('Writing translation file "%s".', $outputFile));
             $this->writer->write($this->scannedCatalogue, $name, $outputFile, $format);
         }
+        // Remove file if all translations removed
+        $endOfFile = sprintf('.%s.%s', $this->config->getLocale(), $format);
+        $translationFilesRegex = sprintf('/%s$/', $endOfFile);
+        foreach(Finder::create()->name($translationFilesRegex)->in($this->config->getTranslationsDir())->files() as $file){
+            $domainName = str_replace($endOfFile, '', $file->getFilename());
+            if($this->scannedCatalogue->hasDomain($domainName)){
+                continue;
+            }
+
+            $this->logger->info(sprintf('Deleting translation file "%s".', $file));
+            if (false === @unlink((string) $file)) {
+                throw new RuntimeException(sprintf('Could not delete the translation file "%s".', $file));
+            }
+        }
     }
 
     /**
