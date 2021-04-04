@@ -57,8 +57,8 @@ abstract class ArrayStructureDumper implements DumperInterface
                 // are before sub-paths, e.g.
                 // array_keys($structure) = array('foo.bar', 'foo.bar.baz')
                 // but NOT: array_keys($structure) = array('foo.bar.baz', 'foo.bar')
-                for ($i=0, $c=count($parts); $i<$c; $i++) {
-                    if ($i+1 === $c) {
+                for ($i = 0, $c = count($parts); $i < $c; $i++) {
+                    if ($i + 1 === $c) {
                         $pointer[$parts[$i]] = $message;
                         break;
                     }

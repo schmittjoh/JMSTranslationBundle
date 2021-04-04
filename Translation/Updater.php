@@ -198,7 +198,7 @@ class Updater
         $otherDomainFormat = $localeFormat = $otherLocaleFormat = null;
         foreach (FileUtils::findTranslationFiles($this->config->getTranslationsDir()) as $domain => $locales) {
             foreach ($locales as $locale => $fileData) {
-                [$format ] = $fileData;
+                [$format] = $fileData;
 
                 if ($currentDomain !== $domain) {
                     $otherDomainFormat = $format;

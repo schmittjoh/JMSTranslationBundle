@@ -10,6 +10,7 @@ php:
   - 7.2
   - 7.3
   - 7.4
+  - 8.0
 
 env:
   global:
@@ -30,17 +31,21 @@ matrix:
         - php: 7.4
           env: SYMFONY_VERSION=^3.4
         - php: 7.2
-          env: SYMFONY_VERSION=^4.3
+          env: SYMFONY_VERSION=^4.4
         - php: 7.3
-          env: SYMFONY_VERSION=^4.3
+          env: SYMFONY_VERSION=^4.4
         - php: 7.4
-          env: SYMFONY_VERSION=^4.3
+          env: SYMFONY_VERSION=^4.4
+        - php: 8.0
+          env: SYMFONY_VERSION=^4.4
         - php: 7.2
-          env: SYMFONY_VERSION=^5.0
+          env: SYMFONY_VERSION=^5.2
         - php: 7.3
-          env: SYMFONY_VERSION=^5.0
+          env: SYMFONY_VERSION=^5.2
         - php: 7.4
-          env: SYMFONY_VERSION=^5.0
+          env: SYMFONY_VERSION=^5.2
+        - php: 8.0
+          env: SYMFONY_VERSION=^5.2
 
 install:
   - if [ -x .travis/install_${TARGET}.sh ]; then .travis/install_${TARGET}.sh; fi;

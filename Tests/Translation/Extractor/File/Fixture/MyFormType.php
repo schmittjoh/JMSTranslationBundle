@@ -46,6 +46,7 @@ class MyFormType extends AbstractType
                 'translation_domain' => 'address',
                 'constraints' => [
                     new NotBlank(['message' => /** @Desc("You should fill in the street") */ 'form.street.empty_value']),
+                    new Length(['max' => 100]), // https://github.com/schmittjoh/JMSTranslationBundle/issues/553
                 ],
             ])
             ->add('zip', 'text', [

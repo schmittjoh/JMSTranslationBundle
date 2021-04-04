@@ -2,7 +2,7 @@
 
 set -ex
 
-composer self-update
+composer self-update --1
 
 phpenv config-rm xdebug.ini
 

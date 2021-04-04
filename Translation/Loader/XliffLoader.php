@@ -37,17 +37,17 @@ class XliffLoader implements LoaderInterface
     public function load($resource, $locale, $domain = 'messages')
     {
         $previousErrors = libxml_use_internal_errors(true);
-        $previousEntities = libxml_disable_entity_loader(false);
+        $previousEntities = $this->libxmlDisableEntityLoader(false);
         if (false === $doc = simplexml_load_file((string) $resource)) {
             libxml_use_internal_errors($previousErrors);
-            libxml_disable_entity_loader($previousEntities);
+            $this->libxmlDisableEntityLoader($previousEntities);
             $libxmlError = libxml_get_last_error();
 
             throw new RuntimeException(sprintf('Could not load XML-file "%s": %s', $resource, $libxmlError->message));
         }
 
         libxml_use_internal_errors($previousErrors);
-        libxml_disable_entity_loader($previousEntities);
+        $this->libxmlDisableEntityLoader($previousEntities);
 
         $doc->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
         $doc->registerXPathNamespace('jms', 'urn:jms:translation');
@@ -67,7 +67,7 @@ class XliffLoader implements LoaderInterface
                     ->setLocaleString((string) $trans->target);
             \assert($m instanceof Message);
 
-            $m->setApproved((string) $trans['approved']==='yes');
+            $m->setApproved((string) $trans['approved'] === 'yes');
 
             if (isset($trans->target['state'])) {
                 $m->setState((string) $trans->target['state']);
@@ -118,5 +118,17 @@ class XliffLoader implements LoaderInterface
         }
 
         return $catalogue;
+    }
+
+    /**
+     * Use libxml_disable_entity_loader only if it's not deprecated
+     */
+    private function libxmlDisableEntityLoader(bool $disable): bool
+    {
+        if (PHP_VERSION_ID >= 80000) {
+            return true;
+        }
+
+        return libxml_disable_entity_loader($disable);
     }
 }

@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.0](https://github.com/schmittjoh/JMSTranslationBundle/tree/1.6.0) (2021-01-16)
+
+- Php8 [\#556](https://github.com/schmittjoh/JMSTranslationBundle/pull/556) ([VincentLanglet](https://github.com/VincentLanglet))
+- Use composer v1 \(fix ci pipeline\) [\#555](https://github.com/schmittjoh/JMSTranslationBundle/pull/555) ([goetas](https://github.com/goetas))
+- Prevent all non message Form Constraint option from being extracted [\#554](https://github.com/schmittjoh/JMSTranslationBundle/pull/554) ([nfragnet](https://github.com/nfragnet))
+- Add the option to dump files to the ICU message format [\#551](https://github.com/schmittjoh/JMSTranslationBundle/pull/551) ([mark-gerarts](https://github.com/mark-gerarts))
+- Update FormExtractor.php [\#549](https://github.com/schmittjoh/JMSTranslationBundle/pull/549) ([TheRatG](https://github.com/TheRatG))
+- Added support to extract translations from form constraints [\#546](https://github.com/schmittjoh/JMSTranslationBundle/pull/546) ([balazscsaba2006](https://github.com/balazscsaba2006))
+- strtolower\(\) expects parameter 1 to be string, object given Issue \#544 [\#545](https://github.com/schmittjoh/JMSTranslationBundle/pull/545) ([TheRatG](https://github.com/TheRatG))
+
 ## [1.5.4](https://github.com/schmittjoh/JMSTranslationBundle/tree/1.5.4) (2020-04-21)
 
 **Fixed bugs:**

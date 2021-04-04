@@ -116,8 +116,10 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         if ($node instanceof Node\Expr\MethodCall) {
             $methodCallNodeName = $node->name instanceof Node\Identifier ? $node->name->name : $node->name;
         }
-        if (!is_string($methodCallNodeName)
-            || !in_array(strtolower($methodCallNodeName), array_map('strtolower', array_keys($this->methodsToExtractFrom)))) {
+        if (
+            !is_string($methodCallNodeName)
+            || !in_array(strtolower($methodCallNodeName), array_map('strtolower', array_keys($this->methodsToExtractFrom)))
+        ) {
             $this->previousNode = $node;
 
             return;
