@@ -171,7 +171,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         $domain = null;
 
         foreach ($node->items as $item) {
-            if (!$item->key instanceof Node\Scalar\String_) {
+            if (!$item || !$item->key instanceof Node\Scalar\String_) {
                 continue;
             }
 
@@ -375,7 +375,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         // check if a translation_domain is set as a default option
         $domain = null;
         foreach ($node->args[0]->value->items as $item) {
-            if (!$item->key instanceof Node\Scalar\String_) {
+            if (!$item || !$item->key instanceof Node\Scalar\String_) {
                 continue;
             }
 
