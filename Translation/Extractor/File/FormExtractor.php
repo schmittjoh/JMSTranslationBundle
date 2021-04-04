@@ -147,7 +147,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                         if ($this->parseChoiceNode($item, $node, $choiceDomain)) {
                             continue 2;
                         }
-                        $this->parseItem($item, $domain);
+                        $this->parseItem($item, $choiceDomain);
                         break;
                     case 'attr':
                         if ($this->parseAttrNode($item, $domain)) {
