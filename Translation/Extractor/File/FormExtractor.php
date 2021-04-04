@@ -118,6 +118,11 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             // first check if a translation_domain is set for this field
             $domain = $this->getDomain($node);
 
+            $choiceDomain = $this->getChoiceDomain($node);
+            if ($choiceDomain === null) {
+                $choiceDomain = $domain;
+            }
+
             // look for options containing a message
             foreach ($node->items as $item) {
                 if (!$item || !$item->key instanceof Node\Scalar\String_) {
@@ -139,11 +144,6 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                         $this->parseItem($item, $domain);
                         break;
                     case 'choices':
-                        $choiceDomain = $this->getChoiceDomain($node);
-                        if ($choiceDomain === null) {
-                            $choiceDomain = $domain;
-                        }
-
                         if ($this->parseChoiceNode($item, $node, $choiceDomain)) {
                             continue 2;
                         }
@@ -181,11 +181,17 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             }
 
             if ('translation_domain' === $item->key->value) {
+                if ($item->value instanceof Node\Expr\ConstFetch && $item->value->name instanceof Node\Name && 'false' === $item->value->name->parts[0]) {
+                    $domain = false;
+                    break;
+                }
+
                 if (!$item->value instanceof Node\Scalar\String_) {
                     continue;
                 }
 
                 $domain = $item->value->value;
+                break;
             }
         }
 
@@ -207,11 +213,17 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             }
 
             if ('choice_translation_domain' === $item->key->value) {
+                if ($item->value instanceof Node\Expr\ConstFetch && $item->value->name instanceof Node\Name && 'false' === $item->value->name->parts[0]) {
+                    $domain = false;
+                    break;
+                }
+
                 if (!$item->value instanceof Node\Scalar\String_) {
                     continue;
                 }
 
                 $domain = $item->value->value;
+                break;
             }
         }
 
