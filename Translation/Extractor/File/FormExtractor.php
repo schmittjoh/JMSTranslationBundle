@@ -76,9 +76,9 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     private $defaultDomain;
 
     /**
-     * @var string
+     * @var array
      */
-    private $defaultDomainMessages;
+    private $defaultDomainMessages = [];
 
     public function __construct(DocParser $docParser, FileSourceFactory $fileSourceFactory)
     {
@@ -139,7 +139,12 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
                         $this->parseItem($item, $domain);
                         break;
                     case 'choices':
-                        if ($this->parseChoiceNode($item, $node, $domain)) {
+                        $choiceDomain = $this->getChoiceDomain($node);
+                        if ($choiceDomain === null) {
+                            $choiceDomain = $domain;
+                        }
+
+                        if ($this->parseChoiceNode($item, $node, $choiceDomain)) {
                             continue 2;
                         }
                         $this->parseItem($item, $domain);
@@ -176,6 +181,32 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             }
 
             if ('translation_domain' === $item->key->value) {
+                if (!$item->value instanceof Node\Scalar\String_) {
+                    continue;
+                }
+
+                $domain = $item->value->value;
+            }
+        }
+
+        return $domain;
+    }
+
+    /**
+     * @param Node $node
+     *
+     * @return string|null
+     */
+    public function getChoiceDomain(Node $node)
+    {
+        $domain = null;
+
+        foreach ($node->items as $item) {
+            if (!$item || !$item->key instanceof Node\Scalar\String_) {
+                continue;
+            }
+
+            if ('choice_translation_domain' === $item->key->value) {
                 if (!$item->value instanceof Node\Scalar\String_) {
                     continue;
                 }
@@ -440,6 +471,11 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             }
 
             throw new RuntimeException($message);
+        }
+
+        if ($domain === false) {
+            // Don't translate when domain is `false`
+            return;
         }
 
         $source = $this->fileSourceFactory->create($this->file, $item->value->getLine());
