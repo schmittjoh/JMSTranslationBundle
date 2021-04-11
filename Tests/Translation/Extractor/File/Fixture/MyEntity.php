@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File\Fixture;
 
 use Symfony\Component\Validator\Context\ExecutionContext;
 
-/**
- * Class MyEntity
- */
 class MyEntity
 {
     public function validateConstraintWithDefaultDomain(ExecutionContext $context)
@@ -16,7 +15,7 @@ class MyEntity
             ->addViolation();
     }
 
-    public function validateFullyQualifiedConstraintWithDefaultDomain(\Symfony\Component\Validator\Context\ExecutionContext $context)
+    public function validateFullyQualifiedConstraintWithDefaultDomain(ExecutionContext $context)
     {
         $context
             ->buildViolation('entity.fully-qualified')

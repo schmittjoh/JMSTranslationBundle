@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Model\Message;
@@ -11,21 +13,20 @@ class ValidationContextExtractorTest extends BasePhpFileExtractorTest
     public function testExtractValidationMessages()
     {
         $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyEntity.php');
-
+        $fixtureSplInfo = new \SplFileInfo(__DIR__ . '/Fixture/MyEntity.php');
 
         $expected = new MessageCatalogue();
 
         $message = new Message('entity.default');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 15));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 14));
         $expected->add($message);
 
         $message = new Message('entity.fully-qualified');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 22));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 21));
         $expected->add($message);
 
         $message = new Message('entity.custom-domain', 'custom-domain');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 29));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 28));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyEntity.php'));

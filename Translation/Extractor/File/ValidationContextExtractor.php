@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2016 Arturs Vonda <open-source@artursvonda.lv>
  *
@@ -30,8 +32,6 @@ use PhpParser\NodeVisitor;
 use SplFileInfo;
 
 /**
- * Class ValidationContextExtractor
- *
  * Extracts
  */
 class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
@@ -43,7 +43,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     /**
      * @var array
      */
-    private $messages = array();
+    private $messages = [];
     /**
      * @var MessageCatalogue
      */
@@ -55,7 +55,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     /**
      * @var array
      */
-    private $aliases = array();
+    private $aliases = [];
     /**
      * @var string
      */
@@ -74,11 +74,6 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     private $source;
     private $fileSourceFactory;
 
-    /**
-     * ValidationContextExtractor constructor.
-     *
-     * @param FileSourceFactory $fileSourceFactory
-     */
     public function __construct(FileSourceFactory $fileSourceFactory)
     {
         $this->fileSourceFactory = $fileSourceFactory;
@@ -100,7 +95,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     {
         $this->file = $file;
         $this->catalogue = $catalogue;
-        $this->messages = array();
+        $this->messages = [];
         $this->traverser->traverse($ast);
 
         foreach ($this->messages as $message) {
@@ -111,7 +106,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     /**
      * {@inheritdoc}
      */
-    public function visitTwigFile(SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    public function visitTwigFile(SplFileInfo $file, MessageCatalogue $catalogue, \Twig\Node\Node $ast)
     {
     }
 
@@ -128,7 +123,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     public function enterNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Namespace_) {
-            $this->aliases = array();
+            $this->aliases = [];
 
             return;
         }
@@ -163,9 +158,6 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
         }
     }
 
-    /**
-     * @param Node\Expr\MethodCall $node
-     */
     private function parseMethodCall(Node\Expr\MethodCall $node)
     {
         if (!$this->contextVariable) {
@@ -199,11 +191,11 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
             }
         } elseif ($name === 'addViolation') {
             if ($this->id and $this->source) {
-                $this->messages[] = array(
+                $this->messages[] = [
                     'id' => $this->id,
                     'source' => $this->source,
                     'domain' => $this->domain,
-                );
+                ];
             }
 
             $this->id = null;
@@ -257,6 +249,6 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
      */
     private function resolveAlias($class)
     {
-        return isset($this->aliases[$class]) ? $this->aliases[$class] : $class;
+        return $this->aliases[$class] ?? $class;
     }
 }
