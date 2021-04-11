@@ -30,6 +30,7 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use SplFileInfo;
+use Twig\Node\Node as TwigNode;
 
 /**
  * Extracts
@@ -106,7 +107,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     /**
      * {@inheritdoc}
      */
-    public function visitTwigFile(SplFileInfo $file, MessageCatalogue $catalogue, \Twig\Node\Node $ast)
+    public function visitTwigFile(SplFileInfo $file, MessageCatalogue $catalogue, TwigNode $ast)
     {
     }
 
@@ -190,7 +191,7 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
                 }
             }
         } elseif ($name === 'addViolation') {
-            if ($this->id and $this->source) {
+            if ($this->id && $this->source) {
                 $this->messages[] = [
                     'id' => $this->id,
                     'source' => $this->source,
@@ -243,11 +244,9 @@ class ValidationContextExtractor implements FileVisitorInterface, NodeVisitor
     }
 
     /**
-     * @param $class
-     *
      * @return string
      */
-    private function resolveAlias($class)
+    private function resolveAlias(string $class)
     {
         return $this->aliases[$class] ?? $class;
     }
