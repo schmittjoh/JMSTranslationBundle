@@ -76,9 +76,9 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     private $defaultDomain;
 
     /**
-     * @var array
+     * @var string
      */
-    private $defaultDomainMessages = [];
+    private $defaultDomainMessages;
 
     public function __construct(DocParser $docParser, FileSourceFactory $fileSourceFactory)
     {
