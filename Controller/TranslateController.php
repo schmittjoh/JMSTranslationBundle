@@ -38,17 +38,17 @@ class TranslateController
     /**
      * @var ConfigFactory
      */
-    private $configFactory;
+    protected $configFactory;
 
     /**
      * @var LoaderManager
      */
-    private $loader;
+    protected $loader;
 
     /**
      * @var string
      */
-    private $sourceLanguage;
+    protected $sourceLanguage;
 
     public function __construct(ConfigFactory $configFactory, LoaderManager $loader)
     {
