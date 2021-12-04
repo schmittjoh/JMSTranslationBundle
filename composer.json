@@ -1,65 +1,65 @@
 {
-    "name": "jms/translation-bundle",
-    "type": "symfony-bundle",
-    "description": "Puts the Symfony Translation Component on steroids",
-    "keywords": [
-        "translation",
-        "multilanguage",
-        "extract",
-        "webinterface",
-        "ui",
-        "i18n",
-        "extraction",
-        "interface"
-    ],
-    "homepage": "http://jmsyst.com/bundles/JMSTranslationBundle",
-    "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "Johannes M. Schmitt",
-            "email": "schmittjoh@gmail.com"
-        }
-    ],
-    "require": {
-        "php": "^7.2 || ^8.0",
-        "nikic/php-parser": "^1.4 || ^2.0 || ^3.0 || ^4.0",
-        "symfony/console": "^3.4 || ^4.3 || ^5.0",
-        "symfony/framework-bundle": "^3.4.31 || ^4.3 || ^5.0",
-        "symfony/translation": "^3.4 || ^4.3 || ^5.0",
-        "symfony/translation-contracts": "^1.1 || ^2.0",
-        "symfony/validator": "^3.4 || ^4.3 || ^5.0",
-        "twig/twig": "^1.42.4 || ^2.12.5 || ^3.0"
-    },
-    "require-dev": {
-        "doctrine/annotations": "^1.8",
-        "doctrine/coding-standard": "^8.0",
-        "matthiasnoback/symfony-dependency-injection-test": "^4.1",
-        "nyholm/nsa": "^1.0.1",
-        "phpunit/phpunit": "^8.3",
-        "psr/log": "^1.0",
-        "sensio/framework-extra-bundle": "^5.4",
-        "symfony/asset": "^3.4 || ^4.3 || ^5.0",
-        "symfony/browser-kit": "^3.4 || ^4.3 || ^5.0",
-        "symfony/css-selector": "^3.4 || ^4.3 || ^5.0",
-        "symfony/expression-language": "^3.4 || ^4.3 || ^5.0",
-        "symfony/filesystem": "^3.4 || ^4.3 || ^5.0",
-        "symfony/form": "^3.4 || ^4.3 || ^5.0",
-        "symfony/security-csrf": "^3.4 || ^4.3 || ^5.0",
-        "symfony/templating": "^3.4 || ^4.3 || ^5.0",
-        "symfony/twig-bundle": "^3.4.37 || ^4.3.11 || ^5.0"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.6-dev"
-        }
-    },
-    "autoload": {
-        "psr-4": {
-            "JMS\\TranslationBundle\\": ""
-        }
-    },
-    "minimum-stability": "stable"
+  "name": "jms/translation-bundle",
+  "type": "symfony-bundle",
+  "description": "Puts the Symfony Translation Component on steroids",
+  "keywords": [
+    "translation",
+    "multilanguage",
+    "extract",
+    "webinterface",
+    "ui",
+    "i18n",
+    "extraction",
+    "interface"
+  ],
+  "homepage": "http://jmsyst.com/bundles/JMSTranslationBundle",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Johannes M. Schmitt",
+      "email": "schmittjoh@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2 || ^8.0",
+    "nikic/php-parser": "^1.4 || ^2.0 || ^3.0 || ^4.0",
+    "symfony/console": "^3.4 || ^4.3 || ^5.0",
+    "symfony/expression-language": "^3.4 || ^4.3 || ^5.0",
+    "symfony/framework-bundle": "^3.4.31 || ^4.3 || ^5.0",
+    "symfony/translation": "^3.4 || ^4.3 || ^5.0",
+    "symfony/translation-contracts": "^1.1 || ^2.0",
+    "symfony/validator": "^3.4 || ^4.3 || ^5.0",
+    "twig/twig": "^1.42.4 || ^2.12.5 || ^3.0"
+  },
+  "require-dev": {
+    "doctrine/annotations": "^1.8",
+    "doctrine/coding-standard": "^8.0",
+    "matthiasnoback/symfony-dependency-injection-test": "^4.1",
+    "nyholm/nsa": "^1.0.1",
+    "phpunit/phpunit": "^8.3",
+    "psr/log": "^1.0",
+    "sensio/framework-extra-bundle": "^5.4",
+    "symfony/asset": "^3.4 || ^4.3 || ^5.0",
+    "symfony/browser-kit": "^3.4 || ^4.3 || ^5.0",
+    "symfony/css-selector": "^3.4 || ^4.3 || ^5.0",
+    "symfony/filesystem": "^3.4 || ^4.3 || ^5.0",
+    "symfony/form": "^3.4 || ^4.3 || ^5.0",
+    "symfony/security-csrf": "^3.4 || ^4.3 || ^5.0",
+    "symfony/templating": "^3.4 || ^4.3 || ^5.0",
+    "symfony/twig-bundle": "^3.4.37 || ^4.3.11 || ^5.0"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.6-dev"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "JMS\\TranslationBundle\\": ""
+    }
+  },
+  "minimum-stability": "stable"
 }
