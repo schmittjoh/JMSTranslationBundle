@@ -67,7 +67,7 @@ class ExtractTranslationCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('translation:extract')
+            ->setName('jms:translation:extract')
             ->setDescription('Extracts translation messages from your code.')
             ->addArgument('locales', InputArgument::IS_ARRAY, 'The locales for which to extract messages.')
             ->addOption('enable-extractor', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The alias of an extractor which should be enabled.')
