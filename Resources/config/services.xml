@@ -41,6 +41,7 @@
         <service id="jms_translation.controller.translate_controller" class="%jms_translation.controller.translate_controller.class%" public="true">
             <argument type="service" id="jms_translation.config_factory"/>
             <argument type="service" id="jms_translation.loader_manager"/>
+            <argument type="service" id="twig"/>
             <call method="setSourceLanguage">
                 <argument>%jms_translation.source_language%</argument>
             </call>
