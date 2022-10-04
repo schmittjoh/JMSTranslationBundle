@@ -159,15 +159,36 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         }
 
         $id = $node->args[0]->value->value;
-
         $index = $this->methodsToExtractFrom[strtolower($methodCallNodeName)];
-        if (isset($node->args[$index])) {
-            if (!$node->args[$index]->value instanceof String_) {
+        $domainArg = null;
+
+        if (isset($node->args[$index]) && $node->args[$index] instanceof Node\Arg && null === $node->args[$index]->name ) {
+            $domainArg = $node->args[$index];
+        } else {
+            foreach ($node->args as $arg) {
+                if (!$arg instanceof Node\Arg) {
+                    continue;
+                }
+
+                if (null !== $arg->name && 'domain' === $arg->name->name) {
+                    $domainArg = $arg;
+
+                    break;
+                }
+            }
+        }
+
+        if (null !== $domainArg) {
+            if ($domainArg->value instanceof Node\Expr\ConstFetch && 'null' === (string) $domainArg->value->name) {
+                $domain = 'messages';
+            } elseif ($domainArg->value instanceof String_) {
+                $domain = $domainArg->value->value;
+            } else {
                 if ($ignore) {
                     return;
                 }
 
-                $message = sprintf('Can only extract the translation domain from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($node->args[$index]->value), $this->file, $node->args[$index]->value->getLine());
+                $message = sprintf('Can only extract the translation domain from a scalar string, but got "%s". Please refactor your code to make it extractable, or add the doc comment /** @Ignore */ to this code element (in %s on line %d).', get_class($domainArg->value), $this->file, $domainArg->value->getLine());
 
                 if ($this->logger) {
                     $this->logger->error($message);
@@ -177,8 +198,6 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
 
                 throw new RuntimeException($message);
             }
-
-            $domain = $node->args[$index]->value->value;
         } else {
             $domain = 'messages';
         }

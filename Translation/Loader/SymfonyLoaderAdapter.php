@@ -53,7 +53,7 @@ class SymfonyLoaderAdapter implements LoaderInterface
      *
      * @return MessageCatalogue
      */
-    public function load($resource, $locale, $domain = 'messages')
+    public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         $catalogue = new MessageCatalogue();
         $catalogue->setLocale($locale);

@@ -34,7 +34,7 @@ class XliffLoader implements LoaderInterface
      *
      * @return MessageCatalogue
      */
-    public function load($resource, $locale, $domain = 'messages')
+    public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         $previousErrors = libxml_use_internal_errors(true);
         $previousEntities = $this->libxmlDisableEntityLoader(false);

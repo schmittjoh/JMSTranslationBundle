@@ -39,7 +39,7 @@ class XliffLoader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function load($resource, $locale, $domain = 'messages')
+    public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         $previous = libxml_use_internal_errors(true);
         if (false === $xml = simplexml_load_file((string) $resource)) {
