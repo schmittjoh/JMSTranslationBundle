@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -20,8 +22,10 @@ namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\MessageCollection;
+use PHPUnit\Framework\TestCase;
 
-class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
+class MessageCatalogueTest extends TestCase
 {
     public function testAdd()
     {
@@ -29,7 +33,7 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
         $catalogue->add($m = new Message('foo'));
 
         $this->assertTrue($catalogue->hasDomain('messages'));
-        $this->assertEquals(array('foo' => $m), $catalogue->getDomain('messages')->all());
+        $this->assertEquals(['foo' => $m], $catalogue->getDomain('messages')->all());
     }
 
     public function testGet()
@@ -41,11 +45,10 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($message, $catalogue->get('foo'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetThrowsExceptionWhenMessageDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $catalogue = new MessageCatalogue();
         $catalogue->getDomain('foo');
     }
@@ -74,15 +77,14 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
         $catalogue->add(new Message('foo'));
 
         $col = $catalogue->getDomain('messages');
-        $this->assertInstanceOf('JMS\TranslationBundle\Model\MessageCollection', $col);
-        $this->assertEquals(array('foo'), array_keys($col->all()));
+        $this->assertInstanceOf(MessageCollection::class, $col);
+        $this->assertEquals(['foo'], array_keys($col->all()));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetDomainWhenDomainDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $catalogue = new MessageCatalogue();
         $catalogue->getDomain('messages');
     }
@@ -93,8 +95,8 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
         $cat->add(new Message('foo'));
         $cat->add(new Message('foo', 'foo'));
 
-        $this->assertEquals(array('messages', 'foo'), array_keys($domains = $cat->getDomains()));
-        $this->assertInstanceOf('JMS\TranslationBundle\Model\MessageCollection', $domains['foo']);
+        $this->assertEquals(['messages', 'foo'], array_keys($domains = $cat->getDomains()));
+        $this->assertInstanceOf(MessageCollection::class, $domains['foo']);
     }
 
     public function testMerge()
@@ -107,10 +109,10 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
 
         $cat->merge($cat2);
 
-        $this->assertEquals(array('foo', 'bar'), array_keys($domains = $cat->getDomains()));
-        $this->assertEquals(array('bar'), array_keys($cat2->getDomains()));
+        $this->assertEquals(['foo', 'bar'], array_keys($domains = $cat->getDomains()));
+        $this->assertEquals(['bar'], array_keys($cat2->getDomains()));
 
-        $this->assertEquals(array('foo'), array_keys($domains['foo']->all()));
-        $this->assertEquals(array('foo'), array_keys($domains['bar']->all()));
+        $this->assertEquals(['foo'], array_keys($domains['foo']->all()));
+        $this->assertEquals(['foo'], array_keys($domains['bar']->all()));
     }
 }

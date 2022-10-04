@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,12 +20,13 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Comparison;
 
-use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
-use JMS\TranslationBundle\Translation\Comparison\ChangeSet;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
+use JMS\TranslationBundle\Translation\Comparison\ChangeSet;
+use PHPUnit\Framework\TestCase;
 
-class CatalogueComparatorTest extends \PHPUnit_Framework_TestCase
+class CatalogueComparatorTest extends TestCase
 {
     public function testCompareWithMultipleDomains()
     {
@@ -35,9 +38,9 @@ class CatalogueComparatorTest extends \PHPUnit_Framework_TestCase
         $new->add(new Message('foo'));
         $new->add(new Message('bar'));
 
-        $expected = new ChangeSet(
-            array(new Message('bar')),
-            array(Message::create('bar', 'routes')->setLocaleString('baz'))
+        $expected   = new ChangeSet(
+            [new Message('bar')],
+            [Message::create('bar', 'routes')->setLocaleString('baz')]
         );
         $comparator = new CatalogueComparator();
 

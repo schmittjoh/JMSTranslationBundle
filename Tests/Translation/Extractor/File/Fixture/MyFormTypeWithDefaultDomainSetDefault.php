@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,29 +20,24 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File\Fixture;
 
-use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MyFormType extends AbstractType
+class MyFormTypeWithDefaultDomainSetDefault extends AbstractType
 {
-    public function buildForm(FormBuilder $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('firstname', 'text', array(
-                'label' => 'form.label.firstname',
-            ))
-            ->add('lastname', 'text', array(
-                'label' => /** @Desc("Lastname") */ 'form.label.lastname',
-            ))
-            ->add('street', 'text', array(
+            ->add('firstname', 'text', ['label' => 'form.label.firstname'])
+            ->add('lastname', 'text', ['label' => /** @Desc("Lastname") */ 'form.label.lastname'])
+            ->add('street', 'text', [
                 'label' => /** @Desc("Street") */ 'form.label.street',
-                'translation_domain' => 'address'
-            ))
-        ;
+                'translation_domain' => 'address',
+            ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefault('translation_domain', 'person');
         $resolver->setDefault('other_option', 'should_not_override_domain');

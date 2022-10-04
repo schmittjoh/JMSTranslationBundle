@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -28,9 +30,6 @@ abstract class ArrayStructureDumper implements DumperInterface
      */
     private $prettyPrint = true;
 
-    /**
-     * @param $bool
-     */
     public function setPrettyPrint($bool)
     {
         $this->prettyPrint = (bool) $bool;
@@ -39,6 +38,7 @@ abstract class ArrayStructureDumper implements DumperInterface
     /**
      * @param MessageCatalogue $catalogue
      * @param string $domain
+     *
      * @return string
      */
     public function dump(MessageCatalogue $catalogue, $domain = 'messages')
@@ -46,7 +46,7 @@ abstract class ArrayStructureDumper implements DumperInterface
         $structure = $catalogue->getDomain($domain)->all();
 
         if ($this->prettyPrint) {
-            $tmpStructure = array();
+            $tmpStructure = [];
 
             foreach ($structure as $id => $message) {
                 $pointer = &$tmpStructure;
@@ -57,14 +57,14 @@ abstract class ArrayStructureDumper implements DumperInterface
                 // are before sub-paths, e.g.
                 // array_keys($structure) = array('foo.bar', 'foo.bar.baz')
                 // but NOT: array_keys($structure) = array('foo.bar.baz', 'foo.bar')
-                for ($i=0, $c=count($parts); $i<$c; $i++) {
-                    if ($i+1 === $c) {
+                for ($i = 0, $c = count($parts); $i < $c; $i++) {
+                    if ($i + 1 === $c) {
                         $pointer[$parts[$i]] = $message;
                         break;
                     }
 
                     if (!isset($pointer[$parts[$i]])) {
-                        $pointer[$parts[$i]] = array();
+                        $pointer[$parts[$i]] = [];
                     }
 
                     if ($pointer[$parts[$i]] instanceof Message) {
@@ -86,6 +86,7 @@ abstract class ArrayStructureDumper implements DumperInterface
 
     /**
      * @param array $structure
+     *
      * @return string
      */
     abstract protected function dumpStructure(array $structure);

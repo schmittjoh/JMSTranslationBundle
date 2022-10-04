@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,20 +20,20 @@
 
 namespace JMS\TranslationBundle\Logger;
 
-use Symfony\Component\Console\Output\OutputInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class OutputLogger implements LoggerInterface
 {
-    const EMERG  = 1;
-    const ALERT  = 2;
-    const CRIT   = 4;
-    const ERR    = 8;
-    const WARN   = 16;
-    const NOTICE = 32;
-    const INFO   = 64;
-    const DEBUG  = 128;
-    const ALL    = 255;
+    public const EMERG  = 1;
+    public const ALERT  = 2;
+    public const CRIT   = 4;
+    public const ERR    = 8;
+    public const WARN   = 16;
+    public const NOTICE = 32;
+    public const INFO   = 64;
+    public const DEBUG  = 128;
+    public const ALL    = 255;
 
     /**
      * @var OutputInterface
@@ -43,10 +45,6 @@ class OutputLogger implements LoggerInterface
      */
     private $level = self::ALL;
 
-    /**
-     * OutputLogger constructor.
-     * @param OutputInterface $output
-     */
     public function __construct(OutputInterface $output)
     {
         $this->output = $output;
@@ -63,9 +61,10 @@ class OutputLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function emergency($message, array $context = array())
+    public function emergency(string|\Stringable $message, array $context = []): void
     {
         $this->emerg($message, $context);
     }
@@ -73,37 +72,40 @@ class OutputLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function emerg($message, array $context = array())
+    public function emerg(string|\Stringable $message, array $context = []): void
     {
         if (0 === ($this->level & self::EMERG)) {
             return;
         }
 
-        $this->output->writeln('<error>'.$message.'</error>');
+        $this->output->writeln('<error>' . $message . '</error>');
     }
 
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function alert($message, array $context = array())
+    public function alert(string|\Stringable $message, array $context = []): void
     {
         if (0 === ($this->level & self::ALERT)) {
             return;
         }
 
-        $this->output->writeln('<error>'.$message.'</error>');
+        $this->output->writeln('<error>' . $message . '</error>');
     }
 
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function critical($message, array $context = array())
+    public function critical(string|\Stringable $message, array $context = []): void
     {
         $this->crit($message, $context);
     }
@@ -111,23 +113,25 @@ class OutputLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function crit($message, array $context = array())
+    public function crit(string|\Stringable $message, array $context = []): void
     {
         if (0 === ($this->level & self::CRIT)) {
             return;
         }
 
-        $this->output->writeln('<error>'.$message.'</error>');
+        $this->output->writeln('<error>' . $message . '</error>');
     }
 
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function error($message, array $context = array())
+    public function error(string|\Stringable $message, array $context = []): void
     {
         $this->err($message, $context);
     }
@@ -135,33 +139,36 @@ class OutputLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function err($message, array $context = array())
+    public function err(string|\Stringable $message, array $context = []): void
     {
         if (0 === ($this->level & self::ERR)) {
             return;
         }
 
-        $this->output->writeln('<error>'.$message.'</error>');
+        $this->output->writeln('<error>' . $message . '</error>');
     }
 
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function warning($message, array $context = array())
+    public function warning(string|\Stringable $message, array $context = []): void
     {
         $this->warn($message, $context);
     }
 
     /**
-     * @param $message
+     * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function warn($message, array $context = array())
+    public function warn(string|\Stringable $message, array $context = []): void
     {
         if (0 === ($this->level & self::WARN)) {
             return;
@@ -173,9 +180,10 @@ class OutputLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function notice($message, array $context = array())
+    public function notice(string|\Stringable $message, array $context = []): void
     {
         if (0 === ($this->level & self::NOTICE)) {
             return;
@@ -187,9 +195,10 @@ class OutputLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function info($message, array $context = array())
+    public function info(string|\Stringable $message, array $context = []): void
     {
         if (0 === ($this->level & self::INFO)) {
             return;
@@ -201,9 +210,10 @@ class OutputLogger implements LoggerInterface
     /**
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function debug($message, array $context = array())
+    public function debug(string|\Stringable $message, array $context = []): void
     {
         if (0 === ($this->level & self::DEBUG)) {
             return;
@@ -216,9 +226,10 @@ class OutputLogger implements LoggerInterface
      * @param mixed $level
      * @param string $message
      * @param array $context
+     *
      * @return void
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
         if (0 === ($this->level & $level)) {
             return;

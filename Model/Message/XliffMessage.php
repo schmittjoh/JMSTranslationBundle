@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2013 Dieter Peeters <peetersdiet@gmail.com>
  *
@@ -23,34 +25,34 @@ use JMS\TranslationBundle\Model\Message;
 
 /**
  * Represents an _existing_ message from an XLIFF-file.
- * 
+ *
  * Currently supports preservation of:
  * - note-elements (as child of trans-unit element)
  * - attribute trans-unit['approved']
  * - attribute target['state']
- * 
- * @see http://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html
  *
  * @author Dieter Peeters <peetersdiet@gmail.com>
+ *
+ * @see http://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html
  */
 class XliffMessage extends Message
 {
-    protected static $states = array();
-    const STATE_NONE = null;
-    const STATE_FINAL = 'final';
-    const STATE_NEEDS_ADAPTATION = 'needs-adaptation';
-    const STATE_NEEDS_L10N = 'needs-l10n';
-    const STATE_NEEDS_REVIEW_ADAPTATION = 'needs-review-adaptation';
-    const STATE_NEEDS_REVIEW_L10N = 'needs-review-l10n';
-    const STATE_NEEDS_REVIEW_TRANSLATION = 'needs-review-translation';
-    const STATE_NEEDS_TRANSLATION = 'needs-translation';
-    const STATE_NEW = 'new';
-    const STATE_SIGNED_OFF = 'signed-off';
-    const STATE_TRANSLATED = 'translated';
+    protected static $states = [];
+    public const STATE_NONE = null;
+    public const STATE_FINAL = 'final';
+    public const STATE_NEEDS_ADAPTATION = 'needs-adaptation';
+    public const STATE_NEEDS_L10N = 'needs-l10n';
+    public const STATE_NEEDS_REVIEW_ADAPTATION = 'needs-review-adaptation';
+    public const STATE_NEEDS_REVIEW_L10N = 'needs-review-l10n';
+    public const STATE_NEEDS_REVIEW_TRANSLATION = 'needs-review-translation';
+    public const STATE_NEEDS_TRANSLATION = 'needs-translation';
+    public const STATE_NEW = 'new';
+    public const STATE_SIGNED_OFF = 'signed-off';
+    public const STATE_TRANSLATED = 'translated';
 
     protected $approved = false;
     protected $state;
-    protected $notes = array();
+    protected $notes = [];
 
     /**
      * @return bool
@@ -61,7 +63,7 @@ class XliffMessage extends Message
     }
 
     /**
-     * @param $approved
+     * @param bool $approved
      *
      * @return $this
      */
@@ -151,16 +153,16 @@ class XliffMessage extends Message
     }
 
     /**
-     * @param $text
+     * @param string $text
      * @param null $from
      *
      * @return $this
      */
     public function addNote($text, $from = null)
     {
-        $note = array(
+        $note = [
             'text' => (string) $text,
-        );
+        ];
         if (isset($from)) {
             $note['from'] = (string) $from;
         }
@@ -174,7 +176,7 @@ class XliffMessage extends Message
      *
      * @return $this
      */
-    public function setNotes(array $notes = array())
+    public function setNotes(array $notes = [])
     {
         $this->notes = $notes;
 

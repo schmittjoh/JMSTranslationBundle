@@ -1,0 +1,11 @@
+imports:
+    - { resource: framework.yml }
+    - { resource: twig.yml }
+    - { resource: bundle.yml }
+
+parameters:
+    translation_output_dir: "%kernel.project_dir%/Fixture/TestBundle/Resources/translations"
+
+services:
+    logger:
+        class: Psr\Log\NullLogger

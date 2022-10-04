@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -20,6 +22,7 @@ namespace JMS\TranslationBundle\Translation;
 
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\Loader\LoaderInterface;
 use JMS\TranslationBundle\Util\FileUtils;
 
 class LoaderManager
@@ -35,10 +38,11 @@ class LoaderManager
     }
 
     /**
-     * @param $file
-     * @param $format
-     * @param $locale
+     * @param mixed  $file
+     * @param string $format
+     * @param string $locale
      * @param string $domain
+     *
      * @return mixed
      */
     public function loadFile($file, $format, $locale, $domain = 'messages')
@@ -47,9 +51,10 @@ class LoaderManager
     }
 
     /**
-     * @param $dir
-     * @param $targetLocale
-     * @return \JMS\TranslationBundle\Model\MessageCatalogue
+     * @param string $dir
+     * @param string $targetLocale
+     *
+     * @return MessageCatalogue
      */
     public function loadFromDirectory($dir, $targetLocale)
     {
@@ -64,7 +69,7 @@ class LoaderManager
                     continue;
                 }
 
-                list($format, $file) = $data;
+                [$format, $file] = $data;
 
                 $catalogue->merge($this->getLoader($format)->load($file, $locale, $domain));
             }
@@ -74,19 +79,11 @@ class LoaderManager
     }
 
     /**
-     * @param $format
+     * @param string $format
      *
-     * @return bool
-     */
-    public function supportLoader($format) {
-        return isset($this->loaders[$format]);
-    }
-
-    /**
-     * @param $format
-     * @return mixed
+     * @return LoaderInterface
+     *
      * @throws \InvalidArgumentException
-     * @return \JMS\TranslationBundle\Translation\Loader\LoaderInterface
      */
     protected function getLoader($format)
     {

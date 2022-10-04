@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,21 +20,24 @@
 
 namespace JMS\TranslationBundle\Tests\Twig;
 
-use Symfony\Component\Translation\MessageSelector;
-use Symfony\Component\Translation\IdentityTranslator;
-use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
 use JMS\TranslationBundle\Twig\TranslationExtension;
+use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExtension;
+use Symfony\Component\Translation\IdentityTranslator;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
+use Twig\Source;
 
-abstract class BaseTwigTestCase extends \PHPUnit_Framework_TestCase
+abstract class BaseTwigTestCase extends TestCase
 {
     final protected function parse($file, $debug = false)
     {
-        $content = file_get_contents(__DIR__.'/Fixture/'.$file);
+        $content = file_get_contents(__DIR__ . '/Fixture/' . $file);
 
-        $env = new \Twig_Environment(new \Twig_Loader_Array(array()));
-        $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator(new MessageSelector())));
+        $env = new Environment(new ArrayLoader([]));
+        $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator()));
         $env->addExtension(new TranslationExtension($translator, $debug));
 
-        return $env->parse($env->tokenize(new \Twig_Source($content, null)))->getNode('body');
+        return $env->compile($env->parse($env->tokenize(new Source($content, 'whatever')))->getNode('body'));
     }
 }

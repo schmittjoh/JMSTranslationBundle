@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -37,28 +39,30 @@ class FileWriter
     /**
      * @param array $dumpers
      */
-    public function __construct(array $dumpers = array())
+    public function __construct(array $dumpers = [])
     {
         $this->dumpers = $dumpers;
     }
 
     /**
-     * @param \JMS\TranslationBundle\Model\MessageCatalogue $catalogue
+     * @param MessageCatalogue $catalogue
      * @param string $domain
      * @param string $filePath
      * @param string $format
-     * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
+     *
+     * @throws InvalidArgumentException
      */
     public function write(MessageCatalogue $catalogue, $domain, $filePath, $format)
     {
         if (!isset($this->dumpers[$format])) {
             $allowedFormats = array_keys($this->dumpers);
-            $allowedFormatsString = join(',', $allowedFormats);
+            $allowedFormatsString = implode(',', $allowedFormats);
+
             throw new InvalidArgumentException(sprintf('The format "%s" is not supported. Allowed formats:%s', $format, $allowedFormatsString));
         }
 
         // sort messages before dumping
-        $catalogue->getDomain($domain)->sort(function ($a, $b) {
+        $catalogue->getDomain($domain)->sort(static function ($a, $b) {
             return strcmp($a->getId(), $b->getId());
         });
 

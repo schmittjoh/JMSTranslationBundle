@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,9 +21,9 @@
 namespace JMS\TranslationBundle\Translation\Loader;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message\XliffMessage as Message;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 
 class XliffLoader implements LoaderInterface
 {
@@ -29,19 +31,23 @@ class XliffLoader implements LoaderInterface
      * @param mixed $resource
      * @param string $locale
      * @param string $domain
+     *
      * @return MessageCatalogue
      */
-    public function load($resource, $locale, $domain = 'messages')
+    public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
-        $previous = libxml_use_internal_errors(true);
-        if (false === $doc = simplexml_load_file($resource)) {
-            libxml_use_internal_errors($previous);
+        $previousErrors = libxml_use_internal_errors(true);
+        $previousEntities = $this->libxmlDisableEntityLoader(false);
+        if (false === $doc = simplexml_load_file((string) $resource)) {
+            libxml_use_internal_errors($previousErrors);
+            $this->libxmlDisableEntityLoader($previousEntities);
             $libxmlError = libxml_get_last_error();
 
             throw new RuntimeException(sprintf('Could not load XML-file "%s": %s', $resource, $libxmlError->message));
         }
 
-        libxml_use_internal_errors($previous);
+        libxml_use_internal_errors($previousErrors);
+        $this->libxmlDisableEntityLoader($previousEntities);
 
         $doc->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
         $doc->registerXPathNamespace('jms', 'urn:jms:translation');
@@ -51,25 +57,24 @@ class XliffLoader implements LoaderInterface
         $catalogue = new MessageCatalogue();
         $catalogue->setLocale($locale);
 
-        /** @var \SimpleXMLElement $trans */
         foreach ($doc->xpath('//xliff:trans-unit') as $trans) {
-            $id = ($resName = (string) $trans->attributes()->resname)
-                       ? $resName : (string) $trans->source;
+            \assert($trans instanceof \SimpleXMLElement);
+            $resName = (string) $trans->attributes()->resname;
+            $id = $resName ?: (string) $trans->source;
 
-            /** @var Message $m */
             $m = Message::create($id, $domain)
                     ->setDesc((string) $trans->source)
-                    ->setLocaleString((string) $trans->target)
-            ;
+                    ->setLocaleString((string) $trans->target);
+            \assert($m instanceof Message);
 
-            $m->setApproved($trans['approved']=='yes');
+            $m->setApproved((string) $trans['approved'] === 'yes');
 
             if (isset($trans->target['state'])) {
                 $m->setState((string) $trans->target['state']);
             }
 
             // Create closure
-            $addNoteToMessage = function(Message $m, $note) {
+            $addNoteToMessage = static function (Message $m, $note) {
                 $m->addNote((string) $note, isset($note['from']) ? ((string) $note['from']) : null);
             };
 
@@ -93,8 +98,8 @@ class XliffLoader implements LoaderInterface
                     $column = (string) $file->attributes()->column;
                     $m->addSource(new FileSource(
                         (string) $file,
-                        $line ? (integer) $line : null,
-                        $column ? (integer) $column : null
+                        $line ? (int) $line : null,
+                        $column ? (int) $column : null
                     ));
                 }
             }
@@ -113,5 +118,17 @@ class XliffLoader implements LoaderInterface
         }
 
         return $catalogue;
+    }
+
+    /**
+     * Use libxml_disable_entity_loader only if it's not deprecated
+     */
+    private function libxmlDisableEntityLoader(bool $disable): bool
+    {
+        if (PHP_VERSION_ID >= 80000) {
+            return true;
+        }
+
+        return libxml_disable_entity_loader($disable);
     }
 }

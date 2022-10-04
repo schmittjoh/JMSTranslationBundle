@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,24 +20,42 @@
 
 namespace JMS\TranslationBundle\Command;
 
-use JMS\TranslationBundle\Translation\ConfigBuilder;
-use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Translation\Config;
-use JMS\TranslationBundle\Logger\OutputLogger;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Finder\Finder;
 use JMS\TranslationBundle\Util\FileUtils;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class ResourcesListCommand extends ContainerAwareCommand
+class ResourcesListCommand extends Command
 {
+    /**
+     * @var string
+     */
+    private $projectDir;
+
+    /**
+     * @var string|null
+     */
+    private $rootDir;
+
+    /**
+     * @var array
+     */
+    private $bundles;
+
+    public function __construct(string $projectDir, array $bundles, ?string $rootDir)
+    {
+        $this->projectDir = $projectDir;
+        $this->bundles = $bundles;
+        $this->rootDir = $rootDir;
+
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -44,33 +64,34 @@ class ResourcesListCommand extends ContainerAwareCommand
         $this
             ->setName('translation:list-resources')
             ->setDescription('List translation resources available.')
-            ->addOption('files', null, InputOption::VALUE_OPTIONAL, 'Display only files')
-        ;
+            ->addOption('files', null, InputOption::VALUE_OPTIONAL, 'Display only files');
     }
 
-    /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return void
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $rootPath = realpath($this->getContainer()->getParameter('kernel.root_dir'));
-        $basePath = realpath($this->getContainer()->getParameter('kernel.root_dir').'/..');
+        $directoriesToSearch = [];
+
+        // TODO: Remove this block when dropping support of Symfony 4 as it will always be false
+        if ($this->rootDir !== null) {
+            $directoriesToSearch[] = realpath($this->rootDir);
+        }
+
+        $basePath = realpath($this->projectDir);
+
+        $directoriesToSearch[] = $basePath;
 
         $dirs = $this->retrieveDirs();
 
         if (!$input->hasParameterOption('--files')) {
             $output->writeln('<info>Directories list :</info>');
             foreach ($dirs as $dir) {
-                $path = str_replace($rootPath, '%kernel.root_dir%', $dir);
-                $path = str_replace($basePath, '%kernel.root_dir%/..', $path);
+                $path = str_replace($directoriesToSearch, ['%kernel.root_dir%', '%kernel.project_dir%'], $dir);
                 $output->writeln(sprintf('    - %s', $path));
             }
 
             $output->writeln('done!');
 
-            return;
+            return 0;
         }
 
         $output->writeln('<info>Resources list :</info>');
@@ -78,20 +99,23 @@ class ResourcesListCommand extends ContainerAwareCommand
         $files = $this->retrieveFiles($dirs);
 
         foreach ($files as $file) {
-            $path = str_replace($basePath, '%kernel.root_dir%', $file);
-            $output->writeln(sprintf(' - %s', $path));
+            $path = str_replace($basePath, '%kernel.project_dir%', (string) $file);
+            $output->writeln(sprintf('    - %s', $path));
         }
 
         $output->writeln('done!');
+
+        return 0;
     }
 
     /**
      * @param array $dirs
+     *
      * @return array
      */
     private function retrieveFiles(array $dirs)
     {
-        $files = array();
+        $files = [];
         // Register translation resources
         foreach ($dirs as $dir) {
             foreach (FileUtils::findTranslationFiles($dir) as $catalogue => $locales) {
@@ -112,15 +136,23 @@ class ResourcesListCommand extends ContainerAwareCommand
     private function retrieveDirs()
     {
         // Discover translation directories
-        $dirs = array();
-        foreach ($this->getContainer()->getParameter('kernel.bundles') as $bundle) {
+        $dirs = [];
+        foreach ($this->bundles as $bundle) {
             $reflection = new \ReflectionClass($bundle);
-            if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/translations')) {
+            if (is_dir($dir = dirname($reflection->getFilename()) . '/Resources/translations')) {
                 $dirs[] = $dir;
             }
         }
 
-        if (is_dir($dir = $this->getContainer()->getParameter('kernel.root_dir').'/Resources/translations')) {
+        // TODO: Remove this block when dropping support of Symfony 4
+        if (
+            $this->rootDir !== null &&
+            is_dir($dir = $this->rootDir . '/Resources/translations')
+        ) {
+            $dirs[] = $dir;
+        }
+
+        if (is_dir($dir = $this->projectDir . '/translations')) {
             $dirs[] = $dir;
         }
 

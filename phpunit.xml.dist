@@ -8,10 +8,9 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false"
          bootstrap="Tests/bootstrap.php"
 >
-         
+
     <testsuites>
         <testsuite name="JMSTranslationBundle Test Suite">
             <directory>./Tests</directory>

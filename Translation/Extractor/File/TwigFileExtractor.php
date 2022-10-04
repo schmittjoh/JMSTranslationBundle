@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,13 +21,19 @@
 namespace JMS\TranslationBundle\Translation\Extractor\File;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Translation\FileSourceFactory;
-use Symfony\Bridge\Twig\Node\TransNode;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use JMS\TranslationBundle\Translation\FileSourceFactory;
+use Symfony\Bridge\Twig\Node\TransNode;
+use Twig\Environment;
+use Twig\Node\Expression\ConstantExpression;
+use Twig\Node\Expression\FilterExpression;
+use Twig\Node\Node;
+use Twig\NodeTraverser;
+use Twig\NodeVisitor\AbstractNodeVisitor;
 
-class TwigFileExtractor extends \Twig_BaseNodeVisitor implements FileVisitorInterface
+class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterface
 {
     /**
      * @var FileSourceFactory
@@ -43,32 +51,25 @@ class TwigFileExtractor extends \Twig_BaseNodeVisitor implements FileVisitorInte
     private $catalogue;
 
     /**
-     * @var \Twig_NodeTraverser
+     * @var NodeTraverser
      */
     private $traverser;
 
     /**
      * @var array
      */
-    private $stack = array();
+    private $stack = [];
 
-    /**
-     * TwigFileExtractor constructor.
-     * @param \Twig_Environment $env
-     * @param FileSourceFactory $fileSourceFactory
-     */
-    public function __construct(\Twig_Environment $env, FileSourceFactory $fileSourceFactory)
+    public function __construct(Environment $env, FileSourceFactory $fileSourceFactory)
     {
         $this->fileSourceFactory = $fileSourceFactory;
-        $this->traverser = new \Twig_NodeTraverser($env, array($this));
+        $this->traverser = new NodeTraverser($env, [$this]);
     }
 
     /**
-     * @param \Twig_Node $node
-     * @param \Twig_Environment $env
-     * @return \Twig_Node
+     * @return Node
      */
-    protected function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doEnterNode(Node $node, Environment $env)
     {
         $this->stack[] = $node;
 
@@ -83,25 +84,27 @@ class TwigFileExtractor extends \Twig_BaseNodeVisitor implements FileVisitorInte
             $message = new Message($id, $domain);
             $message->addSource($this->fileSourceFactory->create($this->file, $node->getTemplateLine()));
             $this->catalogue->add($message);
-        } elseif ($node instanceof \Twig_Node_Expression_Filter) {
+        } elseif ($node instanceof FilterExpression) {
             $name = $node->getNode('filter')->getAttribute('value');
 
             if ('trans' === $name || 'transchoice' === $name) {
                 $idNode = $node->getNode('node');
-                if (!$idNode instanceof \Twig_Node_Expression_Constant) {
+                if (!$idNode instanceof ConstantExpression) {
                     return $node;
+
                     // FIXME: see below
 //                     throw new \RuntimeException(sprintf('Cannot infer translation id from node "%s". Please refactor to only translate constants.', get_class($idNode)));
                 }
                 $id = $idNode->getAttribute('value');
 
-                $index = 'trans' === $name ? 1 : 2;
-                $domain = 'messages';
-                $arguments = $node->getNode('arguments');
-                if ($arguments->hasNode($index)) {
-                    $argument = $arguments->getNode($index);
-                    if (!$argument instanceof \Twig_Node_Expression_Constant) {
+                $index     = $name === 'trans' ? 1 : 2;
+                $domain    = 'messages';
+                $arguments = iterator_to_array($node->getNode('arguments'));
+                if (isset($arguments[$index])) {
+                    $argument = $arguments[$index];
+                    if (! $argument instanceof ConstantExpression) {
                         return $node;
+
                         // FIXME: Throw exception if there is some way for the user to turn this off
                         //        on a case-by-case basis, similar to @Ignore in PHP
                     }
@@ -112,24 +115,24 @@ class TwigFileExtractor extends \Twig_BaseNodeVisitor implements FileVisitorInte
                 $message = new Message($id, $domain);
                 $message->addSource($this->fileSourceFactory->create($this->file, $node->getTemplateLine()));
 
-                for ($i=count($this->stack)-2; $i>=0; $i-=1) {
-                    if (!$this->stack[$i] instanceof \Twig_Node_Expression_Filter) {
+                for ($i = count($this->stack) - 2; $i >= 0; $i -= 1) {
+                    if (!$this->stack[$i] instanceof FilterExpression) {
                         break;
                     }
 
                     $name = $this->stack[$i]->getNode('filter')->getAttribute('value');
-                    if ('desc' === $name || 'meaning' === $name) {
-                        $arguments = $this->stack[$i]->getNode('arguments');
-                        if (!$arguments->hasNode(0)) {
+                    if ($name === 'desc' || $name === 'meaning') {
+                        $arguments = iterator_to_array($this->stack[$i]->getNode('arguments'));
+                        if (! isset($arguments[0])) {
                             throw new RuntimeException(sprintf('The "%s" filter requires exactly one argument, the description text.', $name));
                         }
 
-                        $text = $arguments->getNode(0);
-                        if (!$text instanceof \Twig_Node_Expression_Constant) {
+                        $text = $arguments[0];
+                        if (! $text instanceof ConstantExpression) {
                             throw new RuntimeException(sprintf('The first argument of the "%s" filter must be a constant expression, such as a string.', $name));
                         }
 
-                        $message->{'set'.$name}($text->getAttribute('value'));
+                        $message->{'set' . $name}($text->getAttribute('value'));
                     } elseif ('trans' === $name) {
                         break;
                     }
@@ -150,12 +153,7 @@ class TwigFileExtractor extends \Twig_BaseNodeVisitor implements FileVisitorInte
         return 0;
     }
 
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     * @param \Twig_Node $ast
-     */
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $ast)
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, Node $ast)
     {
         $this->file = $file;
         $this->catalogue = $catalogue;
@@ -167,10 +165,8 @@ class TwigFileExtractor extends \Twig_BaseNodeVisitor implements FileVisitorInte
      * If the current Twig Node has embedded templates, we want to travese these templates
      * in the same manner as we do the main twig template to ensure all translations are
      * caught.
-     *
-     * @param \Twig_Node $node
      */
-    private function traverseEmbeddedTemplates(\Twig_Node $node)
+    private function traverseEmbeddedTemplates(Node $node)
     {
         $templates = $node->getAttribute('embedded_templates');
 
@@ -183,21 +179,15 @@ class TwigFileExtractor extends \Twig_BaseNodeVisitor implements FileVisitorInte
     }
 
     /**
-     * @param \Twig_Node $node
-     * @param \Twig_Environment $env
-     * @return \Twig_Node
+     * @return Node
      */
-    protected function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doLeaveNode(Node $node, Environment $env)
     {
         array_pop($this->stack);
 
         return $node;
     }
 
-    /**
-     * @param \SplFileInfo $file
-     * @param MessageCatalogue $catalogue
-     */
     public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
     {
     }

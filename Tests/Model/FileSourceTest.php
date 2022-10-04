@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -19,9 +21,10 @@
 namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
-use JMS\TranslationBundle\Tests\BaseTestCase;
+use JMS\TranslationBundle\Model\SourceInterface;
+use PHPUnit\Framework\TestCase;
 
-class FileSourceTest extends BaseTestCase
+class FileSourceTest extends TestCase
 {
     public function testGetPath()
     {
@@ -64,55 +67,54 @@ class FileSourceTest extends BaseTestCase
 
     public function getEqualityTests()
     {
-        $tests = array();
+        $tests = [];
 
-        $tests[] = array(
+        $tests[] = [
             new FileSource('foo'),
             new FileSource('foo'),
             true,
-        );
+        ];
 
-        $tests[] = array(
+        $tests[] = [
             new FileSource('foo'),
             new FileSource('bar'),
             false,
-        );
+        ];
 
-        $tests[] = array(
+        $tests[] = [
             new FileSource('foo', 1),
             new FileSource('foo', 1),
             true,
-        );
+        ];
 
-        $tests[] = array(
+        $tests[] = [
             new FileSource('foo', 1),
             new FileSource('foo', 2),
             false,
-        );
+        ];
 
-        $tests[] = array(
+        $tests[] = [
             new FileSource('foo', 1, 2),
             new FileSource('foo', 1, 2),
             true,
-        );
+        ];
 
-        $tests[] = array(
+        $tests[] = [
             new FileSource('foo', 1, 2),
             new FileSource('foo', 1, 3),
             false,
-        );
+        ];
 
-        $source = $this->createMock('JMS\TranslationBundle\Model\SourceInterface');
+        $source = $this->createMock(SourceInterface::class);
         $source
             ->expects($this->once())
             ->method('equals')
-            ->will($this->returnValue(false))
-        ;
-        $tests[] = array(
+            ->willReturn(false);
+        $tests[] = [
             new FileSource('foo'),
             $source,
             false,
-        );
+        ];
 
         return $tests;
     }
@@ -127,13 +129,13 @@ class FileSourceTest extends BaseTestCase
 
     public function getToStringTests()
     {
-        $tests = array();
+        $tests = [];
 
-        $tests[] = array(new FileSource('foo/bar'), 'foo/bar');
-        $tests[] = array(new FileSource('foo/bar', 1), 'foo/bar on line 1');
-        $tests[] = array(new FileSource('foo/bar', null, 2), 'foo/bar');
-        $tests[] = array(new FileSource('foo/bar', 1, 2), 'foo/bar on line 1 at column 2');
-        $tests[] = array(new FileSource('a/b/c/foo/bar'), 'a/b/c/foo/bar');
+        $tests[] = [new FileSource('foo/bar'), 'foo/bar'];
+        $tests[] = [new FileSource('foo/bar', 1), 'foo/bar on line 1'];
+        $tests[] = [new FileSource('foo/bar', null, 2), 'foo/bar'];
+        $tests[] = [new FileSource('foo/bar', 1, 2), 'foo/bar on line 1 at column 2'];
+        $tests[] = [new FileSource('a/b/c/foo/bar'), 'a/b/c/foo/bar'];
 
         return $tests;
     }

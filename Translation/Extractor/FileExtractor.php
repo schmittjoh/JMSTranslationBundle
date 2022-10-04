@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,18 +20,22 @@
 
 namespace JMS\TranslationBundle\Translation\Extractor;
 
-use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
+use JMS\TranslationBundle\Logger\LoggerAwareInterface;
+use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Translation\ExtractorInterface;
+use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
+use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
 use PhpParser\Error;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Psr\Log\LoggerInterface;
-use JMS\TranslationBundle\Logger\LoggerAwareInterface;
-use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
-use JMS\TranslationBundle\Translation\ExtractorInterface;
-use JMS\TranslationBundle\Model\MessageCatalogue;
 use Symfony\Component\Finder\Finder;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
+use Twig\NodeVisitor\NodeVisitorInterface;
+use Twig\Source;
 
 /**
  * File-based extractor.
@@ -39,7 +45,7 @@ use Symfony\Component\Finder\Finder;
 class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 {
     /**
-     * @var \Twig_Environment
+     * @var Environment
      */
     private $twig;
 
@@ -64,24 +70,24 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     private $directory;
 
     /**
-     * @var RemovingNodeVisitor|\Twig_NodeVisitorInterface
+     * @var RemovingNodeVisitor|NodeVisitorInterface
      */
     private $removingTwigVisitor;
 
     /**
-     * @var DefaultApplyingNodeVisitor|RemovingNodeVisitor|\Twig_NodeVisitorInterface
+     * @var DefaultApplyingNodeVisitor|RemovingNodeVisitor|NodeVisitorInterface
      */
     private $defaultApplyingTwigVisitor;
 
     /**
      * @var array
      */
-    private $excludedNames = array();
+    private $excludedNames = [];
 
     /**
      * @var array
      */
-    private $excludedDirs = array();
+    private $excludedDirs = [];
 
     /**
      * @var LoggerInterface
@@ -89,18 +95,17 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
     private $logger;
 
     /**
-     * FileExtractor constructor.
-     * @param \Twig_Environment $twig
+     * @param Environment $twig
      * @param LoggerInterface $logger
      * @param array $visitors
      */
-    public function __construct(\Twig_Environment $twig, LoggerInterface $logger, array $visitors)
+    public function __construct(Environment $twig, LoggerInterface $logger, array $visitors)
     {
         $this->twig = $twig;
         $this->visitors = $visitors;
         $this->setLogger($logger);
         $lexer = new Lexer();
-        if (class_exists('PhpParser\ParserFactory')) {
+        if (class_exists(ParserFactory::class)) {
             $factory = new ParserFactory();
             $this->phpParser = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
         } else {
@@ -119,13 +124,10 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 
     public function reset()
     {
-        $this->excludedNames = array();
-        $this->excludedDirs  = array();
+        $this->excludedNames = [];
+        $this->excludedDirs  = [];
     }
 
-    /**
-     * @param LoggerInterface $logger
-     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -139,9 +141,6 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         }
     }
 
-    /**
-     * @param $directory
-     */
     public function setDirectory($directory)
     {
         if (!is_dir($directory)) {
@@ -177,6 +176,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 
     /**
      * @return MessageCatalogue
+     *
      * @throws \Exception
      */
     public function extract()
@@ -203,22 +203,22 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         }
 
         $curTwigLoader = $this->twig->getLoader();
-        $this->twig->setLoader(new \Twig_Loader_Array(array()));
+        $this->twig->setLoader(new ArrayLoader([]));
 
         try {
             $catalogue = new MessageCatalogue();
             foreach ($finder as $file) {
                 $visitingMethod = 'visitFile';
-                $visitingArgs = array($file, $catalogue);
+                $visitingArgs = [$file, $catalogue];
 
                 $this->logger->debug(sprintf('Parsing file "%s"', $file));
 
-                if (false !== $pos = strrpos($file, '.')) {
-                    $extension = substr($file, $pos + 1);
+                if (false !== $pos = strrpos((string) $file, '.')) {
+                    $extension = substr((string) $file, $pos + 1);
 
                     if ('php' === $extension) {
                         try {
-                            $ast = $this->phpParser->parse(file_get_contents($file));
+                            $ast = $this->phpParser->parse(file_get_contents((string) $file));
                         } catch (Error $ex) {
                             throw new \RuntimeException(sprintf('Could not parse "%s": %s', $file, $ex->getMessage()), $ex->getCode(), $ex);
                         }
@@ -227,12 +227,12 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
                         $visitingArgs[] = $ast;
                     } elseif ('twig' === $extension) {
                         $visitingMethod = 'visitTwigFile';
-                        $visitingArgs[] = $this->twig->parse($this->twig->tokenize(new \Twig_Source(file_get_contents($file), (string) $file)));
+                        $visitingArgs[] = $this->twig->parse($this->twig->tokenize(new Source(file_get_contents((string) $file), (string) $file)));
                     }
                 }
 
                 foreach ($this->visitors as $visitor) {
-                    call_user_func_array(array($visitor, $visitingMethod), $visitingArgs);
+                    call_user_func_array([$visitor, $visitingMethod], $visitingArgs);
                 }
             }
 
@@ -248,7 +248,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
             }
 
             return $catalogue;
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             if (null !== $curTwigLoader) {
                 $this->twig->setLoader($curTwigLoader);
             }

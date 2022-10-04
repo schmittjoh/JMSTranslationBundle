@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -33,12 +35,12 @@ final class ConfigBuilder
     /**
      * @var array
      */
-    private $ignoredDomains = array();
+    private $ignoredDomains = [];
 
     /**
      * @var array
      */
-    private $domains = array();
+    private $domains = [];
 
     /**
      * @var string
@@ -51,24 +53,29 @@ final class ConfigBuilder
     private $defaultOutputFormat = 'xlf';
 
     /**
-     * @var array
+     * @var bool
      */
-    private $scanDirs = array();
+    private $useIcuMessageFormat = false;
 
     /**
      * @var array
      */
-    private $excludedDirs = array('Tests');
+    private $scanDirs = [];
 
     /**
      * @var array
      */
-    private $excludedNames = array('*Test.php', '*TestCase.php');
+    private $excludedDirs = ['Tests'];
 
     /**
      * @var array
      */
-    private $enabledExtractors = array();
+    private $excludedNames = ['*Test.php', '*TestCase.php'];
+
+    /**
+     * @var array
+     */
+    private $enabledExtractors = [];
 
     /**
      * @var bool
@@ -78,12 +85,14 @@ final class ConfigBuilder
     /**
      * @var array
      */
-    private $loadResources = array();
+    private $loadResources = [];
 
     /**
-     * @static
      * @param Config $config
+     *
      * @return ConfigBuilder
+     *
+     * @static
      */
     public static function fromConfig(Config $config)
     {
@@ -94,6 +103,7 @@ final class ConfigBuilder
         $builder->setDomains($config->getDomains());
         $builder->setOutputFormat($config->getOutputFormat());
         $builder->setDefaultOutputFormat($config->getDefaultOutputFormat());
+        $builder->setUseIcuMessageFormat($config->shouldUseIcuMessageFormat());
         $builder->setScanDirs($config->getScanDirs());
         $builder->setExcludedDirs($config->getExcludedDirs());
         $builder->setExcludedNames($config->getExcludedNames());
@@ -111,6 +121,7 @@ final class ConfigBuilder
      *   - you haven't forced a format
      *
      * @param string $format
+     *
      * @return $this
      */
     public function setDefaultOutputFormat($format)
@@ -128,11 +139,29 @@ final class ConfigBuilder
      * another format to be deleted.
      *
      * @param string $format
+     *
      * @return $this
      */
     public function setOutputFormat($format)
     {
         $this->outputFormat = $format;
+
+        return $this;
+    }
+
+    /**
+     * Defines whether or not the ICU message format should be used.
+     *
+     * If enabled, translation files will be suffixed with +intl-icu, e.g.:
+     * message+intl-icu.en.xlf
+     *
+     * @param bool $useIcuMessageFormat
+     *
+     * @return $this
+     */
+    public function setUseIcuMessageFormat($useIcuMessageFormat)
+    {
+        $this->useIcuMessageFormat = $useIcuMessageFormat;
 
         return $this;
     }
@@ -144,6 +173,7 @@ final class ConfigBuilder
      * appear in the change set calculated by getChangeSet().
      *
      * @param array $domains an array of the form array('domain' => true, 'another_domain' => true)
+     *
      * @return $this
      */
     public function setIgnoredDomains(array $domains)
@@ -155,6 +185,7 @@ final class ConfigBuilder
 
     /**
      * @param string $domain
+     *
      * @return $this
      */
     public function addIgnoredDomain($domain)
@@ -166,6 +197,7 @@ final class ConfigBuilder
 
     /**
      * @param array $domains
+     *
      * @return $this
      */
     public function setDomains(array $domains)
@@ -177,6 +209,7 @@ final class ConfigBuilder
 
     /**
      * @param string $domain
+     *
      * @return $this
      */
     public function addDomain($domain)
@@ -188,6 +221,7 @@ final class ConfigBuilder
 
     /**
      * @param string $locale
+     *
      * @return $this
      */
     public function setLocale($locale)
@@ -199,6 +233,7 @@ final class ConfigBuilder
 
     /**
      * @param string $dir
+     *
      * @return $this
      */
     public function setTranslationsDir($dir)
@@ -210,6 +245,7 @@ final class ConfigBuilder
 
     /**
      * @param array $dirs
+     *
      * @return $this
      */
     public function setScanDirs(array $dirs)
@@ -221,6 +257,7 @@ final class ConfigBuilder
 
     /**
      * @param array $dirs
+     *
      * @return $this
      */
     public function setExcludedDirs(array $dirs)
@@ -232,6 +269,7 @@ final class ConfigBuilder
 
     /**
      * @param array $names
+     *
      * @return $this
      */
     public function setExcludedNames(array $names)
@@ -243,6 +281,7 @@ final class ConfigBuilder
 
     /**
      * @param array $aliases
+     *
      * @return $this
      */
     public function setEnabledExtractors(array $aliases)
@@ -254,6 +293,7 @@ final class ConfigBuilder
 
     /**
      * @param string $alias
+     *
      * @return $this
      */
     public function enableExtractor($alias)
@@ -265,6 +305,7 @@ final class ConfigBuilder
 
     /**
      * @param string $alias
+     *
      * @return $this
      */
     public function disableExtractor($alias)
@@ -276,6 +317,7 @@ final class ConfigBuilder
 
     /**
      * @param bool $value
+     *
      * @return $this
      */
     public function setKeepOldTranslations($value)
@@ -297,6 +339,7 @@ final class ConfigBuilder
             $this->domains,
             $this->outputFormat,
             $this->defaultOutputFormat,
+            $this->useIcuMessageFormat,
             $this->scanDirs,
             $this->excludedDirs,
             $this->excludedNames,
@@ -308,6 +351,7 @@ final class ConfigBuilder
 
     /**
      * @param array $loadResources
+     *
      * @return $this
      */
     public function setLoadResources(array $loadResources)

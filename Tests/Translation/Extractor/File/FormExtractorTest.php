@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,10 +20,9 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 
-use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
-use Symfony\Component\HttpKernel\Kernel;
+use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 
 class FormExtractorTest extends BasePhpFileExtractorTest
 {
@@ -30,27 +31,27 @@ class FormExtractorTest extends BasePhpFileExtractorTest
      */
     public function testPlaceholderExtract()
     {
-        $expected = new MessageCatalogue();
+        $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyPlaceholderFormType.php');
+        $fixtureSplInfo    = new \SplFileInfo(__DIR__ . '/Fixture/MyPlaceholderFormType.php');
 
         $message = new Message('field.with.placeholder');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 29));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 32));
         $expected->add($message);
 
         $message = new Message('form.placeholder.text');
         $message->setDesc('Field with a placeholder value');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 30));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 33));
         $expected->add($message);
 
         $message = new Message('form.placeholder.text.but.no.label');
         $message->setDesc('Field with a placeholder but no label');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 34));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 37));
         $expected->add($message);
 
         $message = new Message('form.choice_placeholder');
         $message->setDesc('Choice field with a placeholder');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 37));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 39));
         $expected->add($message);
 
         $message = new Message('form.choice_empty_value');
@@ -66,23 +67,17 @@ class FormExtractorTest extends BasePhpFileExtractorTest
      */
     public function testExtract()
     {
-        $expected = new MessageCatalogue();
+        $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyFormType.php');
+        $fixtureSplInfo    = new \SplFileInfo(__DIR__ . '/Fixture/MyFormType.php');
 
-        // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
-        // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
-        if (Kernel::VERSION_ID >= 30000) {
-            $message = new Message('foo');
-        } else {
-            $message = new Message('bar');
-        }
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 36));
+        $message = new Message('foo');
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 35));
         $expected->add($message);
 
         $message = new Message('form.states.empty_value');
         $message->setDesc('Please select a state');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 37));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 36));
         $expected->add($message);
 
         $message = new Message('form.label.lastname');
@@ -91,129 +86,89 @@ class FormExtractorTest extends BasePhpFileExtractorTest
         $expected->add($message);
 
         $message = new Message('form.label.firstname');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 30));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 32));
         $expected->add($message);
 
         $message = new Message('form.label.password');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 42));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 40));
         $expected->add($message);
 
         $message = new Message('form.label.password_repeated');
         $message->setDesc('Repeat password');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 45));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 41));
         $expected->add($message);
 
         $message = new Message('form.label.street', 'address');
         $message->setDesc('Street');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 50));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 45));
+        $expected->add($message);
+
+        $message = new Message('form.street.empty_value', 'validators');
+        $message->setDesc('You should fill in the street');
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 48));
         $expected->add($message);
 
         $message = new Message('form.label.zip', 'address');
         $message->setDesc('ZIP');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 55));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 54));
         $expected->add($message);
 
         $message = new Message('form.error.password_mismatch', 'validators');
         $message->setDesc('The entered passwords do not match');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 47));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 42));
         $expected->add($message);
 
         $message = new Message('form.label.created');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 75));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 65));
         $expected->add($message);
 
         $message = new Message('field.with.placeholder');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 59));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 58));
         $expected->add($message);
 
         $message = new Message('form.placeholder.text');
         $message->setDesc('Field with a placeholder value');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 60));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 59));
         $expected->add($message);
 
         $message = new Message('form.placeholder.text.but.no.label');
         $message->setDesc('Field with a placeholder but no label');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 64));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 63));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.year');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 79));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 67));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.month');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 79));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 67));
         $expected->add($message);
 
         $message = new Message('form.dueDate.empty.day');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 79));
-        $expected->add($message);
-
-        $message = new Message('form.choice.choice_as_values.label.foo');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 68));
-        $expected->add($message);
-
-        $message = new Message('form.choice.choice_as_values.label.bar');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 69));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 67));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
 
-    /**
-     * This test is used to check compatibility with Symfony 2.1
-     * In Symfony 2.1 the AbstractType must use FormBuilderInterface instead of FormBuilder
-     */
-    public function testExtractWithInterface()
+    protected function getDefaultDomainFixture($fixtureFile)
     {
-        $expected = new MessageCatalogue();
+        $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyFormTypeWithInterface.php');
+        $fixtureSplInfo    = new \SplFileInfo($fixtureFile);
 
-        // Symfony >= 3.0 switch the default behavior of the choice field following a BC break introduced in 2.7
-        // @see https://github.com/symfony/symfony/blob/master/UPGRADE-3.0.md#choices_as_values
-        if (Kernel::VERSION_ID >= 30000) {
-            $message = new Message('foo');
-        } else {
-            $message = new Message('bar');
-        }
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 36));
-        $expected->add($message);
-
-        $message = new Message('form.states.empty_value');
-        $message->setDesc('Please select a state');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 37));
-        $expected->add($message);
-
-        $message = new Message('form.label.lastname');
+        $message = new Message('form.label.lastname', 'person');
         $message->setDesc('Lastname');
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 33));
         $expected->add($message);
 
-        $message = new Message('form.label.firstname');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 30));
-        $expected->add($message);
-
-        $this->assertEquals($expected, $this->extract('MyFormTypeWithInterface.php'));
-    }
-
-    protected function getDefaultDomainFixture($fixtureFile)
-    {
-        $expected = new MessageCatalogue();
-        $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo($fixtureFile);
-
-        $message = new Message('form.label.lastname', 'person');
-        $message->setDesc('Lastname');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 34));
-        $expected->add($message);
-
         $message = new Message('form.label.firstname', 'person');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 31));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 32));
         $expected->add($message);
 
         $message = new Message('form.label.street', 'address');
         $message->setDesc('Street');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 37));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 35));
         $expected->add($message);
 
         return $expected;
@@ -225,7 +180,7 @@ class FormExtractorTest extends BasePhpFileExtractorTest
      */
     public function testExtractWithDefaultDomain()
     {
-        $this->assertEquals($this->getDefaultDomainFixture(__DIR__.'/Fixture/MyFormTypeWithDefaultDomain.php'), $this->extract('MyFormTypeWithDefaultDomain.php'));
+        $this->assertEquals($this->getDefaultDomainFixture(__DIR__ . '/Fixture/MyFormTypeWithDefaultDomain.php'), $this->extract('MyFormTypeWithDefaultDomain.php'));
     }
 
     /**
@@ -234,31 +189,31 @@ class FormExtractorTest extends BasePhpFileExtractorTest
      */
     public function testExtractWithDefaultDomainSetDefault()
     {
-        $this->assertEquals($this->getDefaultDomainFixture(__DIR__.'/Fixture/MyFormTypeWithDefaultDomainSetDefault.php'), $this->extract('MyFormTypeWithDefaultDomainSetDefault.php'));
+        $this->assertEquals($this->getDefaultDomainFixture(__DIR__ . '/Fixture/MyFormTypeWithDefaultDomainSetDefault.php'), $this->extract('MyFormTypeWithDefaultDomainSetDefault.php'));
     }
 
     /**
      * This test is used to check if translation from subscriber classes and even closures
      * are correctly extracted
      */
-    public function testExtractWithWithSubscriberAndListener()
+    public function testExtractWithSubscriberAndListener()
     {
-        $expected = new MessageCatalogue();
-        $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyFormTypeWithSubscriberAndListener.php');
-        $subscriberFixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyFormSubscriber.php');
+        $expected                 = new MessageCatalogue();
+        $fileSourceFactory        = $this->getFileSourceFactory();
+        $fixtureSplInfo           = new \SplFileInfo(__DIR__ . '/Fixture/MyFormTypeWithSubscriberAndListener.php');
+        $subscriberFixtureSplInfo = new \SplFileInfo(__DIR__ . '/Fixture/MyFormSubscriber.php');
 
         $message = new Message('form.label.lastname');
         $message->setDesc('Lastname');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 36));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 35));
         $expected->add($message);
 
         $message = new Message('form.label.firstname');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 33));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 34));
         $expected->add($message);
 
         $message = new Message('form.label.password');
-        $message->addSource($fileSourceFactory->create($subscriberFixtureSplInfo, 37));
+        $message->addSource($fileSourceFactory->create($subscriberFixtureSplInfo, 39));
         $expected->add($message);
 
         $message = new Message('form.label.password_repeated');
@@ -268,12 +223,12 @@ class FormExtractorTest extends BasePhpFileExtractorTest
 
         $message = new Message('form.label.zip', 'address');
         $message->setDesc('ZIP');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 51));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 49));
         $expected->add($message);
 
         $message = new Message('form.error.password_mismatch', 'validators');
         $message->setDesc('The entered passwords do not match');
-        $message->addSource($fileSourceFactory->create($subscriberFixtureSplInfo, 42));
+        $message->addSource($fileSourceFactory->create($subscriberFixtureSplInfo, 41));
         $expected->add($message);
 
         $catalogue = $this->extract('MyFormTypeWithSubscriberAndListener.php');
@@ -295,16 +250,15 @@ class FormExtractorTest extends BasePhpFileExtractorTest
 
     public function testAttrArrayForm()
     {
-        $expected = new MessageCatalogue();
+        $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
-        $fixtureSplInfo = new \SplFileInfo(__DIR__.'/Fixture/MyAttrArrayType.php');
+        $fixtureSplInfo    = new \SplFileInfo(__DIR__ . '/Fixture/MyAttrArrayType.php');
 
         $message = new Message('form.label.firstname');
-        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 31));
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 33));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyAttrArrayType.php'));
-
     }
 
     protected function getDefaultExtractor()

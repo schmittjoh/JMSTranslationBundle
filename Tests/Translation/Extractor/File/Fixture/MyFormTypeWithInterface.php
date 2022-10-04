@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,25 +20,20 @@
 
 namespace JMS\TranslationBundle\Tests\Translation\Extractor\File\Fixture;
 
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class MyFormTypeWithInterface extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('firstname', 'text', array(
-                'label' => 'form.label.firstname',
-            ))
-            ->add('lastname', 'text', array(
-                'label' => /** @Desc("Lastname") */ 'form.label.lastname',
-            ))
-            ->add('states', 'choice', array(
-                'choices' => array('foo' => 'bar'),
+            ->add('firstname', 'text', ['label' => 'form.label.firstname'])
+            ->add('lastname', 'text', ['label' => /** @Desc("Lastname") */ 'form.label.lastname'])
+            ->add('states', 'choice', [
+                'choices' => ['foo' => 'bar'],
                 'empty_value' => /** @Desc("Please select a state") */ 'form.states.empty_value',
-            ))
-            ->add('countries', 'choice', array('empty_value' => false))
-        ;
+            ])
+            ->add('countries', 'choice', ['empty_value' => false]);
     }
 }

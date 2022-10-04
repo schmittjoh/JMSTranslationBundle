@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -28,9 +30,6 @@ class PhpDumper extends ArrayStructureDumper
      */
     private $writer;
 
-    /**
-     * PhpDumper constructor.
-     */
     public function __construct()
     {
         $this->writer = new Writer();
@@ -38,6 +37,7 @@ class PhpDumper extends ArrayStructureDumper
 
     /**
      * @param array $structure
+     *
      * @return string
      */
     protected function dumpStructure(array $structure)
@@ -46,8 +46,7 @@ class PhpDumper extends ArrayStructureDumper
             ->reset()
             ->writeln('<?php')
             ->writeln('return array(')
-            ->indent()
-        ;
+            ->indent();
 
         $this->dumpStructureRecursively($structure);
 
@@ -71,10 +70,10 @@ class PhpDumper extends ArrayStructureDumper
                 }
 
                 if ($desc) {
-                    $this->writer->writeln('// Desc: '.$desc);
+                    $this->writer->writeln('// Desc: ' . $desc);
                 }
                 if ($meaning) {
-                    $this->writer->writeln('// Meaning: '.$meaning);
+                    $this->writer->writeln('// Meaning: ' . $meaning);
                 }
             } elseif (!$isFirst) {
                 $this->writer->write("\n");
@@ -82,10 +81,10 @@ class PhpDumper extends ArrayStructureDumper
 
             $isFirst = false;
             $precededByMessage = $isMessage;
-            $this->writer->write(var_export($k, true).' => ');
+            $this->writer->write(var_export($k, true) . ' => ');
 
             if ($isMessage) {
-                $this->writer->write(var_export($v->getLocaleString(), true).',');
+                $this->writer->write(var_export($v->getLocaleString(), true) . ',');
 
                 if ($v->isNew()) {
                     $this->writer->write(' // FIXME');
@@ -98,15 +97,13 @@ class PhpDumper extends ArrayStructureDumper
 
             $this->writer
                 ->write("array(\n")
-                ->indent()
-            ;
+                ->indent();
 
             $this->dumpStructureRecursively($v);
 
             $this->writer
                 ->outdent()
-                ->writeln('),')
-            ;
+                ->writeln('),');
         }
     }
 }

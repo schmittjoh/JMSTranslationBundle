@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -18,11 +20,11 @@
 
 namespace JMS\TranslationBundle\Translation;
 
-use JMS\TranslationBundle\Translation\Comparison\ChangeSet;
-use JMS\TranslationBundle\Util\FileUtils;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
+use JMS\TranslationBundle\Translation\Comparison\ChangeSet;
+use JMS\TranslationBundle\Util\FileUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -72,12 +74,6 @@ class Updater
      */
     private $writer;
 
-    /**
-     * @param LoaderManager $loader
-     * @param ExtractorManager $extractor
-     * @param LoggerInterface $logger
-     * @param FileWriter $writer
-     */
     public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer)
     {
         $this->loader = $loader;
@@ -86,9 +82,6 @@ class Updater
         $this->writer = $writer;
     }
 
-    /**
-     * @param LoggerInterface $logger
-     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -97,6 +90,7 @@ class Updater
 
     /**
      * @param Config $config
+     *
      * @return ChangeSet
      */
     public function getChangeSet(Config $config)
@@ -124,8 +118,7 @@ class Updater
         $catalogue
             ->get($id, $domain)
             ->setLocaleString($trans)
-            ->setNew(false)
-        ;
+            ->setNew(false);
 
         $this->writer->write($catalogue, $domain, $file, $format);
     }
@@ -155,19 +148,32 @@ class Updater
             $format = $this->detectOutputFormat($name);
 
             // delete translation files of other formats
-            foreach (Finder::create()->name('/^'.$name.'\.'.$this->config->getLocale().'\.[^\.]+$/')->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
-                if ('.'.$format === substr($file, -1 * strlen('.'.$format))) {
+            $translationFileRegex = sprintf(
+                '/^%s%s\.%s\.[^\.]+$/',
+                $name,
+                $this->config->shouldUseIcuMessageFormat() ? '+intl-icu' : '',
+                $this->config->getLocale()
+            );
+            foreach (Finder::create()->name($translationFileRegex)->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
+                if ('.' . $format === substr((string) $file, -1 * strlen('.' . $format))) {
                     continue;
                 }
 
                 $this->logger->info(sprintf('Deleting translation file "%s".', $file));
 
-                if (false === @unlink($file)) {
+                if (false === @unlink((string) $file)) {
                     throw new RuntimeException(sprintf('Could not delete the translation file "%s".', $file));
                 }
             }
 
-            $outputFile = $this->config->getTranslationsDir().'/'.$name.'.'.$this->config->getLocale().'.'.$format;
+            $outputFile = sprintf(
+                '%s/%s%s.%s.%s',
+                $this->config->getTranslationsDir(),
+                $name,
+                $this->config->shouldUseIcuMessageFormat() ? '+intl-icu' : '',
+                $this->config->getLocale(),
+                $format
+            );
             $this->logger->info(sprintf('Writing translation file "%s".', $outputFile));
             $this->writer->write($this->scannedCatalogue, $name, $outputFile, $format);
         }
@@ -176,9 +182,11 @@ class Updater
     /**
      * Detects the most suitable output format to use.
      *
-     * @param $currentDomain
-     * @return string
      * @internal param string $domain
+     *
+     * @param string $currentDomain
+     *
+     * @return string
      */
     private function detectOutputFormat($currentDomain)
     {
@@ -190,7 +198,7 @@ class Updater
         $otherDomainFormat = $localeFormat = $otherLocaleFormat = null;
         foreach (FileUtils::findTranslationFiles($this->config->getTranslationsDir()) as $domain => $locales) {
             foreach ($locales as $locale => $fileData) {
-                list($format, ) = $fileData;
+                [$format] = $fileData;
 
                 if ($currentDomain !== $domain) {
                     $otherDomainFormat = $format;
@@ -221,14 +229,11 @@ class Updater
         return $this->config->getDefaultOutputFormat();
     }
 
-    /**
-     * @param Config $config
-     */
     private function setConfig(Config $config)
     {
         $this->config = $config;
 
-        $this->logger->info(sprintf("Loading catalogues from \"%s\"", $config->getTranslationsDir()));
+        $this->logger->info(sprintf('Loading catalogues from "%s"', $config->getTranslationsDir()));
         $this->existingCatalogue = new MessageCatalogue();
 
         // load external resources, so current translations can be reused in the final translation
@@ -240,7 +245,8 @@ class Updater
         }
 
         $this->existingCatalogue->merge($this->loader->loadFromDirectory(
-            $config->getTranslationsDir(), $config->getLocale()
+            $config->getTranslationsDir(),
+            $config->getLocale()
         ));
 
         $this->extractor->reset();
@@ -249,7 +255,7 @@ class Updater
         $this->extractor->setExcludedNames($config->getExcludedNames());
         $this->extractor->setEnabledExtractors($config->getEnabledExtractors());
 
-        $this->logger->info("Extracting translation keys");
+        $this->logger->info('Extracting translation keys');
         $this->scannedCatalogue = $this->extractor->extract();
         $this->scannedCatalogue->setLocale($config->getLocale());
 

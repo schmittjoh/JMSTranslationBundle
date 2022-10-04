@@ -1,4 +1,6 @@
 phpunit.xml
 composer.lock
 vendor/
-.idea
+.phpunit.result.cache
+.phpcs-cache
+phpcs.xml

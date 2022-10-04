@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -37,7 +39,8 @@ interface LoaderInterface
      * @param mixed  $resource
      * @param string $locale
      * @param string $domain
+     *
      * @return MessageCatalogue
      */
-    public function load($resource, $locale, $domain = 'messages');
+    public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue;
 }

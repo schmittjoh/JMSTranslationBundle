@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
  *
@@ -61,6 +63,11 @@ final class Config
     private $defaultOutputFormat;
 
     /**
+     * @var bool
+     */
+    private $useIcuMessageFormat;
+
+    /**
      * @var array
      */
     private $scanDirs;
@@ -91,13 +98,12 @@ final class Config
     private $loadResources;
 
     /**
-     * Config constructor.
-     * @param $translationsDir
-     * @param $locale
+     * @param string $translationsDir
+     * @param string $locale
      * @param array $ignoredDomains
      * @param array $domains
-     * @param $outputFormat
-     * @param $defaultOutputFormat
+     * @param string $outputFormat
+     * @param string $defaultOutputFormat
      * @param array $scanDirs
      * @param array $excludedDirs
      * @param array $excludedNames
@@ -105,7 +111,7 @@ final class Config
      * @param bool $keepOldMessages
      * @param array $loadResources
      */
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, $useIcuMessageFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -138,6 +144,7 @@ final class Config
         $this->domains = $domains;
         $this->outputFormat = $outputFormat;
         $this->defaultOutputFormat = $defaultOutputFormat;
+        $this->useIcuMessageFormat = $useIcuMessageFormat;
         $this->locale = $locale;
         $this->scanDirs = $scanDirs;
         $this->excludedDirs = $excludedDirs;
@@ -156,7 +163,8 @@ final class Config
     }
 
     /**
-     * @param $domain
+     * @param string $domain
+     *
      * @return bool
      */
     public function isIgnoredDomain($domain)
@@ -173,7 +181,8 @@ final class Config
     }
 
     /**
-     * @param $domain
+     * @param string $domain
+     *
      * @return bool
      */
     public function hasDomain($domain)
@@ -211,6 +220,14 @@ final class Config
     public function getDefaultOutputFormat()
     {
         return $this->defaultOutputFormat;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldUseIcuMessageFormat()
+    {
+        return $this->useIcuMessageFormat;
     }
 
     /**
