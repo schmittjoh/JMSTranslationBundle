@@ -33,7 +33,7 @@ class Configuration implements ConfigurationInterface
         $this->container = $container;
     }
 
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $c = $this->container;
 
