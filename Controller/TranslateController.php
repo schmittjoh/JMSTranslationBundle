@@ -26,7 +26,9 @@ use JMS\TranslationBundle\Translation\LoaderManager;
 use JMS\TranslationBundle\Util\FileUtils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Environment;
 
 /**
  * Translate Controller.
@@ -46,14 +48,20 @@ class TranslateController
     private $loader;
 
     /**
+     * @var Environment|null
+     */
+    private $twig;
+
+    /**
      * @var string
      */
     private $sourceLanguage;
 
-    public function __construct(ConfigFactory $configFactory, LoaderManager $loader)
+    public function __construct(ConfigFactory $configFactory, LoaderManager $loader, ?Environment $twig = null)
     {
         $this->configFactory = $configFactory;
         $this->loader = $loader;
+        $this->twig = $twig;
     }
 
     /**
@@ -67,7 +75,7 @@ class TranslateController
     /**
      * @param Request $request
      *
-     * @return array
+     * @return Response|array
      *
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
      * @Template("@JMSTranslation/Translate/index.html.twig")
@@ -136,7 +144,7 @@ class TranslateController
             $existingMessages[$id] = $message;
         }
 
-        return [
+        $variables = [
             'selectedConfig' => $config,
             'configs' => $configs,
             'selectedDomain' => $domain,
@@ -151,5 +159,11 @@ class TranslateController
             'file' => (string) $files[$domain][$locale][1],
             'sourceLanguage' => $this->sourceLanguage,
         ];
+
+        if (null !== $this->twig) {
+            return new Response($this->twig->render('@JMSTranslation/Translate/index.html.twig', $variables));
+        }
+
+        return $variables;
     }
 }
