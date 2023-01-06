@@ -184,6 +184,26 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             }
         }
 
+
+//        if ('choices' === $item->key->value) {
+//            foreach ($item->value->items as $sitem) {
+//                $this->parseItem($sitem, $domain);
+//            }
+//        } elseif ('attr' === $item->key->value && property_exists($item->value, 'items') && is_array($item->value->items) ) {
+//            foreach ($item->value->items as $sitem) {
+//                if ('placeholder' == $sitem->key->value){
+//                    $this->parseItem($sitem, $domain);
+//                }
+//                if('title' == $sitem->key->value) {
+//                    $this->parseItem($sitem, $domain);
+//                }
+//            }
+//        } elseif ('invalid_message' === $item->key->value) {
+//            $this->parseItem($item, 'validators');
+//        } else {
+//            $this->parseItem($item, $domain);
+//        }
+
         return $domain;
     }
 
@@ -206,16 +226,13 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         if ($item->value instanceof Node\Expr\ConstFetch && $item->value->name instanceof Node\Name && 'false' === $item->value->name->parts[0]) {
             return true;
         }
-
         // Parse when its value is an array of values
         if ($item->value instanceof Node\Expr\Array_) {
             foreach ($item->value->items as $subItem) {
                 $this->parseItem($subItem, $domain);
             }
-
             return true;
         }
-
         return false;
     }
 
