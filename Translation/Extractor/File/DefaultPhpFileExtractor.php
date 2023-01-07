@@ -162,7 +162,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
         $index = $this->methodsToExtractFrom[strtolower($methodCallNodeName)];
         $domainArg = null;
 
-        if (isset($node->args[$index]) && $node->args[$index] instanceof Node\Arg && null === $node->args[$index]->name ) {
+        if (isset($node->args[$index]) && $node->args[$index] instanceof Node\Arg && null === $node->args[$index]->name) {
             $domainArg = $node->args[$index];
         } else {
             foreach ($node->args as $arg) {

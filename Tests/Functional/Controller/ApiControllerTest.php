@@ -27,10 +27,13 @@ class ApiControllerTest extends BaseTestCase
         $this->assertTrue($written !== false && $written > 0);
 
         $client->request('POST', '/_trans/api/configs/app/domains/navigation/locales/en/messages?id=main.home', ['_method' => 'PUT', 'message' => 'Away']);
+
+        $fileContent = is_file($file) ? file_get_contents($file) : '';
+        unlink($file);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         // Verify that the file has new content
-        $array = Yaml::parse(file_get_contents($file));
+        $array = Yaml::parse($fileContent);
 
         if ($isSf4) {
             $this->assertTrue(isset($array['main.home']), print_r($array, true));
@@ -40,8 +43,5 @@ class ApiControllerTest extends BaseTestCase
             $this->assertTrue(isset($array['main']['home']));
             $this->assertEquals('Away', $array['main']['home']);
         }
-
-        // Remove the file
-        unlink($file);
     }
 }

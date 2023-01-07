@@ -32,7 +32,9 @@ class MyFormModel implements TranslationContainerInterface
         'bar' => 'form.label.choice.bar',
     ];
 
-    /** @Assert\NotBlank(message = "form.error.name_required") */
+    /**
+     * @Assert\NotBlank(message = "form.error.name_required")
+     */
     public $name;
 
     public static function getTranslationMessages()

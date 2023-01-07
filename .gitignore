@@ -4,3 +4,38 @@ vendor/
 .phpunit.result.cache
 .phpcs-cache
 phpcs.xml
+
+
+/bin/
+/config/
+/public/
+/src/
+/templates
+/tests
+/translations
+/var/
+/.env*
+/.phpunit.result.cache
+
+.idea/
+/symfony.lock
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###

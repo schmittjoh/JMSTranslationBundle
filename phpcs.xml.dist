@@ -4,6 +4,7 @@
     <arg name="extensions" value="php"/>
     <arg name="parallel" value="80"/>
     <arg name="cache" value=".phpcs-cache"/>
+    <config name="php_version" value="70400"/>
     <arg name="colors"/>
 
     <!-- Ignore warnings, show progress of the run and show sniff names -->
