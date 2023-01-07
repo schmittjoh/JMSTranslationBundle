@@ -22,17 +22,24 @@ namespace JMS\TranslationBundle\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class BaseTestCase extends WebTestCase
 {
-    protected static function createKernel(array $options = [])
+    protected static function createKernel(array $options = []): KernelInterface
     {
         $isSf5 = version_compare(Kernel::VERSION, '5.0.0') >= 0;
 
         $default = $isSf5 ? 'default_sf5.yml' : 'default.yml';
 
-        return new AppKernel(
-            $options['config'] ?? $default
-        );
+        if (version_compare(Kernel::VERSION, '6.0.0') >= 0) {
+            $conf = 'framework_sf6.yml';
+        } elseif (version_compare(Kernel::VERSION, '5.0.0') >= 0) {
+            $conf = 'framework.yml';
+        } else {
+            $conf = 'framework.yml';
+        }
+
+        return new AppKernel($conf, $options['config'] ?? $default);
     }
 }

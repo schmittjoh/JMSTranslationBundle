@@ -28,7 +28,7 @@ final class ResourcesListCommandTest extends BaseCommandTestCase
     {
         $input = new ArgvInput([
             'app/console',
-            'translation:list-resources',
+            'jms:translation:list-resources',
         ]);
 
         $expectedOutput =
@@ -44,7 +44,7 @@ final class ResourcesListCommandTest extends BaseCommandTestCase
     {
         $input = new ArgvInput([
             'app/console',
-            'translation:list-resources',
+            'jms:translation:list-resources',
             '--files',
         ]);
 

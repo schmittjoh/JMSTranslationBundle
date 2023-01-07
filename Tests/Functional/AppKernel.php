@@ -34,23 +34,31 @@ class AppKernel extends Kernel
 {
     private $config;
 
-    public function __construct($config)
+    private $fwConfig;
+
+    public function __construct(string $fwConfig, ?string $config)
     {
         parent::__construct('test', true);
 
         $fs = new Filesystem();
-        if (! $fs->isAbsolutePath($config)) {
-            $config = __DIR__ . '/config/' . $config;
-        }
+        if ($config) {
+            if (!$fs->isAbsolutePath($config)) {
+                $config = __DIR__ . '/config/' . $config;
+            }
 
-        if (! file_exists($config)) {
-            throw new RuntimeException(sprintf('The config file "%s" does not exist.', $config));
+            if (!file_exists($config)) {
+                throw new RuntimeException(sprintf('The config file "%s" does not exist.', $config));
+            }
         }
-
         $this->config = $config;
+
+        if (!$fs->isAbsolutePath($fwConfig)) {
+            $fwConfig = __DIR__ . '/config/' . $fwConfig;
+        }
+        $this->fwConfig = $fwConfig;
     }
 
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         return [
             new TestBundle(),
@@ -63,7 +71,10 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load($this->config);
+        $loader->load($this->fwConfig);
+        if ($this->config) {
+            $loader->load($this->config);
+        }
     }
 
     public function getCacheDir(): string
@@ -76,7 +87,7 @@ class AppKernel extends Kernel
         return $this->getBaseDir() . '/logs';
     }
 
-    public function getProjectDir()
+    public function getProjectDir(): string
     {
         return __DIR__;
     }
