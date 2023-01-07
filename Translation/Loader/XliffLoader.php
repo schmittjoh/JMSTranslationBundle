@@ -129,6 +129,7 @@ class XliffLoader implements LoaderInterface
             return true;
         }
 
+        // phpcs:ignore
         return libxml_disable_entity_loader($disable);
     }
 }

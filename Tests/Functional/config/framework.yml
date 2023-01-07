@@ -6,9 +6,10 @@ framework:
         storage_id: session.storage.mock_file
     form:            true
     csrf_protection: true
+    annotations: true
+    property_access: true
     validation:
         enabled: true
-        enable_annotations: true
     translator:
         enabled: true
     router:
