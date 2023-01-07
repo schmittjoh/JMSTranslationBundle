@@ -1,6 +1,3 @@
-imports:
-    - { resource: default_sf5.yml }
-
 parameters:
     translation_output_dir: "%kernel.cache_dir%/translations"
 

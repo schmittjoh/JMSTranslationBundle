@@ -62,7 +62,7 @@ class ResourcesListCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('translation:list-resources')
+            ->setName('jms:translation:list-resources')
             ->setDescription('List translation resources available.')
             ->addOption('files', null, InputOption::VALUE_OPTIONAL, 'Display only files');
     }
