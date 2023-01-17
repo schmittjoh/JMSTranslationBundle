@@ -180,7 +180,7 @@ class ExtractTranslationCommand extends Command
             $builder->setOutputFormat($outputFormat);
         }
 
-        if ($input->hasParameterOption('intl-icu')) {
+        if ($input->hasParameterOption('--intl-icu')) {
             $builder->setUseIcuMessageFormat(true);
         }
 
