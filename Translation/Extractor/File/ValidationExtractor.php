@@ -168,7 +168,7 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
         foreach ($constraints as $constraint) {
             $ref = new \ReflectionClass($constraint);
             $defaultValues = $ref->getDefaultProperties();
-
+            $defaultParameters = null !== $ref->getConstructor() ? $ref->getConstructor()->getParameters() : [];
             $properties = $ref->getProperties();
 
             foreach ($properties as $property) {
@@ -177,9 +177,18 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
                 // If the property ends with 'Message'
                 if (strtolower(substr($propName, -1 * strlen('Message'))) === 'message') {
                     // If it is different from the default value
-                    if ($defaultValues[$propName] !== $constraint->{$propName}) {
+                    if (array_key_exists($propName, $defaultValues) && $defaultValues[$propName] !== $constraint->{$propName}) {
                         $message = new Message($constraint->{$propName}, 'validators');
                         $this->catalogue->add($message);
+                    } elseif (method_exists($property, 'isPromoted') && $property->isPromoted()) {
+                        foreach ($defaultParameters as $defaultParameter) {
+                            if ($defaultParameter->getName() === $propName && $defaultParameter->isDefaultValueAvailable() && $defaultParameter->getDefaultValue() !== $constraint->{$propName}) {
+                                $message = new Message($constraint->{$propName}, 'validators');
+                                $this->catalogue->add($message);
+
+                                break;
+                            }
+                        }
                     }
                 }
             }
