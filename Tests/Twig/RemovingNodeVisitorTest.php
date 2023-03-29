@@ -30,8 +30,8 @@ class RemovingNodeVisitorTest extends BaseTwigTestCase
 
         $templateSuffix = $isSF5 ? '_sf5' : '';
 
-        $expected = $this->parse("simple_template_compiled${templateSuffix}.html.twig");
-        $actual   = $this->parse("simple_template${templateSuffix}.html.twig");
+        $expected = $this->parse('simple_template_compiled' . $templateSuffix . '.html.twig');
+        $actual   = $this->parse('simple_template' . $templateSuffix . '.html.twig');
 
         $this->assertEquals($expected, $actual);
     }
