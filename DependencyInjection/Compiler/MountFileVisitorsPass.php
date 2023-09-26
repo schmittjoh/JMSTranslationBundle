@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class MountFileVisitorsPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('jms_translation.extractor.file_extractor')) {
             return;
