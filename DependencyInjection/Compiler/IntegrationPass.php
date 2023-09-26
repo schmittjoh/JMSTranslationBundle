@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class IntegrationPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('translation.loader.xliff')) {
             return;
