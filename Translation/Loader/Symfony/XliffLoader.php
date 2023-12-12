@@ -22,9 +22,9 @@ namespace JMS\TranslationBundle\Translation\Loader\Symfony;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
+use Symfony\Component\Translation\TranslatorBagInterface;
 
 /**
  * XLIFF loader.
@@ -66,7 +66,7 @@ class XliffLoaderInternal
     }
 }
 
-$isSf6 = version_compare(Kernel::VERSION, '6.0.0') >= 0;
+$isSf6 = method_exists(TranslatorBagInterface::class, 'getCatalogues');
 
 if ($isSf6) {
     // phpcs:ignore
