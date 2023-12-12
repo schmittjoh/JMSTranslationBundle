@@ -80,6 +80,7 @@ class TranslateController
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
      * @Template("@JMSTranslation/Translate/index.html.twig")
      */
+    #[Route('/', name: 'jms_translation_index', options: ['i18n' => false])]
     public function indexAction(Request $request)
     {
         $configs = $this->configFactory->getNames();

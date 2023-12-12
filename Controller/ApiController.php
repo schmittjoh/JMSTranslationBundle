@@ -33,6 +33,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/api")
  */
+#[Route('/api')]
 class ApiController
 {
     /**
@@ -65,6 +66,7 @@ class ApiController
      *            defaults = {"id" = null},
      *            options = {"i18n" = false})
      */
+    #[Route('/configs/{config}/domains/{domain}/locales/{locale}/messages', name: 'jms_translation_update_message', methods: [Request::METHOD_PUT], defaults: ['id' => null], options: ['i18n' => false])]
     public function updateMessageAction(Request $request, $config, $domain, $locale)
     {
         $id = $request->query->get('id');
