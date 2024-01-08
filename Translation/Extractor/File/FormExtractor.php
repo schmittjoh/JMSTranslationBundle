@@ -28,6 +28,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\SourceInterface;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Translation\FileSourceFactory;
 use PhpParser\Comment\Doc;
@@ -76,7 +77,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     private $defaultDomain;
 
     /**
-     * @var string
+     * @var array
      */
     private $defaultDomainMessages;
 
@@ -203,7 +204,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
     protected function parseEmptyValueNode(Node $item, $domain)
     {
         // Skip empty_value when false
-        if ($item->value instanceof Node\Expr\ConstFetch && $item->value->name instanceof Node\Name && 'false' === $item->value->name->parts[0]) {
+        if ($item->value instanceof Node\Expr\ConstFetch && $item->value->name instanceof Node\Name && 'false' === (property_exists($item->value->name, 'parts') ? $item->value->name->parts[0] : $item->value->name->getFirst())) {
             return true;
         }
 
@@ -407,6 +408,10 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
             $docComment = $item->value->getDocComment();
         }
 
+        if (!$docComment) {
+            $docComment = $item->getDocComment();
+        }
+
         $docComment = is_object($docComment) ? $docComment->getText() : null;
 
         if ($docComment) {
@@ -427,7 +432,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         // check if the value is explicitly set to false => e.g. for FormField that should be rendered without label
         $ignore = $ignore || !$item->value instanceof Node\Scalar\String_ || $item->value->value === false;
 
-        if (!$item->value instanceof Node\Scalar\String_ && !$item->value instanceof Node\Scalar\LNumber) {
+        if (!$item->value instanceof Node\Scalar\String_ && !$item->value instanceof Node\Scalar\LNumber && !$item->value instanceof Node\Scalar\Int_) {
             if ($ignore) {
                 return;
             }
@@ -459,7 +464,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
 
     /**
      * @param string $id
-     * @param string $source
+     * @param SourceInterface $source
      * @param string|null $domain
      * @param string|null $desc
      * @param string|null $meaning

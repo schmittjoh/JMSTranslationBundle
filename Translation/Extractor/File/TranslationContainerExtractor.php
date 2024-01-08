@@ -74,7 +74,7 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
     {
         if ($node instanceof Node\Stmt\Namespace_) {
             if (isset($node->name)) {
-                $this->namespace = implode('\\', $node->name->parts);
+                $this->namespace = property_exists($node->name, 'parts') ? implode('\\', $node->name->parts) : $node->name->name;
             }
             $this->useStatements = [];
 
@@ -83,7 +83,7 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
 
         if ($node instanceof Node\Stmt\UseUse) {
             $nodeAliasName = is_string($node->alias) ? $node->alias : $node->getAlias()->name;
-            $this->useStatements[$nodeAliasName] = implode('\\', $node->name->parts);
+            $this->useStatements[$nodeAliasName] = property_exists($node->name, 'parts') ? implode('\\', $node->name->parts) : $node->name->name;
 
             return;
         }
@@ -94,7 +94,7 @@ class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
 
         $isContainer = false;
         foreach ($node->implements as $interface) {
-            $name = implode('\\', $interface->parts);
+            $name = property_exists($interface, 'parts') ? implode('\\', $interface->parts) : $interface->name;
             if (isset($this->useStatements[$name])) {
                 $name = $this->useStatements[$name];
             }

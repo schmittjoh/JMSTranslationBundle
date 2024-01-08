@@ -62,7 +62,7 @@ class TranslationContainerExtractorTest extends TestCase
         $lexer = new Lexer();
         if (class_exists(ParserFactory::class)) {
             $factory = new ParserFactory();
-            $parser  = $factory->create(ParserFactory::PREFER_PHP7, $lexer);
+            $parser  = \method_exists($factory, 'create') ? $factory->create(ParserFactory::PREFER_PHP7, $lexer) : $factory->createForNewestSupportedVersion();
         } else {
             $parser = new Parser($lexer);
         }

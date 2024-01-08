@@ -22,7 +22,7 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "nikic/php-parser": "^4.9",
+        "nikic/php-parser": "^4.9 || ^5",
         "symfony/console": "^4.3 || ^5.4 || ^6.0",
         "symfony/expression-language": "^4.3 || ^5.4 || ^6.0",
         "symfony/framework-bundle": "^4.3 || ^5.4 || ^6.0",

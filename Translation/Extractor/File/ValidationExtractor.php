@@ -84,7 +84,7 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
     {
         if ($node instanceof Node\Stmt\Namespace_) {
             if (isset($node->name)) {
-                $this->namespace = implode('\\', $node->name->parts);
+                $this->namespace = property_exists($node->name, 'parts') ? implode('\\', $node->name->parts) : $node->name->name;
             }
 
             return;
