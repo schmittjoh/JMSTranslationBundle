@@ -58,7 +58,9 @@ class YamlDumper extends ArrayStructureDumper
         $precededByMessage = false;
         foreach ($structure as $k => $v) {
             if ($isMessage = $v instanceof Message) {
-                $desc = $v->getDesc();
+
+                // fallback to id if in pretty print mode and desc is null
+                $desc = ($this->prettyPrint ? ($v->getDesc() ?: $v->getId()) : $v->getDesc());
                 $meaning = $v->getMeaning();
 
                 if (!$isFirst && (!$precededByMessage || $desc || $meaning)) {
