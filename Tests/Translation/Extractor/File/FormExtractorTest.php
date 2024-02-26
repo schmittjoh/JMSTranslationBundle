@@ -148,6 +148,10 @@ class FormExtractorTest extends BasePhpFileExtractorTest
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 67));
         $expected->add($message);
 
+        $message = new Message('form.choices_with_translation_domain.label', 'choice-domain');
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 72));
+        $expected->add($message);
+
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
     }
 
