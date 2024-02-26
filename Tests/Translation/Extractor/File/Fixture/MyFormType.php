@@ -68,5 +68,5 @@ class MyFormType extends AbstractType
         ]);
     }
 
-    const CHOICES = ['choices' => [null]];
+    public const CHOICES = ['choices' => [null]];
 }

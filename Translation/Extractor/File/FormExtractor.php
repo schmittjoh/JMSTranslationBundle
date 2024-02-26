@@ -244,7 +244,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         foreach ($item->value->items as $index => $subItem) {
             $newItem = clone $subItem;
             $newItem->key = $subItem->value;
-            $newItem->value = $subItem->key ?? new Node\Scalar\Int_($index);
+            $newItem->value = $subItem->key ?? new Node\Scalar\LNumber($index);
             $subItem = $newItem;
             $this->parseItem($subItem, $domain);
         }
