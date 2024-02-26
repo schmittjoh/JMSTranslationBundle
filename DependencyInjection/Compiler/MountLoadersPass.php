@@ -36,27 +36,35 @@ class MountLoadersPass implements CompilerPassInterface
 
         $loaders = [];
         $i = 0;
-        foreach ($container->findTaggedServiceIds('translation.loader') as $id => $attr) {
-            if (!isset($attr[0]['alias'])) {
-                throw new RuntimeException(sprintf('The attribute "alias" must be defined for tag "translation.loader" for service "%s".', $id));
-            }
 
-            $def = new ChildDefinition('jms_translation.loader.symfony_adapter');
-            $def->addArgument(new Reference($id));
-            $container->setDefinition($id = 'jms_translation.loader.wrapped_symfony_loader.' . ($i++), $def);
+        foreach ($container->findTaggedServiceIds('jms_translation.loader') as $id => $attrs) {
+            foreach ($attrs as $attr) {
+                if (!isset($attr['format'])) {
+                    throw new RuntimeException(sprintf('The attribute "format" must be defined for tag "jms_translation.loader" for service "%s".', $id));
+                }
 
-            $loaders[$attr[0]['alias']] = new Reference($id);
-            if (isset($attr[0]['legacy_alias'])) {
-                $loaders[$attr[0]['legacy_alias']] = new Reference($id);
+                $loaders[$attr['format']] = new Reference($id);
             }
         }
 
-        foreach ($container->findTaggedServiceIds('jms_translation.loader') as $id => $attr) {
-            if (!isset($attr[0]['format'])) {
-                throw new RuntimeException(sprintf('The attribute "format" must be defined for tag "jms_translation.loader" for service "%s".', $id));
-            }
+        foreach ($container->findTaggedServiceIds('translation.loader') as $id => $attrs) {
+            foreach ($attrs as $attr) {
+                if (!isset($attr['alias'])) {
+                    throw new RuntimeException(sprintf('The attribute "alias" must be defined for tag "translation.loader" for service "%s".', $id));
+                }
+                if (isset($loaders[$attr['alias']])) {
+                    continue;
+                }
 
-            $loaders[$attr[0]['format']] = new Reference($id);
+                $def = new ChildDefinition('jms_translation.loader.symfony_adapter');
+                $def->addArgument(new Reference($id));
+                $container->setDefinition($id = 'jms_translation.loader.wrapped_symfony_loader.' . ($i++), $def);
+
+                $loaders[$attr['alias']] = new Reference($id);
+                if (isset($attr['legacy_alias']) && !isset($loaders[$attr['legacy_alias']])) {
+                    $loaders[$attr['legacy_alias']] = new Reference($id);
+                }
+            }
         }
 
         $container
