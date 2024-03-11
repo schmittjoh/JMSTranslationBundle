@@ -67,4 +67,6 @@ class MyFormType extends AbstractType
             'empty_value' => ['year' => 'form.dueDate.empty.year', 'month' => 'form.dueDate.empty.month', 'day' => 'form.dueDate.empty.day'],
         ]);
     }
+
+    public const CHOICES = ['choices' => [null]];
 }
