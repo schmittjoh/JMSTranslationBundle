@@ -31,9 +31,9 @@ use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Expression\FilterExpression;
 use Twig\Node\Node;
 use Twig\NodeTraverser;
-use Twig\NodeVisitor\AbstractNodeVisitor;
+use Twig\NodeVisitor\NodeVisitorInterface;
 
-class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterface
+class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
 {
     /**
      * @var FileSourceFactory
@@ -66,10 +66,7 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
         $this->traverser = new NodeTraverser($env, [$this]);
     }
 
-    /**
-     * @return Node
-     */
-    protected function doEnterNode(Node $node, Environment $env)
+    public function enterNode(Node $node, Environment $env): Node
     {
         $this->stack[] = $node;
 
@@ -145,10 +142,7 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
         return $node;
     }
 
-    /**
-     * @return int
-     */
-    public function getPriority()
+    public function getPriority(): int
     {
         return 0;
     }
@@ -178,10 +172,7 @@ class TwigFileExtractor extends AbstractNodeVisitor implements FileVisitorInterf
         }
     }
 
-    /**
-     * @return Node
-     */
-    protected function doLeaveNode(Node $node, Environment $env)
+    public function leaveNode(Node $node, Environment $env): Node
     {
         array_pop($this->stack);
 
