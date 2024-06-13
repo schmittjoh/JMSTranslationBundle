@@ -52,9 +52,9 @@ function JMSTranslationManager(updateMessagePath, isWritable)
             $(JMS.domain.selector).change(function() {
                 if(this.name === 'locale'){
                     var filter = $(JMS.messageFilter.selector).val();
-                    $(this).parent().attr('action', $(this).parent().attr('action') + "#" + filter);
+                    $(this).closest('form').attr('action', $(this).closest('form').attr('action') + "#" + filter);
                 }
-                $(this).parent().submit();
+                $(this).closest('form').submit();
             });
         }
     };
