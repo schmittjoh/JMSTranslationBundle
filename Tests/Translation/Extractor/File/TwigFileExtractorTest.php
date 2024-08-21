@@ -99,6 +99,10 @@ class TwigFileExtractorTest extends TestCase
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 19));
         $expected->add($message);
 
+        $message = new Message('foo.bar5', 'app');
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 21));
+        $expected->add($message);
+
         $this->assertEquals($expected, $this->extract('simple_template_sf5.html.twig'));
     }
 
@@ -160,6 +164,10 @@ class TwigFileExtractorTest extends TestCase
 
         $message = new Message('text.default_domain');
         $message->addSource($fileSourceFactory->create($fixtureSplInfo, 21));
+        $expected->add($message);
+
+        $message = new Message('foo.bar5', 'app');
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 23));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('simple_template.html.twig'));
