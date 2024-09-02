@@ -45,7 +45,7 @@ class RemovingNodeVisitor implements NodeVisitorInterface
     public function enterNode(Node $node, Environment $env): Node
     {
         if ($this->enabled && $node instanceof FilterExpression) {
-            $name = $node->getNode('filter')->getAttribute('value');
+            $name = $node->hasAttribute('name') ? $node->getAttribute('name') : $node->getNode('filter')->getAttribute('value');
 
             if ('desc' === $name || 'meaning' === $name) {
                 return $this->enterNode($node->getNode('node'), $env);

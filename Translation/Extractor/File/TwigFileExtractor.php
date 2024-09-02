@@ -82,7 +82,7 @@ class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
             $message->addSource($this->fileSourceFactory->create($this->file, $node->getTemplateLine()));
             $this->catalogue->add($message);
         } elseif ($node instanceof FilterExpression) {
-            $name = $node->getNode('filter')->getAttribute('value');
+            $name = $node->hasAttribute('name') ? $node->getAttribute('name') : $node->getNode('filter')->getAttribute('value');
 
             if ('trans' === $name || 'transchoice' === $name) {
                 $idNode = $node->getNode('node');
@@ -117,7 +117,7 @@ class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
                         break;
                     }
 
-                    $name = $this->stack[$i]->getNode('filter')->getAttribute('value');
+                    $name = $this->stack[$i]->hasAttribute('name') ? $this->stack[$i]->getAttribute('name') : $this->stack[$i]->getNode('filter')->getAttribute('value');
                     if ($name === 'desc' || $name === 'meaning') {
                         $arguments = iterator_to_array($this->stack[$i]->getNode('arguments'));
                         if (! isset($arguments[0])) {

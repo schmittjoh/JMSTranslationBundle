@@ -59,13 +59,12 @@ class DefaultApplyingNodeVisitor implements NodeVisitorInterface
 
         if (
             $node instanceof FilterExpression
-                && 'desc' === $node->getNode('filter')->getAttribute('value')
+                && 'desc' === ($node->hasAttribute('name') ? $node->getAttribute('name') : $node->getNode('filter')->getAttribute('value'))
         ) {
             $transNode = $node->getNode('node');
             while (
                 $transNode instanceof FilterExpression
-                       && 'trans' !== $transNode->getNode('filter')->getAttribute('value')
-                       && 'transchoice' !== $transNode->getNode('filter')->getAttribute('value')
+                    && !in_array($transNode->hasAttribute('name') ? $transNode->getAttribute('name') : $transNode->getNode('filter')->getAttribute('value'), ['trans', 'transchoice'], true)
             ) {
                 $transNode = $transNode->getNode('node');
             }
@@ -83,7 +82,7 @@ class DefaultApplyingNodeVisitor implements NodeVisitorInterface
             // if the |transchoice filter is used, delegate the call to the TranslationExtension
             // so that we can catch a possible exception when the default translation has not yet
             // been extracted
-            if ('transchoice' === $transNode->getNode('filter')->getAttribute('value')) {
+            if ('transchoice' === ($transNode->hasAttribute('name') ? $transNode->getAttribute('name') : $transNode->getNode('filter')->getAttribute('value'))) {
                 $transchoiceArguments = new ArrayExpression([], $transNode->getTemplateLine());
                 $transchoiceArguments->addElement($wrappingNode->getNode('node'));
                 $transchoiceArguments->addElement($defaultNode);
