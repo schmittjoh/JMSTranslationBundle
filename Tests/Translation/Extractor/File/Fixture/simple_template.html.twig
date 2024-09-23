@@ -19,3 +19,5 @@
 {{ "foo.bar4" | transchoice(5, {'%name%': 'Johannes'}, 'app') }}
 
 {% trans %}text.default_domain{% endtrans %}
+
+{{ "foo.bar5"|trans(domain='app') }}

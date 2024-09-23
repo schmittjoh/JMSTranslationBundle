@@ -27,6 +27,7 @@ use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use JMS\TranslationBundle\Translation\FileSourceFactory;
 use Symfony\Bridge\Twig\Node\TransNode;
 use Twig\Environment;
+use Twig\Node\Expression\AbstractExpression;
 use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Expression\FilterExpression;
 use Twig\Node\Node;
@@ -94,11 +95,11 @@ class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
                 }
                 $id = $idNode->getAttribute('value');
 
-                $index     = $name === 'trans' ? 1 : 2;
                 $domain    = 'messages';
                 $arguments = iterator_to_array($node->getNode('arguments'));
-                if (isset($arguments[$index])) {
-                    $argument = $arguments[$index];
+
+                $argument = $this->findDomainArgument($arguments, $name);
+                if (null !== $argument) {
                     if (! $argument instanceof ConstantExpression) {
                         return $node;
 
@@ -140,6 +141,20 @@ class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
         }
 
         return $node;
+    }
+
+    private function findDomainArgument(array $arguments, string $name): ?AbstractExpression
+    {
+        if (isset($arguments['domain'])) {
+            return $arguments['domain'];
+        }
+
+        $index = $name === 'trans' ? 1 : 2;
+        if (isset($arguments[$index])) {
+            return $arguments[$index];
+        }
+
+        return null;
     }
 
     public function getPriority(): int

@@ -17,3 +17,5 @@
 {{ "foo.bar4" | trans({'%count%': 5, '%name%': 'Johannes'}, 'app') }}
 
 {% trans %}text.default_domain{% endtrans %}
+
+{{ "foo.bar5"|trans(domain='app') }}
