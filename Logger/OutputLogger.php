@@ -53,7 +53,7 @@ class OutputLogger implements LoggerInterface
     /**
      * @param int $level
      */
-    public function setLevel($level)
+    public function setLevel($level): void
     {
         $this->level = $level;
     }
@@ -64,7 +64,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function emergency($message, array $context = [])
+    public function emergency($message, array $context = []): void
     {
         $this->emerg($message, $context);
     }
@@ -75,7 +75,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function emerg($message, array $context = [])
+    public function emerg($message, array $context = []): void
     {
         if (0 === ($this->level & self::EMERG)) {
             return;
@@ -90,7 +90,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function alert($message, array $context = [])
+    public function alert($message, array $context = []): void
     {
         if (0 === ($this->level & self::ALERT)) {
             return;
@@ -105,7 +105,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function critical($message, array $context = [])
+    public function critical($message, array $context = []): void
     {
         $this->crit($message, $context);
     }
@@ -116,7 +116,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function crit($message, array $context = [])
+    public function crit($message, array $context = []): void
     {
         if (0 === ($this->level & self::CRIT)) {
             return;
@@ -131,7 +131,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function error($message, array $context = [])
+    public function error($message, array $context = []): void
     {
         $this->err($message, $context);
     }
@@ -142,7 +142,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function err($message, array $context = [])
+    public function err($message, array $context = []): void
     {
         if (0 === ($this->level & self::ERR)) {
             return;
@@ -157,7 +157,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function warning($message, array $context = [])
+    public function warning($message, array $context = []): void
     {
         $this->warn($message, $context);
     }
@@ -168,7 +168,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function warn($message, array $context = [])
+    public function warn($message, array $context = []): void
     {
         if (0 === ($this->level & self::WARN)) {
             return;
@@ -183,7 +183,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function notice($message, array $context = [])
+    public function notice($message, array $context = []): void
     {
         if (0 === ($this->level & self::NOTICE)) {
             return;
@@ -198,7 +198,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function info($message, array $context = [])
+    public function info($message, array $context = []): void
     {
         if (0 === ($this->level & self::INFO)) {
             return;
@@ -213,7 +213,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function debug($message, array $context = [])
+    public function debug($message, array $context = []): void
     {
         if (0 === ($this->level & self::DEBUG)) {
             return;
@@ -229,7 +229,7 @@ class OutputLogger implements LoggerInterface
      *
      * @return void
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         if (0 === ($this->level & $level)) {
             return;
