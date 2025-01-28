@@ -26,7 +26,7 @@
         "symfony/console": "^5.4 || ^6.4",
         "symfony/expression-language": "^5.4 || ^6.4",
         "symfony/framework-bundle": "^5.4 || ^6.4",
-        "symfony/config": "^5.4 || ^6.4",
+        "symfony/config": "^5.4 || ^6.4 || ^7.1",
         "symfony/translation": "^5.4 || ^6.4",
         "symfony/translation-contracts": "^2.0 || ^3.0",
         "symfony/validator": "^5.4 || ^6.4",
