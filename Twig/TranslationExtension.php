@@ -25,39 +25,18 @@ namespace JMS\TranslationBundle\Twig;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 class TranslationExtension extends AbstractExtension
 {
-    /**
-     * @var TranslatorInterface|LegacyTranslatorInterface
-     */
-    private $translator;
+    private bool $debug;
 
     /**
-     * @var bool
-     */
-    private $debug;
-
-    /**
-     * @param TranslatorInterface|LegacyTranslatorInterface $translator
      * @param bool $debug
      */
     public function __construct($translator, $debug = false)
     {
-        if (!$translator instanceof LegacyTranslatorInterface && !$translator instanceof TranslatorInterface) {
-            throw new \InvalidArgumentException(sprintf(
-                'Argument 1 must be an instance of %s or %s, instance of %s given',
-                TranslatorInterface::class,
-                LegacyTranslatorInterface::class,
-                get_class($translator)
-            ));
-        }
-
-        $this->translator = $translator;
         $this->debug = $debug;
     }
 
@@ -87,38 +66,6 @@ class TranslationExtension extends AbstractExtension
             new TwigFilter('desc', [$this, 'desc']),
             new TwigFilter('meaning', [$this, 'meaning']),
         ];
-    }
-
-    /**
-     * @param string $message
-     * @param string $defaultMessage
-     * @param int $count
-     * @param array $arguments
-     * @param string|null $domain
-     * @param string|null $locale
-     *
-     * @return string
-     */
-    public function transchoiceWithDefault($message, $defaultMessage, $count, array $arguments = [], $domain = null, $locale = null)
-    {
-        if (null === $domain) {
-            $domain = 'messages';
-        }
-
-        if (false === $this->translator->getCatalogue($locale)->defines($message, $domain)) {
-            return $this->doTransChoice($defaultMessage, $count, array_merge(['%count%' => $count], $arguments), $domain, $locale);
-        }
-
-        return $this->doTransChoice($message, $count, array_merge(['%count%' => $count], $arguments), $domain, $locale);
-    }
-
-    private function doTransChoice($message, $count, array $arguments, $domain, $locale)
-    {
-        if ($this->translator instanceof LegacyTranslatorInterface) {
-            return $this->translator->transChoice($message, $count, array_merge(['%count%' => $count], $arguments), $domain, $locale);
-        }
-
-        return $this->translator->trans($message, array_merge(['%count%' => $count], $arguments), $domain, $locale);
     }
 
     /**

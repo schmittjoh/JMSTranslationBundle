@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace JMS\TranslationBundle\Tests\Functional\Controller;
 
 use JMS\TranslationBundle\Tests\Functional\BaseTestCase;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -19,10 +18,8 @@ class ApiControllerTest extends BaseTestCase
         $client    = static::createClient();
         $outputDir = $client->getContainer()->getParameter('translation_output_dir');
 
-        $isSf4 = version_compare(Kernel::VERSION, '4.0.0') >= 0;
-
         // Add a file
-        $file    = $isSf4 ? $outputDir . '/navigation.en.yaml' : $outputDir . '/navigation.en.yml';
+        $file    = $outputDir . '/navigation.en.yaml';
         $written = file_put_contents($file, 'main.home: Home');
         $this->assertTrue($written !== false && $written > 0);
 
@@ -35,13 +32,7 @@ class ApiControllerTest extends BaseTestCase
         // Verify that the file has new content
         $array = Yaml::parse($fileContent);
 
-        if ($isSf4) {
-            $this->assertTrue(isset($array['main.home']), print_r($array, true));
-            $this->assertEquals('Away', $array['main.home']);
-        } else {
-            $this->assertTrue(isset($array['main']));
-            $this->assertTrue(isset($array['main']['home']));
-            $this->assertEquals('Away', $array['main']['home']);
-        }
+        $this->assertTrue(isset($array['main.home']), print_r($array, true));
+        $this->assertEquals('Away', $array['main.home']);
     }
 }

@@ -36,7 +36,7 @@ abstract class BaseTwigTestCase extends TestCase
 
         $env = new Environment(new ArrayLoader([]));
         $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator()));
-        $env->addExtension(new TranslationExtension($translator, $debug));
+        $env->addExtension(new TranslationExtension(null, $debug));
 
         return $env->compile($env->parse($env->tokenize(new Source($content, 'whatever')))->getNode('body'));
     }

@@ -33,7 +33,7 @@ we use the source message as key:
 .. code-block :: jinja
 
     {# index.html.twig #}
-    {{ "{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples"|transchoice(count) }}
+    {{ "{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples"|trans({'%count%': count}) }}
 
 If we translate this to use an abstract key instead, we would get something like 
 the following:
@@ -41,7 +41,7 @@ the following:
 .. code-block :: jinja
 
     {# index.html.twig #}
-    {{ "text.apples_remaining"|transchoice(count) }}
+    {{ "text.apples_remaining"|trans({'%count%': count}) }}
 
 If a translator now sees this abstract key, s/he does not really know what the
 expected translation should look like. Fortunately, there is a solution for 
@@ -51,7 +51,7 @@ via the ``desc`` filter:
 .. code-block :: jinja
 
     {# index.html.twig #}
-    {{ "text.apples_remaining"|transchoice(count)
+    {{ "text.apples_remaining"|trans({'%count%': count})
            |desc("{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples") }}
 
 As you can see we have basically moved the source translation to the ``desc`` filter.
@@ -73,7 +73,7 @@ translations in PHP code, the ``@Desc`` annotation:
 
     // Controller.php
     /** @Desc("{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples") */
-    $this->translator->transChoice('text_apples_remaining', $count)
+    $this->translator->trans('text_apples_remaining', ['%count%' => $count])
 
 You can place the doc comment anywhere in the method call chain or directly 
 before the key.
@@ -83,11 +83,10 @@ Extracting Translation Messages
 This bundle automatically supports extracting messages from the following 
 sources:
 
-- Twig: ``trans``, and ``transchoice`` filters as well as ``trans``,
-  and ``transchoice`` blocks
+- Twig: ``trans`` filters as well as ``trans`` blocks
 - PHP: 
 
-  - all calls to the ``trans``, or ``transChoice`` method
+  - all calls to the ``trans`` method
   - all classes implementing the ``TranslationContainerInterface``
   - all form labels that are defined as options to the ->add() method of the FormBuilder
   - messages declared in validation constraints

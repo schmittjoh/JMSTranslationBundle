@@ -87,10 +87,7 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
      *
      * @var array method => position of the "domain" parameter
      */
-    protected $methodsToExtractFrom = [
-        'trans' => 2,
-        'transchoice' => 3,
-    ];
+    protected $methodsToExtractFrom = ['trans' => 2];
 
     public function __construct(DocParser $docParser, FileSourceFactory $fileSourceFactory)
     {
