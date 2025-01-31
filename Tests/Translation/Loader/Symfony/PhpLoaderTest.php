@@ -25,7 +25,7 @@ use Symfony\Component\Translation\Loader\PhpFileLoader;
 
 class PhpLoaderTest extends BaseLoaderTest
 {
-    protected function getLoader()
+    protected function getLoader(): PhpFileLoader
     {
         return new PhpFileLoader();
     }

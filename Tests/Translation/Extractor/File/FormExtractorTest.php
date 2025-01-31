@@ -29,7 +29,7 @@ class FormExtractorTest extends BasePhpFileExtractorTest
     /**
      * @group placeholder
      */
-    public function testPlaceholderExtract()
+    public function testPlaceholderExtract(): void
     {
         $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
@@ -65,7 +65,7 @@ class FormExtractorTest extends BasePhpFileExtractorTest
     /**
      * @group testExtract
      */
-    public function testExtract()
+    public function testExtract(): void
     {
         $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
@@ -182,7 +182,7 @@ class FormExtractorTest extends BasePhpFileExtractorTest
      * This test is used to check if the default 'translation_domain' option
      * set for the entire form is extracted correctly
      */
-    public function testExtractWithDefaultDomain()
+    public function testExtractWithDefaultDomain(): void
     {
         $this->assertEquals($this->getDefaultDomainFixture(__DIR__ . '/Fixture/MyFormTypeWithDefaultDomain.php'), $this->extract('MyFormTypeWithDefaultDomain.php'));
     }
@@ -191,7 +191,7 @@ class FormExtractorTest extends BasePhpFileExtractorTest
      * This test is used to check if the default 'translation_domain' option
      * set for the entire form is extracted correctly when set via setDefault
      */
-    public function testExtractWithDefaultDomainSetDefault()
+    public function testExtractWithDefaultDomainSetDefault(): void
     {
         $this->assertEquals($this->getDefaultDomainFixture(__DIR__ . '/Fixture/MyFormTypeWithDefaultDomainSetDefault.php'), $this->extract('MyFormTypeWithDefaultDomainSetDefault.php'));
     }
@@ -200,7 +200,7 @@ class FormExtractorTest extends BasePhpFileExtractorTest
      * This test is used to check if translation from subscriber classes and even closures
      * are correctly extracted
      */
-    public function testExtractWithSubscriberAndListener()
+    public function testExtractWithSubscriberAndListener(): void
     {
         $expected                 = new MessageCatalogue();
         $fileSourceFactory        = $this->getFileSourceFactory();
@@ -246,13 +246,13 @@ class FormExtractorTest extends BasePhpFileExtractorTest
      * with the same extractor instance to see that the default domain isn't
      * persisting.
      */
-    public function testExtractWithNoDefaultDomainAfterDefaultDomainExtraction()
+    public function testExtractWithNoDefaultDomainAfterDefaultDomainExtraction(): void
     {
         $this->testExtractWithDefaultDomain();
         $this->testExtract();
     }
 
-    public function testAttrArrayForm()
+    public function testAttrArrayForm(): void
     {
         $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
@@ -265,7 +265,7 @@ class FormExtractorTest extends BasePhpFileExtractorTest
         $this->assertEquals($expected, $this->extract('MyAttrArrayType.php'));
     }
 
-    protected function getDefaultExtractor()
+    protected function getDefaultExtractor(): FormExtractor
     {
         return new FormExtractor($this->getDocParser(), $this->getFileSourceFactory());
     }

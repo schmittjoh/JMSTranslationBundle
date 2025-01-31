@@ -26,7 +26,7 @@ use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
 
 class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
 {
-    public function testExtractController()
+    public function testExtractController(): void
     {
         $catalogue = $this->extract('Controller.php');
 
@@ -67,7 +67,7 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
         $this->assertEquals($expected, $catalogue);
     }
 
-    public function testExtractTemplate()
+    public function testExtractTemplate(): void
     {
         $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
@@ -85,7 +85,7 @@ class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
         $this->assertEquals($expected, $this->extract('template.html.php'));
     }
 
-    protected function getDefaultExtractor()
+    protected function getDefaultExtractor(): DefaultPhpFileExtractor
     {
         return new DefaultPhpFileExtractor($this->getDocParser(), $fileSourceFactory = $this->getFileSourceFactory());
     }

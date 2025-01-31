@@ -32,7 +32,7 @@ use Twig\Loader\ArrayLoader;
 
 class ExtractorManagerTest extends TestCase
 {
-    public function testSetEnabledCustomExtractorsThrowsExceptionWhenAliasInvalid()
+    public function testSetEnabledCustomExtractorsThrowsExceptionWhenAliasInvalid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('There is no extractor with alias "foo". Available extractors: # none #');
@@ -41,7 +41,7 @@ class ExtractorManagerTest extends TestCase
         $manager->setEnabledExtractors(['foo' => true]);
     }
 
-    public function testOnlySomeExtractorsEnabled()
+    public function testOnlySomeExtractorsEnabled(): void
     {
         $foo = $this->createMock(ExtractorInterface::class);
         $foo
@@ -65,7 +65,7 @@ class ExtractorManagerTest extends TestCase
         $this->assertEquals($catalogue, $manager->extract());
     }
 
-    public function testReset()
+    public function testReset(): void
     {
         $foo    = $this->createMock(ExtractorInterface::class);
         $logger = new NullLogger();
@@ -106,7 +106,7 @@ class ExtractorManagerTest extends TestCase
         $this->assertEquals([], $excludedDirsProperty->getValue($extractor));
     }
 
-    private function getManager(?FileExtractor $extractor = null, array $extractors = [])
+    private function getManager(?FileExtractor $extractor = null, array $extractors = []): ExtractorManager
     {
         $logger = new NullLogger();
 

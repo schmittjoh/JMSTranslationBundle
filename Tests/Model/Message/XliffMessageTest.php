@@ -28,7 +28,7 @@ use JMS\TranslationBundle\Tests\Model\MessageTest;
 
 class XliffMessageTest extends MessageTest
 {
-    public function testSetIsApproved()
+    public function testSetIsApproved(): void
     {
         $message = new XliffMessage('foo');
         $this->assertFalse($message->isApproved());
@@ -38,7 +38,7 @@ class XliffMessageTest extends MessageTest
         $this->assertFalse($message->isApproved());
     }
 
-    public function testHasState()
+    public function testHasState(): void
     {
         $message = new XliffMessage('foo');
         $this->assertTrue($message->hasState());
@@ -50,7 +50,7 @@ class XliffMessageTest extends MessageTest
         $this->assertTrue($message->hasState());
     }
 
-    public function testGetSetState()
+    public function testGetSetState(): void
     {
         $message = new XliffMessage('foo');
         $this->assertEquals(XliffMessage::STATE_NEW, $message->getState());
@@ -62,7 +62,7 @@ class XliffMessageTest extends MessageTest
         $this->assertEquals(XliffMessage::STATE_NEW, $message->getState());
     }
 
-    public function testSetIsNew()
+    public function testSetIsNew(): void
     {
         $message = new XliffMessage('foo');
         $this->assertTrue($message->isNew());
@@ -78,7 +78,7 @@ class XliffMessageTest extends MessageTest
         $this->assertFalse($message->isNew());
     }
 
-    public function testisWritable()
+    public function testisWritable(): void
     {
         $message = new XliffMessage('foo');
         $this->assertTrue($message->isWritable());
@@ -92,7 +92,7 @@ class XliffMessageTest extends MessageTest
         $this->assertTrue($message->isWritable());
     }
 
-    public function testGetNotes()
+    public function testGetNotes(): void
     {
         $message = new XliffMessage('foo');
         $this->assertEquals([], $message->getNotes());
@@ -104,7 +104,7 @@ class XliffMessageTest extends MessageTest
         $this->assertSame($notes, $message->getNotes());
     }
 
-    public function testMerge()
+    public function testMerge(): void
     {
         $messageWrite = new XliffMessage('foo');
         $messageWrite->setDesc('foo');
@@ -160,7 +160,7 @@ class XliffMessageTest extends MessageTest
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $message7->getState());
     }
 
-    public function testMergeExisting()
+    public function testMergeExisting(): void
     {
         $scannedMessage = new XliffMessage('foo');
         $scannedMessage->setDesc('foo');
@@ -219,7 +219,7 @@ class XliffMessageTest extends MessageTest
         $this->assertEquals(XliffMessage::STATE_TRANSLATED, $scannedMessage4->getState());
     }
 
-    public function testMergeScanned()
+    public function testMergeScanned(): void
     {
         $existingMessage = new XliffMessage('foo');
         $existingMessage->setLocaleString('bar');

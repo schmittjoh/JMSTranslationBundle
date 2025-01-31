@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
 
 class CatalogueComparatorTest extends TestCase
 {
-    public function testCompareWithMultipleDomains()
+    public function testCompareWithMultipleDomains(): void
     {
         $current = new MessageCatalogue();
         $current->add(Message::create('foo')->setLocaleString('bar'));

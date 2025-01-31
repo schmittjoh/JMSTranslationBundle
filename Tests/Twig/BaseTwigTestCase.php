@@ -30,7 +30,7 @@ use Twig\Source;
 
 abstract class BaseTwigTestCase extends TestCase
 {
-    final protected function parse($file, $debug = false)
+    final protected function parse($file, $debug = false): string
     {
         $content = file_get_contents(__DIR__ . '/Fixture/' . $file);
 

@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 
 class MessageCatalogueTest extends TestCase
 {
-    public function testAdd()
+    public function testAdd(): void
     {
         $catalogue = new MessageCatalogue();
         $catalogue->add($m = new Message('foo'));
@@ -36,7 +36,7 @@ class MessageCatalogueTest extends TestCase
         $this->assertEquals(['foo' => $m], $catalogue->getDomain('messages')->all());
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $catalogue = new MessageCatalogue();
         $catalogue->add($message = Message::create('foo'));
@@ -45,7 +45,7 @@ class MessageCatalogueTest extends TestCase
         $this->assertSame($message, $catalogue->get('foo'));
     }
 
-    public function testGetThrowsExceptionWhenMessageDoesNotExist()
+    public function testGetThrowsExceptionWhenMessageDoesNotExist(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -53,7 +53,7 @@ class MessageCatalogueTest extends TestCase
         $catalogue->getDomain('foo');
     }
 
-    public function testGetSetLocale()
+    public function testGetSetLocale(): void
     {
         $catalogue = new MessageCatalogue();
         $this->assertNull($catalogue->getLocale());
@@ -62,7 +62,7 @@ class MessageCatalogueTest extends TestCase
         $this->assertEquals('en', $catalogue->getLocale());
     }
 
-    public function testHasDomain()
+    public function testHasDomain(): void
     {
         $catalogue = new MessageCatalogue();
         $this->assertFalse($catalogue->hasDomain('messages'));
@@ -71,7 +71,7 @@ class MessageCatalogueTest extends TestCase
         $this->assertTrue($catalogue->hasDomain('messages'));
     }
 
-    public function testGetDomain()
+    public function testGetDomain(): void
     {
         $catalogue = new MessageCatalogue();
         $catalogue->add(new Message('foo'));
@@ -81,7 +81,7 @@ class MessageCatalogueTest extends TestCase
         $this->assertEquals(['foo'], array_keys($col->all()));
     }
 
-    public function testGetDomainWhenDomainDoesNotExist()
+    public function testGetDomainWhenDomainDoesNotExist(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -89,7 +89,7 @@ class MessageCatalogueTest extends TestCase
         $catalogue->getDomain('messages');
     }
 
-    public function testGetDomains()
+    public function testGetDomains(): void
     {
         $cat = new MessageCatalogue();
         $cat->add(new Message('foo'));
@@ -99,7 +99,7 @@ class MessageCatalogueTest extends TestCase
         $this->assertInstanceOf(MessageCollection::class, $domains['foo']);
     }
 
-    public function testMerge()
+    public function testMerge(): void
     {
         $cat = new MessageCatalogue();
         $cat->add(new Message('foo', 'foo'));

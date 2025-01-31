@@ -28,7 +28,7 @@ use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 
 class XliffDumperTest extends BaseDumperTest
 {
-    public function testCdataOutput()
+    public function testCdataOutput(): void
     {
         $dumper = $this->getDumper();
 
@@ -55,7 +55,7 @@ EOF;
         $this->assertEquals($expected, $dumper->dump($catalogue, 'messages'));
     }
 
-    public function testPreserveWhitespaceOutput()
+    public function testPreserveWhitespaceOutput(): void
     {
         $dumper = $this->getDumper();
 
@@ -85,7 +85,7 @@ EOF;
         $this->assertEquals($expected, $dumper->dump($catalogue, 'messages'));
     }
 
-    public function testDumpStructureFullPaths()
+    public function testDumpStructureFullPaths(): void
     {
         $dumper = $this->getDumper();
 
@@ -97,7 +97,7 @@ EOF;
     /**
      * * Test the fact that the references positions are not in the dumped xliff
      */
-    public function testDumpStructureWithoutReferencePosition()
+    public function testDumpStructureWithoutReferencePosition(): void
     {
         $dumper = $this->getDumper();
         $dumper->setAddReferencePosition(false);
@@ -110,7 +110,7 @@ EOF;
     /**
      * Test the fact that the references are not in the dumped xliff
      */
-    public function testDumpStructureWithoutReference()
+    public function testDumpStructureWithoutReference(): void
     {
         $dumper = $this->getDumper();
         $dumper->setAddReference(false);

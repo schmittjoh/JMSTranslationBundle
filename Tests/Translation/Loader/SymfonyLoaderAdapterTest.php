@@ -28,7 +28,7 @@ use Symfony\Component\Translation\MessageCatalogue as SymfonyMessageCatalogue;
 
 class SymfonyLoaderAdapterTest extends TestCase
 {
-    public function testLoad()
+    public function testLoad(): void
     {
         $symfonyCatalogue = new SymfonyMessageCatalogue('en');
         $symfonyCatalogue->add(['foo' => 'bar']);

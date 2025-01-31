@@ -25,7 +25,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 
 class ExtractCommandTest extends BaseCommandTestCase
 {
-    public function testExtract()
+    public function testExtract(): void
     {
         $input = new ArgvInput([
             'app/console',
@@ -58,7 +58,7 @@ class ExtractCommandTest extends BaseCommandTestCase
         $this->assertTrue(isset($files['messages']['en']));
     }
 
-    public function testExtractDryRun()
+    public function testExtractDryRun(): void
     {
         $input = new ArgvInput([
             'app/console',

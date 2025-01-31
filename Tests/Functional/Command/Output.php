@@ -26,7 +26,7 @@ class Output extends AbstractOutput
 {
     private $content = '';
 
-    public function doWrite($content, $newline)
+    public function doWrite($content, $newline): void
     {
         $this->content .= $content;
 

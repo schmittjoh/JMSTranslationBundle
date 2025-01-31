@@ -15,7 +15,7 @@ class FileSourceFactoryTest extends TestCase
      *
      * @dataProvider pathProvider
      */
-    public function testGetRelativePath($root, $projectRoot, $file, $expected, $message = '')
+    public function testGetRelativePath($root, $projectRoot, $file, $expected, $message = ''): void
     {
         $factory = new FileSourceFactory($root, $projectRoot);
         $result  = NSA::invokeMethod($factory, 'getRelativePath', $file);
@@ -23,7 +23,7 @@ class FileSourceFactoryTest extends TestCase
         $this->assertEquals($expected, $result, $message);
     }
 
-    public function pathProvider()
+    public static function pathProvider(): array
     {
         return [
             [

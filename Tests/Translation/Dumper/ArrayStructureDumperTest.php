@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayStructureDumperTest extends TestCase
 {
-    public function testPathWithSubPath()
+    public function testPathWithSubPath(): void
     {
         $catalogue = new MessageCatalogue();
         $catalogue->setLocale('fr');
