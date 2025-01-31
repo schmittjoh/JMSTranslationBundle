@@ -4,31 +4,27 @@ declare(strict_types=1);
 
 namespace JMS\TranslationBundle\Tests\Functional\Fixture\TestBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @author Johannes
- *
- * @Route("/apples")
  */
-class AppleController
+#[AsController()]
+#[Route('/apples')]
+class AppleController extends AbstractController
 {
-    /**
-     * @Route("/view")
-     * @Template("@Test/Apple/view.html.twig")
-     */
-    public function viewAction()
+    #[Route('/view')]
+    public function viewAction(): Response
     {
-        return ['nbApples' => 5];
+        return $this->render('@Test/Apple/view.html.twig', ['nbApples' => 5]);
     }
 
-    /**
-     * @Route("/view_sf5")
-     * @Template("@Test/Apple/view_sf5.html.twig")
-     */
-    public function viewsf5Action()
+    #[Route('/view_sf5')]
+    public function viewsf5Action(): Response
     {
-        return ['nbApples' => 5];
+        return $this->render('@Test/Apple/view_sf5.html.twig', ['nbApples' => 5]);
     }
 }
