@@ -37,20 +37,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ExtractTranslationCommand extends Command
 {
-    /**
-     * @var ConfigFactory
-     */
-    private $configFactory;
+    private ConfigFactory $configFactory;
 
-    /**
-     * @var Updater
-     */
-    private $updater;
+    private Updater $updater;
 
-    /**
-     * @var array
-     */
-    private $locales;
+    private array $locales;
 
     public function __construct(ConfigFactory $configFactory, Updater $updater, array $locales)
     {
@@ -142,7 +133,7 @@ class ExtractTranslationCommand extends Command
                     }
                 }
 
-                return 0;
+                return Command::SUCCESS;
             }
 
             $this->updater->process($config);
@@ -150,10 +141,10 @@ class ExtractTranslationCommand extends Command
 
         $output->writeln('done!');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    private function updateWithInput(InputInterface $input, ConfigBuilder $builder)
+    private function updateWithInput(InputInterface $input, ConfigBuilder $builder): void
     {
         if ($bundle = $input->getOption('bundle')) {
             if ('@' === $bundle[0]) {
