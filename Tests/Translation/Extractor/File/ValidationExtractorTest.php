@@ -29,6 +29,7 @@ use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Validator\Mapping\Loader\AttributeLoader;
 
 class ValidationExtractorTest extends TestCase
 {
@@ -53,7 +54,7 @@ class ValidationExtractorTest extends TestCase
         $metadataFactoryClass = LazyLoadingMetadataFactory::class;
 
         if ($extractor === null) {
-            $factory   = new $metadataFactoryClass(new AnnotationLoader(new AnnotationReader()));
+            $factory   = new $metadataFactoryClass(class_exists(AnnotationLoader::class) ? new AnnotationLoader(new AnnotationReader()) : new AttributeLoader());
             $extractor = new ValidationExtractor($factory);
         }
 
