@@ -27,7 +27,7 @@ use JMS\TranslationBundle\Translation\Dumper\PhpDumper;
 
 class PhpDumperTest extends BaseDumperTest
 {
-    public function testDumpStructureWithoutPrettyPrint()
+    public function testDumpStructureWithoutPrettyPrint(): void
     {
         $catalogue = new MessageCatalogue();
         $catalogue->setLocale('fr');

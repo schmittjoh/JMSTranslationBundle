@@ -26,7 +26,7 @@ use JMS\TranslationBundle\Translation\Extractor\File\AuthenticationMessagesExtra
 
 class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
 {
-    public function testExtract()
+    public function testExtract(): void
     {
         $expected = new MessageCatalogue();
 
@@ -46,7 +46,7 @@ class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
         $this->assertEquals($expected, $this->extract('MyAuthException.php'));
     }
 
-    protected function getDefaultExtractor()
+    protected function getDefaultExtractor(): AuthenticationMessagesExtractor
     {
         return new AuthenticationMessagesExtractor($this->getDocParser(), $this->getFileSourceFactory());
     }

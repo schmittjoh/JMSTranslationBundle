@@ -13,7 +13,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ApiControllerTest extends BaseTestCase
 {
-    public function testUpdateAction()
+    public function testUpdateAction(): void
     {
         // Start application
         $client    = static::createClient(['config' => 'test_updating_translations.yml']);

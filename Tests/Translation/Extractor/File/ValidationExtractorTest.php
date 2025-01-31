@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
 
 class ValidationExtractorTest extends TestCase
 {
-    public function testExtractConstraints()
+    public function testExtractConstraints(): void
     {
         $expected = new MessageCatalogue();
         $path     = __DIR__ . '/Fixture/MyFormModel.php';
@@ -43,7 +43,7 @@ class ValidationExtractorTest extends TestCase
         $this->assertEquals($expected, $this->extract('MyFormModel.php'));
     }
 
-    private function extract($file, ?ValidationExtractor $extractor = null)
+    private function extract($file, ?ValidationExtractor $extractor = null): MessageCatalogue
     {
         $fileRealPath = __DIR__ . '/Fixture/' . $file;
         if (! is_file($fileRealPath)) {

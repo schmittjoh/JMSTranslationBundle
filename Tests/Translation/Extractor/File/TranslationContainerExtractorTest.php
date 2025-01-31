@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
 
 class TranslationContainerExtractorTest extends TestCase
 {
-    public function testExtractFormModel()
+    public function testExtractFormModel(): void
     {
         $expected = new MessageCatalogue();
         $path     = __DIR__ . '/Fixture/MyFormModel.php';
@@ -46,7 +46,7 @@ class TranslationContainerExtractorTest extends TestCase
         $this->assertEquals($expected, $this->extract('MyFormModel.php'));
     }
 
-    private function extract($file, ?TranslationContainerExtractor $extractor = null)
+    private function extract($file, ?TranslationContainerExtractor $extractor = null): MessageCatalogue
     {
         $fileRealPath = __DIR__ . '/Fixture/' . $file;
         if (! is_file($fileRealPath)) {

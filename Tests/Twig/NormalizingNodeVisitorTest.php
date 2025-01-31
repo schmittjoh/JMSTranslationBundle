@@ -22,7 +22,7 @@ namespace JMS\TranslationBundle\Tests\Twig;
 
 class NormalizingNodeVisitorTest extends BaseTwigTestCase
 {
-    public function testBinaryConcatOfConstants()
+    public function testBinaryConcatOfConstants(): void
     {
         $this->assertEquals(
             $this->parse('binary_concat_of_constants_compiled.html.twig'),

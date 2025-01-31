@@ -26,6 +26,7 @@ use JMS\TranslationBundle\Annotation\Desc;
 use JMS\TranslationBundle\Annotation\Ignore;
 use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Model\Message;
+use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 use JMS\TranslationBundle\Translation\Extractor\File\TranslationContainerExtractor;
@@ -46,7 +47,7 @@ use Twig\Loader\FilesystemLoader;
 
 class FileExtractorTest extends TestCase
 {
-    public function testExtractWithSimpleTestFixtures()
+    public function testExtractWithSimpleTestFixtures(): void
     {
         $expected          = [];
         $basePath          = __DIR__ . '/Fixture/SimpleTest/';
@@ -99,7 +100,7 @@ class FileExtractorTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    private function extract($directory)
+    private function extract($directory): MessageCatalogue
     {
         $twig = new Environment(new ArrayLoader([]));
         $twig->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator()));

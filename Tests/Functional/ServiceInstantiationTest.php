@@ -20,7 +20,7 @@ class ServiceInstantiationTest extends BaseTestCase
         static::createClient();
     }
 
-    public function provider()
+    public static function provider(): array
     {
         return [
             ['jms_translation.updater', Updater::class],
@@ -32,7 +32,7 @@ class ServiceInstantiationTest extends BaseTestCase
     /**
      * @dataProvider provider
      */
-    public function testServiceExists($serviceId, $class)
+    public function testServiceExists(string $serviceId, string $class): void
     {
         $container = static::$kernel->getContainer();
         $this->assertTrue($container->has($serviceId));

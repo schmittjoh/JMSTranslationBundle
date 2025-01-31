@@ -25,7 +25,7 @@ use Symfony\Component\Translation\Loader\YamlFileLoader;
 
 class YamlLoaderTest extends BaseLoaderTest
 {
-    protected function getLoader()
+    protected function getLoader(): YamlFileLoader
     {
         return new YamlFileLoader();
     }

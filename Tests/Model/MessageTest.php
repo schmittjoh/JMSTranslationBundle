@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 
 class MessageTest extends TestCase
 {
-    public function testCreate()
+    public function testCreate(): void
     {
         $message = Message::create('id', 'foo');
 
@@ -36,7 +36,7 @@ class MessageTest extends TestCase
         $this->assertEquals('foo', $message->getDomain());
     }
 
-    public function testForThisFile()
+    public function testForThisFile(): void
     {
         $message = Message::forThisFile('foo', 'bar');
 
@@ -48,19 +48,19 @@ class MessageTest extends TestCase
         $this->assertTrue($message->hasSource($source));
     }
 
-    public function testGetId()
+    public function testGetId(): void
     {
         $message = new Message('foo');
         $this->assertEquals('foo', $message->getId());
     }
 
-    public function testGetDomain()
+    public function testGetDomain(): void
     {
         $message = new Message('foo', 'bar');
         $this->assertEquals('bar', $message->getDomain());
     }
 
-    public function testGetDesc()
+    public function testGetDesc(): void
     {
         $message = new Message('foo');
         $this->assertNull($message->getDesc());
@@ -69,7 +69,7 @@ class MessageTest extends TestCase
         $this->assertEquals('foo', $message->getDesc());
     }
 
-    public function testGetMeaning()
+    public function testGetMeaning(): void
     {
         $message = new Message('foo');
         $this->assertNull($message->getMeaning());
@@ -78,7 +78,7 @@ class MessageTest extends TestCase
         $this->assertEquals('foo', $message->getMeaning());
     }
 
-    public function testGetSources()
+    public function testGetSources(): void
     {
         $message = new Message('foo');
         $this->assertEquals([], $message->getSources());
@@ -89,7 +89,7 @@ class MessageTest extends TestCase
         $this->assertSame([$source2], $message->getSources());
     }
 
-    public function testMerge()
+    public function testMerge(): void
     {
         $message = new Message('foo');
         $message->setDesc('foo');
@@ -107,7 +107,7 @@ class MessageTest extends TestCase
         $this->assertSame([$s1, $s2], $message->getSources());
     }
 
-    public function testMergeRememberDesc()
+    public function testMergeRememberDesc(): void
     {
         $message = new Message('foo_id');
         $message->setDesc('foo_desc');
@@ -125,7 +125,7 @@ class MessageTest extends TestCase
         $this->assertSame([$s1, $s2], $message->getSources());
     }
 
-    public function testMergeExisting()
+    public function testMergeExisting(): void
     {
         $message = new Message('foo');
         $message->setDesc('bar');
@@ -143,7 +143,7 @@ class MessageTest extends TestCase
         $this->assertEquals([], $message->getSources());
     }
 
-    public function testMergeScanned()
+    public function testMergeScanned(): void
     {
         $message = new Message('foo');
         $message->setLocaleString('foobar');
@@ -161,7 +161,7 @@ class MessageTest extends TestCase
         $this->assertEquals([], $message->getSources());
     }
 
-    public function testGetIsNew()
+    public function testGetIsNew(): void
     {
         $message = new Message('foo');
 
@@ -170,13 +170,13 @@ class MessageTest extends TestCase
         $this->assertFalse($message->isNew());
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $message = new Message('foo');
         $this->assertEquals('foo', (string) $message);
     }
 
-    public function hasSource()
+    public function hasSource(): void
     {
         $message = new Message('foo');
 
@@ -193,7 +193,7 @@ class MessageTest extends TestCase
         $this->assertTrue($message->hasSource($s2));
     }
 
-    public function testGetLocaleString()
+    public function testGetLocaleString(): void
     {
         $message = new Message('foo');
         $message->setDesc('bar');

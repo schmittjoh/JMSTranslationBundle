@@ -22,11 +22,12 @@ namespace JMS\TranslationBundle\Tests\Translation\Loader\Symfony;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 
 abstract class BaseLoaderTest extends TestCase
 {
-    public function testLoadSimple()
+    public function testLoadSimple(): void
     {
         $expected = new MessageCatalogue('en');
         $expected->add(['foo' => 'foo']);
@@ -37,7 +38,7 @@ abstract class BaseLoaderTest extends TestCase
         $this->assertEquals($expected, $this->load($file));
     }
 
-    public function testLoadStructureWithMetadata()
+    public function testLoadStructureWithMetadata(): void
     {
         $expected = new MessageCatalogue('en');
         $expected->add([
@@ -52,7 +53,7 @@ abstract class BaseLoaderTest extends TestCase
         $this->assertEquals($expected, $this->load($file));
     }
 
-    public function testLoadStructure()
+    public function testLoadStructure(): void
     {
         $expected = new MessageCatalogue('en');
         $expected->add(['foo.bar.baz' => 'foo.bar.baz']);
@@ -63,7 +64,7 @@ abstract class BaseLoaderTest extends TestCase
         $this->assertEquals($expected, $this->load($file));
     }
 
-    public function testLoadWithMetadata()
+    public function testLoadWithMetadata(): void
     {
         $expected = new MessageCatalogue('en');
         $expected->add(['foo' => 'bar']);
@@ -74,7 +75,7 @@ abstract class BaseLoaderTest extends TestCase
         $this->assertEquals($expected, $this->load($file));
     }
 
-    abstract protected function getLoader();
+    abstract protected function getLoader(): LoaderInterface;
 
     abstract protected function getInputFile($key);
 

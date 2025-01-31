@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
 
 class FileWriterTest extends TestCase
 {
-    public function testCatalogueIsSortedBeforeBeingDumped()
+    public function testCatalogueIsSortedBeforeBeingDumped(): void
     {
         $dumper = $this->createMock(DumperInterface::class);
 

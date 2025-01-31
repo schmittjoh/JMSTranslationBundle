@@ -11,7 +11,7 @@ use JMS\TranslationBundle\Tests\Functional\BaseTestCase;
  */
 class TranslateControllerTest extends BaseTestCase
 {
-    public function testIndexAction()
+    public function testIndexAction(): void
     {
         $client  = static::createClient();
         $crawler = $client->request('GET', '/_trans/');

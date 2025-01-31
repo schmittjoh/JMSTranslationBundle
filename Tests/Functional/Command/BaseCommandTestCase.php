@@ -25,7 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 abstract class BaseCommandTestCase extends BaseTestCase
 {
-    protected function getApp(array $options = [])
+    protected function getApp(array $options = []): Application
     {
         $kernel = $this->createKernel($options);
         $kernel->boot();

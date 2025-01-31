@@ -32,7 +32,7 @@ use PHPUnit\Framework\TestCase;
 
 abstract class BasePhpFileExtractorTest extends TestCase
 {
-    final protected function extract($file, ?FileVisitorInterface $extractor = null)
+    final protected function extract($file, ?FileVisitorInterface $extractor = null): MessageCatalogue
     {
         $fileRealPath = __DIR__ . '/Fixture/' . $file;
         if (! is_file($fileRealPath)) {
@@ -54,7 +54,7 @@ abstract class BasePhpFileExtractorTest extends TestCase
 
     abstract protected function getDefaultExtractor();
 
-    final protected function getDocParser()
+    final protected function getDocParser(): DocParser
     {
         $docParser = new DocParser();
         $docParser->setImports([
@@ -67,7 +67,7 @@ abstract class BasePhpFileExtractorTest extends TestCase
         return $docParser;
     }
 
-    protected function getFileSourceFactory()
+    protected function getFileSourceFactory(): FileSourceFactory
     {
         return new FileSourceFactory('faux');
     }

@@ -23,7 +23,7 @@ class MountDumpersPassTest extends AbstractCompilerPassTestCase
     /**
      * @test
      */
-    public function ifCompilerPassCollectsServicesByArgumentTheseWillExist()
+    public function ifCompilerPassCollectsServicesByArgumentTheseWillExist(): void
     {
         $collectingService = new Definition();
         $this->setDefinition('jms_translation.file_writer', $collectingService);

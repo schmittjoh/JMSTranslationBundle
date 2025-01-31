@@ -22,7 +22,7 @@ class JMSTranslationExtensionTest extends AbstractExtensionTestCase
     /**
      * @test
      */
-    public function defaultParametersAfterLoading()
+    public function defaultParametersAfterLoading(): void
     {
         $this->load();
 
@@ -32,7 +32,7 @@ class JMSTranslationExtensionTest extends AbstractExtensionTestCase
     /**
      * @test
      */
-    public function basicParametersAfterLoading()
+    public function basicParametersAfterLoading(): void
     {
         $locales = ['en', 'fr', 'es'];
         $this->load(['source_language' => 'fr', 'locales' => $locales]);

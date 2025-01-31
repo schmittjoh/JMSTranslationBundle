@@ -27,7 +27,7 @@ use JMS\TranslationBundle\Translation\Dumper\YamlDumper;
 
 class YamlDumperTest extends BaseDumperTest
 {
-    public function testDumpStructureWithoutPrettyPrint()
+    public function testDumpStructureWithoutPrettyPrint(): void
     {
         $catalogue = new MessageCatalogue();
         $catalogue->setLocale('fr');

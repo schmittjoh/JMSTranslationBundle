@@ -43,7 +43,7 @@ use Twig\Source;
 
 class TwigFileExtractorTest extends TestCase
 {
-    public function testExtractSimpleTemplateInSF5()
+    public function testExtractSimpleTemplateInSF5(): void
     {
         $isSF5 = version_compare(Kernel::VERSION, '5.0.0') >= 0;
 
@@ -102,7 +102,7 @@ class TwigFileExtractorTest extends TestCase
         $this->assertEquals($expected, $this->extract('simple_template_sf5.html.twig'));
     }
 
-    public function testExtractSimpleTemplate()
+    public function testExtractSimpleTemplate(): void
     {
         $isSF5 = version_compare(Kernel::VERSION, '5.0.0') >= 0;
 
@@ -165,7 +165,7 @@ class TwigFileExtractorTest extends TestCase
         $this->assertEquals($expected, $this->extract('simple_template.html.twig'));
     }
 
-    public function testExtractEdit()
+    public function testExtractEdit(): void
     {
         $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
@@ -193,7 +193,7 @@ class TwigFileExtractorTest extends TestCase
         $this->assertEquals($expected, $this->extract('edit.html.twig'));
     }
 
-    public function testEmbeddedTemplate()
+    public function testEmbeddedTemplate(): void
     {
         $expected          = new MessageCatalogue();
         $fileSourceFactory = $this->getFileSourceFactory();
@@ -206,7 +206,7 @@ class TwigFileExtractorTest extends TestCase
         $this->assertEquals($expected, $this->extract('embedded_template.html.twig'));
     }
 
-    private function extract($file, ?TwigFileExtractor $extractor = null)
+    private function extract($file, ?TwigFileExtractor $extractor = null): MessageCatalogue
     {
         $fileRealPath = __DIR__ . '/Fixture/' . $file;
         if (! is_file($fileRealPath)) {
@@ -243,7 +243,7 @@ class TwigFileExtractorTest extends TestCase
         return $catalogue;
     }
 
-    protected function getFileSourceFactory()
+    protected function getFileSourceFactory(): FileSourceFactory
     {
         return new FileSourceFactory('faux');
     }
