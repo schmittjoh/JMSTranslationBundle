@@ -27,7 +27,6 @@ use JMS\TranslationBundle\Translation\ExtractorInterface;
 use JMS\TranslationBundle\Twig\DefaultApplyingNodeVisitor;
 use JMS\TranslationBundle\Twig\RemovingNodeVisitor;
 use PhpParser\Error;
-use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Psr\Log\LoggerInterface;
@@ -44,20 +43,11 @@ use Twig\Source;
  */
 class FileExtractor implements ExtractorInterface, LoggerAwareInterface
 {
-    /**
-     * @var Environment
-     */
-    private $twig;
+    private Environment $twig;
 
-    /**
-     * @var array
-     */
-    private $visitors;
+    private array $visitors;
 
-    /**
-     * @var Parser
-     */
-    private $phpParser;
+    private Parser $phpParser;
 
     /**
      * @var array
@@ -89,10 +79,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
      */
     private $excludedDirs = [];
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * @param Environment $twig
@@ -104,13 +91,7 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
         $this->twig = $twig;
         $this->visitors = $visitors;
         $this->setLogger($logger);
-        $lexer = new Lexer();
-        if (class_exists(ParserFactory::class)) {
-            $factory = new ParserFactory();
-            $this->phpParser = \method_exists($factory, 'create') ? $factory->create(ParserFactory::PREFER_PHP7, $lexer) : $factory->createForNewestSupportedVersion();
-        } else {
-            $this->phpParser = new Parser($lexer);
-        }
+        $this->phpParser = (new ParserFactory())->createForNewestSupportedVersion();
 
         foreach ($this->twig->getNodeVisitors() as $visitor) {
             if ($visitor instanceof RemovingNodeVisitor) {
