@@ -40,6 +40,7 @@ use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExte
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Validator\Mapping\Loader\AttributeLoader;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
@@ -117,7 +118,7 @@ class FileExtractorTest extends TestCase
 
         $metadataFactoryClass = LazyLoadingMetadataFactory::class;
 
-        $factory = new $metadataFactoryClass(new AnnotationLoader(new AnnotationReader()));
+        $factory = new $metadataFactoryClass(class_exists(AnnotationLoader::class) ? new AnnotationLoader(new AnnotationReader()) : new AttributeLoader());
 
         $dummyFileSourceFactory = new FileSourceFactory('faux');
 
