@@ -25,8 +25,6 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor;
-use PhpParser\Lexer;
-use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
@@ -59,14 +57,7 @@ class ValidationExtractorTest extends TestCase
             $extractor = new ValidationExtractor($factory);
         }
 
-        $lexer = new Lexer();
-        if (class_exists(ParserFactory::class)) {
-            $factory = new ParserFactory();
-            $parser  = \method_exists($factory, 'create') ? $factory->create(ParserFactory::PREFER_PHP7, $lexer) : $factory->createForNewestSupportedVersion();
-        } else {
-            $parser = new Parser($lexer);
-        }
-
+        $parser = (new ParserFactory())->createForNewestSupportedVersion();
         $ast = $parser->parse(file_get_contents($fileRealPath));
 
         $catalogue = new MessageCatalogue();
