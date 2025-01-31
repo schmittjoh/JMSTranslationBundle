@@ -32,20 +32,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ResourcesListCommand extends Command
 {
-    /**
-     * @var string
-     */
-    private $projectDir;
+    private string $projectDir;
 
     /**
      * @var string|null
      */
     private $rootDir;
 
-    /**
-     * @var array
-     */
-    private $bundles;
+    private array $bundles;
 
     public function __construct(string $projectDir, array $bundles, ?string $rootDir)
     {
@@ -88,7 +82,7 @@ class ResourcesListCommand extends Command
 
             $output->writeln('done!');
 
-            return 0;
+            return Command::SUCCESS;
         }
 
         $output->writeln('<info>Resources list :</info>');
@@ -102,15 +96,10 @@ class ResourcesListCommand extends Command
 
         $output->writeln('done!');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param array $dirs
-     *
-     * @return array
-     */
-    private function retrieveFiles(array $dirs)
+    private function retrieveFiles(array $dirs): array
     {
         $files = [];
         // Register translation resources
@@ -127,10 +116,8 @@ class ResourcesListCommand extends Command
 
     /**
      * The following methods is derived from code of the FrameworkExtension.php file from the Symfony2 framework
-     *
-     * @return array
      */
-    private function retrieveDirs()
+    private function retrieveDirs(): array
     {
         // Discover translation directories
         $dirs = [];
