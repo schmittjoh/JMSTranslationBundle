@@ -13,4 +13,4 @@ framework:
     translator:
         enabled: true
     router:
-        resource: "%kernel.project_dir%/config/routing.yml"
+        resource: "%kernel.project_dir%/config/routing_sf6.yaml"

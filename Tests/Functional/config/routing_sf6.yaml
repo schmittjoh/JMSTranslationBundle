@@ -1,0 +1,8 @@
+JMSTranslationBundle_ui:
+    resource: '@JMSTranslationBundle/Controller/'
+    type: 'attribute'
+    prefix: /_trans
+
+TestBundle:
+    resource: '@TestBundle/Controller/'
+    type: 'attribute'

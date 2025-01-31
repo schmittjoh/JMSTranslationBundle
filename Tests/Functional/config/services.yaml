@@ -1,0 +1,11 @@
+parameters:
+    translation_output_dir: '%kernel.project_dir%/Fixture/TestBundle/Resources/translations'
+
+services:
+    logger:
+        class: Psr\Log\NullLogger
+
+    JMS\TranslationBundle\Tests\Functional\Fixture\TestBundle\Controller\:
+        resource: '@TestBundle/Controller/'
+        autowire: true
+        autoconfigure: true

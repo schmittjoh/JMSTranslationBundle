@@ -32,9 +32,9 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel
 {
-    private $config;
+    private string|null $config;
 
-    private $fwConfig;
+    private string $fwConfig;
 
     public function __construct(string $fwConfig, ?string $config)
     {
@@ -75,6 +75,8 @@ class AppKernel extends Kernel
         if ($this->config) {
             $loader->load($this->config);
         }
+
+        $loader->load($this->getProjectDir() . '/config/services.yaml');
     }
 
     public function getCacheDir(): string
