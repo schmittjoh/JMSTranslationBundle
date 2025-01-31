@@ -34,18 +34,12 @@ class ResourcesListCommand extends Command
 {
     private string $projectDir;
 
-    /**
-     * @var string|null
-     */
-    private $rootDir;
-
     private array $bundles;
 
-    public function __construct(string $projectDir, array $bundles, ?string $rootDir)
+    public function __construct(string $projectDir, array $bundles)
     {
         $this->projectDir = $projectDir;
         $this->bundles = $bundles;
-        $this->rootDir = $rootDir;
 
         parent::__construct();
     }
@@ -61,22 +55,14 @@ class ResourcesListCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $directoriesToSearch = [];
-
-        // TODO: Remove this block when dropping support of Symfony 4 as it will always be false
-        if ($this->rootDir !== null) {
-            $directoriesToSearch[] = realpath($this->rootDir);
-        }
-
         $basePath = realpath($this->projectDir);
-
         $directoriesToSearch[] = $basePath;
-
         $dirs = $this->retrieveDirs();
 
         if (!$input->hasParameterOption('--files')) {
             $output->writeln('<info>Directories list :</info>');
             foreach ($dirs as $dir) {
-                $path = str_replace($directoriesToSearch, ['%kernel.root_dir%', '%kernel.project_dir%'], $dir);
+                $path = str_replace($directoriesToSearch, ['%kernel.project_dir%'], $dir);
                 $output->writeln(sprintf('    - %s', $path));
             }
 
@@ -126,14 +112,6 @@ class ResourcesListCommand extends Command
             if (is_dir($dir = dirname($reflection->getFilename()) . '/Resources/translations')) {
                 $dirs[] = $dir;
             }
-        }
-
-        // TODO: Remove this block when dropping support of Symfony 4
-        if (
-            $this->rootDir !== null &&
-            is_dir($dir = $this->rootDir . '/Resources/translations')
-        ) {
-            $dirs[] = $dir;
         }
 
         if (is_dir($dir = $this->projectDir . '/translations')) {
