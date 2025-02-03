@@ -24,7 +24,6 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
-use Symfony\Component\Translation\TranslatorBagInterface;
 
 /**
  * XLIFF loader.
@@ -36,9 +35,9 @@ use Symfony\Component\Translation\TranslatorBagInterface;
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 // phpcs:ignore
-class XliffLoaderInternal
+class XliffLoader implements LoaderInterface
 {
-    protected function loadInternal($resource, $locale, $domain = 'messages')
+    public function load($resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         $previous = libxml_use_internal_errors(true);
         if (false === $xml = simplexml_load_file((string) $resource)) {
@@ -63,27 +62,5 @@ class XliffLoaderInternal
         $catalogue->addResource(new FileResource((string) $resource));
 
         return $catalogue;
-    }
-}
-
-$isSf6 = method_exists(TranslatorBagInterface::class, 'getCatalogues');
-
-if ($isSf6) {
-    // phpcs:ignore
-    class XliffLoader extends XliffLoaderInternal implements LoaderInterface
-    {
-        public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
-        {
-            return $this->loadInternal($resource, $locale, $domain);
-        }
-    }
-} else {
-    // phpcs:ignore
-    class XliffLoader extends XliffLoaderInternal implements LoaderInterface
-    {
-        public function load($resource, $locale, $domain = 'messages')
-        {
-            return $this->loadInternal($resource, $locale, $domain);
-        }
     }
 }
