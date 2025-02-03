@@ -50,7 +50,7 @@
         "symfony/property-access": "^5.4 || ^6.4",
         "symfony/routing": "^5.4 || ^6.4",
         "symfony/twig-bundle": "^5.4 || ^6.4",
-        "symfony/flex": "^1.19 || ^2.0"
+        "symfony/flex": "^2.4"
     },
     "config": {
         "sort-packages": true,
