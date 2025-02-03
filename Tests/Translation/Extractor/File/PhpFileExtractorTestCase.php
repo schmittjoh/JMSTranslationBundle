@@ -30,7 +30,7 @@ use JMS\TranslationBundle\Translation\FileSourceFactory;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 
-abstract class BasePhpFileExtractorTest extends TestCase
+abstract class PhpFileExtractorTestCase extends TestCase
 {
     final protected function extract($file, ?FileVisitorInterface $extractor = null): MessageCatalogue
     {

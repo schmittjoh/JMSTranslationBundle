@@ -25,7 +25,7 @@ use JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Translation\MessageCatalogue;
 
-class XliffLoaderTest extends BaseLoaderTest
+class XliffLoaderTest extends LoaderTestCase
 {
     public function testLoadOldFormat(): void
     {

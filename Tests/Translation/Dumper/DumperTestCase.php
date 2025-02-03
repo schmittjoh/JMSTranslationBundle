@@ -25,7 +25,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use PHPUnit\Framework\TestCase;
 
-abstract class BaseDumperTest extends TestCase
+abstract class DumperTestCase extends TestCase
 {
     public function testSimpleDump(): void
     {

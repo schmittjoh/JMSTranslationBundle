@@ -23,7 +23,7 @@ namespace JMS\TranslationBundle\Tests\Translation\Loader\Symfony;
 use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use Symfony\Component\Translation\Loader\PhpFileLoader;
 
-class PhpLoaderTest extends BaseLoaderTest
+class PhpLoaderTest extends LoaderTestCase
 {
     protected function getLoader(): PhpFileLoader
     {
