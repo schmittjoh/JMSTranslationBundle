@@ -22,20 +22,11 @@ namespace JMS\TranslationBundle\Model;
 
 class FileSource implements SourceInterface
 {
-    /**
-     * @var string
-     */
-    private $path;
+    private string $path;
 
-    /**
-     * @var int
-     */
-    private $line;
+    private int|null $line;
 
-    /**
-     * @var int
-     */
-    private $column;
+    private int|null $column;
 
     /**
      * @param string $path

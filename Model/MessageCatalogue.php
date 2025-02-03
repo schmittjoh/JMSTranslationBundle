@@ -36,15 +36,10 @@ use JMS\TranslationBundle\Exception\InvalidArgumentException;
  */
 class MessageCatalogue
 {
-    /**
-     * @var string
-     */
-    private $locale;
+    private string|null $locale = null;
 
-    /**
-     * @var array
-     */
-    private $domains = [];
+    /** @var array<string, MessageCollection> */
+    private array $domains = [];
 
     public function setLocale($locale)
     {
@@ -87,8 +82,6 @@ class MessageCatalogue
     }
 
     /**
-     * @param Message $message
-     *
      * @return bool
      */
     public function has(Message $message)
@@ -139,17 +132,8 @@ class MessageCatalogue
         return $this->domains;
     }
 
-    /**
-     * @param string $domain
-     *
-     * @return MessageCollection
-     */
-    private function getOrCreateDomain($domain)
+    private function getOrCreateDomain(string $domain): MessageCollection
     {
-        if (!$this->hasDomain($domain)) {
-            $this->domains[$domain] = new MessageCollection($this);
-        }
-
-        return $this->domains[$domain];
+        return $this->domains[$domain] ??= new MessageCollection($this);
     }
 }

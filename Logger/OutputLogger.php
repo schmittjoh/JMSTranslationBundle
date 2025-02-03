@@ -35,15 +35,9 @@ class OutputLogger implements LoggerInterface
     public const DEBUG  = 128;
     public const ALL    = 255;
 
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private OutputInterface $output;
 
-    /**
-     * @var int
-     */
-    private $level = self::ALL;
+    private int $level = self::ALL;
 
     public function __construct(OutputInterface $output)
     {

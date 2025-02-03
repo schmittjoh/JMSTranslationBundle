@@ -27,7 +27,7 @@ use JMS\TranslationBundle\Util\FileUtils;
 
 class LoaderManager
 {
-    private $loaders;
+    private array $loaders;
 
     /**
      * @param array $loaders

@@ -37,25 +37,13 @@ use Twig\Environment;
  */
 class TranslateController
 {
-    /**
-     * @var ConfigFactory
-     */
-    private $configFactory;
+    private ConfigFactory $configFactory;
 
-    /**
-     * @var LoaderManager
-     */
-    private $loader;
+    private LoaderManager $loader;
 
-    /**
-     * @var Environment|null
-     */
-    private $twig;
+    private Environment|null $twig;
 
-    /**
-     * @var string
-     */
-    private $sourceLanguage;
+    private string|null $sourceLanguage = null;
 
     public function __construct(ConfigFactory $configFactory, LoaderManager $loader, ?Environment $twig = null)
     {

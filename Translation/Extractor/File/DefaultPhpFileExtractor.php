@@ -47,15 +47,9 @@ use Twig\Node\Node as TwigNode;
  */
 class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
-    /**
-     * @var FileSourceFactory
-     */
-    private $fileSourceFactory;
+    private FileSourceFactory $fileSourceFactory;
 
-    /**
-     * @var NodeTraverser
-     */
-    private $traverser;
+    private NodeTraverser $traverser;
 
     /**
      * @var MessageCatalogue
@@ -67,15 +61,9 @@ class DefaultPhpFileExtractor implements LoggerAwareInterface, FileVisitorInterf
      */
     private $file;
 
-    /**
-     * @var DocParser
-     */
-    private $docParser;
+    private DocParser $docParser;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface|null $logger = null;
 
     /**
      * @var Node

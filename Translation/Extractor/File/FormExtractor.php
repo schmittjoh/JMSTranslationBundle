@@ -41,20 +41,11 @@ use Twig\Node\Node as TwigNode;
 
 class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeVisitor
 {
-    /**
-     * @var FileSourceFactory
-     */
-    private $fileSourceFactory;
+    private FileSourceFactory $fileSourceFactory;
 
-    /**
-     * @var DocParser
-     */
-    private $docParser;
+    private DocParser $docParser;
 
-    /**
-     * @var NodeTraverser
-     */
-    private $traverser;
+    private NodeTraverser $traverser;
 
     /**
      * @var \SplFileInfo
@@ -66,20 +57,11 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
      */
     private $catalogue;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface|null $logger = null;
 
-    /**
-     * @var string
-     */
-    private $defaultDomain;
+    private string|null $defaultDomain = null;
 
-    /**
-     * @var array
-     */
-    private $defaultDomainMessages;
+    private array $defaultDomainMessages = [];
 
     public function __construct(DocParser $docParser, FileSourceFactory $fileSourceFactory)
     {
@@ -325,7 +307,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         return true;
     }
 
-    private function parseDefaultsCall(Node $node)
+    private function parseDefaultsCall(Node $node): void
     {
         static $returningMethods = [
             'setdefaults' => true,
@@ -390,11 +372,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         }
     }
 
-    /**
-     * @param ArrayItem $item
-     * @param null $domain
-     */
-    private function parseItem($item, $domain = null)
+    private function parseItem(ArrayItem $item, string|null $domain = null): void
     {
         // get doc comment
         $ignore = false;
@@ -448,7 +426,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         }
 
         $source = $this->fileSourceFactory->create($this->file, $item->value->getLine());
-        $id = $item->value->value;
+        $id = (string) $item->value->value;
 
         if (null === $domain) {
             $this->defaultDomainMessages[] = [
@@ -462,14 +440,7 @@ class FormExtractor implements FileVisitorInterface, LoggerAwareInterface, NodeV
         }
     }
 
-    /**
-     * @param string $id
-     * @param SourceInterface $source
-     * @param string|null $domain
-     * @param string|null $desc
-     * @param string|null $meaning
-     */
-    private function addToCatalogue($id, $source, $domain = null, $desc = null, $meaning = null)
+    private function addToCatalogue(string $id, SourceInterface $source, string|null $domain = null, string|null $desc = null, string|null $meaning = null): void
     {
         if (null === $domain) {
             $message = new Message($id);

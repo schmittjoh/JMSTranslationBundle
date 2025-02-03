@@ -144,10 +144,7 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
     {
     }
 
-    /**
-     * @param array $constraints
-     */
-    private function extractFromConstraints(array $constraints)
+    private function extractFromConstraints(array $constraints): void
     {
         foreach ($constraints as $constraint) {
             $ref = new \ReflectionClass($constraint);

@@ -24,13 +24,10 @@ use JMS\TranslationBundle\Exception\InvalidArgumentException;
 
 class ConfigFactory
 {
-    /**
-     * @var array
-     */
-    private $builders;
+    private array $builders;
 
     /**
-     * @param array $builders ConfigBuilder
+     * @param array<ConfigBuilder> $builders
      */
     public function __construct(array $builders = [])
     {

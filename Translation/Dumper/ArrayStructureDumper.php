@@ -25,10 +25,7 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 
 abstract class ArrayStructureDumper implements DumperInterface
 {
-    /**
-     * @var bool
-     */
-    private $prettyPrint = true;
+    private bool $prettyPrint = true;
 
     public function setPrettyPrint($bool)
     {

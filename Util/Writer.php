@@ -51,10 +51,7 @@ class Writer
      */
     public $changeCount = 0;
 
-    /**
-     * @var array
-     */
-    private $changes = [];
+    private array $changes = [];
 
     /**
      * @return $this

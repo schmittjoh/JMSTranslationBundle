@@ -29,8 +29,8 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 final class Meaning
 {
-    /** @var string @Required */
-    public $text;
+    /** @Required */
+    public string $text;
 
     public function __construct()
     {

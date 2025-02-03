@@ -22,79 +22,33 @@ namespace JMS\TranslationBundle\Translation;
 
 final class ConfigBuilder
 {
-    /**
-     * @var string Path to translation directory
-     */
-    private $translationsDir;
+    private string|null $translationsDir = null;
 
-    /**
-     * @var string
-     */
-    private $locale;
+    private string|null $locale = null;
 
-    /**
-     * @var array
-     */
-    private $ignoredDomains = [];
+    private array $ignoredDomains = [];
 
-    /**
-     * @var array
-     */
-    private $domains = [];
+    private array $domains = [];
 
-    /**
-     * @var string
-     */
-    private $outputFormat;
+    private string|null $outputFormat = null;
 
-    /**
-     * @var string
-     */
-    private $defaultOutputFormat = 'xlf';
+    private string $defaultOutputFormat = 'xlf';
 
-    /**
-     * @var bool
-     */
-    private $useIcuMessageFormat = false;
+    private bool $useIcuMessageFormat = false;
 
-    /**
-     * @var array
-     */
-    private $scanDirs = [];
+    private array $scanDirs = [];
 
-    /**
-     * @var array
-     */
-    private $excludedDirs = ['Tests'];
+    private array $excludedDirs = ['Tests'];
 
-    /**
-     * @var array
-     */
-    private $excludedNames = ['*Test.php', '*TestCase.php'];
+    private array $excludedNames = ['*Test.php', '*TestCase.php'];
 
-    /**
-     * @var array
-     */
-    private $enabledExtractors = [];
+    private array $enabledExtractors = [];
 
-    /**
-     * @var bool
-     */
-    private $keepOldTranslations = false;
+    private bool $keepOldTranslations = false;
 
-    /**
-     * @var array
-     */
-    private $loadResources = [];
+    private array $loadResources = [];
 
-    /**
-     * @param Config $config
-     *
-     * @return ConfigBuilder
-     *
-     * @static
-     */
-    public static function fromConfig(Config $config)
+    public static function fromConfig(Config $config): ConfigBuilder
     {
         $builder = new self();
         $builder->setTranslationsDir($config->getTranslationsDir());
@@ -119,12 +73,8 @@ final class ConfigBuilder
      * The default output format is used when the following conditions are met:
      *   - there is no existing file for the given domain
      *   - you haven't forced a format
-     *
-     * @param string $format
-     *
-     * @return $this
      */
-    public function setDefaultOutputFormat($format)
+    public function setDefaultOutputFormat(string $format): self
     {
         $this->defaultOutputFormat = $format;
 
@@ -137,12 +87,8 @@ final class ConfigBuilder
      * This will force all updated domains to be in this format even if input
      * files have a different format. This will also cause input files of
      * another format to be deleted.
-     *
-     * @param string $format
-     *
-     * @return $this
      */
-    public function setOutputFormat($format)
+    public function setOutputFormat(string $format): self
     {
         $this->outputFormat = $format;
 
@@ -150,16 +96,12 @@ final class ConfigBuilder
     }
 
     /**
-     * Defines whether or not the ICU message format should be used.
+     * Defines whether the ICU message format should be used.
      *
      * If enabled, translation files will be suffixed with +intl-icu, e.g.:
      * message+intl-icu.en.xlf
-     *
-     * @param bool $useIcuMessageFormat
-     *
-     * @return $this
      */
-    public function setUseIcuMessageFormat($useIcuMessageFormat)
+    public function setUseIcuMessageFormat(bool $useIcuMessageFormat): self
     {
         $this->useIcuMessageFormat = $useIcuMessageFormat;
 
@@ -173,164 +115,99 @@ final class ConfigBuilder
      * appear in the change set calculated by getChangeSet().
      *
      * @param array $domains an array of the form array('domain' => true, 'another_domain' => true)
-     *
-     * @return $this
      */
-    public function setIgnoredDomains(array $domains)
+    public function setIgnoredDomains(array $domains): self
     {
         $this->ignoredDomains = $domains;
 
         return $this;
     }
 
-    /**
-     * @param string $domain
-     *
-     * @return $this
-     */
-    public function addIgnoredDomain($domain)
+    public function addIgnoredDomain(string $domain): self
     {
         $this->ignoredDomains[$domain] = true;
 
         return $this;
     }
 
-    /**
-     * @param array $domains
-     *
-     * @return $this
-     */
-    public function setDomains(array $domains)
+    public function setDomains(array $domains): self
     {
         $this->domains = $domains;
 
         return $this;
     }
 
-    /**
-     * @param string $domain
-     *
-     * @return $this
-     */
-    public function addDomain($domain)
+    public function addDomain(string $domain): self
     {
         $this->domains[$domain] = true;
 
         return $this;
     }
 
-    /**
-     * @param string $locale
-     *
-     * @return $this
-     */
-    public function setLocale($locale)
+    public function setLocale(string $locale): self
     {
         $this->locale = $locale;
 
         return $this;
     }
 
-    /**
-     * @param string $dir
-     *
-     * @return $this
-     */
-    public function setTranslationsDir($dir)
+    public function setTranslationsDir(string $dir): self
     {
         $this->translationsDir = $dir;
 
         return $this;
     }
 
-    /**
-     * @param array $dirs
-     *
-     * @return $this
-     */
-    public function setScanDirs(array $dirs)
+    public function setScanDirs(array $dirs): self
     {
         $this->scanDirs = $dirs;
 
         return $this;
     }
 
-    /**
-     * @param array $dirs
-     *
-     * @return $this
-     */
-    public function setExcludedDirs(array $dirs)
+    public function setExcludedDirs(array $dirs): self
     {
         $this->excludedDirs = $dirs;
 
         return $this;
     }
 
-    /**
-     * @param array $names
-     *
-     * @return $this
-     */
-    public function setExcludedNames(array $names)
+    public function setExcludedNames(array $names): self
     {
         $this->excludedNames = $names;
 
         return $this;
     }
 
-    /**
-     * @param array $aliases
-     *
-     * @return $this
-     */
-    public function setEnabledExtractors(array $aliases)
+    public function setEnabledExtractors(array $aliases): self
     {
         $this->enabledExtractors = $aliases;
 
         return $this;
     }
 
-    /**
-     * @param string $alias
-     *
-     * @return $this
-     */
-    public function enableExtractor($alias)
+    public function enableExtractor(string $alias): self
     {
         $this->enabledExtractors[$alias] = true;
 
         return $this;
     }
 
-    /**
-     * @param string $alias
-     *
-     * @return $this
-     */
-    public function disableExtractor($alias)
+    public function disableExtractor(string $alias): self
     {
         unset($this->enabledExtractors[$alias]);
 
         return $this;
     }
 
-    /**
-     * @param bool $value
-     *
-     * @return $this
-     */
-    public function setKeepOldTranslations($value)
+    public function setKeepOldTranslations(bool $value): self
     {
         $this->keepOldTranslations = $value;
 
         return $this;
     }
 
-    /**
-     * @return Config
-     */
-    public function getConfig()
+    public function getConfig(): Config
     {
         return new Config(
             $this->translationsDir,
@@ -349,12 +226,7 @@ final class ConfigBuilder
         );
     }
 
-    /**
-     * @param array $loadResources
-     *
-     * @return $this
-     */
-    public function setLoadResources(array $loadResources)
+    public function setLoadResources(array $loadResources): self
     {
         $this->loadResources = $loadResources;
 

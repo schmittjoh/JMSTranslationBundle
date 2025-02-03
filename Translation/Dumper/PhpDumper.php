@@ -25,10 +25,7 @@ use JMS\TranslationBundle\Util\Writer;
 
 class PhpDumper extends ArrayStructureDumper
 {
-    /**
-     * @var Writer
-     */
-    private $writer;
+    private Writer $writer;
 
     public function __construct()
     {
