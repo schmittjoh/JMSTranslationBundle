@@ -33,7 +33,7 @@ final class ResourcesListCommandTest extends BaseCommandTestCase
 
         $expectedOutput =
             'Directories list :' . "\n"
-           . '    - %kernel.root_dir%/Fixture/TestBundle/Resources/translations' . "\n"
+           . '    - %kernel.project_dir%/Fixture/TestBundle/Resources/translations' . "\n"
            . 'done!' . "\n";
 
         $this->getApp()->run($input, $output = new Output());
