@@ -33,10 +33,7 @@ use Symfony\Component\Translation\Loader\LoaderInterface as SymfonyLoader;
  */
 class SymfonyLoaderAdapter implements LoaderInterface
 {
-    /**
-     * @var SymfonyLoader
-     */
-    private $loader;
+    private SymfonyLoader $loader;
 
     public function __construct(SymfonyLoader $loader)
     {
