@@ -24,7 +24,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\DefaultPhpFileExtractor;
 
-class DefaultPhpFileExtractorTest extends BasePhpFileExtractorTest
+class DefaultPhpFileExtractorTest extends PhpFileExtractorTestCase
 {
     public function testExtractController(): void
     {

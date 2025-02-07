@@ -60,13 +60,18 @@ class AppKernel extends Kernel
 
     public function registerBundles(): iterable
     {
-        return [
+        $bundles = [
             new TestBundle(),
             new FrameworkBundle(),
             new TwigBundle(),
             new JMSTranslationBundle(),
-            new SensioFrameworkExtraBundle(),
         ];
+
+        if (class_exists(SensioFrameworkExtraBundle::class)) {
+            $bundles[] = new SensioFrameworkExtraBundle();
+        }
+
+        return $bundles;
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader): void

@@ -25,7 +25,7 @@ use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 
-abstract class BaseLoaderTest extends TestCase
+abstract class LoaderTestCase extends TestCase
 {
     public function testLoadSimple(): void
     {

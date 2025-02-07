@@ -16,7 +16,7 @@ class ApiControllerTest extends BaseTestCase
     public function testUpdateAction(): void
     {
         // Start application
-        $client    = static::createClient(['config' => 'test_updating_translations.yml']);
+        $client    = static::createClient();
         $outputDir = $client->getContainer()->getParameter('translation_output_dir');
 
         $isSf4 = version_compare(Kernel::VERSION, '4.0.0') >= 0;

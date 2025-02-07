@@ -26,7 +26,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 
-class XliffDumperTest extends BaseDumperTest
+class XliffDumperTest extends DumperTestCase
 {
     public function testCdataOutput(): void
     {

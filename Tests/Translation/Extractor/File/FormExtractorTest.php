@@ -24,7 +24,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 
-class FormExtractorTest extends BasePhpFileExtractorTest
+class FormExtractorTest extends PhpFileExtractorTestCase
 {
     /**
      * @group placeholder

@@ -65,7 +65,7 @@ class FileSourceTest extends TestCase
         $this->assertSame($expected, $r2->equals($r1));
     }
 
-    public function getEqualityTests(): array
+    public static function getEqualityTests(): array
     {
         $tests = [];
 
@@ -105,14 +105,19 @@ class FileSourceTest extends TestCase
             false,
         ];
 
-        $source = $this->createMock(SourceInterface::class);
-        $source
-            ->expects($this->once())
-            ->method('equals')
-            ->willReturn(false);
         $tests[] = [
             new FileSource('foo'),
-            $source,
+            new class implements SourceInterface {
+                public function equals(SourceInterface $source): bool
+                {
+                    return false;
+                }
+
+                public function __toString(): string
+                {
+                    return '';
+                }
+            },
             false,
         ];
 

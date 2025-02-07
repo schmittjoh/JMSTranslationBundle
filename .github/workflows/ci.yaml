@@ -20,6 +20,7 @@ jobs:
         symfony-version:
           - '^5.4'
           - '^6.4'
+          - '^7.2'
         php-version:
           - "8.3"
           - "8.4"
@@ -39,6 +40,13 @@ jobs:
           coverage: "pcov"
           ini-values: "zend.assertions=1"
 
+      - name: Remove sensio/framework-extra-bundle
+        uses: php-actions/composer@v6
+        if: matrix.symfony-version == '^7.2'
+        with:
+          command: remove
+          args: --dev sensio/framework-extra-bundle --no-update
+
       - name: Configure symfony version
         uses: php-actions/composer@v6
         with:
@@ -46,11 +54,11 @@ jobs:
           args: extra.symfony.require ${{ matrix.symfony-version }}
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+        uses: "ramsey/composer-install@v3"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "${{ matrix.composer-options }}"
 
       - name: Run tests
         run: |
-          SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/simple-phpunit ${PHPUNIT_FLAGS}
+          SYMFONY_PHPUNIT_VERSION=11.5 SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/simple-phpunit ${PHPUNIT_FLAGS}

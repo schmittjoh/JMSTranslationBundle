@@ -24,7 +24,7 @@ use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\AuthenticationMessagesExtractor;
 
-class AuthenticationMessagesExtractorTest extends BasePhpFileExtractorTest
+class AuthenticationMessagesExtractorTest extends PhpFileExtractorTestCase
 {
     public function testExtract(): void
     {
