@@ -9,9 +9,13 @@ on:
     branches:
       - "master"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   phpunit:
-    name: "PHPUnit"
+    name: 'PHPUnit (PHP ${{ matrix.php-version }}, Symfony ${{ matrix.symfony-version }} + ${{ matrix.dependencies }} deps)'
     runs-on: "ubuntu-20.04"
 
     strategy:
@@ -22,11 +26,11 @@ jobs:
           - '^6.4'
           - '^7.2'
         php-version:
-          - "8.3"
-          - "8.4"
+          - '8.3'
+          - '8.4'
         dependencies:
-          - "lowest"
-          - "highest"
+          - 'lowest'
+          - 'highest'
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
@@ -38,26 +42,22 @@ jobs:
         with:
           php-version: "${{ matrix.php-version }}"
           coverage: "pcov"
+          tools: 'flex'
           ini-values: "zend.assertions=1"
 
-      - name: Remove sensio/framework-extra-bundle
-        uses: php-actions/composer@v6
+      - name: 'Remove sensio/framework-extra-bundle'
         if: matrix.symfony-version == '^7.2'
-        with:
-          command: remove
-          args: --dev sensio/framework-extra-bundle --no-update
-
-      - name: Configure symfony version
-        uses: php-actions/composer@v6
-        with:
-          command: config
-          args: extra.symfony.require ${{ matrix.symfony-version }}
+        run: |
+          composer remove --dev --no-update sensio/framework-extra-bundle
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v3"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "${{ matrix.composer-options }}"
+        env:
+          COMPOSER_FUND: '0'
+          SYMFONY_REQUIRE: '${{ matrix.symfony-version }}'
 
       - name: Run tests
         run: |
