@@ -21,7 +21,6 @@ declare(strict_types=1);
 namespace JMS\TranslationBundle\Twig;
 
 use JMS\TranslationBundle\Exception\RuntimeException;
-use JMS\TranslationBundle\Twig\Node\Transchoice;
 use Twig\Environment;
 use Twig\Node\Expression\ArrayExpression;
 use Twig\Node\Expression\Binary\EqualBinary;
@@ -41,10 +40,7 @@ use Twig\NodeVisitor\NodeVisitorInterface;
  */
 class DefaultApplyingNodeVisitor implements NodeVisitorInterface
 {
-    /**
-     * @var bool
-     */
-    private $enabled = true;
+    private bool $enabled = true;
 
     public function setEnabled($bool)
     {
@@ -64,13 +60,13 @@ class DefaultApplyingNodeVisitor implements NodeVisitorInterface
             $transNode = $node->getNode('node');
             while (
                 $transNode instanceof FilterExpression
-                    && !in_array($transNode->hasAttribute('name') ? $transNode->getAttribute('name') : $transNode->getNode('filter')->getAttribute('value'), ['trans', 'transchoice'], true)
+                    && !in_array($transNode->hasAttribute('name') ? $transNode->getAttribute('name') : $transNode->getNode('filter')->getAttribute('value'), ['trans'], true)
             ) {
                 $transNode = $transNode->getNode('node');
             }
 
             if (!$transNode instanceof FilterExpression) {
-                throw new RuntimeException(sprintf('The "desc" filter in "%s" line %d must be applied after a "trans", or "transchoice" filter.', $node->getTemplateName(), $node->getTemplateLine()));
+                throw new RuntimeException(sprintf('The "desc" filter in "%s" line %d must be applied after a "trans" filter.', $node->getTemplateName(), $node->getTemplateLine()));
             }
 
             $wrappingNode = $node->getNode('node');
@@ -78,23 +74,6 @@ class DefaultApplyingNodeVisitor implements NodeVisitorInterface
             $testNode     = clone $wrappingNode;
             $arguments    = iterator_to_array($node->getNode('arguments'));
             $defaultNode  = $arguments[0];
-
-            // if the |transchoice filter is used, delegate the call to the TranslationExtension
-            // so that we can catch a possible exception when the default translation has not yet
-            // been extracted
-            if ('transchoice' === ($transNode->hasAttribute('name') ? $transNode->getAttribute('name') : $transNode->getNode('filter')->getAttribute('value'))) {
-                $transchoiceArguments = new ArrayExpression([], $transNode->getTemplateLine());
-                $transchoiceArguments->addElement($wrappingNode->getNode('node'));
-                $transchoiceArguments->addElement($defaultNode);
-                foreach ($wrappingNode->getNode('arguments') as $arg) {
-                    $transchoiceArguments->addElement($arg);
-                }
-
-                $transchoiceNode = new Transchoice($transchoiceArguments, $transNode->getTemplateLine());
-                $node->setNode('node', $transchoiceNode);
-
-                return $node;
-            }
 
             $wrappingNodeArguments = iterator_to_array($wrappingNode->getNode('arguments'));
 

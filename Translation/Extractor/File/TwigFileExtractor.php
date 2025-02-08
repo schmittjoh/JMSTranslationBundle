@@ -84,7 +84,7 @@ class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
         } elseif ($node instanceof FilterExpression) {
             $name = $node->hasAttribute('name') ? $node->getAttribute('name') : $node->getNode('filter')->getAttribute('value');
 
-            if ('trans' === $name || 'transchoice' === $name) {
+            if ('trans' === $name) {
                 $idNode = $node->getNode('node');
                 if (!$idNode instanceof ConstantExpression) {
                     return $node;
@@ -94,7 +94,7 @@ class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
                 }
                 $id = $idNode->getAttribute('value');
 
-                $index     = $name === 'trans' ? 1 : 2;
+                $index     = 1;
                 $domain    = 'messages';
                 $arguments = iterator_to_array($node->getNode('arguments'));
                 if (isset($arguments[$index])) {

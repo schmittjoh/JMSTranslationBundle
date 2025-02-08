@@ -20,18 +20,12 @@ declare(strict_types=1);
 
 namespace JMS\TranslationBundle\Tests\Twig;
 
-use Symfony\Component\HttpKernel\Kernel;
-
 class RemovingNodeVisitorTest extends BaseTwigTestCase
 {
     public function testRemovalWithSimpleTemplate(): void
     {
-        $isSF5 = version_compare(Kernel::VERSION, '5.0.0') >= 0;
-
-        $templateSuffix = $isSF5 ? '_sf5' : '';
-
-        $expected = $this->parse('simple_template_compiled' . $templateSuffix . '.html.twig');
-        $actual   = $this->parse('simple_template' . $templateSuffix . '.html.twig');
+        $expected = $this->parse('simple_template_compiled.html.twig');
+        $actual   = $this->parse('simple_template.html.twig');
 
         $this->assertEquals($expected, $actual);
     }

@@ -21,10 +21,4 @@ class AppleController extends AbstractController
     {
         return $this->render('@Test/Apple/view.html.twig', ['nbApples' => 5]);
     }
-
-    #[Route('/view_sf5')]
-    public function viewsf5Action(): Response
-    {
-        return $this->render('@Test/Apple/view_sf5.html.twig', ['nbApples' => 5]);
-    }
 }
