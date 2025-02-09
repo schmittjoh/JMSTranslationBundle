@@ -23,12 +23,11 @@ namespace JMS\TranslationBundle\Tests\Translation\Extractor\File;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
+use PHPUnit\Framework\Attributes\Group;
 
 class FormExtractorTest extends PhpFileExtractorTestCase
 {
-    /**
-     * @group placeholder
-     */
+    #[Group('placeholder')]
     public function testPlaceholderExtract(): void
     {
         $expected          = new MessageCatalogue();
@@ -62,9 +61,7 @@ class FormExtractorTest extends PhpFileExtractorTestCase
         $this->assertEquals($expected, $this->extract('MyPlaceholderFormType.php'));
     }
 
-    /**
-     * @group testExtract
-     */
+    #[Group('testExtract')]
     public function testExtract(): void
     {
         $expected          = new MessageCatalogue();

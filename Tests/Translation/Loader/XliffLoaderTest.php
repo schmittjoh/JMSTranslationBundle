@@ -25,13 +25,12 @@ use JMS\TranslationBundle\Model\Message\XliffMessageState;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Dumper\XliffDumper;
 use JMS\TranslationBundle\Translation\Loader\XliffLoader;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class XliffLoaderTest extends TestCase
 {
-    /**
-     * @dataProvider getTestFiles
-     */
+    #[DataProvider('getTestFiles')]
     public function testLoadIntegration(string $file): void
     {
         $loader    = new XliffLoader();
