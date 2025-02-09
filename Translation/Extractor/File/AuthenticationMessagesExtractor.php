@@ -39,20 +39,11 @@ use Twig\Node\Node as TwigNode;
 
 class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisitorInterface, NodeVisitor
 {
-    /**
-     * @var FileSourceFactory
-     */
-    private $fileSourceFactory;
+    private FileSourceFactory $fileSourceFactory;
 
-    /**
-     * @var string
-     */
-    private $domain = 'authentication';
+    private string $domain = 'authentication';
 
-    /**
-     * @var NodeTraverser
-     */
-    private $traverser;
+    private NodeTraverser $traverser;
 
     /**
      * @var \SplFileInfo
@@ -64,30 +55,15 @@ class AuthenticationMessagesExtractor implements LoggerAwareInterface, FileVisit
      */
     private $catalogue;
 
-    /**
-     * @var string
-     */
-    private $namespace = '';
+    private string $namespace = '';
 
-    /**
-     * @var DocParser
-     */
-    private $docParser;
+    private DocParser $docParser;
 
-    /**
-     * @var bool
-     */
-    private $inAuthException = false;
+    private bool $inAuthException = false;
 
-    /**
-     * @var bool
-     */
-    private $inGetMessageKey = false;
+    private bool $inGetMessageKey = false;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface|null $logger = null;
 
     public function __construct(DocParser $parser, FileSourceFactory $fileSourceFactory)
     {

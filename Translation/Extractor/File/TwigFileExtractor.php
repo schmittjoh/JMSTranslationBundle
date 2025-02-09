@@ -35,10 +35,7 @@ use Twig\NodeVisitor\NodeVisitorInterface;
 
 class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
 {
-    /**
-     * @var FileSourceFactory
-     */
-    private $fileSourceFactory;
+    private FileSourceFactory $fileSourceFactory;
 
     /**
      * @var \SplFileInfo
@@ -50,15 +47,9 @@ class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
      */
     private $catalogue;
 
-    /**
-     * @var NodeTraverser
-     */
-    private $traverser;
+    private NodeTraverser $traverser;
 
-    /**
-     * @var array
-     */
-    private $stack = [];
+    private array $stack = [];
 
     public function __construct(Environment $env, FileSourceFactory $fileSourceFactory)
     {
@@ -160,7 +151,7 @@ class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
      * in the same manner as we do the main twig template to ensure all translations are
      * caught.
      */
-    private function traverseEmbeddedTemplates(Node $node)
+    private function traverseEmbeddedTemplates(Node $node): void
     {
         $templates = $node->getAttribute('embedded_templates');
 

@@ -26,10 +26,7 @@ use Symfony\Component\Yaml\Inline;
 
 class YamlDumper extends ArrayStructureDumper
 {
-    /**
-     * @var Writer
-     */
-    private $writer;
+    private Writer $writer;
 
     public function __construct()
     {

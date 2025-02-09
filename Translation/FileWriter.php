@@ -34,7 +34,7 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class FileWriter
 {
-    private $dumpers;
+    private array $dumpers;
 
     /**
      * @param array $dumpers

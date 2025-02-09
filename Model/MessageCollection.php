@@ -33,15 +33,10 @@ use JMS\TranslationBundle\Exception\InvalidArgumentException;
  */
 class MessageCollection
 {
-    /**
-     * @var MessageCatalogue
-     */
-    private $catalogue;
+    private MessageCatalogue|null $catalogue = null;
 
-    /**
-     * @var array
-     */
-    private $messages = [];
+    /** @var array<string, Message> */
+    private array $messages = [];
 
     public function setCatalogue(MessageCatalogue $catalogue)
     {
@@ -155,7 +150,7 @@ class MessageCollection
         }
     }
 
-    private function checkConsistency(Message $oldMessage, Message $newMessage)
+    private function checkConsistency(Message $oldMessage, Message $newMessage): void
     {
         $oldDesc = $oldMessage->getDesc();
         $newDesc = $newMessage->getDesc();

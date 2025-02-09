@@ -28,11 +28,11 @@ use Psr\Log\LoggerInterface;
 
 class ExtractorManager implements ExtractorInterface
 {
-    private $fileExtractor;
-    private $customExtractors;
-    private $directories = [];
-    private $enabledExtractors = [];
-    private $logger;
+    private FileExtractor $fileExtractor;
+    private array $customExtractors;
+    private array $directories = [];
+    private array $enabledExtractors = [];
+    private LoggerInterface $logger;
 
     /**
      * @param Extractor\FileExtractor $extractor

@@ -39,15 +39,9 @@ use Symfony\Component\Finder\Finder;
  */
 class Updater
 {
-    /**
-     * @var LoaderManager
-     */
-    private $loader;
+    private LoaderManager $loader;
 
-    /**
-     * @var ExtractorManager
-     */
-    private $extractor;
+    private ExtractorManager $extractor;
 
     /**
      * @var Config
@@ -64,15 +58,9 @@ class Updater
      */
     private $scannedCatalogue;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @var FileWriter
-     */
-    private $writer;
+    private FileWriter $writer;
 
     public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer)
     {
@@ -182,13 +170,9 @@ class Updater
     /**
      * Detects the most suitable output format to use.
      *
-     * @internal param string $domain
-     *
      * @param string $currentDomain
-     *
-     * @return string
      */
-    private function detectOutputFormat($currentDomain)
+    private function detectOutputFormat($currentDomain): string
     {
         if (null !== $this->config->getOutputFormat()) {
             return $this->config->getOutputFormat();
@@ -229,7 +213,7 @@ class Updater
         return $this->config->getDefaultOutputFormat();
     }
 
-    private function setConfig(Config $config)
+    private function setConfig(Config $config): void
     {
         $this->config = $config;
 

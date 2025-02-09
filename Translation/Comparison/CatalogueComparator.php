@@ -29,8 +29,8 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class CatalogueComparator
 {
-    private $domains = [];
-    private $ignoredDomains = [];
+    private array $domains = [];
+    private array $ignoredDomains = [];
 
     public function setDomains(array $domains)
     {

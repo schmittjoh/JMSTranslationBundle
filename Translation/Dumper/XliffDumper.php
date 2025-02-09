@@ -36,25 +36,13 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class XliffDumper implements DumperInterface
 {
-    /**
-     * @var string
-     */
-    private $sourceLanguage = 'en';
+    private string $sourceLanguage = 'en';
 
-    /**
-     * @var bool
-     */
-    private $addDate = true;
+    private bool $addDate = true;
 
-    /**
-     * @var bool
-     */
-    private $addReference = true;
+    private bool $addReference = true;
 
-    /**
-     * @var bool
-     */
-    private $addReferencePosition = true;
+    private bool $addReferencePosition = true;
 
     public function setAddDate($bool)
     {

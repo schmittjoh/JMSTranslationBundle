@@ -36,15 +36,9 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api')]
 class ApiController
 {
-    /**
-     * @var ConfigFactory
-     */
-    private $configFactory;
+    private ConfigFactory $configFactory;
 
-    /**
-     * @var Updater
-     */
-    private $updater;
+    private Updater $updater;
 
     public function __construct(ConfigFactory $configFactory, Updater $updater)
     {

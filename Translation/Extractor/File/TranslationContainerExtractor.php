@@ -39,25 +39,16 @@ use Twig\Node\Node as TwigNode;
  */
 class TranslationContainerExtractor implements FileVisitorInterface, NodeVisitor
 {
-    /**
-     * @var NodeTraverser
-     */
-    private $traverser;
+    private NodeTraverser $traverser;
 
     /**
      * @var MessageCatalogue
      */
     private $catalogue;
 
-    /**
-     * @var string
-     */
-    private $namespace = '';
+    private string $namespace = '';
 
-    /**
-     * @var array
-     */
-    private $useStatements = [];
+    private array $useStatements = [];
 
     public function __construct()
     {

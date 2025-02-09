@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class Configuration implements ConfigurationInterface
 {
-    private $container;
+    private ContainerBuilder $container;
 
     public function __construct(ContainerBuilder $container)
     {

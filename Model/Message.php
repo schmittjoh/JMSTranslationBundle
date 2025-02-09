@@ -31,48 +31,34 @@ class Message
 {
     /**
      * Unique ID of this message (same across the same domain).
-     *
-     * @var string
      */
-    private $id;
+    private string $id;
 
-    /**
-     * @var bool
-     */
-    private $new = true;
+    private bool $new = true;
 
-    /**
-     * @var string
-     */
-    private $domain;
+    private string $domain;
 
     /**
      * This is the translated string.
-     *
-     * @var string
      */
-    private $localeString;
+    private string|null $localeString = null;
 
     /**
      * Additional information about the intended meaning.
-     *
-     * @var string
      */
-    private $meaning;
+    private string|null $meaning = null;
 
     /**
      * The description/sample for translators.
-     *
-     * @var string
      */
-    private $desc;
+    private string|null $desc = null;
 
     /**
      * The sources where this message occurs.
      *
-     * @var array
+     * @var SourceInterface[]
      */
-    private $sources = [];
+    private array $sources = [];
 
     /**
      * @deprecated Will be removed in 2.0. Use the FileSourceFactory

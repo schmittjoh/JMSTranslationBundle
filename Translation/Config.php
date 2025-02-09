@@ -32,86 +32,33 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 final class Config
 {
-    /**
-     * @var string
-     */
-    private $translationsDir;
+    private string $translationsDir;
 
-    /**
-     * @var string
-     */
-    private $locale;
+    private string $locale;
 
-    /**
-     * @var array
-     */
-    private $ignoredDomains;
+    private array $ignoredDomains;
 
-    /**
-     * @var array
-     */
-    private $domains;
+    private array $domains;
 
-    /**
-     * @var string
-     */
-    private $outputFormat;
+    private string|null $outputFormat = null;
 
-    /**
-     * @var string
-     */
-    private $defaultOutputFormat;
+    private string $defaultOutputFormat;
 
-    /**
-     * @var bool
-     */
-    private $useIcuMessageFormat;
+    private bool $useIcuMessageFormat;
 
-    /**
-     * @var array
-     */
-    private $scanDirs;
+    private array $scanDirs;
 
-    /**
-     * @var array
-     */
-    private $excludedDirs;
+    private array $excludedDirs;
 
-    /**
-     * @var array
-     */
-    private $excludedNames;
+    private array $excludedNames;
 
-    /**
-     * @var array
-     */
-    private $enabledExtractors;
+    private array $enabledExtractors;
 
-    /**
-     * @var bool
-     */
-    private $keepOldMessages;
+    private bool $keepOldMessages;
 
-    /**
-     * @var array
-     */
-    private $loadResources;
+    private array $loadResources;
 
-    /**
-     * @param string $translationsDir
-     * @param string $locale
-     * @param array $ignoredDomains
-     * @param array $domains
-     * @param string $outputFormat
-     * @param string $defaultOutputFormat
-     * @param array $scanDirs
-     * @param array $excludedDirs
-     * @param array $excludedNames
-     * @param array $enabledExtractors
-     * @param bool $keepOldMessages
-     * @param array $loadResources
-     */
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, $useIcuMessageFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
+    public function __construct(string $translationsDir, string $locale, array $ignoredDomains, array $domains, string|null $outputFormat, string $defaultOutputFormat, bool $useIcuMessageFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, bool $keepOldMessages, array $loadResources)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -154,134 +101,82 @@ final class Config
         $this->loadResources = $loadResources;
     }
 
-    /**
-     * @return string
-     */
-    public function getTranslationsDir()
+    public function getTranslationsDir(): string
     {
         return $this->translationsDir;
     }
 
-    /**
-     * @param string $domain
-     *
-     * @return bool
-     */
-    public function isIgnoredDomain($domain)
+    public function isIgnoredDomain(string $domain): bool
     {
         return isset($this->ignoredDomains[$domain]);
     }
 
-    /**
-     * @return array
-     */
-    public function getIgnoredDomains()
+    public function getIgnoredDomains(): array
     {
         return $this->ignoredDomains;
     }
 
-    /**
-     * @param string $domain
-     *
-     * @return bool
-     */
-    public function hasDomain($domain)
+    public function hasDomain(string $domain): bool
     {
         return isset($this->domains[$domain]);
     }
 
-    /**
-     * @return bool
-     */
-    public function hasDomains()
+    public function hasDomains(): bool
     {
         return count($this->domains) > 0;
     }
 
-    /**
-     * @return array
-     */
-    public function getDomains()
+    public function getDomains(): array
     {
         return $this->domains;
     }
 
-    /**
-     * @return string
-     */
-    public function getOutputFormat()
+    public function getOutputFormat(): string|null
     {
         return $this->outputFormat;
     }
 
-    /**
-     * @return string
-     */
-    public function getDefaultOutputFormat()
+    public function getDefaultOutputFormat(): string
     {
         return $this->defaultOutputFormat;
     }
 
-    /**
-     * @return bool
-     */
-    public function shouldUseIcuMessageFormat()
+    public function shouldUseIcuMessageFormat(): bool
     {
         return $this->useIcuMessageFormat;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getLocale()
+    public function getLocale(): string
     {
         return $this->locale;
     }
 
-    /**
-     * @return array
-     */
-    public function getScanDirs()
+    public function getScanDirs(): array
     {
         return $this->scanDirs;
     }
 
-    /**
-     * @return array
-     */
-    public function getExcludedDirs()
+    public function getExcludedDirs(): array
     {
         return $this->excludedDirs;
     }
 
-    /**
-     * @return array
-     */
-    public function getExcludedNames()
+    public function getExcludedNames(): array
     {
         return $this->excludedNames;
     }
 
-    /**
-     * @return array
-     */
-    public function getEnabledExtractors()
+    public function getEnabledExtractors(): array
     {
         return $this->enabledExtractors;
     }
 
-    /**
-     * @return bool
-     */
-    public function isKeepOldMessages()
+    public function isKeepOldMessages(): bool
     {
         return $this->keepOldMessages;
     }
 
-    /**
-     * @return array
-     */
-    public function getLoadResources()
+    public function getLoadResources(): array
     {
         return $this->loadResources;
     }

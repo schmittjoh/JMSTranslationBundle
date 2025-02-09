@@ -59,12 +59,7 @@ class FileSourceFactory
         return new FileSource($this->getRelativePath((string) $file), $line, $column);
     }
 
-    /**
-     * @param string $path
-     *
-     * @return string
-     */
-    private function getRelativePath($path)
+    private function getRelativePath(string $path): string
     {
         if (0 === strpos($path, $this->baseDir)) {
             return substr($path, strlen($this->baseDir));

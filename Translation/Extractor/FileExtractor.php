@@ -69,15 +69,9 @@ class FileExtractor implements ExtractorInterface, LoggerAwareInterface
      */
     private $defaultApplyingTwigVisitor;
 
-    /**
-     * @var array
-     */
-    private $excludedNames = [];
+    private array $excludedNames = [];
 
-    /**
-     * @var array
-     */
-    private $excludedDirs = [];
+    private array $excludedDirs = [];
 
     private LoggerInterface $logger;
 

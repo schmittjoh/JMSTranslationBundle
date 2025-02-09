@@ -38,10 +38,7 @@ use Symfony\Component\Translation\MessageCatalogue as SymfonyCatalogue;
  */
 class SymfonyDumperAdapter implements DumperInterface
 {
-    /**
-     * @var SymfonyDumper
-     */
-    private $dumper;
+    private SymfonyDumper $dumper;
 
     /**
      * @var string
