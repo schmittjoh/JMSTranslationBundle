@@ -6,6 +6,7 @@ namespace JMS\TranslationBundle\Tests\DependencyInjection\Compiler;
 
 use JMS\TranslationBundle\DependencyInjection\Compiler\MountFileVisitorsPass;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -20,9 +21,7 @@ class MountFileVisitorsPassTest extends AbstractCompilerPassTestCase
         $container->addCompilerPass(new MountFileVisitorsPass());
     }
 
-    /**
-     * @test
-     */
+    #[Test()]
     public function ifCompilerPassCollectsServicesByArgumentTheseWillExist(): void
     {
         $collectingService = new Definition();

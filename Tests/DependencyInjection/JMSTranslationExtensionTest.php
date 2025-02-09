@@ -6,6 +6,7 @@ namespace JMS\TranslationBundle\Tests\DependencyInjection;
 
 use JMS\TranslationBundle\DependencyInjection\JMSTranslationExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
@@ -19,9 +20,7 @@ class JMSTranslationExtensionTest extends AbstractExtensionTestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test()]
     public function defaultParametersAfterLoading(): void
     {
         $this->load();
@@ -29,9 +28,7 @@ class JMSTranslationExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('jms_translation.source_language', 'en');
     }
 
-    /**
-     * @test
-     */
+    #[Test()]
     public function basicParametersAfterLoading(): void
     {
         $locales = ['en', 'fr', 'es'];

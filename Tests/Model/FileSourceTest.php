@@ -22,6 +22,7 @@ namespace JMS\TranslationBundle\Tests\Model;
 
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\SourceInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class FileSourceTest extends TestCase
@@ -56,9 +57,7 @@ class FileSourceTest extends TestCase
         $this->assertEquals(2, $r->getColumn());
     }
 
-    /**
-     * @dataProvider getEqualityTests
-     */
+    #[DataProvider('getEqualityTests')]
     public function testEquals($r1, $r2, $expected): void
     {
         $this->assertSame($expected, $r1->equals($r2));
@@ -124,9 +123,7 @@ class FileSourceTest extends TestCase
         return $tests;
     }
 
-    /**
-     * @dataProvider getToStringTests
-     */
+    #[DataProvider('getToStringTests')]
     public function testToString(FileSource $r, string $expected): void
     {
         $this->assertEquals($expected, (string) $r);

@@ -23,6 +23,7 @@ namespace JMS\TranslationBundle\Tests\Model;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCollection;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
 class MessageCollectionTest extends TestCase
@@ -154,9 +155,7 @@ class MessageCollectionTest extends TestCase
         $col->add($msg2);
     }
 
-    /**
-     * @doesNotPerformAssertions
-     */
+    #[DoesNotPerformAssertions()]
     public function testAddChecksConsistencyButAllowsEmptyDescs(): void
     {
         $col = new MessageCollection();
@@ -220,9 +219,7 @@ class MessageCollectionTest extends TestCase
         $col->set($msg2);
     }
 
-    /**
-     * @doesNotPerformAssertions
-     */
+    #[DoesNotPerformAssertions()]
     public function testSetChecksConsistencyButAllowsEmptyDescs(): void
     {
         $col = new MessageCollection();

@@ -7,6 +7,7 @@ namespace JMS\TranslationBundle\Tests\Functional;
 use JMS\TranslationBundle\Translation\ConfigFactory;
 use JMS\TranslationBundle\Translation\Updater;
 use JMS\TranslationBundle\Twig\TranslationExtension;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Make sure we instantiate services.
@@ -29,9 +30,7 @@ class ServiceInstantiationTest extends BaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider provider
-     */
+    #[DataProvider('provider')]
     public function testServiceExists(string $serviceId, string $class): void
     {
         $container = static::$kernel->getContainer();
