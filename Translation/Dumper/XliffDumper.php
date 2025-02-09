@@ -24,6 +24,7 @@ use JMS\TranslationBundle\JMSTranslationBundle;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message\XliffMessage;
 use JMS\TranslationBundle\Model\MessageCatalogue;
+use JMS\TranslationBundle\Model\SourceInterface;
 
 /**
  * XLIFF dumper.
@@ -36,53 +37,44 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class XliffDumper implements DumperInterface
 {
-    /**
-     * @var string
-     */
-    private $sourceLanguage = 'en';
+    private string $sourceLanguage = 'en';
 
-    /**
-     * @var bool
-     */
-    private $addDate = true;
+    private bool $addDate = true;
 
-    /**
-     * @var bool
-     */
-    private $addReference = true;
+    private bool $addReference = true;
 
-    /**
-     * @var bool
-     */
-    private $addReferencePosition = true;
+    private bool $addReferencePosition = true;
 
-    public function setAddDate($bool)
+    public function setAddDate(bool $bool): static
     {
-        $this->addDate = (bool) $bool;
+        $this->addDate = $bool;
+
+        return $this;
     }
 
-    public function setSourceLanguage($lang)
+    public function setSourceLanguage(string $lang): static
     {
         $this->sourceLanguage = $lang;
+
+        return $this;
     }
 
-    public function setAddReference($bool)
+    public function setAddReference(bool $bool): static
     {
         $this->addReference = $bool;
+
+        return $this;
     }
 
-    public function setAddReferencePosition($bool)
+    public function setAddReferencePosition(bool $bool): static
     {
         $this->addReferencePosition = $bool;
+
+        return $this;
     }
 
-    /**
-     * @param MessageCatalogue $catalogue
-     * @param MessageCatalogue|string $domain
-     *
-     * @return string
-     */
-    public function dump(MessageCatalogue $catalogue, $domain = 'messages')
+    #[\Override()]
+    public function dump(MessageCatalogue $catalogue, string $domain = 'messages'): string
     {
         $doc = new \DOMDocument('1.0', 'utf-8');
         $doc->formatOutput = true;
@@ -199,13 +191,13 @@ class XliffDumper implements DumperInterface
 
     /**
      * Sort the sources by path-line-column
-     * If the reference position are not used, the reference file will be write once
+     * If the reference position are not used, the reference file will be written once
      *
-     * @param array $sources
+     * @param SourceInterface[] $sources
      *
-     * @return array
+     * @return array<string, SourceInterface[]>
      */
-    protected function getSortedSources(array $sources)
+    protected function getSortedSources(array $sources): array
     {
         $indexedSources = [];
         foreach ($sources as $source) {

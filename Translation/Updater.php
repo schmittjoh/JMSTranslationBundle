@@ -39,80 +39,34 @@ use Symfony\Component\Finder\Finder;
  */
 class Updater
 {
-    /**
-     * @var LoaderManager
-     */
-    private $loader;
-
-    /**
-     * @var ExtractorManager
-     */
-    private $extractor;
-
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var MessageCatalogue
-     */
-    private $existingCatalogue;
-
-    /**
-     * @var MessageCatalogue
-     */
-    private $scannedCatalogue;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var FileWriter
-     */
-    private $writer;
-
-    public function __construct(LoaderManager $loader, ExtractorManager $extractor, LoggerInterface $logger, FileWriter $writer)
-    {
-        $this->loader = $loader;
-        $this->extractor = $extractor;
-        $this->logger = $logger;
-        $this->writer = $writer;
+    public function __construct(
+        private LoaderManager $loader,
+        private ExtractorManager $extractor,
+        private LoggerInterface $logger,
+        private FileWriter $writer,
+    ) {
     }
 
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): static
     {
         $this->logger = $logger;
         $this->extractor->setLogger($logger);
+
+        return $this;
     }
 
-    /**
-     * @param Config $config
-     *
-     * @return ChangeSet
-     */
-    public function getChangeSet(Config $config)
+    public function getChangeSet(Config $config): ChangeSet
     {
-        $this->setConfig($config);
+        ['existingCatalogue' => $existingCatalogue, 'scannedCatalogue' => $scannedCatalogue] = $this->getCatalogues($config);
 
         $comparator = new CatalogueComparator();
-        $comparator->setIgnoredDomains($this->config->getIgnoredDomains());
-        $comparator->setDomains($this->config->getDomains());
+        $comparator->setIgnoredDomains($config->getIgnoredDomains());
+        $comparator->setDomains($config->getDomains());
 
-        return $comparator->compare($this->existingCatalogue, $this->scannedCatalogue);
+        return $comparator->compare($existingCatalogue, $scannedCatalogue);
     }
 
-    /**
-     * @param string $file
-     * @param string $format
-     * @param string $domain
-     * @param string $locale
-     * @param string $id
-     * @param string $trans
-     */
-    public function updateTranslation($file, $format, $domain, $locale, $id, $trans)
+    public function updateTranslation(string $file, string $format, string $domain, string $locale, string $id, string $trans): void
     {
         $catalogue = $this->loader->loadFile($file, $format, $locale, $domain);
         $catalogue
@@ -128,33 +82,31 @@ class Updater
      *
      * This will not change files of ignored domains. It will also not
      * change files of another than the current locale.
-     *
-     * @param Config $config
      */
-    public function process(Config $config)
+    public function process(Config $config): void
     {
-        $this->setConfig($config);
+        ['scannedCatalog' => $scannedCatalogue] = $this->getCatalogues($config);
 
-        foreach ($this->scannedCatalogue->getDomains() as $name => $domain) {
+        foreach ($scannedCatalogue->getDomains() as $name => $domain) {
             // skip domain not selected
-            if ($this->config->hasDomains() && !$this->config->hasDomain($name)) {
+            if ($config->hasDomains() && !$config->hasDomain($name)) {
                 continue;
             }
 
-            if ($this->config->isIgnoredDomain($name)) {
+            if ($config->isIgnoredDomain($name)) {
                 continue;
             }
 
-            $format = $this->detectOutputFormat($name);
+            $format = $this->detectOutputFormat($config, $name);
 
             // delete translation files of other formats
             $translationFileRegex = sprintf(
                 '/^%s%s\.%s\.[^\.]+$/',
                 $name,
-                $this->config->shouldUseIcuMessageFormat() ? '+intl-icu' : '',
-                $this->config->getLocale()
+                $config->shouldUseIcuMessageFormat() ? '+intl-icu' : '',
+                $config->getLocale()
             );
-            foreach (Finder::create()->name($translationFileRegex)->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
+            foreach (Finder::create()->name($translationFileRegex)->in($config->getTranslationsDir())->depth('< 1')->files() as $file) {
                 if ('.' . $format === substr((string) $file, -1 * strlen('.' . $format))) {
                     continue;
                 }
@@ -168,35 +120,29 @@ class Updater
 
             $outputFile = sprintf(
                 '%s/%s%s.%s.%s',
-                $this->config->getTranslationsDir(),
+                $config->getTranslationsDir(),
                 $name,
-                $this->config->shouldUseIcuMessageFormat() ? '+intl-icu' : '',
-                $this->config->getLocale(),
+                $config->shouldUseIcuMessageFormat() ? '+intl-icu' : '',
+                $config->getLocale(),
                 $format
             );
             $this->logger->info(sprintf('Writing translation file "%s".', $outputFile));
-            $this->writer->write($this->scannedCatalogue, $name, $outputFile, $format);
+            $this->writer->write($scannedCatalogue, $name, $outputFile, $format);
         }
     }
 
     /**
      * Detects the most suitable output format to use.
-     *
-     * @internal param string $domain
-     *
-     * @param string $currentDomain
-     *
-     * @return string
      */
-    private function detectOutputFormat($currentDomain)
+    private function detectOutputFormat(Config $config, string $currentDomain): string
     {
-        if (null !== $this->config->getOutputFormat()) {
-            return $this->config->getOutputFormat();
+        if (null !== $config->getOutputFormat()) {
+            return $config->getOutputFormat();
         }
 
         // check if which translation files in which format exist
         $otherDomainFormat = $localeFormat = $otherLocaleFormat = null;
-        foreach (FileUtils::findTranslationFiles($this->config->getTranslationsDir()) as $domain => $locales) {
+        foreach (FileUtils::findTranslationFiles($config->getTranslationsDir()) as $domain => $locales) {
             foreach ($locales as $locale => $fileData) {
                 [$format] = $fileData;
 
@@ -205,7 +151,7 @@ class Updater
                     continue 2;
                 }
 
-                if ($this->config->getLocale() === $locale) {
+                if ($config->getLocale() === $locale) {
                     $localeFormat = $format;
                     continue;
                 }
@@ -226,25 +172,26 @@ class Updater
             return $otherDomainFormat;
         }
 
-        return $this->config->getDefaultOutputFormat();
+        return $config->getDefaultOutputFormat();
     }
 
-    private function setConfig(Config $config)
+    /**
+     * @return array{existingCatalogue: MessageCatalogue, scannedCatalogue: MessageCatalogue}
+     */
+    private function getCatalogues(Config $config): array
     {
-        $this->config = $config;
-
         $this->logger->info(sprintf('Loading catalogues from "%s"', $config->getTranslationsDir()));
-        $this->existingCatalogue = new MessageCatalogue();
+        $existingCatalogue = new MessageCatalogue();
 
         // load external resources, so current translations can be reused in the final translation
         foreach ($config->getLoadResources() as $resource) {
-            $this->existingCatalogue->merge($this->loader->loadFromDirectory(
+            $existingCatalogue->merge($this->loader->loadFromDirectory(
                 $resource,
                 $config->getLocale()
             ));
         }
 
-        $this->existingCatalogue->merge($this->loader->loadFromDirectory(
+        $existingCatalogue->merge($this->loader->loadFromDirectory(
             $config->getTranslationsDir(),
             $config->getLocale()
         ));
@@ -256,32 +203,34 @@ class Updater
         $this->extractor->setEnabledExtractors($config->getEnabledExtractors());
 
         $this->logger->info('Extracting translation keys');
-        $this->scannedCatalogue = $this->extractor->extract();
-        $this->scannedCatalogue->setLocale($config->getLocale());
+        $scannedCatalogue = $this->extractor->extract();
+        $scannedCatalogue->setLocale($config->getLocale());
 
         // merge existing messages into scanned messages
-        foreach ($this->scannedCatalogue->getDomains() as $domainCatalogue) {
+        foreach ($scannedCatalogue->getDomains() as $domainCatalogue) {
             foreach ($domainCatalogue->all() as $message) {
-                if (!$this->existingCatalogue->has($message)) {
+                if (!$existingCatalogue->has($message)) {
                     continue;
                 }
 
-                $existingMessage = clone $this->existingCatalogue->get($message->getId(), $message->getDomain());
+                $existingMessage = clone $existingCatalogue->get($message->getId(), $message->getDomain());
                 $existingMessage->mergeScanned($message);
-                $this->scannedCatalogue->set($existingMessage, true);
+                $scannedCatalogue->set($existingMessage, true);
             }
         }
 
-        if ($this->config->isKeepOldMessages()) {
-            foreach ($this->existingCatalogue->getDomains() as $domainCatalogue) {
+        if ($config->isKeepOldMessages()) {
+            foreach ($existingCatalogue->getDomains() as $domainCatalogue) {
                 foreach ($domainCatalogue->all() as $message) {
-                    if ($this->scannedCatalogue->has($message)) {
+                    if ($scannedCatalogue->has($message)) {
                         continue;
                     }
 
-                    $this->scannedCatalogue->add($message);
+                    $scannedCatalogue->add($message);
                 }
             }
         }
+
+        return ['existingCatalogue' => $existingCatalogue, 'scannedCatalogue' => $scannedCatalogue];
     }
 }
