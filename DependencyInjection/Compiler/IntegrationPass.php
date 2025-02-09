@@ -20,8 +20,10 @@ declare(strict_types=1);
 
 namespace JMS\TranslationBundle\DependencyInjection\Compiler;
 
+use JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Translation\Loader\XliffFileLoader;
 
 class IntegrationPass implements CompilerPassInterface
 {
@@ -32,11 +34,12 @@ class IntegrationPass implements CompilerPassInterface
         }
 
         $def = $container->getDefinition('translation.loader.xliff');
-        if ('%translation.loader.xliff.class%' !== $def->getClass() && 'Symfony\Component\Translation\Loader\XliffFileLoader' !== $def->getClass()) {
+
+        if (XliffFileLoader::class !== $def->getClass()) {
             // user needs to manually integrate as desired
             return;
         }
 
-        $def->setClass('%jms_translation.loader.symfony.xliff_loader.class%');
+        $def->setClass(XliffLoader::class);
     }
 }

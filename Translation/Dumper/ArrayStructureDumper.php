@@ -27,18 +27,15 @@ abstract class ArrayStructureDumper implements DumperInterface
 {
     private bool $prettyPrint = true;
 
-    public function setPrettyPrint($bool)
+    public function setPrettyPrint(bool $bool): static
     {
-        $this->prettyPrint = (bool) $bool;
+        $this->prettyPrint = $bool;
+
+        return $this;
     }
 
-    /**
-     * @param MessageCatalogue $catalogue
-     * @param string $domain
-     *
-     * @return string
-     */
-    public function dump(MessageCatalogue $catalogue, $domain = 'messages')
+    #[\Override()]
+    public function dump(MessageCatalogue $catalogue, string $domain = 'messages'): string
     {
         $structure = $catalogue->getDomain($domain)->all();
 
@@ -81,10 +78,5 @@ abstract class ArrayStructureDumper implements DumperInterface
         return $this->dumpStructure($structure);
     }
 
-    /**
-     * @param array $structure
-     *
-     * @return string
-     */
-    abstract protected function dumpStructure(array $structure);
+    abstract protected function dumpStructure(array $structure): string;
 }

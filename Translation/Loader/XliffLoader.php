@@ -27,27 +27,19 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 
 class XliffLoader implements LoaderInterface
 {
-    /**
-     * @param mixed $resource
-     * @param string $locale
-     * @param string $domain
-     *
-     * @return MessageCatalogue
-     */
-    public function load($resource, $locale, $domain = 'messages')
+    #[\Override()]
+    public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         $previousErrors = libxml_use_internal_errors(true);
-        $previousEntities = $this->libxmlDisableEntityLoader(false);
+
         if (false === $doc = simplexml_load_file((string) $resource)) {
             libxml_use_internal_errors($previousErrors);
-            $this->libxmlDisableEntityLoader($previousEntities);
             $libxmlError = libxml_get_last_error();
 
             throw new RuntimeException(sprintf('Could not load XML-file "%s": %s', $resource, $libxmlError->message));
         }
 
         libxml_use_internal_errors($previousErrors);
-        $this->libxmlDisableEntityLoader($previousEntities);
 
         $doc->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
         $doc->registerXPathNamespace('jms', 'urn:jms:translation');
@@ -118,18 +110,5 @@ class XliffLoader implements LoaderInterface
         }
 
         return $catalogue;
-    }
-
-    /**
-     * Use libxml_disable_entity_loader only if it's not deprecated
-     */
-    private function libxmlDisableEntityLoader(bool $disable): bool
-    {
-        if (PHP_VERSION_ID >= 80000) {
-            return true;
-        }
-
-        // phpcs:ignore
-        return libxml_disable_entity_loader($disable);
     }
 }
