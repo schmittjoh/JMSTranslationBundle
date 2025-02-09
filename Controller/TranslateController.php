@@ -24,10 +24,9 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Translation\ConfigFactory;
 use JMS\TranslationBundle\Translation\LoaderManager;
 use JMS\TranslationBundle\Util\FileUtils;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Twig\Environment;
 
 /**
@@ -37,39 +36,24 @@ use Twig\Environment;
  */
 class TranslateController
 {
-    private ConfigFactory $configFactory;
-
-    private LoaderManager $loader;
-
-    private Environment|null $twig;
-
     private string|null $sourceLanguage = null;
 
-    public function __construct(ConfigFactory $configFactory, LoaderManager $loader, ?Environment $twig = null)
-    {
-        $this->configFactory = $configFactory;
-        $this->loader = $loader;
-        $this->twig = $twig;
+    public function __construct(
+        private ConfigFactory $configFactory,
+        private LoaderManager $loader,
+        private Environment $twig,
+    ) {
     }
 
-    /**
-     * @param string $lang
-     */
-    public function setSourceLanguage($lang)
+    public function setSourceLanguage(string $lang): static
     {
         $this->sourceLanguage = $lang;
+
+        return $this;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Response|array
-     *
-     * @Route("/", name="jms_translation_index", options = {"i18n" = false})
-     * @Template("@JMSTranslation/Translate/index.html.twig")
-     */
     #[Route('/', name: 'jms_translation_index', options: ['i18n' => false])]
-    public function indexAction(Request $request)
+    public function indexAction(Request $request): Response
     {
         $configs = $this->configFactory->getNames();
         $config = $request->query->get('config') ?: reset($configs);
@@ -133,7 +117,7 @@ class TranslateController
             $existingMessages[$id] = $message;
         }
 
-        $variables = [
+        return new Response($this->twig->render('@JMSTranslation/Translate/index.html.twig', [
             'selectedConfig' => $config,
             'configs' => $configs,
             'selectedDomain' => $domain,
@@ -147,12 +131,6 @@ class TranslateController
             'isWriteable' => is_writable((string) $files[$domain][$locale][1]),
             'file' => (string) $files[$domain][$locale][1],
             'sourceLanguage' => $this->sourceLanguage,
-        ];
-
-        if (null !== $this->twig) {
-            return new Response($this->twig->render('@JMSTranslation/Translate/index.html.twig', $variables));
-        }
-
-        return $variables;
+        ]));
     }
 }

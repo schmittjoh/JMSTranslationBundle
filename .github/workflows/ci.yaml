@@ -22,7 +22,6 @@ jobs:
       fail-fast: false
       matrix:
         symfony-version:
-          - '^5.4'
           - '^6.4'
           - '^7.2'
         php-version:
@@ -44,11 +43,6 @@ jobs:
           coverage: "pcov"
           tools: 'flex'
           ini-values: "zend.assertions=1"
-
-      - name: 'Remove sensio/framework-extra-bundle'
-        if: matrix.symfony-version == '^7.2'
-        run: |
-          composer remove --dev --no-update sensio/framework-extra-bundle
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v3"

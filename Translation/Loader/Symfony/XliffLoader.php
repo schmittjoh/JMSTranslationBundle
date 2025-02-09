@@ -37,7 +37,7 @@ use Symfony\Component\Translation\MessageCatalogue;
 // phpcs:ignore
 class XliffLoader implements LoaderInterface
 {
-    public function load($resource, string $locale, string $domain = 'messages'): MessageCatalogue
+    public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         $previous = libxml_use_internal_errors(true);
         if (false === $xml = simplexml_load_file((string) $resource)) {

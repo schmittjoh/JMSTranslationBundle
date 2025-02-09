@@ -20,68 +20,56 @@ declare(strict_types=1);
 
 namespace JMS\TranslationBundle\Tests\Functional;
 
-use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\JMSTranslationBundle;
 use JMS\TranslationBundle\Tests\Functional\Fixture\TestBundle\TestBundle;
-use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 class AppKernel extends Kernel
 {
-    private string|null $config;
+    use MicroKernelTrait;
 
-    private string $fwConfig;
-
-    public function __construct(string $fwConfig, ?string $config)
-    {
+    public function __construct(
+        private string $frameworkConfig,
+        private string|null $config = null
+    ) {
         parent::__construct('test', true);
-
-        $fs = new Filesystem();
-        if ($config) {
-            if (!$fs->isAbsolutePath($config)) {
-                $config = __DIR__ . '/config/' . $config;
-            }
-
-            if (!file_exists($config)) {
-                throw new RuntimeException(sprintf('The config file "%s" does not exist.', $config));
-            }
-        }
-        $this->config = $config;
-
-        if (!$fs->isAbsolutePath($fwConfig)) {
-            $fwConfig = __DIR__ . '/config/' . $fwConfig;
-        }
-        $this->fwConfig = $fwConfig;
     }
 
     public function registerBundles(): iterable
     {
-        $bundles = [
+        return [
             new TestBundle(),
             new FrameworkBundle(),
             new TwigBundle(),
             new JMSTranslationBundle(),
         ];
-
-        if (class_exists(SensioFrameworkExtraBundle::class)) {
-            $bundles[] = new SensioFrameworkExtraBundle();
-        }
-
-        return $bundles;
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader): void
+    private function configureContainer(ContainerConfigurator $container, LoaderInterface $loader, ContainerBuilder $builder): void
     {
-        $loader->load($this->fwConfig);
-        if ($this->config) {
-            $loader->load($this->config);
+        $configDir = $this->getConfigDir();
+
+        $container->import($configDir . '/' . $this->frameworkConfig);
+
+        if (null !== $this->config) {
+            $loader->load($configDir . '/' . $this->config);
         }
 
-        $loader->load($this->getProjectDir() . '/config/services.yaml');
+        $container->import($configDir . '/services.yaml');
+    }
+
+    private function configureRoutes(RoutingConfigurator $routes): void
+    {
+        $configDir = $this->getConfigDir();
+
+        $routes->import($configDir . '/routes.yaml');
     }
 
     public function getCacheDir(): string
@@ -104,13 +92,16 @@ class AppKernel extends Kernel
         return sys_get_temp_dir() . '/JMSTranslationBundle';
     }
 
-    public function serialize()
+    public function __serialize(): array
     {
-        return $this->config;
+        return [
+            'framework_config' => $this->frameworkConfig,
+            'config' => $this->config,
+        ];
     }
 
-    public function unserialize($config)
+    public function __unserialize(array $data): void
     {
-        $this->__construct($config);
+        $this->__construct($data['framework_config'], $data['config']);
     }
 }
