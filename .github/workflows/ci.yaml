@@ -46,7 +46,7 @@ jobs:
           ini-values: "zend.assertions=1"
 
       - name: 'Remove sensio/framework-extra-bundle'
-        if: matrix.symfony-version == '^7.2'
+        if: matrix.dependencies == 'highest' || matrix.symfony-version == '^7.2'
         run: |
           composer remove --dev --no-update sensio/framework-extra-bundle
 
