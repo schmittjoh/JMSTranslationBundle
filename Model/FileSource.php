@@ -22,54 +22,29 @@ namespace JMS\TranslationBundle\Model;
 
 class FileSource implements SourceInterface
 {
-    private string $path;
-
-    private int|null $line;
-
-    private int|null $column;
-
-    /**
-     * @param string $path
-     * @param int|null $line
-     * @param int|null $column
-     */
-    public function __construct($path, $line = null, $column = null)
-    {
-        $this->path = $path;
-        $this->line = $line;
-        $this->column = $column;
+    public function __construct(
+        private string $path,
+        private int|null $line = null,
+        private int|null $column = null,
+    ) {
     }
 
-    /**
-     * @return string
-     */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getLine()
+    public function getLine(): int|null
     {
         return $this->line;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getColumn()
+    public function getColumn(): int|null
     {
         return $this->column;
     }
 
-    /**
-     * @param SourceInterface $source
-     *
-     * @return bool
-     */
-    public function equals(SourceInterface $source)
+    public function equals(SourceInterface $source): bool
     {
         if (!$source instanceof FileSource) {
             return false;
@@ -86,10 +61,7 @@ class FileSource implements SourceInterface
         return $this->column === $source->getColumn();
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         $str = $this->path;
 

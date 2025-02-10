@@ -20,9 +20,7 @@ declare(strict_types=1);
 
 namespace JMS\TranslationBundle\Model;
 
-interface SourceInterface
+interface SourceInterface extends \Stringable
 {
-    public function equals(SourceInterface $source);
-
-    public function __toString();
+    public function equals(SourceInterface $source): bool;
 }
