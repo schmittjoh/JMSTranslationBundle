@@ -1,0 +1,13 @@
+framework:
+    secret: 'test'
+    test: ~
+    assets: ~
+    session:
+        storage_factory_id: 'session.storage.factory.mock_file'
+    form: true
+    csrf_protection: true
+    property_access: true
+    validation:
+        enabled: true
+    translator:
+        enabled: true

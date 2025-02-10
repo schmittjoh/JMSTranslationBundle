@@ -3,7 +3,7 @@ parameters:
 
 services:
     logger:
-        class: Psr\Log\NullLogger
+        class: 'Psr\Log\NullLogger'
 
     JMS\TranslationBundle\Tests\Functional\Fixture\TestBundle\Controller\:
         resource: '@TestBundle/Controller/'
