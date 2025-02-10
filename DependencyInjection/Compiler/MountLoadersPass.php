@@ -26,8 +26,9 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class MountLoadersPass implements CompilerPassInterface
+final class MountLoadersPass implements CompilerPassInterface
 {
+    #[\Override()]
     public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('jms_translation.loader_manager')) {

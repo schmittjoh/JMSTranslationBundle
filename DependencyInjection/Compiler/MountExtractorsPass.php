@@ -25,8 +25,9 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class MountExtractorsPass implements CompilerPassInterface
+final class MountExtractorsPass implements CompilerPassInterface
 {
+    #[\Override()]
     public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('jms_translation.extractor_manager')) {

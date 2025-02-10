@@ -22,28 +22,21 @@ namespace JMS\TranslationBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
-    private ContainerBuilder $container;
-
-    public function __construct(ContainerBuilder $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        /** @var array<string, class-string<BundleInterface>> */
+        private array $bundles,
+    ) {
     }
 
+    #[\Override()]
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $c = $this->container;
-
-        $tb = new TreeBuilder('jms_translation');
-        // Keep compatibility with symfony/config < 4.2
-        if (!method_exists($tb, 'getRootNode')) {
-            $rootNode = $tb->root('jms_translation');
-        } else {
-            $rootNode = $tb->getRootNode();
-        }
+        $treeBuilder = new TreeBuilder('jms_translation');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->fixXmlConfig('config')
@@ -77,7 +70,7 @@ class Configuration implements ConfigurationInterface
                                 ->requiresAtLeastOneElement()
                                 ->prototype('scalar')
                                     ->validate()
-                                        ->always(static function ($v) use ($c) {
+                                        ->always(function ($v): string {
                                             $v = str_replace(DIRECTORY_SEPARATOR, '/', $v);
 
                                             if ('@' === $v[0]) {
@@ -87,12 +80,11 @@ class Configuration implements ConfigurationInterface
                                                     $bundleName = substr($v, 1, $pos - 1);
                                                 }
 
-                                                $bundles = $c->getParameter('kernel.bundles');
-                                                if (!isset($bundles[$bundleName])) {
-                                                    throw new \Exception(sprintf('The bundle "%s" does not exist. Available bundles: %s', $bundleName, implode(', ', array_keys($bundles))));
+                                                if (null === $bundleClass = ($this->bundles[$bundleName] ?? null)) {
+                                                    throw new \Exception(sprintf('The bundle "%s" does not exist. Available bundles: %s', $bundleName, implode(', ', array_keys($this->bundles))));
                                                 }
 
-                                                $ref = new \ReflectionClass($bundles[$bundleName]);
+                                                $ref = new \ReflectionClass($bundleClass);
                                                 $v = false === $pos ? dirname($ref->getFileName()) : dirname($ref->getFileName()) . substr($v, $pos);
                                             }
 
@@ -130,6 +122,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end();
 
-        return $tb;
+        return $treeBuilder;
     }
 }

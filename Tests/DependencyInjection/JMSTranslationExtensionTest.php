@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\TranslationBundle\Tests\DependencyInjection;
 
 use JMS\TranslationBundle\DependencyInjection\JMSTranslationExtension;
+use JMS\TranslationBundle\JMSTranslationBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -13,6 +14,13 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class JMSTranslationExtensionTest extends AbstractExtensionTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->container->setParameter('kernel.bundles', ['JMSTranslationBundle' => JMSTranslationBundle::class]);
+    }
+
     protected function getContainerExtensions(): array
     {
         return [

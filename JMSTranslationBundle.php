@@ -26,10 +26,11 @@ use JMS\TranslationBundle\DependencyInjection\Compiler\IntegrationPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class JMSTranslationBundle extends Bundle
+final class JMSTranslationBundle extends Bundle
 {
-    const VERSION = '1.1.0-DEV';
+    public const VERSION = '3.0.0-DEV';
 
+    #[\Override()]
     public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new IntegrationPass());
