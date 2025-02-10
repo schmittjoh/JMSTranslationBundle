@@ -38,6 +38,8 @@ class FileWriterTest extends TestCase
             ->method('dump')
             ->willReturnCallback(static function ($v) use ($self) {
                 $self->assertEquals(['foo.bar', 'foo.bar.baz'], array_keys($v->getDomain('messages')->all()));
+
+                return '';
             });
 
         $writer = new FileWriter(['test' => $dumper]);

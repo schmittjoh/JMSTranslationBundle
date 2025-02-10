@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace JMS\TranslationBundle\Tests\Functional;
 
 use JMS\TranslationBundle\Translation\ConfigFactory;
-use JMS\TranslationBundle\Translation\Updater;
 use JMS\TranslationBundle\Twig\TranslationExtension;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -24,7 +23,6 @@ class ServiceInstantiationTest extends BaseTestCase
     public static function provider(): array
     {
         return [
-            ['jms_translation.updater', Updater::class],
             ['jms_translation.config_factory', ConfigFactory::class],
             ['jms_translation.twig_extension', TranslationExtension::class],
         ];

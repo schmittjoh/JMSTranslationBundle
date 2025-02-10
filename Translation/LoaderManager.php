@@ -27,36 +27,18 @@ use JMS\TranslationBundle\Util\FileUtils;
 
 class LoaderManager
 {
-    private array $loaders;
-
-    /**
-     * @param array $loaders
-     */
-    public function __construct(array $loaders)
-    {
-        $this->loaders = $loaders;
+    public function __construct(
+        /** @var array<string, LoaderInterface> */
+        private array $loaders,
+    ) {
     }
 
-    /**
-     * @param mixed  $file
-     * @param string $format
-     * @param string $locale
-     * @param string $domain
-     *
-     * @return mixed
-     */
-    public function loadFile($file, $format, $locale, $domain = 'messages')
+    public function loadFile(mixed $file, string $format, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         return $this->getLoader($format)->load($file, $locale, $domain);
     }
 
-    /**
-     * @param string $dir
-     * @param string $targetLocale
-     *
-     * @return MessageCatalogue
-     */
-    public function loadFromDirectory($dir, $targetLocale)
+    public function loadFromDirectory(string $dir, string $targetLocale): MessageCatalogue
     {
         $files = FileUtils::findTranslationFiles($dir);
 
@@ -78,19 +60,8 @@ class LoaderManager
         return $catalogue;
     }
 
-    /**
-     * @param string $format
-     *
-     * @return LoaderInterface
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function getLoader($format)
+    protected function getLoader(string $format): LoaderInterface
     {
-        if (!isset($this->loaders[$format])) {
-            throw new InvalidArgumentException(sprintf('The format "%s" does not exist.', $format));
-        }
-
-        return $this->loaders[$format];
+        return $this->loaders[$format] ?? throw new InvalidArgumentException(sprintf('The format "%s" does not exist.', $format));
     }
 }

@@ -33,24 +33,17 @@ use Symfony\Component\Translation\Loader\LoaderInterface as SymfonyLoader;
  */
 class SymfonyLoaderAdapter implements LoaderInterface
 {
-    private SymfonyLoader $loader;
-
-    public function __construct(SymfonyLoader $loader)
-    {
-        $this->loader = $loader;
+    public function __construct(
+        private SymfonyLoader $loader,
+    ) {
     }
 
     /**
      * Converts Symfony's message catalogue to the catalogue of this
      * bundle.
-     *
-     * @param mixed $resource
-     * @param string $locale
-     * @param string $domain
-     *
-     * @return MessageCatalogue
      */
-    public function load($resource, $locale, $domain = 'messages')
+    #[\Override()]
+    public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         $catalogue = new MessageCatalogue();
         $catalogue->setLocale($locale);

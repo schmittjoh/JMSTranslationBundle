@@ -34,11 +34,6 @@ interface DumperInterface
 {
     /**
      * Dumps the messages of the given domain.
-     *
-     * @param MessageCatalogue $catalogue
-     * @param string $domain
-     *
-     * @return string
      */
-    public function dump(MessageCatalogue $catalogue, $domain = 'messages');
+    public function dump(MessageCatalogue $catalogue, string $domain = 'messages'): string;
 }

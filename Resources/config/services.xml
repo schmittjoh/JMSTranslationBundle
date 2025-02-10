@@ -19,19 +19,8 @@
         <parameter key="jms_translation.extractor.file.validation_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\ValidationExtractor</parameter>
         <parameter key="jms_translation.extractor.file.authentication_message_extractor.class">JMS\TranslationBundle\Translation\Extractor\File\AuthenticationMessagesExtractor</parameter>
 
-        <parameter key="jms_translation.loader.symfony.xliff_loader.class">JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader</parameter>
-        <parameter key="jms_translation.loader.xliff_loader.class">JMS\TranslationBundle\Translation\Loader\XliffLoader</parameter>
-        <parameter key="jms_translation.loader.symfony_adapter.class">JMS\TranslationBundle\Translation\Loader\SymfonyLoaderAdapter</parameter>
-        <parameter key="jms_translation.loader_manager.class">JMS\TranslationBundle\Translation\LoaderManager</parameter>
-
-        <parameter key="jms_translation.dumper.php_dumper.class">JMS\TranslationBundle\Translation\Dumper\PhpDumper</parameter>
-        <parameter key="jms_translation.dumper.xliff_dumper.class">JMS\TranslationBundle\Translation\Dumper\XliffDumper</parameter>
-        <parameter key="jms_translation.dumper.yaml_dumper.class">JMS\TranslationBundle\Translation\Dumper\YamlDumper</parameter>
-        <parameter key="jms_translation.dumper.symfony_adapter.class">JMS\TranslationBundle\Translation\Dumper\SymfonyDumperAdapter</parameter>
-
         <parameter key="jms_translation.file_writer.class">JMS\TranslationBundle\Translation\FileWriter</parameter>
 
-        <parameter key="jms_translation.updater.class">JMS\TranslationBundle\Translation\Updater</parameter>
         <parameter key="jms_translation.config_factory.class">JMS\TranslationBundle\Translation\ConfigFactory</parameter>
         <parameter key="jms_translation.file_source_factory.class">JMS\TranslationBundle\Translation\FileSourceFactory</parameter>
     </parameters>
@@ -56,13 +45,6 @@
 
         <service id="JMS\TranslationBundle\Controller\ApiController" alias="jms_translation.controller.api_controller" public="true"/>
 
-        <service id="jms_translation.updater" class="%jms_translation.updater.class%" public="true">
-            <argument type="service" id="jms_translation.loader_manager" />
-            <argument type="service" id="jms_translation.extractor_manager" />
-            <argument type="service" id="logger" />
-            <argument type="service" id="jms_translation.file_writer" />
-        </service>
-
         <service id="jms_translation.config_factory" class="%jms_translation.config_factory.class%" public="true"/>
 
         <service id="jms_translation.file_source_factory" class="%jms_translation.file_source_factory.class%">
@@ -72,45 +54,6 @@
 
         <service id="jms_translation.file_writer" class="%jms_translation.file_writer.class%" public="false" />
 
-        <!-- Loaders -->
-        <service id="jms_translation.loader.symfony_adapter" class="%jms_translation.loader.symfony_adapter.class%" public="false" abstract="true" />
-        <service id="jms_translation.loader_manager" class="%jms_translation.loader_manager.class%" /><!-- public as needed by the TranslateController -->
-        <service id="jms_translation.loader.xliff_loader" class="%jms_translation.loader.xliff_loader.class%" public="false">
-            <tag name="jms_translation.loader" format="xliff" />
-        </service>
-
-        <!-- Dumpers -->
-        <service id="jms_translation.dumper.php_dumper" class="%jms_translation.dumper.php_dumper.class%" public="false">
-            <tag name="jms_translation.dumper" format="php" />
-        </service>
-        <service id="jms_translation.dumper.xliff_dumper" class="%jms_translation.dumper.xliff_dumper.class%" public="false">
-            <call method="setSourceLanguage">
-                <argument>%jms_translation.source_language%</argument>
-            </call>
-            <call method="setAddDate">
-                <argument>%jms_translation.dumper.add_date%</argument>
-            </call>
-            <call method="setAddReference">
-                <argument>%jms_translation.dumper.add_references%</argument>
-            </call>
-            <tag name="jms_translation.dumper" format="xliff" />
-        </service>
-        <service id="jms_translation.dumper.xlf_dumper" class="%jms_translation.dumper.xliff_dumper.class%" public="false">
-            <call method="setSourceLanguage">
-                <argument>%jms_translation.source_language%</argument>
-            </call>
-            <call method="setAddDate">
-                <argument>%jms_translation.dumper.add_date%</argument>
-            </call>
-            <call method="setAddReference">
-                <argument>%jms_translation.dumper.add_references%</argument>
-            </call>
-            <tag name="jms_translation.dumper" format="xlf" />
-        </service>
-        <service id="jms_translation.dumper.yaml_dumper" class="%jms_translation.dumper.yaml_dumper.class%" public="false">
-            <tag name="jms_translation.dumper" format="yml" />
-        </service>
-        <service id="jms_translation.dumper.symfony_adapter" class="%jms_translation.dumper.symfony_adapter.class%" public="false" abstract="true" />
 
         <!-- Extractors -->
         <service id="jms_translation.extractor_manager" class="%jms_translation.extractor_manager.class%" public="false">

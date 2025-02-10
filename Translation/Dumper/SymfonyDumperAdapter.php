@@ -38,28 +38,14 @@ use Symfony\Component\Translation\MessageCatalogue as SymfonyCatalogue;
  */
 class SymfonyDumperAdapter implements DumperInterface
 {
-    private SymfonyDumper $dumper;
-
-    /**
-     * @var string
-     */
-    private $format;
-
-    public function __construct(SymfonyDumper $dumper, $format)
-    {
-        $this->dumper = $dumper;
-        $this->format = $format;
+    public function __construct(
+        private SymfonyDumper $dumper,
+        private string $format,
+    ) {
     }
 
-    /**
-     * @param MessageCatalogue $catalogue
-     * @param string $domain
-     *
-     * @return string
-     *
-     * @throws RuntimeException
-     */
-    public function dump(MessageCatalogue $catalogue, $domain = 'messages')
+    #[\Override()]
+    public function dump(MessageCatalogue $catalogue, string $domain = 'messages'): string
     {
         $symfonyCatalogue = new SymfonyCatalogue($catalogue->getLocale());
 
