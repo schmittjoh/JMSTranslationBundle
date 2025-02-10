@@ -23,8 +23,9 @@ namespace JMS\TranslationBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class IntegrationPass implements CompilerPassInterface
+final class IntegrationPass implements CompilerPassInterface
 {
+    #[\Override()]
     public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('translation.loader.xliff')) {
