@@ -27,6 +27,37 @@ use JMS\TranslationBundle\Translation\Extractor\File\FormExtractor;
 class FormExtractorTest extends BasePhpFileExtractorTest
 {
     /**
+     * @group help
+     */
+    public function testHelpExtract()
+    {
+        $expected          = new MessageCatalogue();
+        $fileSourceFactory = $this->getFileSourceFactory();
+        $fixtureSplInfo    = new \SplFileInfo(__DIR__ . '/Fixture/MyHelpFormType.php');
+
+        $message = new Message('field.with.help');
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 32));
+        $expected->add($message);
+
+        $message = new Message('form.help.text');
+        $message->setDesc('Field with a help value');
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 33));
+        $expected->add($message);
+
+        $message = new Message('form.help.text.but.no.label');
+        $message->setDesc('Field with a help but no label');
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 37));
+        $expected->add($message);
+
+        $message = new Message('form.choice_help');
+        $message->setDesc('Choice field with a help');
+        $message->addSource($fileSourceFactory->create($fixtureSplInfo, 40));
+        $expected->add($message);
+
+        $this->assertEquals($expected, $this->extract('MyHelpFormType.php'));
+    }
+
+    /**
      * @group placeholder
      */
     public function testPlaceholderExtract()
