@@ -26,7 +26,9 @@ use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
+use Symfony\Component\Validator\Mapping\ClassMetadataInterface;
 use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
+use Symfony\Component\Validator\Mapping\MetadataInterface;
 use Twig\Node\Node as TwigNode;
 
 /**
@@ -89,12 +91,8 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
             return;
         }
 
-        $this->extractFromConstraints($metadata->constraints);
-        foreach ($metadata->members as $members) {
-            foreach ($members as $member) {
-                $this->extractFromConstraints($member->constraints);
-            }
-        }
+        $this->extractFromConstraints($metadata->getConstraints());
+        $this->extractFromClassMetadata($metadata);
     }
 
     /**
@@ -172,6 +170,21 @@ class ValidationExtractor implements FileVisitorInterface, NodeVisitor
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private function extractFromClassMetadata(MetadataInterface $metadata): void
+    {
+        if (!$metadata instanceof ClassMetadataInterface) {
+            return;
+        }
+
+        foreach ($metadata->getConstrainedProperties() as $property) {
+            $memberMetadata = $metadata->getPropertyMetadata($property);
+            foreach ($memberMetadata as $innerMetadata) {
+                $constraints = $innerMetadata->getConstraints();
+                $this->extractFromConstraints($constraints);
             }
         }
     }
