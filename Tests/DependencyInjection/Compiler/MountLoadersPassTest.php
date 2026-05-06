@@ -29,6 +29,7 @@ class MountLoadersPassTest extends AbstractCompilerPassTestCase
 
         $collectedService = new Definition();
         $collectedService->addTag('jms_translation.loader', ['format' => 'foo']);
+        $collectedService->addTag('jms_translation.loader', ['format' => 'bar']);
         $this->setDefinition('service0', $collectedService);
 
         $this->compile();
@@ -36,7 +37,10 @@ class MountLoadersPassTest extends AbstractCompilerPassTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'jms_translation.loader_manager',
             0,
-            ['foo' => new Reference('service0')]
+            [
+                'foo' => new Reference('service0'),
+                'bar' => new Reference('service0'),
+            ]
         );
     }
 }
