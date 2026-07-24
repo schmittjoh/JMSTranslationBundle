@@ -84,12 +84,12 @@ class TwigFileExtractor implements FileVisitorInterface, NodeVisitorInterface
 //                     throw new \RuntimeException(sprintf('Cannot infer translation id from node "%s". Please refactor to only translate constants.', get_class($idNode)));
                 }
                 $id = $idNode->getAttribute('value');
-
-                $index     = 1;
                 $domain    = 'messages';
                 $arguments = iterator_to_array($node->getNode('arguments'));
-                if (isset($arguments[$index])) {
-                    $argument = $arguments[$index];
+
+                if (isset($arguments['domain']) || isset($arguments[1])) {
+                    $argument = $arguments['domain'] ?? $arguments[1];
+
                     if (! $argument instanceof ConstantExpression) {
                         return $node;
 
