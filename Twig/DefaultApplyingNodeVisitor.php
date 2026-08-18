@@ -87,10 +87,15 @@ class DefaultApplyingNodeVisitor implements NodeVisitorInterface
                 $testNodeArguments[0] = new ArrayExpression([], $lineno);
                 $testNode->setNode('arguments', new Nodes($testNodeArguments));
 
+                $replaceFilter = $env->getFilter('replace');
+                if (null === $replaceFilter) {
+                    throw new RuntimeException(sprintf('The "replace" filter, required by the "desc" filter in "%s" line %d, is not available.', $node->getTemplateName(), $node->getTemplateLine()));
+                }
+
                 // wrap the default node in a |replace filter
                 $defaultNode = new FilterExpression(
                     $arguments[0],
-                    $env->getFilter('replace'),
+                    $replaceFilter,
                     new Nodes([$wrappingNodeArguments[0]]),
                     $lineno
                 );
