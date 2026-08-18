@@ -20,6 +20,14 @@ declare(strict_types=1);
 
 namespace JMS\TranslationBundle\Tests\Twig;
 
+use Twig\Node\Expression\Binary\EqualBinary;
+use Twig\Node\Expression\FilterExpression;
+use Twig\Node\Expression\Ternary\ConditionalTernary;
+use Twig\Node\Expression\TestExpression;
+use Twig\Node\Node;
+use Twig\Node\Nodes;
+use Twig\TwigFilter;
+
 class DefaultApplyingNodeVisitorTest extends BaseTwigTestCase
 {
     public function testApply(): void
@@ -31,27 +39,72 @@ class DefaultApplyingNodeVisitorTest extends BaseTwigTestCase
     }
 
     /**
-     * The visitor rewrites the "desc" filter into a Twig AST, which must be built with
-     * the current node classes so that compiling templates stays deprecation-free.
+     * The visitor replaces the "desc" filter with a hand-built AST. Twig deprecated the node classes
+     * and constructor signatures it used to rely on, so assert which node types are produced: a wrong
+     * choice still compiles to the expected output (see testApply) while emitting deprecations.
      */
-    public function testApplyDoesNotTriggerDeprecations(): void
+    public function testApplyBuildsAstWithNonDeprecatedNodes(): void
     {
-        $deprecations = [];
-        set_error_handler(
-            static function (int $errno, string $message) use (&$deprecations): bool {
-                $deprecations[] = $message;
+        $conditions = $this->findConditionalTernaries($this->parseAst('apply_default_value.html.twig', true));
 
-                return true;
-            },
-            E_USER_DEPRECATED
+        // one for "|trans|desc(...)", one for "|trans({...})|desc(...)"
+        self::assertCount(2, $conditions);
+
+        // the replacements are stripped from the left-hand side of the comparison, which means
+        // rebuilding the "trans" filter arguments: they must stay a node list Twig accepts
+        $comparison = $this->unwrapTest($conditions[1]->getNode('test'));
+        self::assertInstanceOf(EqualBinary::class, $comparison);
+        self::assertInstanceOf(Nodes::class, $comparison->getNode('left')->getNode('arguments'));
+
+        // the default value is wrapped in a "replace" filter, which since Twig 3.12 has to be
+        // created from the environment's TwigFilter instance instead of from the filter name
+        $replaceFilter = $this->unwrapEscape($conditions[1]->getNode('left'));
+        self::assertInstanceOf(FilterExpression::class, $replaceFilter);
+        self::assertSame('replace', $replaceFilter->getAttribute('name'));
+        self::assertTrue(
+            $replaceFilter->hasAttribute('twig_callable'),
+            'The "replace" filter was not created from a TwigFilter instance.'
         );
+        self::assertInstanceOf(TwigFilter::class, $replaceFilter->getAttribute('twig_callable'));
+        self::assertInstanceOf(Nodes::class, $replaceFilter->getNode('arguments'));
+    }
 
-        try {
-            $this->parse('apply_default_value.html.twig', true);
-        } finally {
-            restore_error_handler();
+    /**
+     * @return list<ConditionalTernary>
+     */
+    private function findConditionalTernaries(Node $node): array
+    {
+        $found = $node instanceof ConditionalTernary ? [$node] : [];
+
+        foreach ($node as $child) {
+            if ($child instanceof Node) {
+                $found = array_merge($found, $this->findConditionalTernaries($child));
+            }
         }
 
-        $this->assertSame([], $deprecations);
+        return $found;
+    }
+
+    /**
+     * Twig >= 3.21 wraps a ternary condition in a "true" test.
+     */
+    private function unwrapTest(Node $node): Node
+    {
+        return $node instanceof TestExpression ? $node->getNode('node') : $node;
+    }
+
+    /**
+     * The output escaper wraps both ternary branches in an "escape" filter.
+     */
+    private function unwrapEscape(Node $node): Node
+    {
+        while (
+            $node instanceof FilterExpression
+            && 'escape' === $node->getAttribute('name')
+        ) {
+            $node = $node->getNode('node');
+        }
+
+        return $node;
     }
 }
