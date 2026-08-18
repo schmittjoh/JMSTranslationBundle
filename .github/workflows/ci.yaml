@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - "master"
+      - "2.x"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -22,8 +23,6 @@ jobs:
       fail-fast: false
       matrix:
         symfony-version:
-          - '^5.4'
-          - '^6.4'
           - '^7.2'
         php-version:
           - '8.3'
@@ -33,7 +32,7 @@ jobs:
           - 'highest'
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
         with:
           fetch-depth: 2
 
@@ -45,13 +44,8 @@ jobs:
           tools: 'flex'
           ini-values: "zend.assertions=1"
 
-      - name: 'Remove sensio/framework-extra-bundle'
-        if: matrix.symfony-version == '^7.2'
-        run: |
-          composer remove --dev --no-update sensio/framework-extra-bundle
-
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v3"
+        uses: "ramsey/composer-install@v4"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "${{ matrix.composer-options }}"

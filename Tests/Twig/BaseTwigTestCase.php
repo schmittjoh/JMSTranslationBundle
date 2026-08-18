@@ -26,18 +26,39 @@ use Symfony\Bridge\Twig\Extension\TranslationExtension as SymfonyTranslationExte
 use Symfony\Component\Translation\IdentityTranslator;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
+use Twig\Node\Node;
 use Twig\Source;
 
 abstract class BaseTwigTestCase extends TestCase
 {
     final protected function parse($file, $debug = false): string
     {
-        $content = file_get_contents(__DIR__ . '/Fixture/' . $file);
+        $env = $this->createEnvironment($debug);
 
+        return $env->compile($this->parseTemplate($env, $file));
+    }
+
+    /**
+     * Returns the body of the parsed template, i.e. the AST as produced by the bundle's node visitors.
+     */
+    final protected function parseAst(string $file, bool $debug = false): Node
+    {
+        return $this->parseTemplate($this->createEnvironment($debug), $file);
+    }
+
+    private function createEnvironment(bool $debug): Environment
+    {
         $env = new Environment(new ArrayLoader([]));
-        $env->addExtension(new SymfonyTranslationExtension($translator = new IdentityTranslator()));
+        $env->addExtension(new SymfonyTranslationExtension(new IdentityTranslator()));
         $env->addExtension(new TranslationExtension(null, $debug));
 
-        return $env->compile($env->parse($env->tokenize(new Source($content, 'whatever')))->getNode('body'));
+        return $env;
+    }
+
+    private function parseTemplate(Environment $env, string $file): Node
+    {
+        $content = file_get_contents(__DIR__ . '/Fixture/' . $file);
+
+        return $env->parse($env->tokenize(new Source($content, 'whatever')))->getNode('body');
     }
 }

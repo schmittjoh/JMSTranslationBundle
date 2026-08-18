@@ -24,10 +24,10 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use Twig\Environment;
 use Twig\Node\Expression\ArrayExpression;
 use Twig\Node\Expression\Binary\EqualBinary;
-use Twig\Node\Expression\ConditionalExpression;
-use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Expression\FilterExpression;
+use Twig\Node\Expression\Ternary\ConditionalTernary;
 use Twig\Node\Node;
+use Twig\Node\Nodes;
 use Twig\NodeVisitor\NodeVisitorInterface;
 
 /**
@@ -85,18 +85,23 @@ class DefaultApplyingNodeVisitor implements NodeVisitorInterface
                 // remove the replacements from the test node
                 $testNodeArguments    = iterator_to_array($testNode->getNode('arguments'));
                 $testNodeArguments[0] = new ArrayExpression([], $lineno);
-                $testNode->setNode('arguments', new Node($testNodeArguments));
+                $testNode->setNode('arguments', new Nodes($testNodeArguments));
+
+                $replaceFilter = $env->getFilter('replace');
+                if (null === $replaceFilter) {
+                    throw new RuntimeException(sprintf('The "replace" filter, required by the "desc" filter in "%s" line %d, is not available.', $node->getTemplateName(), $node->getTemplateLine()));
+                }
 
                 // wrap the default node in a |replace filter
                 $defaultNode = new FilterExpression(
                     $arguments[0],
-                    new ConstantExpression('replace', $lineno),
-                    new Node([$wrappingNodeArguments[0]]),
+                    $replaceFilter,
+                    new Nodes([$wrappingNodeArguments[0]]),
                     $lineno
                 );
             }
 
-            $condition = new ConditionalExpression(
+            $condition = new ConditionalTernary(
                 new EqualBinary($testNode, $transNode->getNode('node'), $wrappingNode->getTemplateLine()),
                 $defaultNode,
                 clone $wrappingNode,
