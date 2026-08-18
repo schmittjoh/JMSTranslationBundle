@@ -29,4 +29,29 @@ class DefaultApplyingNodeVisitorTest extends BaseTwigTestCase
             $this->parse('apply_default_value.html.twig', true)
         );
     }
+
+    /**
+     * The visitor rewrites the "desc" filter into a Twig AST, which must be built with
+     * the current node classes so that compiling templates stays deprecation-free.
+     */
+    public function testApplyDoesNotTriggerDeprecations(): void
+    {
+        $deprecations = [];
+        set_error_handler(
+            static function (int $errno, string $message) use (&$deprecations): bool {
+                $deprecations[] = $message;
+
+                return true;
+            },
+            E_USER_DEPRECATED
+        );
+
+        try {
+            $this->parse('apply_default_value.html.twig', true);
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame([], $deprecations);
+    }
 }
