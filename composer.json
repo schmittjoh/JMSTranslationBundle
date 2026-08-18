@@ -29,7 +29,7 @@
         "symfony/translation": "^5.4 || ^6.4 || ^7.1",
         "symfony/translation-contracts": "^2.0 || ^3.0",
         "symfony/validator": "^5.4 || ^6.4 || ^7.1",
-        "twig/twig": "^3.15",
+        "twig/twig": "^3.17",
         "psr/log": "^1.0 || ^2.0 || ^3.0"
     },
     "require-dev": {
