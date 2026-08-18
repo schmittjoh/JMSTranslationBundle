@@ -1,5 +1,5 @@
 {
-    "name": "jms/translation-bundle",
+    "name": "ibexa/translation-bundle",
     "type": "symfony-bundle",
     "description": "Puts the Symfony Translation Component on steroids",
     "keywords": [
@@ -20,6 +20,9 @@
             "email": "schmittjoh@gmail.com"
         }
     ],
+    "replace": {
+        "jms/translation-bundle": "^2.6"
+    },
     "require": {
         "php": "^8.1",
         "nikic/php-parser": "^5",
@@ -37,8 +40,8 @@
         "doctrine/coding-standard": "^9.0",
         "matthiasnoback/symfony-dependency-injection-test": "^6.0",
         "nyholm/nsa": "^1.0.1",
+        "phpunit/phpunit": "^11.5",
         "symfony/phpunit-bridge": "^7.2",
-        "sensio/framework-extra-bundle": "^6.2.4",
         "symfony/asset": "^5.4 || ^6.4 || ^7.1",
         "symfony/browser-kit": "^5.4 || ^6.4 || ^7.1",
         "symfony/css-selector": "^5.4 || ^6.4 || ^7.1",
