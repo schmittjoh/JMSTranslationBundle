@@ -22,15 +22,19 @@ jobs:
       fail-fast: false
       matrix:
         symfony-version:
-          - '^5.4'
           - '^6.4'
           - '^7.2'
+          - '^8.1'
         php-version:
           - '8.3'
           - '8.4'
         dependencies:
           - 'lowest'
           - 'highest'
+        exclude:
+          # Symfony 8 requires PHP 8.4
+          - symfony-version: '^8.1'
+            php-version: '8.3'
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v5"
@@ -46,7 +50,7 @@ jobs:
           ini-values: "zend.assertions=1"
 
       - name: 'Remove sensio/framework-extra-bundle'
-        if: matrix.symfony-version == '^7.2'
+        if: matrix.symfony-version == '^7.2' || matrix.symfony-version == '^8.1'
         run: |
           composer remove --dev --no-update sensio/framework-extra-bundle
 

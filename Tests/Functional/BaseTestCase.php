@@ -28,12 +28,12 @@ class BaseTestCase extends WebTestCase
 {
     protected static function createKernel(array $options = []): KernelInterface
     {
-        if (version_compare(Kernel::VERSION, '7.0.0') >= 0) {
+        if (version_compare(Kernel::VERSION, '8.0.0') >= 0) {
+            $conf = 'framework_sf8.yaml';
+        } elseif (version_compare(Kernel::VERSION, '7.0.0') >= 0) {
             $conf = 'framework_sf7.yaml';
-        } elseif (version_compare(Kernel::VERSION, '6.0.0') >= 0) {
-            $conf = 'framework_sf6.yml';
         } else {
-            $conf = 'framework.yml';
+            $conf = 'framework_sf6.yml';
         }
 
         return new AppKernel($conf, $options['config'] ?? 'default.yml');
